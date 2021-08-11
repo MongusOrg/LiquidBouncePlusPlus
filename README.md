@@ -35,7 +35,7 @@ LiquidBounce+ is using Gradle, so make sure that it is installed properly. Instr
     - For IntelliJ: `gradlew --debug setupDevWorkspace idea genIntellijRuns build`
     - For Eclipse: `gradlew --debug setupDevWorkspace eclipse build`
 4. Open the folder as a Gradle project in your IDE.
-5*. Select either the Forge or Vanilla run configuration.
+5. Select either the Forge or Vanilla run configuration*.
 
 (*: For those who can't run the default configuration, try creating a gradle run config with task `runClient`.)
 
