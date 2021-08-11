@@ -912,6 +912,9 @@ public final class RenderUtils extends MinecraftInstance {
         lastScale = factor;
         lastScaleWidth = factor2;
         lastScaleHeight = factor3;
+        glPushMatrix();
+        glPushAttrib();
+
         mc.getFramebuffer().bindFramebuffer(true);
         glEnable(GL_SCISSOR_TEST);
         makeScissorBox(x, y, x2, y2);
@@ -921,9 +924,13 @@ public final class RenderUtils extends MinecraftInstance {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
+        mc.entityRenderer.setupOverlayRendering();
         buffer.bindFramebuffer(true);
         glDisable(GL_BLEND);
         glDisable(GL_SCISSOR_TEST);
+
+        glPopAttrib();
+        glPopMatrix();
     }
 
     public static void roundBlur(final float x, final float y, final float x2, final float y2, final float radius, final ScaledResolution sc) {
@@ -938,6 +945,8 @@ public final class RenderUtils extends MinecraftInstance {
         lastScale = factor;
         lastScaleWidth = factor2;
         lastScaleHeight = factor3;
+        glPushMatrix();
+        glPushAttrib();
         
         mc.getFramebuffer().bindFramebuffer(true);
 
@@ -960,10 +969,14 @@ public final class RenderUtils extends MinecraftInstance {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
+        mc.entityRenderer.setupOverlayRendering();
         buffer.bindFramebuffer(true);
         
         glDisable(GL_BLEND);
         glDisable(GL_STENCIL_TEST);
+
+        glPopAttrib();
+        glPopMatrix();
     }
     
     public static void blur(final float x, final float y, final float x2, final float y2) {
