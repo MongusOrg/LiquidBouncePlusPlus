@@ -7,6 +7,13 @@ Forum: https://forums.ccbluex.net \
 YouTube: https://youtube.com/CCBlueX \
 Twitter: https://twitter.com/CCBlueX 
 
+## Third-party plugins/mods.
+- sk1er/ResourceExploitFix
+- prplz/MemoryFix
+- dezaxd/ViaForge
+- BetterFPS
+- FDPClient (bypasses)
+
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/WYSI-Foundation/LiquidBouncePlus/issues).
 
