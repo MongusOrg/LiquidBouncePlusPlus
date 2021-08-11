@@ -53,6 +53,8 @@ public final class RenderUtils extends MinecraftInstance {
     private static int lastScale;
     private static int lastScaleWidth;
     private static int lastScaleHeight;
+    private static int lastWidth;
+    private static int lastHeight;
     private static Framebuffer buffer;
     private static final ResourceLocation shader;
     private static ShaderGroup blurShader;
@@ -903,23 +905,25 @@ public final class RenderUtils extends MinecraftInstance {
         final int factor2 = sc.getScaledWidth();
         final int factor3 = sc.getScaledHeight();
 
-        if (buffer == null || blurShader == null || lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3) initFboAndShader();
+        if (buffer == null || blurShader == null || lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3 || lastWidth != mc.displayWidth || lastHeight != mc.displayHeight) initFboAndShader();
         
+        lastWidth = mc.displayWidth;
+        lastHeight = mc.displayHeight;
         lastScale = factor;
         lastScaleWidth = factor2;
         lastScaleHeight = factor3;
+        mc.getFramebuffer().bindFramebuffer(true);
         glEnable(GL_SCISSOR_TEST);
         makeScissorBox(x, y, x2, y2);
         buffer.framebufferHeight = mc.displayHeight;
         buffer.framebufferWidth = mc.displayWidth;
         GlStateManager.resetColor();
-        //glEnable(GL_BLEND);
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
         buffer.bindFramebuffer(true);
-        mc.getFramebuffer().bindFramebuffer(true);
-        //glDisable(GL_BLEND);
-        //glDisable(GL_SCISSOR_TEST);
+        glDisable(GL_BLEND);
+        glDisable(GL_SCISSOR_TEST);
     }
 
     public static void roundBlur(final float x, final float y, final float x2, final float y2, final float radius, final ScaledResolution sc) {
@@ -927,11 +931,15 @@ public final class RenderUtils extends MinecraftInstance {
         final int factor2 = sc.getScaledWidth();
         final int factor3 = sc.getScaledHeight();
         
-        if (buffer == null || blurShader == null || lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3) initFboAndShader();
+        if (buffer == null || blurShader == null || lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3 || lastWidth != mc.displayWidth || lastHeight != mc.displayHeight) initFboAndShader();
 
+        lastWidth = mc.displayWidth;
+        lastHeight = mc.displayHeight;
         lastScale = factor;
         lastScaleWidth = factor2;
         lastScaleHeight = factor3;
+        
+        mc.getFramebuffer().bindFramebuffer(true);
 
         if (!buffer.isStencilEnabled()) buffer.enableStencil();
         glEnable(GL_DEPTH_TEST);
@@ -952,18 +960,14 @@ public final class RenderUtils extends MinecraftInstance {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
-        mc.getFramebuffer().bindFramebuffer(false);
         buffer.bindFramebuffer(true);
-        buffer.framebufferRenderExt(mc.displayWidth, mc.displayHeight, false);
         
         glDisable(GL_BLEND);
         glDisable(GL_STENCIL_TEST);
     }
     
     public static void blur(final float x, final float y, final float x2, final float y2) {
-        GlStateManager.disableAlpha();
         blur(x, y, x2, y2, new ScaledResolution(mc));
-        GlStateManager.enableAlpha();
     }
 
     public static void roundBlur(final float x, final float y, final float x2, final float y2, final float rad) {
