@@ -376,8 +376,8 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 else LiquidBounce.moduleManager.modules
                 .filter { it.array && (if (animation.get().equals("none", ignoreCase = true)) it.state else it.slide > 0) }
                 .sortedBy { -fontValue.get().getStringWidth(getModName(it)) }
-        sortedModules = if (abcOrder.get()) LiquidBounce.moduleManager.modules
-                else LiquidBounce.moduleManager.modules.sortedBy { -fontValue.get().getStringWidth(getModName(it)) }
+        sortedModules = if (abcOrder.get()) LiquidBounce.moduleManager.modules.toList()
+                else LiquidBounce.moduleManager.modules.sortedBy { -fontValue.get().getStringWidth(getModName(it)) }.toList()
     }
 
     fun getModName(mod: Module): String {

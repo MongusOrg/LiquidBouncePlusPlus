@@ -54,9 +54,9 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
             notifications.add(i)
         for(i in notifications)
             if(mc.currentScreen !is GuiHudDesigner)
-            i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, blur.get()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
+            i.drawNotification(animationY, smoothYTransition.get(), bgColor, side).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
         else
-            exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, blur.get())
+            exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side)
         if (mc.currentScreen is GuiHudDesigner) {
             if (!hud.notifications.contains(exampleNotification))
                 hud.addNotification(exampleNotification)
@@ -115,7 +115,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         IN,STAY,OUT,END
     }
 
-    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side, blur: Boolean) {
+    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side) {
         val delta = RenderUtils.deltaTime
         val width = textLength.toFloat() + 8.0f
         
