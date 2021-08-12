@@ -8,11 +8,11 @@ YouTube: https://youtube.com/CCBlueX \
 Twitter: https://twitter.com/CCBlueX 
 
 ## Third-party plugins/mods also included in this build:
-- ![Sk1erLLC/ResourceExploitFix](https://github.com/Sk1erLLC/Resource-Exploit-Fix/)
-- ![prplz/MemoryFix](https://github.com/prplz/MemoryFix/)
-- ![FlorianMichael/ViaForge](https://github.com/FlorianMichael/ViaForge/)
-- ![Guichaguri/BetterFPS](https://github.com/Guichaguri/BetterFps/)
-- ![UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) bypasses
+- [Sk1erLLC/ResourceExploitFix](https://github.com/Sk1erLLC/Resource-Exploit-Fix/)
+- [prplz/MemoryFix](https://github.com/prplz/MemoryFix/)
+- [FlorianMichael/ViaForge](https://github.com/FlorianMichael/ViaForge/)
+- [Guichaguri/BetterFPS](https://github.com/Guichaguri/BetterFps/)
+- [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) bypasses
 
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/WYSI-Foundation/LiquidBouncePlus/issues).
