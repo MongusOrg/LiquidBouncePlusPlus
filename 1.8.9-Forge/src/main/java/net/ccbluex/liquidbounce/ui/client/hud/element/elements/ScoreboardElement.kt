@@ -126,6 +126,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
         val mixerColor = ColorMixer.getMixedColor(0, cRainbowSecValue.get()).rgb
 
+        Gui.drawRect(l1 - 2, -2, 5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
+
         if (rectValue.get() && scoreCollection.size > 0) RainbowShader.begin(rectColorMode.equals("Rainbow", ignoreCase = true), if (rainbowX.get() == 0.0F) 0.0F else 1.0F / rainbowX.get(), if (rainbowY.get() == 0.0F) 0.0F else 1.0F / rainbowY.get(), System.currentTimeMillis() % 10000 / 10000F).use {
             val rectColor = when {
                 rectColorMode.equals("Rainbow", ignoreCase = true) -> 0
