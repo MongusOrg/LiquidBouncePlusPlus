@@ -17,7 +17,6 @@ import net.ccbluex.liquidbounce.value.ListValue
 @ModuleInfo(name = "HUD", description = "Toggles visibility of the HUD.", category = ModuleCategory.RENDER, array = false)
 class HUD : Module() {
     val blackHotbarValue = BoolValue("BlackHotbar", true)
-    val blackHotbarBlurValue = BoolValue("BlackHotbar-Blur", true)
     val inventoryParticle = BoolValue("InventoryParticle", false)
     val fontChatValue = BoolValue("FontChat", false)
     val chatRectValue = BoolValue("ChatRect", true)

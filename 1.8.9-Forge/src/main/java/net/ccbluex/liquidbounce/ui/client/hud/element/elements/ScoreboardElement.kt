@@ -46,7 +46,6 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 95, 0, 255)
 
     private val rectValue = BoolValue("Rect", false)
-    private val blurValue = BoolValue("Blur", true)
     private val rectColorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "CRainbow", "LiquidSlowly", "Fade", "Sky", "Mixer"), "Custom")
 
     private val textRedValue = IntegerValue("Text-R", 255, 0, 255)
@@ -140,10 +139,6 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             Gui.drawRect(l1 - 2, -2, 5, -3, rectColor)
         }
-
-        if (blurValue.get() && backgroundColorAlphaValue.get() > 0 && backgroundColorAlphaValue.get() < 255)
-        RenderUtils.blur(l1.toFloat() - 2F, -2F, 5F, maxHeight.toFloat() + fontRenderer.FONT_HEIGHT.toFloat())
-        Gui.drawRect(l1 - 2, -2, 5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
 
         scoreCollection.forEachIndexed { index, score ->
             val team = scoreboard.getPlayersTeam(score.playerName)

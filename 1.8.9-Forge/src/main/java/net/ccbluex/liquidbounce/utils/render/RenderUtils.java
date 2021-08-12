@@ -16,8 +16,6 @@ import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.shader.ShaderGroup;
-import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -36,7 +34,6 @@ import net.minecraft.util.Timer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,22 +45,11 @@ import static org.lwjgl.opengl.GL11.*;
 public final class RenderUtils extends MinecraftInstance {
     private static final Map<Integer, Boolean> glCapMap = new HashMap<>();
 
-    private static float lastRad;
     public static int deltaTime;
-    private static int lastScale;
-    private static int lastScaleWidth;
-    private static int lastScaleHeight;
-    private static int lastWidth;
-    private static int lastHeight;
-    private static Framebuffer buffer;
-    private static final ResourceLocation shader;
-    private static ShaderGroup blurShader;
 
     private static final int[] DISPLAY_LISTS_2D = new int[4];
 
     static {
-        shader = new ResourceLocation("liquidbounce+/blur.json");
-
         for (int i = 0; i < DISPLAY_LISTS_2D.length; i++) {
             DISPLAY_LISTS_2D[i] = glGenLists(1);
         }
@@ -885,106 +871,6 @@ public final class RenderUtils extends MinecraftInstance {
         final ScaledResolution scaledResolution = new ScaledResolution(mc);
         final int factor = scaledResolution.getScaleFactor();
         glScissor((int) (x * factor), (int) ((scaledResolution.getScaledHeight() - y2) * factor), (int) ((x2 - x) * factor), (int) ((y2 - y) * factor));
-    }
-
-    /*
-     * @author Blue Zenith Team.
-     */
-    public static void initFboAndShader() {
-        try {
-            (blurShader = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), mc.getFramebuffer(), shader)).createBindFramebuffers(mc.displayWidth, mc.displayHeight);
-            buffer = blurShader.mainFramebuffer;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static void blur(final float x, final float y, final float x2, final float y2, final ScaledResolution sc) {
-        final int factor = sc.getScaleFactor();
-        final int factor2 = sc.getScaledWidth();
-        final int factor3 = sc.getScaledHeight();
-
-        if (buffer == null || blurShader == null || lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3 || lastWidth != mc.displayWidth || lastHeight != mc.displayHeight) initFboAndShader();
-        
-        lastWidth = mc.displayWidth;
-        lastHeight = mc.displayHeight;
-        lastScale = factor;
-        lastScaleWidth = factor2;
-        lastScaleHeight = factor3;
-        glPushMatrix();
-        glPushAttrib();
-
-        mc.getFramebuffer().bindFramebuffer(true);
-        glEnable(GL_SCISSOR_TEST);
-        makeScissorBox(x, y, x2, y2);
-        buffer.framebufferHeight = mc.displayHeight;
-        buffer.framebufferWidth = mc.displayWidth;
-        GlStateManager.resetColor();
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
-        mc.entityRenderer.setupOverlayRendering();
-        buffer.bindFramebuffer(true);
-        glDisable(GL_BLEND);
-        glDisable(GL_SCISSOR_TEST);
-
-        glPopAttrib();
-        glPopMatrix();
-    }
-
-    public static void roundBlur(final float x, final float y, final float x2, final float y2, final float radius, final ScaledResolution sc) {
-        final int factor = sc.getScaleFactor();
-        final int factor2 = sc.getScaledWidth();
-        final int factor3 = sc.getScaledHeight();
-        
-        if (buffer == null || blurShader == null || lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3 || lastWidth != mc.displayWidth || lastHeight != mc.displayHeight) initFboAndShader();
-
-        lastWidth = mc.displayWidth;
-        lastHeight = mc.displayHeight;
-        lastScale = factor;
-        lastScaleWidth = factor2;
-        lastScaleHeight = factor3;
-        glPushMatrix();
-        glPushAttrib();
-        
-        mc.getFramebuffer().bindFramebuffer(true);
-
-        if (!buffer.isStencilEnabled()) buffer.enableStencil();
-        glEnable(GL_DEPTH_TEST);
-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);  
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); 
-        
-        glStencilFunc(GL_ALWAYS, 1, 0xFF); 
-        glStencilMask(0xFF);
-
-        fastRoundedRect(x, y, x2, y2, radius);
-
-        glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-        glStencilMask(0x00); 
-        glDisable(GL_DEPTH_TEST);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
-        mc.entityRenderer.setupOverlayRendering();
-        buffer.bindFramebuffer(true);
-        
-        glDisable(GL_BLEND);
-        glDisable(GL_STENCIL_TEST);
-
-        glPopAttrib();
-        glPopMatrix();
-    }
-    
-    public static void blur(final float x, final float y, final float x2, final float y2) {
-        blur(x, y, x2, y2, new ScaledResolution(mc));
-    }
-
-    public static void roundBlur(final float x, final float y, final float x2, final float y2, final float rad) {
-        roundBlur(x, y, x2, y2, rad, new ScaledResolution(mc));
     }
 
     /**

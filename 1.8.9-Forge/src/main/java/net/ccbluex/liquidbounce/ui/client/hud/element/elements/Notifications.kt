@@ -33,7 +33,6 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
                     side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
 
     private val smoothYTransition = BoolValue("Smooth-YTransition", true)
-    private val blur = BoolValue("Weird-Blur", true)
     private val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgGreenValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgBlueValue = IntegerValue("Background-Red", 0, 0, 255)
@@ -135,7 +134,6 @@ class Notification(message : String,type : Type, displayLength: Long) {
         GL11.glScalef(x / width, x / width, x / width)
         
         //bg
-        if (blur) RenderUtils.blur(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y)
         RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
 
         GL11.glPushMatrix()
