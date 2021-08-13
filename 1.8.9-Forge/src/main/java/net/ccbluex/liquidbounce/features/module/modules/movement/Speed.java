@@ -30,7 +30,7 @@ import java.util.List;
 @ModuleInfo(name = "Speed", description = "Allows you to move faster.", category = ModuleCategory.MOVEMENT)
 public class Speed extends Module {
 
-    private final SpeedMode[] speedModes = new SpeedMode[] {
+    public final SpeedMode[] speedModes = new SpeedMode[] {
             // NCP
             new NCPBHop(),
             new NCPFHop(),

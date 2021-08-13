@@ -301,9 +301,10 @@ public class Scaffold extends Module {
         }
 
         //Auto Jump thingy
-        if (MovementUtils.isMoving() && mc.thePlayer.onGround && autoJumpValue.get()) {
-            if (!sameYValue.get()) launchY = (int) mc.thePlayer.posY - (shouldGoDown ? 1 : 0);
-            if (!shouldGoDown) mc.thePlayer.jump();
+        if (shouldGoDown) launchY = (int) mc.thePlayer.posY - 1;
+        else if (autoJumpValue.get() && !sameYValue.get() && MovementUtils.isMoving() && mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
+            mc.thePlayer.jump();
+            mc.thePlayer.jumpTicks = 10;
         }
     }
 
@@ -594,7 +595,7 @@ public class Scaffold extends Module {
      */
     @EventTarget
     public void onMove(final MoveEvent event) {
-        if (!safeWalkValue.get() || (shouldGoDown))
+        if (!safeWalkValue.get() || shouldGoDown)
             return;
 
         if (airSafeValue.get() || mc.thePlayer.onGround)

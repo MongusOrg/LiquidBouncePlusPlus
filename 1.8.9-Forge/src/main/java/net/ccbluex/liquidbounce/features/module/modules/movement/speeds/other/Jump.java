@@ -17,12 +17,15 @@ public class Jump extends SpeedMode {
 
     @Override
     public void onMotion() {
-        
+        if(MovementUtils.isMoving() && mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && mc.thePlayer.jumpTicks == 0) {
+            mc.thePlayer.jump();
+            mc.thePlayer.jumpTicks = 10;
+        }
     }
 
     @Override
     public void onUpdate() {
-        if(MovementUtils.isMoving() && mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) mc.thePlayer.jump();
+
     }
 
     @Override

@@ -267,7 +267,7 @@ class Target : Element() {
                 "RiseOld" -> {
                     easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
-                    UiUtils.shadowedRect(0.0, 0.0, 154.0, 60.0, 3F, bgColor.rgb)
+                    UiUtils.shadowedRect(0.0, 0.0, 154.0, 60.0, 3, bgColor.rgb)
                     Fonts.font40.drawString(target.name, 5F, 5F, barColor.rgb, false)
 
                     GlStateManager.resetColor()
