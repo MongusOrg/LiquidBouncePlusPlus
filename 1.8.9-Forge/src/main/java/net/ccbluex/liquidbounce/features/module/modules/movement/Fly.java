@@ -88,6 +88,7 @@ public class Fly extends Module {
 
     // AAC
     private final BoolValue aac5SkidNotificationValue = new BoolValue("AAC5-SkidInfo", true);
+    private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
 
@@ -208,6 +209,8 @@ public class Fly extends Module {
     public void onUpdate(final UpdateEvent event) {
         final float vanillaSpeed = vanillaSpeedValue.get();
 
+        mc.thePlayer.noClip = false;
+
         switch (modeValue.get().toLowerCase()) {
             case "motion":
                 mc.thePlayer.capabilities.isFlying = false;
@@ -227,6 +230,7 @@ public class Fly extends Module {
                 if (mc.thePlayer.hurtTime <= 0) break;
             case "derp":
             case "aac5-vanilla":
+                if (aac5NoClipValue.get()) mc.thePlayer.noClip = true;
             case "bugspartan":
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionY = 0;

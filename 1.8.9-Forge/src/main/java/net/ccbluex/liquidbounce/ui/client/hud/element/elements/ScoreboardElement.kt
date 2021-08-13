@@ -46,6 +46,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 95, 0, 255)
 
     private val rectValue = BoolValue("Rect", false)
+    private val blurValue = BoolValue("Blur", false)
     private val rectColorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "CRainbow", "LiquidSlowly", "Fade", "Sky", "Mixer"), "Custom")
 
     private val textRedValue = IntegerValue("Text-R", 255, 0, 255)
@@ -153,7 +154,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             GlStateManager.resetColor()
 
-            if (changeDomain.get() && (name.contains(".net", ignoreCase = true) || name.contains(".org", ignoreCase = true) || name.contains(".com", ignoreCase = true) || name.contains(".gg", ignoreCase = true) || name.contains(".info", ignoreCase = true))) 
+            if (changeDomain.get() && (name.contains(".net", ignoreCase = true) || name.contains(".org", ignoreCase = true) || name.contains(".com", ignoreCase = true) || name.contains(".gg", ignoreCase = true) || name.contains(".info", ignoreCase = true) || name.contains(".id", ignoreCase = true))) 
                 fontRenderer.drawString("evolife.club", l1.toFloat(), height.toFloat(), when {
                 rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
                 rectColorMode.equals("CRainbow", ignoreCase = true) -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
