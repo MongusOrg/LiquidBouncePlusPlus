@@ -267,12 +267,12 @@ class Target : Element() {
                 "RiseOld" -> {
                     easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
-                    RenderUtils.drawRect(0F, 0F, 154F, 60F, bgColor.rgb)
+                    UiUtils.shadowedRect(0.0, 0.0, 154.0, 60.0, 3F, bgColor.rgb)
                     Fonts.font40.drawString(target.name, 5F, 5F, barColor.rgb, false)
 
                     GlStateManager.resetColor()
                     RenderUtils.drawEntityOnScreen(14.0, 55.0, 20.3F, target)
-                    RenderUtils.drawRect(33F, 50F, (easingHealth / target.maxHealth).toFloat() * 140F, 54F, barColor.rgb)
+                    RenderUtils.drawRect(33.0F, 50.0F, easingHealth / target.maxHealth * 140.0F, 54.0F, barColor.rgb)
                     Fonts.font40.drawString("${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(target))}  |  ${if (target.onGround) "OnGround" else "OffGround"}  |  Hurt ${target.hurtTime}", 33F, 18F, -1, false)
 
                     val playerInfo = mc.netHandler.getPlayerInfo(target.uniqueID)

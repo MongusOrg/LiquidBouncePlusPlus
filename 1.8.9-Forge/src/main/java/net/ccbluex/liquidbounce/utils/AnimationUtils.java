@@ -80,20 +80,4 @@ public final class AnimationUtils {
 
       return current;
    }
-
-   public static double animateRounded(double target, double current, double speed) {
-      return round(animate(target, current, speed), 1);
-   }
-
-   public static float animateRounded(float target, float current, float speed) {
-      return (float) round(animate(target, current, speed), 1);
-   }
-
-   private static double round(double value, int places) {
-      if (places < 0) throw new IllegalArgumentException();
-
-      BigDecimal bd = new BigDecimal(Double.toString(value));
-      bd = bd.setScale(places, RoundingMode.HALF_UP);
-      return bd.doubleValue();
-   }
 }

@@ -22,6 +22,7 @@ import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.FloatValue;
 import net.ccbluex.liquidbounce.value.ListValue;
+import net.minecraft.client.settings.GameSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +89,7 @@ public class Speed extends Module {
             new SlowHop(),
             new CustomSpeed(),
             new Jump(),
+            new Legit(),
             new AEMine()
     };
 
@@ -187,6 +189,7 @@ public class Speed extends Module {
             return;
 
         mc.timer.timerSpeed = 1F;
+        mc.gameSettings.keyBindJump.pressed = (mc.thePlayer != null && GameSettings.isKeyDown(mc.gameSettings.keyBindJump));
 
         final SpeedMode speedMode = getMode();
 

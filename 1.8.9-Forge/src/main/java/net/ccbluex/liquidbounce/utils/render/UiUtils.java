@@ -181,21 +181,21 @@ public class UiUtils
 		 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	  }
 
-	public static void shadowedRect(double x, double y, double x2, double y2, int width, float r, float g, float b, float al) {
-		for (int i = 0; i <= width; i++) {
-			drawRect(x - i, y - i, x2 + i, y2 + i, new Color(r, g, b, (float) ((width - i) / width * al)).getRGB());
+	public static void shadowedRect(double x, double y, double x2, double y2, float width, float r, float g, float b, float al) {
+		for (int i = width; i >= 0; i--) {
+			drawRect(x - i, y - i, x2 + i, y2 + i, new Color(r, g, b, ((width - (float)i) / width * al)).getRGB());
 		}
 	}
 
-	public static void shadowedRect(double x, double y, double x2, double y2, int width, int r, int g, int b, int al) {
+	public static void shadowedRect(double x, double y, double x2, double y2, float width, int r, int g, int b, int al) {
 		shadowedRect(x, y, x2, y2, width, r / 255.0F, g / 255.0F, b / 255.0F, al / 255.0F);
 	}
 
-	public static void shadowedRect(double x, double y, double x2, double y2, int width, Color color) {
+	public static void shadowedRect(double x, double y, double x2, double y2, float width, Color color) {
 		shadowedRect(x, y, x2, y2, width, color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 	}
 
-	public static void shadowedRect(double x, double y, double x2, double y2, int width, int color) {
+	public static void shadowedRect(double x, double y, double x2, double y2, float width, int color) {
 		Color c = new Color(color);
 		shadowedRect(x, y, x2, y2, width, c);
 	}

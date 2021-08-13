@@ -21,9 +21,9 @@ import net.minecraft.client.settings.GameSettings
 @ModuleInfo(name = "InvMove", description = "Allows you to walk while an inventory is opened.", category = ModuleCategory.MOVEMENT)
 class InventoryMove : Module() {
 
-    private val noDetectableValue = BoolValue("NoDetectable", false)
+    val noDetectableValue = BoolValue("NoDetectable", false)
     val aacAdditionProValue = BoolValue("AACAdditionPro", false)
-    private val noMoveClicksValue = BoolValue("NoMoveClicks", false)
+    val noMoveClicksValue = BoolValue("NoMoveClicks", false)
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
