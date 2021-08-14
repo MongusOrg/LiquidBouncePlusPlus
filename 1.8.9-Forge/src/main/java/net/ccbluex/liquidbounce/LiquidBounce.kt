@@ -36,9 +36,9 @@ import kotlin.concurrent.thread
 object LiquidBounce {
 
     // Client information
-    const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "130821"
-    const val CLIENT_CREATOR = "CCBlueX"
+    const val CLIENT_NAME = "LiquidBounce+" // this is old EvoBounce but I revived it lol still sucks
+    const val CLIENT_VERSION = "140821"
+    const val CLIENT_CREATOR = "CCBlueX, why dont#0425"
     const val CLIENT_CLOUD = "https://chocopie69.github.io/LiquidCloud-EvoBounce/LiquidBounce"
 
     var isStarting = false

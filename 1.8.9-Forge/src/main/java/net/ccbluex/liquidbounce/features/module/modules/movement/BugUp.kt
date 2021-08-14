@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.features.module.modules.movement
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.Render3DEvent
 import net.ccbluex.liquidbounce.event.UpdateEvent
+import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
@@ -21,7 +22,7 @@ import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.block.BlockAir
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.network.play.client.C03PacketPlayer
+import net.minecraft.network.play.client.*
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import org.lwjgl.opengl.GL11
@@ -32,14 +33,16 @@ import kotlin.math.max
 
 @ModuleInfo(name = "AntiVoid", description = "Automatically setbacks you after falling a certain distance.", category = ModuleCategory.MOVEMENT)
 class BugUp : Module() {
-    private val modeValue = ListValue("Mode", arrayOf("TeleportBack", "FlyFlag", "OnGroundSpoof", "MotionTeleport-Flag"), "FlyFlag")
+    private val modeValue = ListValue("Mode", arrayOf("Blink", "TeleportBack", "FlyFlag", "OnGroundSpoof", "MotionTeleport-Flag"), "FlyFlag")
     private val maxFallDistance = IntegerValue("MaxFallDistance", 10, 2, 255)
     private val maxDistanceWithoutGround = FloatValue("MaxDistanceToSetback", 2.5f, 1f, 30f)
     private val indicator = BoolValue("Indicator", true)
-    private val voidCheck = BoolValue("VoidCheck", true)
+    private val voidCheck = BoolValue("VoidCheck(test)", false)
 
     private var detectedLocation: BlockPos? = null
     private var lastFound = 0F
+    private var lastYaw = 0f
+    private var lastPitch = 0f
     private var prevX = 0.0
     private var prevY = 0.0
     private var prevZ = 0.0
@@ -78,15 +81,27 @@ class BugUp : Module() {
 
             detectedLocation = fallingPlayer.findCollision(60)?.pos
 
+            blink = modeValue.get().equals("blink", true) && !(detectedLocation != null && abs(mc.thePlayer.posY - detectedLocation!!.y) +
+                    mc.thePlayer.fallDistance <= maxFallDistance.get())
+
             if (detectedLocation != null && abs(mc.thePlayer.posY - detectedLocation!!.y) +
                     mc.thePlayer.fallDistance <= maxFallDistance.get()) {
                 lastFound = mc.thePlayer.fallDistance
+                lastYaw = mc.thePlayer.rotationYaw
+                lastPitch = mc.thePlayer.rotationPitch
             }
 
             if (mc.thePlayer.fallDistance - lastFound > maxDistanceWithoutGround.get() && (!MovementUtils.isBlockUnder() || !voidCheck.get())) {
                 val mode = modeValue.get()
 
                 when (mode.toLowerCase()) {
+                    "blink" -> {
+                        mc.thePlayer.setPosition(prevX, prevY, prevZ)
+                        mc.netHandler.addToSendQueue(C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, lastYaw, lastPitch, true))
+                        mc.thePlayer.fallDistance = 0F
+                        mc.thePlayer.motionY = 0.0
+                        blink = false
+                    }
                     "teleportback" -> {
                         mc.thePlayer.setPositionAndUpdate(prevX, prevY, prevZ)
                         mc.thePlayer.fallDistance = 0F
@@ -108,6 +123,22 @@ class BugUp : Module() {
                     }
                 }
             }
+        }
+    }
+
+    @EventTarget
+    fun onPacket(event: PacketEvent) {
+        if (blink && (!MovementUtils.isBlockUnder() || !voidCheck.get())) { // all basic movement stuff
+            val packet = event.packet
+            if (packet is C03PacketPlayer 
+            || packet is C03PacketPlayer.C04PacketPlayerPosition 
+            || packet is C03PacketPlayer.C05PacketPlayerLook 
+            || packet is C03PacketPlayer.C06PacketPlayerPosLook
+            || packet is C08PacketPlayerBlockPlacement // other place, action stuff
+            || packet is C0APacketAnimation
+            || packet is C0BPacketEntityAction 
+            || packet is C02PacketUseEntity)
+                event.cancelEvent()
         }
     }
 

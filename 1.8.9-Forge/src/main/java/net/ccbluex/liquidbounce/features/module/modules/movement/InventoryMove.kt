@@ -61,5 +61,5 @@ class InventoryMove : Module() {
     }
 
     override val tag: String?
-        get() = if (aacAdditionProValue.get()) "AACAP" else ""
+        get() = if (aacAdditionProValue.get()) "AACAP" else null
 }

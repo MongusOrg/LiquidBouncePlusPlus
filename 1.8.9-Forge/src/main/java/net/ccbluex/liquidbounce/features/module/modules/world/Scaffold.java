@@ -80,7 +80,7 @@ public class Scaffold extends Module {
 
 
     //make sprint compatible with tower.add sprint tricks
-    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"All", "Jump", "Ground", "Off"}, "Off");
+    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"All", "Ground", "Off"}, "Off");
     // Basic stuff
     private final BoolValue swingValue = new BoolValue("Swing", true);
     private final BoolValue downValue = new BoolValue("Down", false);
@@ -132,6 +132,7 @@ public class Scaffold extends Module {
     private final ListValue zitterModeValue = new ListValue("ZitterMode", new String[]{"Teleport", "Smooth"}, "Teleport");
     private final FloatValue zitterSpeed = new FloatValue("ZitterSpeed", 0.13F, 0.1F, 0.3F);
     private final FloatValue zitterStrength = new FloatValue("ZitterStrength", 0.072F, 0.05F, 0.2F);
+    private final IntegerezValue zitterDelay = new IntegerValue("ZitterDelay", 100, 0, 500);
 
     // Game
     private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F);
@@ -227,7 +228,7 @@ public class Scaffold extends Module {
                 if (!GameSettings.isKeyDown(mc.gameSettings.keyBindLeft))
                     mc.gameSettings.keyBindLeft.pressed = false;
 
-                if (zitterTimer.hasTimePassed(100)) {
+                if (zitterTimer.hasTimePassed(zitterDelay.get())) {
                     zitterDirection = !zitterDirection;
                     zitterTimer.reset();
                 }
@@ -295,16 +296,18 @@ public class Scaffold extends Module {
             }
         }
         //decent code :(
-        if(sprintModeValue.get().equalsIgnoreCase("Jump") && mc.thePlayer.onGround ||
-                sprintModeValue.get().equalsIgnoreCase("Ground") && !mc.thePlayer.onGround) {
+        if (sprintModeValue.get().equalsIgnoreCase("off") || (sprintModeValue.get().equalsIgnoreCase("ground") && !mc.thePlayer.onGround)) {
             mc.thePlayer.setSprinting(false);
         }
 
         //Auto Jump thingy
         if (shouldGoDown) launchY = (int) mc.thePlayer.posY - 1;
-        else if (autoJumpValue.get() && !sameYValue.get() && MovementUtils.isMoving() && mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
-            mc.thePlayer.jump();
-            mc.thePlayer.jumpTicks = 10;
+        else if (!sameYValue.get()) {
+            if (!autoJumpValue.get() || GameSettings.isKeyDown(mc.gameSettings.keyBindJump)) launchY = (int) mc.thePlayer.posY;
+            if (autoJumpValue.get() && MovementUtils.isMoving() && mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
+                mc.thePlayer.jump();
+                mc.thePlayer.jumpTicks = 10;
+            }
         }
     }
 
@@ -428,7 +431,7 @@ public class Scaffold extends Module {
         boolean placeWhenFall = placeConditionValue.get().equalsIgnoreCase("falldown");
         boolean placeWhenNegativeMotion = placeConditionValue.get().equalsIgnoreCase("negativemotion");
         boolean alwaysPlace = placeConditionValue.get().equalsIgnoreCase("always");
-        return (placeWhenAir && !mc.thePlayer.onGround) || (placeWhenFall && mc.thePlayer.fallDistance > 0) || (placeWhenNegativeMotion && mc.thePlayer.motionY < 0) || alwaysPlace;
+        return alwaysPlace || (placeWhenAir && !mc.thePlayer.onGround) || (placeWhenFall && mc.thePlayer.fallDistance > 0) || (placeWhenNegativeMotion && mc.thePlayer.motionY < 0);
     }
 
     @EventTarget

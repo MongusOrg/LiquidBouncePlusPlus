@@ -183,7 +183,7 @@ public class UiUtils
 
 	public static void shadowedRect(double x, double y, double x2, double y2, int width, float r, float g, float b, float al) {
 		for (int i = width; i >= 0; i--) {
-			RenderUtils.drawRect(x - i, y - i, x2 + i, y2 + i, new Color(r, g, b, ((float)(width - i) / (float)width) * al).getRGB());
+			RenderUtils.drawRect((float)x - i, (float)y - i, (float)x2 + i, (float)y2 + i, new Color(r, g, b, ((float)(width - i) / (float)width) * al).getRGB());
 		}
 	}
 

@@ -21,9 +21,10 @@ public class SlowHop extends SpeedMode {
             return;
 
         if(MovementUtils.isMoving()) {
-            if(mc.thePlayer.onGround)
+            if(mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
                 mc.thePlayer.jump();
-            else
+                mc.thePlayer.jumpTicks = 10;
+            } else
                 MovementUtils.strafe(MovementUtils.getSpeed() * 1.011F);
         }else{
             mc.thePlayer.motionX = 0D;
