@@ -110,7 +110,6 @@ class ModuleManager : Listenable {
                 InventoryCleaner::class.java,
                 TrueSight::class.java,
                 AntiBlind::class.java,
-                BugUp::class.java,
                 Breadcrumbs::class.java,
                 AbortBreaking::class.java,
                 PotionSaver::class.java,
@@ -158,7 +157,8 @@ class ModuleManager : Listenable {
                 SpinBot::class.java,
                 MultiActions::class.java,
                 Damage::class.java,
-                TargetStrafe::class.java
+                TargetStrafe::class.java,
+                AntiVoid::class.java
         )
 
         registerModule(Fucker)

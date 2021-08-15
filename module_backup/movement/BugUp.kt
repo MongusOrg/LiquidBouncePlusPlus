@@ -41,8 +41,6 @@ class BugUp : Module() {
 
     private var detectedLocation: BlockPos? = null
     private var lastFound = 0F
-    private var lastYaw = 0f
-    private var lastPitch = 0f
     private var prevX = 0.0
     private var prevY = 0.0
     private var prevZ = 0.0
@@ -87,8 +85,6 @@ class BugUp : Module() {
             if (detectedLocation != null && abs(mc.thePlayer.posY - detectedLocation!!.y) +
                     mc.thePlayer.fallDistance <= maxFallDistance.get()) {
                 lastFound = mc.thePlayer.fallDistance
-                lastYaw = mc.thePlayer.rotationYaw
-                lastPitch = mc.thePlayer.rotationPitch
             }
 
             if (mc.thePlayer.fallDistance - lastFound > maxDistanceWithoutGround.get() && (!MovementUtils.isBlockUnder() || !voidCheck.get())) {
@@ -97,7 +93,7 @@ class BugUp : Module() {
                 when (mode.toLowerCase()) {
                     "blink" -> {
                         mc.thePlayer.setPosition(prevX, prevY, prevZ)
-                        mc.netHandler.addToSendQueue(C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, lastYaw, lastPitch, true))
+                        mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true))
                         mc.thePlayer.fallDistance = 0F
                         mc.thePlayer.motionY = 0.0
                         blink = false
@@ -130,14 +126,7 @@ class BugUp : Module() {
     fun onPacket(event: PacketEvent) {
         if (blink && (!MovementUtils.isBlockUnder() || !voidCheck.get())) { // all basic movement stuff
             val packet = event.packet
-            if (packet is C03PacketPlayer 
-            || packet is C03PacketPlayer.C04PacketPlayerPosition 
-            || packet is C03PacketPlayer.C05PacketPlayerLook 
-            || packet is C03PacketPlayer.C06PacketPlayerPosLook
-            || packet is C08PacketPlayerBlockPlacement // other place, action stuff
-            || packet is C0APacketAnimation
-            || packet is C0BPacketEntityAction 
-            || packet is C02PacketUseEntity)
+            if (packet is C03PacketPlayer)
                 event.cancelEvent()
         }
     }
