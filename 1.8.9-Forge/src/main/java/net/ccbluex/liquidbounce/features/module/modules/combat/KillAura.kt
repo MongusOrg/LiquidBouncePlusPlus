@@ -88,7 +88,7 @@ class KillAura : Module() {
     private val switchDelayValue = IntegerValue("SwitchDelay", 1000, 1, 2000)
 
     // Modes
-    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack"), "BackTrack")
+    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "NCP"), "BackTrack")
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime"), "Distance")
     private val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
 
@@ -100,7 +100,7 @@ class KillAura : Module() {
 
 
     // AutoBlock
-    private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick"), "None")
+    private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick", "NCP"), "None")
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true)
     private val blockRate = IntegerValue("BlockRate", 100, 1, 100)
 
@@ -614,6 +614,10 @@ class KillAura : Module() {
         if (autoBlockModeValue.get().equals("Packet", true) && (mc.thePlayer.isBlocking || canBlock)) {
             startBlocking(entity, interactAutoBlockValue.get())
         }
+
+        if (autoBlockModeValue.get().equals("NCP", true) && (mc.thePlayer.isBlocking || canBlock)) {
+            ncpBlocking(entity)
+        }
     }
 
     /**
@@ -651,6 +655,36 @@ class KillAura : Module() {
 
             return true
         }
+        if (rotations.get().equals("NCP", ignoreCase = true)){
+            if (maxTurnSpeed.get() <= 0F)
+                return true
+
+            if (predictValue.get())
+                boundingBox = boundingBox.offset(
+                        (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posY - entity.prevPosY) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
+                )
+
+            val (_, rotation) = RotationUtils.searchCenter(
+                    boundingBox,
+                    false,
+                    false,
+                    false,
+                    mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),
+                    maxRange
+            ) ?: return false
+
+            val limitedRotation = rotation//RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
+                    //(Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
+
+            if (silentRotationValue.get())
+                RotationUtils.setTargetRotation(limitedRotation, 0)
+            else
+                limitedRotation.toPlayer(mc.thePlayer!!)
+
+            return true
+        }
         if (rotations.get().equals("BackTrack", ignoreCase = true)) {
             if (predictValue.get())
                 boundingBox = boundingBox.offset(
@@ -678,7 +712,7 @@ class KillAura : Module() {
      */
     private fun updateHitable() {
         // Disable hitable check if turn speed is zero
-        if(maxTurnSpeed.get() <= 0F) {
+        if(maxTurnSpeed.get() <= 0F || rotations.get().equals("NCP", true)) {
             hitable = true
             return
         }
@@ -736,6 +770,14 @@ class KillAura : Module() {
         }
 
         mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
+        blockingStatus = true
+    }
+
+    private fun ncpBlocking(interactEntity: Entity) {
+        if (!(blockRate.get() > 0 && Random().nextInt(100) <= blockRate.get()))
+            return
+
+        mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
         blockingStatus = true
     }
 

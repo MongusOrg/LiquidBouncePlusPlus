@@ -87,7 +87,7 @@ public class Fly extends Module {
     private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
 
     // AAC
-    private final BoolValue aac5SkidNotificationValue = new BoolValue("AAC5-SkidInfo", true);
+    private final BoolValue aac5SkidNotificationValue = new BoolValue("AAC5-SkidInfo", false);
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
@@ -165,7 +165,7 @@ public class Fly extends Module {
             mc.thePlayer.swingItem();
         } else if (mode.equalsIgnoreCase("AAC5-Vanilla")) {
             if (aac5SkidNotificationValue.get()) LiquidBounce.hud.addNotification(new Notification("FDPClient skid (gone wrong)", 2000L));
-            if (aac5PursePacketsValue.get() != 7) LiquidBounce.hud.addNotification(new Notification("Only change the values if you know what you are going to do!", Notification.Type.WARNING, 3000L));
+            //if (aac5PursePacketsValue.get() != 7) LiquidBounce.hud.addNotification(new Notification("Only change the values if you know what you are going to do!", Notification.Type.WARNING, 3000L));
         }
 
         startY = mc.thePlayer.posY;

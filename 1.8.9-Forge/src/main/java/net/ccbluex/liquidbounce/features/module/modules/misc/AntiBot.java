@@ -9,14 +9,17 @@ import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.AttackEvent;
 import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.PacketEvent;
+import net.ccbluex.liquidbounce.event.UpdateEvent;
 import net.ccbluex.liquidbounce.event.WorldEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
+import net.ccbluex.liquidbounce.value.FloatValue;
 import net.ccbluex.liquidbounce.value.ListValue;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
@@ -44,6 +47,9 @@ public class AntiBot extends Module {
     private final BoolValue invalidGroundValue = new BoolValue("InvalidGround", true);
     private final BoolValue swingValue = new BoolValue("Swing", false);
     private final BoolValue healthValue = new BoolValue("Health", false);
+    private final BoolValue invalidHealthValue = new BoolValue("InvalidHealth", false);
+    private final FloatValue minHealthValue = new FloatValue("MinHealth", 0F, 0F, 100F);
+    private final FloatValue maxHealthValue = new FloatValue("MaxHealth", 20F, 0F, 100F);
     private final BoolValue derpValue = new BoolValue("Derp", true);
     private final BoolValue wasInvisibleValue = new BoolValue("WasInvisible", false);
     private final BoolValue armorValue = new BoolValue("Armor", false);
@@ -52,6 +58,10 @@ public class AntiBot extends Module {
     private final BoolValue duplicateInWorldValue = new BoolValue("DuplicateInWorld", false);
     private final BoolValue duplicateInTabValue = new BoolValue("DuplicateInTab", false);
     private final BoolValue experimentalNPCDetection = new BoolValue("ExperimentalNPCDetection", false);
+    private final BoolValue illegalName = new BoolValue("IllegalName", false);
+    private final BoolValue removeFromWorld = new BoolValue("RemoveFromWorld", false);
+    private final IntegerValue removeIntervalValue = new IntegerValue("Remove-Interval", 600, 1, 1000);
+    private final BoolValue debugValue = new BoolValue("Debug", false);
 
     private final List<Integer> ground = new ArrayList<>();
     private final List<Integer> air = new ArrayList<>();
@@ -64,6 +74,23 @@ public class AntiBot extends Module {
     public void onDisable() {
         clearAll();
         super.onDisable();
+    }
+
+    public void onUpdate(final UpdateEvent event) {
+        if(mc.thePlayer == null || mc.theWorld == null)
+            return;
+        if (removeFromWorld.get() && mc.thePlayer.ticksExisted % removeIntervalValue.get() == 0){ 
+            List<EntityPlayer> ent = new ArrayList<>();
+            for (EntityPlayer entity : mc.theWorld.playerEntities) {
+                if (isBot(entity))
+                    ent.add(entity);
+            }
+            if (ent.isEmpty()) return;
+            for (EntityPlayer e : ent) {
+                mc.theWorld.removeEntity(e);
+                if (debugValue.get()) LiquidBounce.hud.addNotification(new Notification("Removed "+e.getName()+" due to it being a bot.", Notification.Type.WARNING));
+            }
+        }
     }
 
     @EventTarget
@@ -140,7 +167,11 @@ public class AntiBot extends Module {
         if (antiBot == null || !antiBot.getState())
             return false;
 
-        if (antiBot.experimentalNPCDetection.get() && entity.getDisplayName().getUnformattedText().contains("NPC")) return true;
+        if (antiBot.experimentalNPCDetection.get() && entity.getDisplayName().getUnformattedText().toLowerCase().contains("NPC")) 
+            return true;
+
+        if (antiBot.illegalName.get() && (entity.getName().contains(" ") || entity.getDisplayName().getUnformattedText().contains(" "))) 
+            return true;
 
         if (antiBot.colorValue.get() && !entity.getDisplayName().getFormattedText()
                 .replace("§r", "").contains("§"))
@@ -158,7 +189,10 @@ public class AntiBot extends Module {
         if(antiBot.swingValue.get() && !antiBot.swing.contains(entity.getEntityId()))
             return true;
 
-        if(antiBot.healthValue.get() && entity.getHealth() > 20F)
+        if (antiBot.invalidHealthValue.get() && entity.getHealth() == Double.NaN)
+            return true;
+
+        if(antiBot.healthValue.get() && (entity.getHealth() > antiBot.maxHealthValue.get() || entity.getHealth() < antiBot.minHealthValue.get()))
             return true;
 
         if(antiBot.entityIDValue.get() && (entity.getEntityId() >= 1000000000 || entity.getEntityId() <= -1))

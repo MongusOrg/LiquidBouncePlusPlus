@@ -114,6 +114,8 @@ public class Speed extends Module {
     public final BoolValue resetXZValue = new BoolValue("CustomResetXZ", false);
     public final BoolValue resetYValue = new BoolValue("CustomResetY", false);
 
+    public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false);
+
     public final FloatValue portMax = new FloatValue("AAC-PortLength", 1, 1, 20);
     public final FloatValue aacGroundTimerValue = new FloatValue("AACGround-Timer", 3F, 1.1F, 10F);
     public final FloatValue cubecraftPortLengthValue = new FloatValue("CubeCraft-PortLength", 1F, 0.1F, 2F);

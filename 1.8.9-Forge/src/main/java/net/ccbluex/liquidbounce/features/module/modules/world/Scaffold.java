@@ -12,7 +12,9 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.render.BlockOverlay;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
+import net.ccbluex.liquidbounce.features.module.modules.movement.Speed;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.*;
 import net.ccbluex.liquidbounce.utils.block.BlockUtils;
 import net.ccbluex.liquidbounce.utils.block.PlaceInfo;
@@ -118,7 +120,8 @@ public class Scaffold extends Module {
     };
 
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
-    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC"}, "Normal");
+    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static"}, "Normal");
+    private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 0F, 90F);
 
     private final IntegerValue keepLengthValue = new IntegerValue("KeepRotationLength", 0, 0, 20);
     private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false) {
@@ -132,7 +135,7 @@ public class Scaffold extends Module {
     private final ListValue zitterModeValue = new ListValue("ZitterMode", new String[]{"Teleport", "Smooth"}, "Teleport");
     private final FloatValue zitterSpeed = new FloatValue("ZitterSpeed", 0.13F, 0.1F, 0.3F);
     private final FloatValue zitterStrength = new FloatValue("ZitterStrength", 0.072F, 0.05F, 0.2F);
-    private final IntegerezValue zitterDelay = new IntegerValue("ZitterDelay", 100, 0, 500);
+    private final IntegerValue zitterDelay = new IntegerValue("ZitterDelay", 100, 0, 500);
 
     // Game
     private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F);
@@ -144,6 +147,7 @@ public class Scaffold extends Module {
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", true);
     private final BoolValue safeWalkValue = new BoolValue("SafeWalk", true);
     private final BoolValue airSafeValue = new BoolValue("AirSafe", false);
+    private final BoolValue autoDisableSpeedValue = new BoolValue("AutoDisable-Speed", true);
 
     // Visuals
     private final ListValue counterDisplayValue = new ListValue("Counter", new String[]{"Off", "Simple", "Advanced", "Sigma", "Novoline"}, "Simple");
@@ -197,6 +201,11 @@ public class Scaffold extends Module {
         progress = 0;
         launchY = (int) mc.thePlayer.posY;
         lastSlot = mc.thePlayer.inventory.currentItem;
+
+        if (autoDisableSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState()) {
+            LiquidBounce.moduleManager.getModule(Speed.class).setState(false);
+            LiquidBounce.hud.addNotification(new Notification("Speed is disabled to prevent flags/errors.", Notification.Type.WARNING));
+        }
     }
 
     /**
@@ -727,7 +736,7 @@ public class Scaffold extends Module {
             return false;
 
 
-        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC");
+        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC") || rotationModeValue.get().equalsIgnoreCase("Static");
 
         final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
@@ -759,7 +768,7 @@ public class Scaffold extends Module {
 
                             final double diffXZ = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
 
-                            final Rotation rotation = new Rotation(
+                            Rotation rotation = new Rotation(
                                     MathHelper.wrapAngleTo180_float((float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90F),
                                     MathHelper.wrapAngleTo180_float((float) -Math.toDegrees(Math.atan2(diffY, diffXZ)))
                             );
@@ -773,6 +782,11 @@ public class Scaffold extends Module {
                                 continue;
 
                             if (placeRotation == null || RotationUtils.getRotationDifference(rotation) < RotationUtils.getRotationDifference(placeRotation.getRotation()))
+                                if (rotationModeValue.get().equalsIgnoreCase("Static")) rotation = new Rotation(
+                                        MathHelper.wrapAngleTo180_float((float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90F),
+                                        staticPitchValue.get()
+                                );
+
                                 placeRotation = new PlaceRotation(new PlaceInfo(neighbor, side.getOpposite(), hitVec), rotation);
                         }
                     }
