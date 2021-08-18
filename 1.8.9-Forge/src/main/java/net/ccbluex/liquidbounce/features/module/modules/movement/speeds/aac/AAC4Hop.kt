@@ -1,10 +1,10 @@
-package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.aquavit
+package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.aac
 
 import net.ccbluex.liquidbounce.event.MoveEvent
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode
 import net.ccbluex.liquidbounce.utils.MovementUtils.isMoving
 
-class AAC4SlowHop : SpeedMode("AAC4SlowHop") {
+class AAC4Hop : SpeedMode("AAC4Hop") {
     override fun onDisable() {
         mc.timer.timerSpeed = 1f
         mc.thePlayer!!.speedInAir = 0.02f
@@ -16,18 +16,15 @@ class AAC4SlowHop : SpeedMode("AAC4SlowHop") {
 
         if (isMoving()) {
             if (mc.thePlayer!!.onGround) {
-                mc.gameSettings.keyBindJump.pressed = false
                 mc.thePlayer!!.jump()
+                mc.thePlayer!!.speedInAir = 0.0201f
+                mc.timer.timerSpeed = 0.94f
             }
-            if (!mc.thePlayer!!.onGround && mc.thePlayer!!.fallDistance <= 0.1) {
+            if (mc.thePlayer!!.fallDistance > 0.7 && mc.thePlayer!!.fallDistance < 1.3) {
                 mc.thePlayer!!.speedInAir = 0.02f
-                mc.timer.timerSpeed = 1.4f
+                mc.timer.timerSpeed = 1.8f
             }
-            if (mc.thePlayer!!.fallDistance > 0.1 && mc.thePlayer!!.fallDistance < 1.3) {
-                mc.thePlayer!!.speedInAir = 0.0205f
-                mc.timer.timerSpeed = 0.65f
-            }
-            if (mc.thePlayer!!.fallDistance >= 1.3) {
+            if (mc.thePlayer!!.fallDistance >= 1.3){
                 mc.timer.timerSpeed = 1f
                 mc.thePlayer!!.speedInAir = 0.02f
             }

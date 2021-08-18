@@ -47,10 +47,11 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val mixerDistValue = IntegerValue("Mixer-Distance", 2, 0, 10)
     private val liquidSlowlyDistanceValue = IntegerValue("LiquidSlowly-Distance", 90, 1, 90)
     private val fadeDistanceValue = IntegerValue("Fade-Distance", 50, 1, 100)
-    private val animation = ListValue("Animation", arrayOf("Default", "LiquidSense", "Slide", "Rise", "Astolfo", "None"), "Default")
+    private val hAnimation = ListValue("HorizontalAnimation", arrayOf("Default", "None", "Slide", "Astolfo"), "Default")
+    private val vAnimation = ListValue("VerticalAnimation", arrayOf("None", "LiquidSense", "Slide", "Rise", "Astolfo"), "None")
     private val animationSpeed = FloatValue("Animation-Speed", 0.25F, 0.01F, 1F)
     private val nameBreak = BoolValue("NameBreak", true)
-    private val abcOrder = BoolValue("Alphabetical-Order", true)
+    private val abcOrder = BoolValue("Alphabetical-Order", false)
     private val tags = BoolValue("Tags", true)
     private val tagsStyleValue = ListValue("TagsStyle", arrayOf("-", "()", "[]", "Default"), "-")
     private val shadow = BoolValue("ShadowText", true)
@@ -103,42 +104,44 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
             // update slide y
             var yPos = (if (side.vertical == Vertical.DOWN) -textSpacer else textSpacer) *
                             if (side.vertical == Vertical.DOWN) inx + 1 else inx
+            
+            if (shouldAdd) {
+                if (vAnimation.get().equals("Rise", ignoreCase = true) && !module.state) 
+                    yPos = -fontRenderer.FONT_HEIGHT - textY
 
-            if (animation.get().equals("Rise", ignoreCase = true) && !module.state) 
-                yPos = -fontRenderer.FONT_HEIGHT - textY
+                val size = modules.size * 2.0E-2f
 
-            val size = modules.size * 2.0E-2f
-
-            when (animation.get()) {
-                "LiquidSense" -> {
-                    if (module.state) {
+                when (vAnimation.get()) {
+                    "LiquidSense" -> {
+                        if (module.state) {
+                            if (module.arrayY < yPos) {
+                                module.arrayY += (size -
+                                        Math.min(module.arrayY * 0.002f
+                                                , size - (module.arrayY * 0.0001f) )) * delta
+                                module.arrayY = Math.min(yPos, module.arrayY)
+                            } else {
+                                module.arrayY -= (size -
+                                        Math.min(module.arrayY * 0.002f
+                                                , size - (module.arrayY * 0.0001f) )) * delta
+                                module.arrayY = Math.max(module.arrayY, yPos)
+                            }
+                        }
+                    }
+                    "Slide", "Rise" -> module.arrayY = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(yPos.toDouble(), module.arrayY.toDouble(), animationSpeed.get().toDouble()).toFloat()
+                    "Astolfo" -> {
                         if (module.arrayY < yPos) {
-                            module.arrayY += (size -
-                                    Math.min(module.arrayY * 0.002f
-                                            , size - (module.arrayY * 0.0001f) )) * delta
+                            module.arrayY += animationSpeed.get() / 2F * RenderUtils.deltaTime
                             module.arrayY = Math.min(yPos, module.arrayY)
                         } else {
-                            module.arrayY -= (size -
-                                    Math.min(module.arrayY * 0.002f
-                                            , size - (module.arrayY * 0.0001f) )) * delta
+                            module.arrayY -= animationSpeed.get() / 2F * RenderUtils.deltaTime
                             module.arrayY = Math.max(module.arrayY, yPos)
                         }
                     }
+                    else -> module.arrayY = yPos
                 }
-                "Slide", "Rise" -> module.arrayY = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(yPos.toDouble(), module.arrayY.toDouble(), animationSpeed.get().toDouble()).toFloat()
-                "Astolfo" -> {
-                    if (module.arrayY < yPos) {
-                        module.arrayY += animationSpeed.get() * RenderUtils.deltaTime
-                        module.arrayY = Math.min(yPos, module.arrayY)
-                    } else {
-                        module.arrayY -= animationSpeed.get() * RenderUtils.deltaTime
-                        module.arrayY = Math.max(module.arrayY, yPos)
-                    }
-                }
-                else -> module.arrayY = yPos
-            }
-            
-            if (shouldAdd) inx++
+                inx++
+            } else //instant update
+                module.arrayY = yPos
         }
 
         for (module in LiquidBounce.moduleManager.modules) {
@@ -149,41 +152,47 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
             val width = fontRenderer.getStringWidth(displayString)
 
-            if (animation.get().equals("Astolfo", ignoreCase = true)) {
-                if (module.state) {
-                    if (module.slide < width) {
-                        module.slide += animationSpeed.get() * RenderUtils.deltaTime
-                        module.slideStep = delta / 1F
+            when (hAnimation.get()) {
+                "Astolfo" -> {
+                    if (module.state) {
+                        if (module.slide < width) {
+                            module.slide += animationSpeed.get() * RenderUtils.deltaTime
+                            module.slideStep = delta / 1F
+                        }
+                    } else if (module.slide > 0) {
+                        module.slide -= animationSpeed.get() * RenderUtils.deltaTime
+                        module.slideStep = 0F
                     }
-                } else if (module.slide > 0) {
-                    module.slide -= animationSpeed.get() * RenderUtils.deltaTime
-                    module.slideStep = 0F
-                }
 
-                if (module.slide > width) module.slide = width.toFloat()
-            } else if (animation.get().equals("slide", ignoreCase = true) || animation.get().equals("rise", ignoreCase = true)) {
-                if (module.state) {
-                    if (module.slide < width) {
-                        module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble()).toFloat()
-                        module.slideStep = delta / 1F
-                    }
-                } else if (module.slide > 0) {
-                    module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(-width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble()).toFloat()
-                    module.slideStep = 0F
+                    if (module.slide > width) module.slide = width.toFloat()
                 }
-            } else {
-                if (module.state) {
-                    if (module.slide < width) {
-                        module.slide = if (animation.get().equals("none", ignoreCase = true)) width.toFloat() else (AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width)
-                        module.slideStep += delta / if (animation.get().equals("none", ignoreCase = true)) 1F else 4F
+                "Slide" -> {
+                    if (module.state) {
+                        if (module.slide < width) {
+                            module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble()).toFloat()
+                            module.slideStep = delta / 1F
+                        }
+                    } else if (module.slide > 0) {
+                        module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(-width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble()).toFloat()
+                        module.slideStep = 0F
                     }
-                } else if (module.slide > 0) {
-                    module.slide = if (animation.get().equals("none", ignoreCase = true)) 0F else (AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width)
-                    module.slideStep -= delta / if (animation.get().equals("none", ignoreCase = true)) 1F else 4F
+                }
+                "Default" -> {
+                    if (module.state) {
+                        if (module.slide < width) {
+                            module.slide = AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width
+                            module.slideStep += delta / 4F
+                        }
+                    } else if (module.slide > 0) {
+                        module.slide = AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width
+                        module.slideStep -= delta / 4F
+                    }
+                }
+                else -> {
+                    module.slide = if (module.state) width.toFloat() else 0f
+                    module.slideStep += (if (module.state) delta else -delta).toFloat()
                 }
             }
-
-            
 
             module.slide = module.slide.coerceIn(0F, width.toFloat())
             module.slideStep = module.slideStep.coerceIn(0F, width.toFloat())
@@ -372,9 +381,9 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
     override fun updateElement() {
         modules = if (abcOrder.get()) LiquidBounce.moduleManager.modules
-                .filter { it.array && (if (animation.get().equals("none", ignoreCase = true)) it.state else it.slide > 0) }
+                .filter { it.array && (if (hAnimation.get().equals("none", ignoreCase = true)) it.state else it.slide > 0) }
                 else LiquidBounce.moduleManager.modules
-                .filter { it.array && (if (animation.get().equals("none", ignoreCase = true)) it.state else it.slide > 0) }
+                .filter { it.array && (if (hAnimation.get().equals("none", ignoreCase = true)) it.state else it.slide > 0) }
                 .sortedBy { -fontValue.get().getStringWidth(getModName(it)) }
         sortedModules = if (abcOrder.get()) LiquidBounce.moduleManager.modules.toList()
                 else LiquidBounce.moduleManager.modules.sortedBy { -fontValue.get().getStringWidth(getModName(it)) }.toList()

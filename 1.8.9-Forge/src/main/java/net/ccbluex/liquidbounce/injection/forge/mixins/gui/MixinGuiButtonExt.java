@@ -38,7 +38,7 @@ public abstract class MixinGuiButtonExt extends GuiButton {
    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
       if (visible) {
          final FontRenderer fontRenderer =
-            mc.getLanguageManager().isCurrentLocaleUnicode() ? mc.fontRendererObj : Fonts.fontGothic40;
+            mc.getLanguageManager().isCurrentLocaleUnicode() ? mc.fontRendererObj : Fonts.font40;
          hovered = (mouseX >= this.xPosition && mouseY >= this.yPosition &&
                     mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height);
 
@@ -47,7 +47,7 @@ public abstract class MixinGuiButtonExt extends GuiButton {
          if (enabled && hovered) {
             bright += 0.3F * delta;
 
-            if (bright >= 60) bright = 60;
+            if (bright >= 80) bright = 80;
          } else {
             bright -= 0.3F * delta;
 
@@ -57,7 +57,7 @@ public abstract class MixinGuiButtonExt extends GuiButton {
          /*GL11.glPushMatrix();
          RenderUtils.drawGradientSideways(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, new Color((int)bright, (int)bright, (int)bright, 160).getRGB(), new Color(0, 0, 0, 160).getRGB());
          GL11.glPopMatrix();*/
-         RenderUtils.drawRoundedRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 3, new Color((int)bright, (int)bright, (int)bright, 150).getRGB());
+         RenderUtils.drawRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, new Color((int)bright, (int)bright, (int)bright, 150).getRGB());
 
          mc.getTextureManager().bindTexture(buttonTextures);
          mouseDragged(mc, mouseX, mouseY);

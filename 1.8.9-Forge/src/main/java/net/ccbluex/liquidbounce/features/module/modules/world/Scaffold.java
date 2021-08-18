@@ -82,7 +82,7 @@ public class Scaffold extends Module {
 
 
     //make sprint compatible with tower.add sprint tricks
-    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"All", "Ground", "Off"}, "Off");
+    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"Same", "Ground", "Dynamic", "Off"}, "Off");
     // Basic stuff
     private final BoolValue swingValue = new BoolValue("Swing", true);
     private final BoolValue downValue = new BoolValue("Down", false);
@@ -184,6 +184,9 @@ public class Scaffold extends Module {
     // Eagle
     private int placedBlocksWithoutEagle = 0;
     private boolean eagleSneaking;
+
+    // Sprint
+    private boolean dynamicStopSprint = false;
 
     // Down
     private boolean shouldGoDown = false;
@@ -304,8 +307,12 @@ public class Scaffold extends Module {
                 zitterDirection = !zitterDirection;
             }
         }
-        //decent code :(
+
         if (sprintModeValue.get().equalsIgnoreCase("off") || (sprintModeValue.get().equalsIgnoreCase("ground") && !mc.thePlayer.onGround)) {
+            mc.thePlayer.setSprinting(false);
+        }
+
+        if (sprintModeValue.get().equalsIgnoreCase("dynamic") && dynamicStopSprint) {
             mc.thePlayer.setSprinting(false);
         }
 
@@ -541,6 +548,8 @@ public class Scaffold extends Module {
 
         }
 
+        // idfk
+        dynamicStopSprint = true;
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
                 targetPlace.getEnumFacing(), targetPlace.getVec3())) {
             delayTimer.reset();
@@ -558,6 +567,7 @@ public class Scaffold extends Module {
             else
                 mc.getNetHandler().addToSendQueue(new C0APacketAnimation());
         }
+        dynamicStopSprint = false;
 
         if (!stayAutoBlock.get() && blockSlot >= 0 && !autoBlockMode.get().equalsIgnoreCase("Switch"))
             mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
@@ -822,6 +832,6 @@ public class Scaffold extends Module {
 
     @Override
     public String getTag() {
-        return (!modeValue.get().equalsIgnoreCase("normal") ? modeValue.get() + ", " : "") + rotationModeValue.get();
+        return placeModeValue.get();
     }
 }

@@ -59,7 +59,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         fun defaultClient(): Text {
             val text = Text(x = 2.0, y = 2.0, scale = 1F)
 
-            text.displayString.set("%animateClientName%")
+            text.displayString.set("%clientName%")
             text.shadow.set(true)
             text.fontValue.set(Fonts.font40)
             text.setColor(Color(255, 255, 255))

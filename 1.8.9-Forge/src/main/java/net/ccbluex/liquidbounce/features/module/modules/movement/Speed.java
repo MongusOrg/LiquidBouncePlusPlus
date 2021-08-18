@@ -11,13 +11,9 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.aac.*;
-import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.aquavit.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.ncp.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spartan.SpartanYPort;
-import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spectre.SpectreBHop;
-import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spectre.SpectreLowHop;
-import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spectre.SpectreOnGround;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.FloatValue;
@@ -49,8 +45,6 @@ public class Speed extends Module {
             new AAC4SlowHop(),
 
             // AAC
-            new RedeskyTimerHop(),
-            new RedeskyHop(),
             new AACv4BHop(),
             new AACBHop(),
             new AAC2BHop(),
@@ -71,19 +65,12 @@ public class Speed extends Module {
             new AACPort(),
             new OldAACBHop(),
 
+            // Hypixel
+            new HypixelReduceHop(),
+            new HypixelLowHop(),
+
             // Spartan
             new SpartanYPort(),
-
-            // Spectre
-            new SpectreLowHop(),
-            new SpectreBHop(),
-            new SpectreOnGround(),
-            new TeleportCubeCraft(),
-
-            // Server
-            new HiveHop(),
-            new HypixelHop(),
-            new MineplexGround(),
 
             // Other
             new SlowHop(),
@@ -93,7 +80,7 @@ public class Speed extends Module {
             new AEMine()
     };
 
-    public final ListValue modeValue = new ListValue("Mode", getModes(), "NCPBHop") {
+    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Other"}, "NCP") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -107,6 +94,67 @@ public class Speed extends Module {
                 onEnable();
         }
     };
+
+    public final ListValue ncpModeValue = new ListValue("NCP-Mode", new String[]{"BHop", "FHop", "SBHop", "Hop", "YPort"}, "BHop") {
+
+        @Override
+        protected void onChange(final String oldValue, final String newValue) {
+            if(getState())
+                onDisable();
+        }
+
+        @Override
+        protected void onChanged(final String oldValue, final String newValue) {
+            if(getState())
+                onEnable();
+        }
+    };
+
+    public final ListValue aacModeValue = new ListValue("AAC-Mode", new String[]{"4Hop", "4SlowHop", "v4BHop", "BHop", "2BHop", "3BHop", "4BHop", "5BHop", "6BHop", "7BHop", "Hop3313", "Hop350", "LowHop", "LowHop2", "LowHop3", "Ground", "Ground2", "YPort", "YPort2", "Port", "OldBHop"}, "4Hop") {
+
+        @Override
+        protected void onChange(final String oldValue, final String newValue) {
+            if(getState())
+                onDisable();
+        }
+
+        @Override
+        protected void onChanged(final String oldValue, final String newValue) {
+            if(getState())
+                onEnable();
+        }
+    };
+
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"ReduceHop", "LowHop"}, "ReduceHop") {
+
+        @Override
+        protected void onChange(final String oldValue, final String newValue) {
+            if(getState())
+                onDisable();
+        }
+
+        @Override
+        protected void onChanged(final String oldValue, final String newValue) {
+            if(getState())
+                onEnable();
+        }
+    };
+
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "Slow", "Jump", "Legit", "AEMine"}, "Boost") {
+
+        @Override
+        protected void onChange(final String oldValue, final String newValue) {
+            if(getState())
+                onDisable();
+        }
+
+        @Override
+        protected void onChanged(final String oldValue, final String newValue) {
+            if(getState())
+                onEnable();
+        }
+    };
+
     public final FloatValue customSpeedValue = new FloatValue("CustomSpeed", 1.0F, 0.2F, 10F);
     public final FloatValue customYValue = new FloatValue("CustomY", 0F, 0F, 4F);
     public final FloatValue customTimerValue = new FloatValue("CustomTimer", 1F, 0.1F, 2F);
@@ -201,23 +249,38 @@ public class Speed extends Module {
 
     @Override
     public String getTag() {
-        return modeValue.get();
+        return typeValue.get();
     }
 
     private SpeedMode getMode() {
-        final String mode = modeValue.get();
+        final String mode = "";
+        switch (typeValue.get()) {
+            case "NCP":
+            if (ncpModeValue.get().equalsIgnoreCase("SBHop")) mode = "SNCPBHop";
+            else mode = "NCP" + ncpModeValue.get();
+            break;
+            case "AAC":
+            if (aacModeValue.get().equalsIgnoreCase("OldBHop")) mode = "OldAACBHop";
+            else mode = "AAC" + aacModeValue.get();
+            break;
+            case "Spartan":
+            mode = "SpartanYPort";
+            break;
+            case "Hypixel":
+            mode = "Hypixel" + hypixelModeValue.get();
+            break;
+            case "Custom":
+            mode = "CustomSpeed";
+            break;
+            case "Other":
+            mode = otherModeValue.get();
+            break;
+        }
 
         for(final SpeedMode speedMode : speedModes)
             if(speedMode.modeName.equalsIgnoreCase(mode))
                 return speedMode;
 
         return null;
-    }
-
-    private String[] getModes() {
-        final List<String> list = new ArrayList<>();
-        for(final SpeedMode speedMode : speedModes)
-            list.add(speedMode.modeName);
-        return list.toArray(new String[0]);
     }
 }

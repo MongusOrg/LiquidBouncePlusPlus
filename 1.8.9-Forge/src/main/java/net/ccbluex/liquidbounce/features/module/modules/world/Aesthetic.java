@@ -17,7 +17,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 
 @ModuleInfo(name = "Aesthetic", description = "Change your world time and weather client-side.", category = ModuleCategory.WORLD)
-public class WorldTime extends Module {
+public class Aesthetic extends Module {
 
     private final ListValue mode = new ListValue("Time-Mode", new String[] {"Static", "Cycle"}, "Static");
     private final ListValue weathermode = new ListValue("Weather-Mode", new String[] {"Clear", "Rain"}, "Clear");

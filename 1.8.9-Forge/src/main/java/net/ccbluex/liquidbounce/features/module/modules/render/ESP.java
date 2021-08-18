@@ -170,7 +170,7 @@ public class ESP extends Module {
 
 						if (!(minX >= mc.displayWidth || minY >= mc.displayHeight || maxX <= 0 || maxY <= 0)) {
 							if (real2dOutline.get()) {
-								GL11.glLineWidth(1.5f);
+								GL11.glLineWidth(2f);
 								GL11.glColor4f(0f, 0f, 0f, 1.0f);
 
 								if (real2dcsgo.get()) {

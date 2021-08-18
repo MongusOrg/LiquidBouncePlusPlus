@@ -34,26 +34,14 @@ public class Fonts {
     @FontDetails(fontName = "Roboto Medium", fontSize = 30)
     public static GameFontRenderer fontSmall;
 
-    @FontDetails(fontName = "Roboto Bold", fontSize = 180)
-    public static GameFontRenderer fontBold180;
-
-    @FontDetails(fontName = "SF UI Regular", fontSize = 50)
-    public static GameFontRenderer fontSFUI50;
-
-    @FontDetails(fontName = "SF UI Regular", fontSize = 40)
-    public static GameFontRenderer fontSFUI40;
-
-    @FontDetails(fontName = "SF UI Regular", fontSize = 35)
+    @FontDetails(fontName = "SFUI Regular", fontSize = 35)
     public static GameFontRenderer fontSFUI35;
 
-    @FontDetails(fontName = "URW Gothic L", fontSize = 40)
-    public static GameFontRenderer fontGothic40;
+    @FontDetails(fontName = "SFUI Regular", fontSize = 40)
+    public static GameFontRenderer fontSFUI40;
 
-    @FontDetails(fontName = "URW Gothic L", fontSize = 135)
-    public static GameFontRenderer fontGothic135;
-
-    @FontDetails(fontName = "URW Gothic L", fontSize = 70)
-    public static GameFontRenderer fontGothic70;
+    @FontDetails(fontName = "Roboto Bold", fontSize = 180)
+    public static GameFontRenderer fontBold180;
 
     @FontDetails(fontName = "Minecraft Font")
     public static final FontRenderer minecraftFont = Minecraft.getMinecraft().fontRendererObj;
@@ -70,13 +58,9 @@ public class Fonts {
         font35 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 35));
         font40 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 40));
         fontSmall = new GameFontRenderer(getFont("Roboto-Medium.ttf", 30));
+        fontSFUI35 = new GameFontRenderer(getFont("sfui.ttf", 35));
+        fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
-        fontGothic40 = new GameFontRenderer(getFont("URW-Gothic-L.ttf", 40));
-        fontGothic135 = new GameFontRenderer(getFont("URW-Gothic-L.ttf", 135));
-        fontGothic70 = new GameFontRenderer(getFont("URW-Gothic-L.ttf", 70));
-        fontSFUI50 = new GameFontRenderer(getFont("sfuiregular.ttf", 50));
-        fontSFUI40 = new GameFontRenderer(getFont("sfuiregular.ttf", 40));
-        fontSFUI35 = new GameFontRenderer(getFont("sfuiregular.ttf", 35));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
@@ -115,11 +99,11 @@ public class Fonts {
 
     private static void downloadFonts() {
         try {
-            final File outputFile = new File(LiquidBounce.fileManager.fontsDir, "fonts.zip");
+            final File outputFile = new File(LiquidBounce.fileManager.fontsDir, "roboto.zip");
 
             if(!outputFile.exists()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
-                HttpUtils.download(LiquidBounce.CLIENT_CLOUD + "/fonts/fonts.zip", outputFile);
+                HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
                 extractZip(outputFile.getPath(), LiquidBounce.fileManager.fontsDir.getPath());
             }

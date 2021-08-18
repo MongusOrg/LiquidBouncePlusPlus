@@ -131,7 +131,7 @@ class NameTags : Module() {
         // Draw NameTag
         val width = fontRenderer.getStringWidth(text) * 0.5f
 
-        val dist = width + 3F - (-width - 1F)
+        val dist = width + 4F - (-width - 2F)
 
         glDisable(GL_TEXTURE_2D)
         glEnable(GL_BLEND)
@@ -140,12 +140,12 @@ class NameTags : Module() {
         val borderColor = Color(borderColorRedValue.get(), borderColorGreenValue.get(), borderColorBlueValue.get(), borderColorAlphaValue.get())
 
         if (borderValue.get())
-            quickDrawBorderedRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F + if (healthBarValue.get()) 3F else 0F, 2F, borderColor.rgb, bgColor.rgb)
+            quickDrawBorderedRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F + if (healthBarValue.get()) 2F else 0F, 2F, borderColor.rgb, bgColor.rgb)
         else
-            quickDrawRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F + if (healthBarValue.get()) 3F else 0F, bgColor.rgb)
+            quickDrawRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F + if (healthBarValue.get()) 2F else 0F, bgColor.rgb)
 
         if (healthBarValue.get())
-            quickDrawRect(-width - 1F, fontRenderer.FONT_HEIGHT + 3F, -width - 1F + (dist * (entity.health.toFloat() / entity.maxHealth.toFloat())), fontRenderer.FONT_HEIGHT + 4F, Color(10, 255, 10).rgb)
+            quickDrawRect(-width - 2F, fontRenderer.FONT_HEIGHT + 3F, -width - 2F + (dist * (entity.health.toFloat() / entity.maxHealth.toFloat()).coerceIn(0F, entity.maxHealth.toFloat())), fontRenderer.FONT_HEIGHT + 4F, Color(10, 255, 10).rgb)
 
         glEnable(GL_TEXTURE_2D)
 

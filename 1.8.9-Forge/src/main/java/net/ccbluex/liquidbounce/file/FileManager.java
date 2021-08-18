@@ -26,7 +26,6 @@ import java.lang.reflect.Field;
 public class FileManager extends MinecraftInstance {
 
     public final File dir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME + "-1.8");
-    public final File old_dir = new File(mc.mcDataDir, "EvoBounce-1.8");
     public final File fontsDir = new File(dir, "fonts");
     public final File settingsDir = new File(dir, "settings");
     public final File soundsDir = new File(dir, "sounds");
@@ -38,13 +37,10 @@ public class FileManager extends MinecraftInstance {
     public final FriendsConfig friendsConfig = new FriendsConfig(new File(dir, "friends.json"));
     public final FileConfig xrayConfig = new XRayConfig(new File(dir, "xray-blocks.json"));
     public final FileConfig hudConfig = new HudConfig(new File(dir, "hud.json"));
-    public final FileConfig shortcutsConfig = new ShortcutsConfig(new File(dir, "shortcuts.json"));
 
     public final File backgroundFile = new File(dir, "userbackground.png");
 
     public static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().create();
-
-    public boolean hasConverted = false;
 
     /**
      * Constructor of file manager
@@ -60,14 +56,7 @@ public class FileManager extends MinecraftInstance {
      */
     public void setupFolder() {
         if(!dir.exists()) {
-            if (old_dir.exists()) {
-                if (old_dir.renameTo(dir)) {
-                    ClientUtils.getLogger().debug("Successfully converted the old folder into the new one.");
-                    hasConverted = true;
-                }
-            } else {
-                dir.mkdir();
-            }
+            dir.mkdir();
         }
 
         if(!fontsDir.exists())
@@ -76,7 +65,7 @@ public class FileManager extends MinecraftInstance {
         if(!settingsDir.exists())
             settingsDir.mkdir();
 
-        if (!soundsDir.exists()) 
+        if(!soundsDir.exists())
             soundsDir.mkdir();
     }
 
@@ -202,7 +191,7 @@ public class FileManager extends MinecraftInstance {
                 if(bufferedImage == null)
                     return;
 
-                LiquidBounce.INSTANCE.setBackground(new ResourceLocation(LiquidBounce.CLIENT_NAME.toLowerCase() + "/background.png"));
+                LiquidBounce.INSTANCE.setBackground(new ResourceLocation(LiquidBounce.CLIENT_NAME.toLowerCase() + "/userbackground.png"));
                 mc.getTextureManager().loadTexture(LiquidBounce.INSTANCE.getBackground(), new DynamicTexture(bufferedImage));
                 ClientUtils.getLogger().info("[FileManager] Loaded background.");
             }catch(final Exception e) {

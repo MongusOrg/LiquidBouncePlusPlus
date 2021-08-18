@@ -18,6 +18,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner;
 import net.ccbluex.liquidbounce.ui.font.AWTFontRenderer;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
+import net.ccbluex.liquidbounce.utils.render.BlurUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.utils.render.UiUtils;
@@ -247,6 +248,12 @@ public class ClickGui extends GuiScreen {
         switch (((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).backgroundValue.get()) {
         case "Default":
             drawDefaultBackground();
+            break;
+        case "Gradient":
+            drawGradientRect(0, 0, width, height, ColorUtils.reAlpha(ClickGUI.generateColor(), 40).getRGB(), ClickGUI.generateColor().getRGB());
+            break;
+        case "Blur":
+            BlurUtils.blur(((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).blurStrengthValue.get());
             break;
         default:
             break;

@@ -95,7 +95,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         this.displayTime = displayLength
         this.firstY = 1919F
         this.stayTimer.reset()
-        this.textLength = Fonts.fontSFUI40.getStringWidth(message)
+        this.textLength = Fonts.font40.getStringWidth(message)
     }
 
     constructor(message: String, type: Type) : this(message, type, 2000L)
@@ -171,7 +171,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         GlStateManager.resetColor()
 
         //message thingy uwu
-        Fonts.fontSFUI40.drawString(message, -x + 2, -18F - y, -1)
+        Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
         /*Fonts.fontSFUI40.drawString(if(message.contains("Enabled") || message.contains("Disabled")) "Module" else type.notifName, -x + 2, -23F - y,
             when(type) {
                 Type.SUCCESS -> Color(80, 255, 80).rgb

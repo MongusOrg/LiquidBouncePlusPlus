@@ -105,6 +105,6 @@ public class Heal extends Module
     
     @Override
     public String getTag() {
-        return String.format("%.2f HP", this.percent.get() / 100.0f * mc.thePlayer.getMaxHealth());
+        return (mc.thePlayer == null || mc.thePlayer.getHealth() == Double.NaN) ? null : String.format("%.2f HP", this.percent.get() / 100.0f * mc.thePlayer.getMaxHealth());
     }
 }

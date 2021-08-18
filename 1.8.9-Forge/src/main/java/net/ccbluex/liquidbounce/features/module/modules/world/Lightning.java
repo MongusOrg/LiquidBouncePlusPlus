@@ -11,7 +11,7 @@ import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.minecraft.network.play.server.S2CPacketSpawnGlobalEntity;
 
 @ModuleInfo(name = "Lightning", description = "check lightning spawn", category = ModuleCategory.WORLD)
-public class LightningDetect extends Module {
+public class Lightning extends Module {
     @EventTarget
     public void onPacket(PacketEvent event){
         if(event.getPacket() instanceof S2CPacketSpawnGlobalEntity && ((S2CPacketSpawnGlobalEntity) event.getPacket()).func_149053_g() == 1){

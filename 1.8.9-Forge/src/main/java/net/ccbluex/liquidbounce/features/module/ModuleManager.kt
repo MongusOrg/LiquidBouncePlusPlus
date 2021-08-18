@@ -9,8 +9,6 @@ import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.KeyEvent
 import net.ccbluex.liquidbounce.event.Listenable
-import net.ccbluex.liquidbounce.features.module.modules.`fun`.Derp
-import net.ccbluex.liquidbounce.features.module.modules.`fun`.SpinBot
 import net.ccbluex.liquidbounce.features.module.modules.combat.*
 import net.ccbluex.liquidbounce.features.module.modules.exploit.*
 import net.ccbluex.liquidbounce.features.module.modules.misc.*
@@ -18,7 +16,6 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.*
 import net.ccbluex.liquidbounce.features.module.modules.player.*
 import net.ccbluex.liquidbounce.features.module.modules.render.*
 import net.ccbluex.liquidbounce.features.module.modules.world.*
-import net.ccbluex.liquidbounce.features.module.modules.world.Timer
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import java.util.*
@@ -94,7 +91,6 @@ class ModuleManager : Listenable {
                 Plugins::class.java,
                 LongJump::class.java,
                 AutoClicker::class.java,
-                NoBob::class.java,
                 BlockOverlay::class.java,
                 NoFriends::class.java,
                 BlockESP::class.java,
@@ -104,7 +100,6 @@ class ModuleManager : Listenable {
                 ServerCrasher::class.java,
                 NoFOV::class.java,
                 Animations::class.java,
-                Derp::class.java,
                 ReverseStep::class.java,
                 TNTBlock::class.java,
                 InventoryCleaner::class.java,
@@ -125,44 +120,31 @@ class ModuleManager : Listenable {
                 ResourcePackSpoof::class.java,
                 NoSlowBreak::class.java,
                 PortalMenu::class.java,
-                //LagBack::class.java,
-                WorldTime::class.java,
+                Aesthetic::class.java,
                 EnchantEffect::class.java,
                 Cape::class.java,
                 NoRender::class.java,
                 DamageParticle::class.java,
                 AntiVanish::class.java,
-                LightningDetect::class.java,
-                HackerDetector::class.java,
-                //TargetMark::class.java,
+                Lightning::class.java,
                 Skeletal::class.java,
                 ItemPhysics::class.java,
                 AutoLogin::class.java,
                 Heal::class.java,
                 AuthBypass::class.java,
-                JelloArraylist::class.java,
                 Gapple::class.java,
                 ColorMixer::class.java,
                 Disabler::class.java,
                 AutoDisable::class.java,
                 Crosshair::class.java,
-                BedGodMode::class.java,
-                Teleport::class.java,
-                ItemTeleport::class.java,
-                ConsoleSpammer::class.java,
-                Parkour::class.java,
-                AutoFish::class.java,
                 VehicleOneHit::class.java,
                 BetterFPS::class.java,
                 SpinBot::class.java,
                 MultiActions::class.java,
-                Damage::class.java,
-                TargetStrafe::class.java,
-                AntiVoid::class.java
+                AntiVoid::class.java,
+                Fucker::class.java,
+                ChestAura::class.java
         )
-
-        registerModule(Fucker)
-        registerModule(ChestAura)
 
         ClientUtils.getLogger().info("[ModuleManager] Loaded ${modules.size} modules.")
     }

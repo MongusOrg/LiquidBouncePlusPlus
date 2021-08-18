@@ -6,12 +6,11 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import de.enzaxd.viaforge.ViaForge;
-import de.enzaxd.viaforge.gui.GuiProtocolSelector;
+//import de.enzaxd.viaforge.gui.GuiProtocolSelector;
 import de.enzaxd.viaforge.protocols.ProtocolCollection;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof;
 import net.ccbluex.liquidbounce.ui.client.GuiAntiForge;
-import net.ccbluex.liquidbounce.ui.client.tools.GuiTools;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
 import net.minecraft.client.gui.GuiScreen;

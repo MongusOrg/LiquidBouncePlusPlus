@@ -13,10 +13,12 @@ import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.ListValue
+import net.ccbluex.liquidbounce.value.TextValue
 
 @ModuleInfo(name = "HUD", description = "Toggles visibility of the HUD.", category = ModuleCategory.RENDER, array = false)
 class HUD : Module() {
     val blackHotbarValue = BoolValue("BlackHotbar", true)
+    val blackHotbarBlurValue = BoolValue("BlackHotbar-Blur", true)
     val inventoryParticle = BoolValue("InventoryParticle", false)
     val fontChatValue = BoolValue("FontChat", false)
     val chatRectValue = BoolValue("ChatRect", true)
@@ -27,6 +29,7 @@ class HUD : Module() {
     private val toggleSoundValue = ListValue("ToggleSound", arrayOf("None", "Default", "Custom"), "Default")
     val containerBackground = BoolValue("Container-Background", false)
     val invEffectOffset = BoolValue("InvEffect-Offset", false)
+    val domainValue = TextValue("Scoreboard-Domain", "www.tifality.club")
 
     @EventTarget
     fun onRender2D(event: Render2DEvent) {

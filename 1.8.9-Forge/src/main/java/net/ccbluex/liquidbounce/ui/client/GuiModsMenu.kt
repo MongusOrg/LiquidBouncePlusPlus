@@ -20,7 +20,8 @@ class GuiModsMenu(private val prevGui: GuiScreen) : GuiScreen() {
         buttonList.add(GuiButton(0, width / 2 - 100, height / 4 + 48, "Forge Mods"))
         buttonList.add(GuiButton(1, width / 2 - 100, height / 4 + 48 + 25, "Scripts"))
         buttonList.add(GuiButton(2, width / 2 - 100, height / 4 + 48 + 50, "Rich Presence: ${if (LiquidBounce.clientRichPresence.showRichPresenceValue) "§aON" else "§cOFF"}"))
-        buttonList.add(GuiButton(3, width / 2 - 100, height / 4 + 48 + 75, "Back"))
+        buttonList.add(GuiButton(3, width / 2 - 100, height / 4 + 48 + 75, "Background Settings"))
+        buttonList.add(GuiButton(4, width / 2 - 100, height / 4 + 48 + 100, "Back"))
     }
 
     override fun actionPerformed(button: GuiButton) {
@@ -51,14 +52,15 @@ class GuiModsMenu(private val prevGui: GuiScreen) : GuiScreen() {
                     }
                 }
             }
-            3 -> mc.displayGuiScreen(prevGui)
+            3 -> mc.displayGuiScreen(GuiBackground(this))
+            4 -> mc.displayGuiScreen(prevGui)
         }
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
         drawBackground(0)
 
-        Fonts.fontBold180.drawCenteredString("Mods", this.width / 2F, height / 8F + 5F, 4673984, true)
+        //Fonts.fontBold180.drawCenteredString("Mods", this.width / 2F, height / 8F + 5F, 4673984, true)
 
         super.drawScreen(mouseX, mouseY, partialTicks)
     }

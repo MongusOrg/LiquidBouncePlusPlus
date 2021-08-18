@@ -527,6 +527,6 @@ public class Tower extends Module {
 
     @Override
     public String getTag() {
-        return modeValue.get() + (rotationModeValue.get().equalsIgnoreCase("AAC") ? ", AAC" : "");
+        return placeModeValue.get();
     }
 }
