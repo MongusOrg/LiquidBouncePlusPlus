@@ -157,7 +157,8 @@ class AutoPot : Module() {
     private fun isUsefulPotion(id: Int):Boolean{
         if(id==Potion.regeneration.id||id==Potion.heal.id||id==Potion.poison.id
             ||id==Potion.blindness.id||id==Potion.harm.id||id==Potion.wither.id
-            ||id==Potion.digSlowdown.id||id==Potion.moveSlowdown.id||id==Potion.weakness.id){
+            ||id==Potion.digSlowdown.id||id==Potion.moveSlowdown.id||id==Potion.weakness.id
+            ||id==Potion.jump.id){
             return false
         }
         return !mc.thePlayer.isPotionActive(id)

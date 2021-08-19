@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.potion.Potion;
 
 public final class MovementUtils extends MinecraftInstance {
 
@@ -96,6 +97,27 @@ public final class MovementUtils extends MinecraftInstance {
             rotationYaw += 90F * forward;
 
         return rotationYaw;
+    }
+
+    public static double getBaseMoveSpeed() {
+        double baseSpeed = 0.2875D;
+        if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
+            baseSpeed *= 1.0D + 0.2D * (double)(mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier() + 1);
+        }
+
+        return baseSpeed;
+    }
+
+    public static double getJumpBoostModifier(double baseJumpHeight) {
+        if (mc.thePlayer.isPotionActive(Potion.jump)) {
+            int amplifier = mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier();
+            baseJumpHeight += (double)((float)(amplifier + 1) * 0.1F);
+        }
+        return baseJumpHeight;
+    }
+
+    public static void setSpeed(MoveEvent moveEvent, double moveSpeed) {
+        setSpeed(moveEvent, moveSpeed, mc.thePlayer.rotationYaw, (double)mc.thePlayer.movementInput.moveStrafe, (double)mc.thePlayer.movementInput.moveForward);
     }
 
     public static void setSpeed(final MoveEvent moveEvent, final double moveSpeed, final float pseudoYaw, final double pseudoStrafe, final double pseudoForward) {

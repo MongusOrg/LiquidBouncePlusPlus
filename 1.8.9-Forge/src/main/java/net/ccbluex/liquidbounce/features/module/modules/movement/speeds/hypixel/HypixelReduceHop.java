@@ -7,6 +7,7 @@ package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed;
+import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
@@ -24,19 +25,26 @@ public class HypixelReduceHop extends SpeedMode {
 
     @Override
     public void onUpdate() {
-        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
-            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
-                mc.thePlayer.jump();
-                mc.thePlayer.motionY = 0.42;
-                mc.thePlayer.jumpTicks = 8;
-            } else if (mc.thePlayer.motionY < 0) {
-                mc.thePlayer.motionY *= 1.195;
-            }
-            MovementUtils.strafe(MovementUtils.getSpeed() * 0.98888855F);
-        }
+        
     }
 
     @Override
     public void onMove(MoveEvent event) {
+        TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
+        if (targetStrafe == null) return;
+
+        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
+            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
+                event.setY(mc.thePlayer.motionY = 0.41);
+                mc.thePlayer.jumpTicks = 9;
+            } else if (mc.thePlayer.motionY < 0) {
+                event.setY(mc.thePlayer.motionY *= 1.001255);
+            }
+
+            if (targetStrafe.getCanStrafe())
+                targetStrafe.strafe(event, MovementUtils.getBaseMoveSpeed() * 1.0095);
+            else
+                MovementUtils.setSpeed(event, MovementUtils.getBaseMoveSpeed() * 1.0095);
+        }
     }
 }

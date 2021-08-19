@@ -76,7 +76,7 @@ public class AntiVoid extends Module {
                         mc.thePlayer.fallDistance = oldFallDist;
                         break;
                     case "Test":
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY - 1E-11 * (mc.thePlayer.ticksExisted % 20), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + 255F, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         break;
                     }
                     if (resetFallDistanceValue.get() && !setBackModeValue.get().equalsIgnoreCase("HypixelTest")) mc.thePlayer.fallDistance = 0;

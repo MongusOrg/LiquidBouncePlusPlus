@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.movement;
 
+import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
@@ -19,6 +20,8 @@ import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.FloatValue;
 import net.ccbluex.liquidbounce.value.ListValue;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.settings.GameSettings;
 
 import java.util.ArrayList;
@@ -33,38 +36,12 @@ public class Speed extends Module {
             new NCPFHop(),
             new SNCPBHop(),
             new NCPHop(),
-            new YPort(),
-            new YPort2(),
             new NCPYPort(),
-            new Boost(),
-            new Frame(),
-            new MiJump(),
-            new OnGround(),
-
-            // AquaVit
-            new AAC4Hop(),
-            new AAC4SlowHop(),
 
             // AAC
+            new AAC4Hop(),
+            new AAC4SlowHop(),
             new AACv4BHop(),
-            new AACBHop(),
-            new AAC2BHop(),
-            new AAC3BHop(),
-            new AAC4BHop(),
-            new AAC5BHop(),
-            new AAC6BHop(),
-            new AAC7BHop(),
-            new AACHop3313(),
-            new AACHop350(),
-            new AACLowHop(),
-            new AACLowHop2(),
-            new AACLowHop3(),
-            new AACGround(),
-            new AACGround2(),
-            new AACYPort(),
-            new AACYPort2(),
-            new AACPort(),
-            new OldAACBHop(),
 
             // Hypixel
             new HypixelReduceHop(),
@@ -78,7 +55,13 @@ public class Speed extends Module {
             new CustomSpeed(),
             new Jump(),
             new Legit(),
-            new AEMine()
+            new AEMine(),
+            new Boost(),
+            new Frame(),
+            new MiJump(),
+            new OnGround(),
+            new YPort(),
+            new YPort2()
     };
 
     public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Other"}, "NCP") {
@@ -111,7 +94,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue aacModeValue = new ListValue("AAC-Mode", new String[]{"4Hop", "4SlowHop", "v4BHop", "BHop", "2BHop", "3BHop", "4BHop", "5BHop", "6BHop", "7BHop", "Hop3313", "Hop350", "LowHop", "LowHop2", "LowHop3", "Ground", "Ground2", "YPort", "YPort2", "Port", "OldBHop"}, "4Hop") {
+    public final ListValue aacModeValue = new ListValue("AAC-Mode", new String[]{"4Hop", "4SlowHop", "v4BHop"}, "4Hop") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -164,12 +147,12 @@ public class Speed extends Module {
     public final BoolValue resetYValue = new BoolValue("CustomResetY", false);
 
     public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false);
-
+/*
     public final FloatValue portMax = new FloatValue("AAC-PortLength", 1, 1, 20);
     public final FloatValue aacGroundTimerValue = new FloatValue("AACGround-Timer", 3F, 1.1F, 10F);
     public final FloatValue cubecraftPortLengthValue = new FloatValue("CubeCraft-PortLength", 1F, 0.1F, 2F);
     public final FloatValue mineplexGroundSpeedValue = new FloatValue("MineplexGround-Speed", 0.5F, 0.1F, 1F);
-
+*/
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
         if(mc.thePlayer.isSneaking())
@@ -240,7 +223,7 @@ public class Speed extends Module {
             return;
 
         mc.timer.timerSpeed = 1F;
-        mc.gameSettings.keyBindJump.pressed = (mc.thePlayer != null && GameSettings.isKeyDown(mc.gameSettings.keyBindJump));
+        mc.gameSettings.keyBindJump.pressed = (mc.thePlayer != null && (mc.inGameHasFocus || LiquidBounce.moduleManager.getModule(InventoryMove.class).getState()) && !(mc.currentScreen instanceof GuiIngameMenu || mc.currentScreen instanceof GuiChat) && GameSettings.isKeyDown(mc.gameSettings.keyBindJump));
 
         final SpeedMode speedMode = getMode();
 
@@ -261,8 +244,7 @@ public class Speed extends Module {
             else mode = "NCP" + ncpModeValue.get();
             break;
             case "AAC":
-            if (aacModeValue.get().equalsIgnoreCase("OldBHop")) mode = "OldAACBHop";
-            else mode = "AAC" + aacModeValue.get();
+            mode = "AAC" + aacModeValue.get();
             break;
             case "Spartan":
             mode = "SpartanYPort";

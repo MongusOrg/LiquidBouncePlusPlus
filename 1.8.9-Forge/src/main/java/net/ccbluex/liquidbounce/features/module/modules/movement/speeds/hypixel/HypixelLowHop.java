@@ -7,6 +7,7 @@ package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed;
+import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
@@ -24,19 +25,27 @@ public class HypixelLowHop extends SpeedMode {
 
     @Override
     public void onUpdate() {
-        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
-            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
-                mc.thePlayer.jump();
-                mc.thePlayer.motionY = 0.24;
-                mc.thePlayer.jumpTicks = 5;
-            } else if (mc.thePlayer.motionY < 0) {
-                mc.thePlayer.motionY *= 1.0625;
-            }
-            MovementUtils.strafe(MovementUtils.getSpeed() * 1.06575F);
-        } 
+        
     }
 
     @Override
     public void onMove(MoveEvent event) {
+        TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
+        if (targetStrafe == null) return;
+
+        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
+            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
+                mc.timer.timerSpeed = 1.2F;
+                event.setY(mc.thePlayer.motionY = 0.26);
+                mc.thePlayer.jumpTicks = 5;
+            } else if (event.getY() < 0) {
+                mc.timer.timerSpeed = 0.97F;
+            }
+
+            if (targetStrafe.getCanStrafe())
+                targetStrafe.strafe(event, MovementUtils.getBaseMoveSpeed() * 1.0075);
+            else
+                MovementUtils.setSpeed(event, MovementUtils.getBaseMoveSpeed() * 1.0075);
+        } 
     }
 }
