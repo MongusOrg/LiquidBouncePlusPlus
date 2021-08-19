@@ -75,7 +75,7 @@ class TargetStrafe : Module() {
 
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        if (canStrafe() && ((speed.state && (speed.getModeName().equals("HypixelLowHop", true) || speed.getModeName().equals("HypixelReduceHop", true) || (speed.getModeName().equals("Jump", true) && speed.jumpStrafe.get()))) || fly.state)) {
+        if (canStrafe && ((speed.state && (speed.getModeName().equals("HypixelLowHop", true) || speed.getModeName().equals("HypixelReduceHop", true) || (speed.getModeName().equals("Jump", true) && speed.jumpStrafe.get()))) || fly.state)) {
             if (strafeCustomMotion.get()) {
                 val (yaw) = RotationUtils.targetRotation ?: return
                 var strafe = event.strafe
