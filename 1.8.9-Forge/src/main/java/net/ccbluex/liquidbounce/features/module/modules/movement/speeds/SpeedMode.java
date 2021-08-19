@@ -24,7 +24,7 @@ public abstract class SpeedMode extends MinecraftInstance {
     public boolean isActive() {
         final Speed speed = ((Speed) LiquidBounce.moduleManager.getModule(Speed.class));
 
-        return speed != null && !mc.thePlayer.isSneaking() && speed.getState() && speed.modeValue.get().equals(modeName);
+        return speed != null && !mc.thePlayer.isSneaking() && speed.getState() && speed.getModeName().equals(modeName);
     }
 
     public abstract void onMotion();

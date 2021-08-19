@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.aac.*;
+import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.ncp.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spartan.SpartanYPort;
@@ -140,7 +141,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "Slow", "Jump", "Legit", "AEMine"}, "Boost") {
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine"}, "Boost") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -252,8 +253,8 @@ public class Speed extends Module {
         return typeValue.get();
     }
 
-    private SpeedMode getMode() {
-        final String mode = "";
+    public String getModeName() {
+        String mode = "";
         switch (typeValue.get()) {
             case "NCP":
             if (ncpModeValue.get().equalsIgnoreCase("SBHop")) mode = "SNCPBHop";
@@ -270,15 +271,18 @@ public class Speed extends Module {
             mode = "Hypixel" + hypixelModeValue.get();
             break;
             case "Custom":
-            mode = "CustomSpeed";
+            mode = "Custom";
             break;
             case "Other":
             mode = otherModeValue.get();
             break;
         }
+        return mode;
+    }
 
+    public SpeedMode getMode() {
         for(final SpeedMode speedMode : speedModes)
-            if(speedMode.modeName.equalsIgnoreCase(mode))
+            if(speedMode.modeName.equalsIgnoreCase(getModeName()))
                 return speedMode;
 
         return null;

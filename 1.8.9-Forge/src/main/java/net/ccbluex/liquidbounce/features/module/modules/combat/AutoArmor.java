@@ -55,6 +55,7 @@ public class AutoArmor extends Module {
     };
     private final BoolValue invOpenValue = new BoolValue("InvOpen", false);
     private final BoolValue simulateInventory = new BoolValue("SimulateInventory", true);
+    private final BoolValue invBypass = new BoolValue("InventoryBypass", true);
     private final BoolValue noMoveValue = new BoolValue("NoMove", false);
     private final IntegerValue itemDelayValue = new IntegerValue("ItemDelay", 0, 0, 5000);
     private final BoolValue hotbarValue = new BoolValue("Hotbar", true);
@@ -134,7 +135,7 @@ public class AutoArmor extends Module {
             delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get());
 
             if (openInventory)
-                mc.getNetHandler().addToSendQueue(new C0DPacketCloseWindow());
+                mc.getNetHandler().addToSendQueue(invBypass.get() ? new C0DPacketCloseWindow(mc.thePlayer.inventoryContainer.windowId) : new C0DPacketCloseWindow());
 
             return true;
         }

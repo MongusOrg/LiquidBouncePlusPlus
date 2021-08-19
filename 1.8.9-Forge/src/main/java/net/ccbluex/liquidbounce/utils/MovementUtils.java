@@ -82,6 +82,22 @@ public final class MovementUtils extends MinecraftInstance {
         return Math.toRadians(rotationYaw);
     }
 
+    public static float getScaffoldRotation(float yaw, float strafe) {
+        float rotationYaw = yaw;
+
+        rotationYaw += 180F;
+
+        float forward = -0.5F;
+
+        if(strafe < 0F)
+            rotationYaw -= 90F * forward;
+
+        if(strafe > 0F)
+            rotationYaw += 90F * forward;
+
+        return rotationYaw;
+    }
+
     public static void setSpeed(final MoveEvent moveEvent, final double moveSpeed, final float pseudoYaw, final double pseudoStrafe, final double pseudoForward) {
         double forward = pseudoForward;
         double strafe = pseudoStrafe;

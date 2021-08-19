@@ -52,6 +52,7 @@ class InventoryCleaner : Module() {
 
     private val invOpenValue = BoolValue("InvOpen", false)
     private val simulateInventory = BoolValue("SimulateInventory", true)
+    private val invBypass = BoolValue("InventoryBypass", true)
     private val noMoveValue = BoolValue("NoMove", false)
     private val ignoreVehiclesValue = BoolValue("IgnoreVehicles", false)
     private val hotbarValue = BoolValue("Hotbar", true)
@@ -108,7 +109,7 @@ class InventoryCleaner : Module() {
             mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, garbageItem, 1, 4, mc.thePlayer)
 
             if (openInventory)
-                mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
+                mc.netHandler.addToSendQueue(if (invBypass.get()) C0DPacketCloseWindow(mc.thePlayer.inventoryContainer.windowId) else C0DPacketCloseWindow())
 
             delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
         }

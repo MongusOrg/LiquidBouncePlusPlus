@@ -193,7 +193,6 @@ public class AntiVoid extends Module {
     @Override
     public void onDisable() {
         reset();
-        pollPackets();
         super.onDisable();
     }
 

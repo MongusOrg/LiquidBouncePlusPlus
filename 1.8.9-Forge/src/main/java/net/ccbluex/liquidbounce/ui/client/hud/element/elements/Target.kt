@@ -49,7 +49,7 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Simple"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
@@ -133,12 +133,11 @@ class Target : Element() {
                 }
 
                 "Flux" -> {
-                    val width = (26F + Fonts.fontSFUI35.getStringWidth(target.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(target.health)}")).toFloat() + 10F
+                    val width = (26F + Fonts.fontSFUI40.getStringWidth(target.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(target.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
-                    RenderUtils.drawRect(0F, 0F, 26F, 26F, Color(20, 255, 20, 255).rgb)
-                    drawHead3(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 25, 25)
-                    Fonts.fontSFUI35.drawString(target.name, 28F, 3F, 0xFFFFFF) // Draw target name
-                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 28F, 13F, 0xFFFFFF) // Draw target health   
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 26, 26)
+                    Fonts.fontSFUI40.drawString(target.name, 27F, 4F, 0xFFFFFF) // Draw target name
+                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 27F, 15F, 0xFFFFFF) // Draw target health   
 
                     // bar icon
                     Fonts.fontSFUI35.drawString("❤", 2F, 29F, -1)
@@ -175,7 +174,7 @@ class Target : Element() {
 
                     RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
                     RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
-                    drawHead3(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 36, 36)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 36, 36)
                     font.drawStringWithShadow(target.name, 2F + 36F, 2F, -1)
                     RenderUtils.drawRect(1F + 36F, 14F, 1F + 36F + nameLength, 24F, Color(24, 24, 24, 255).rgb)
 
@@ -190,6 +189,39 @@ class Target : Element() {
                     
                     font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 1F + 36F + nameLength / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 15F, -1)
                 }
+
+                "Slowly" -> {
+                    val font = Fonts.minecraftFont
+
+                    val length = font.getStringWidth(target.name).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(target.health)} ❤")).toFloat() + 10F
+                    RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 30, 30)
+                    font.drawStringWithShadow(target.name, 33F, 2F, -1)
+                    font.drawStringWithShadow("${decimalFormat2.format(target.health)} ❤", length + 32F - 1F - font.getStringWidth("${decimalFormat2.format(target.health)} ❤").toFloat(), 22F, barColor.rgb)
+
+                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+
+                    RenderUtils.drawRect(0F, 32F, (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
+                }
+
+                "Simple" -> {
+                    val font = Fonts.minecraftFont
+                    val health = "${decimalFormat2.format(target.health)}"
+                    val dist = "Distance: ${mc.thePlayer.getDistanceToEntityBox(target)}m"
+
+                    val length = font.getStringWidth(target.name).coerceAtLeast(font.getStringWidth(dist)).coerceAtLeast(font.getStringWidth(health)).toFloat() + 10F
+                    RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 32, 32)
+                    font.drawStringWithShadow(target.name, 34F, 2F, -1)
+                    font.drawStringWithShadow(dist, 34F, 26F, -1)
+
+                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+
+                    RenderUtils.drawRect(34F, 12F, 34F + length - 4F, 24F, barColor.darker().rgb)
+                    RenderUtils.drawRect(34F, 12F, 34F + (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length - 4F), 24F, barColor.rgb)
+                    
+                    font.drawStringWithShadow(health, 34F + (length - 4F) / 2F - font.getStringWidth(health) / 2F, 13F, -1)
+                }
             }
         } else if (target == null) {
             easingHealth = 0F
@@ -199,7 +231,8 @@ class Target : Element() {
         return when (styleValue.get()) {
             "LiquidBounce" -> Border(0F, 0F, 90F, 36F)
             "Flux" -> Border(0F, 0F, 90F, 46F)
-            else -> Border(-1F, -1F, 90F, 36F)
+            "Novoline" -> Border(-1F, -1F, 90F, 36F)
+            else -> Border(0F, 0F, 90F, 36F)
         }
     }
 
@@ -210,14 +243,7 @@ class Target : Element() {
                 64F, 64F)
     }
 
-    private fun drawHead2(skin: ResourceLocation, x: Int, y: Int) {
-        GL11.glColor4f(1F, 1F, 1F, 1F)
-        mc.textureManager.bindTexture(skin)
-        Gui.drawScaledCustomSizeModalRect(x, y, 8F, 8F, 8, 8, 16, 16,
-                64F, 64F)
-    }
-
-    private fun drawHead3(skin: ResourceLocation, x: Int, y: Int, width: Int, height: Int) {
+    private fun drawHead(skin: ResourceLocation, x: Int, y: Int, width: Int, height: Int) {
         GL11.glColor4f(1F, 1F, 1F, 1F)
         mc.textureManager.bindTexture(skin)
         Gui.drawScaledCustomSizeModalRect(x, y, 8F, 8F, 8, 8, width, height,
@@ -229,48 +255,4 @@ class Target : Element() {
         RenderUtils.drawImage(shieldIcon, x, y, width, height)
         GlStateManager.enableAlpha()
     }
-
-    private fun getArmorLength(ent: EntityPlayer): Float {
-        var x : Float = 0F
-        for (i in 3 downTo 0) {
-            val stack = ent.inventory.armorInventory[i] ?: continue
-            x += 18F
-        }
-        if (ent.getHeldItem() != null && ent.getHeldItem().getItem() != null) 
-            x += 18F
-
-        return x
-    }
-
-    private fun drawArmor(x: Int, y: Int, ent: EntityPlayer) {
-        GL11.glPushMatrix()
-        RenderHelper.enableGUIStandardItemLighting()
-
-        val renderItem = mc.renderItem
-
-        var drawX : Int = x
-        var drawY : Int = y
-
-        for (index in 3 downTo 0) {
-            val stack = ent.inventory.armorInventory[index] ?: continue
-
-            renderItem.renderItemIntoGUI(stack, drawX, drawY)
-            renderItem.renderItemOverlays(mc.fontRendererObj, stack, drawX, drawY)
-
-            drawX += 18
-        }
-
-        if (ent.getHeldItem() != null && ent.getHeldItem().getItem() != null) {
-            renderItem.renderItemIntoGUI(ent.getHeldItem(), drawX, drawY)
-            renderItem.renderItemOverlays(mc.fontRendererObj, ent.getHeldItem(), drawX, drawY)
-        }
-
-        RenderHelper.disableStandardItemLighting()
-        GlStateManager.enableAlpha()
-        GlStateManager.disableBlend()
-        GlStateManager.disableLighting()
-        GlStateManager.disableCull()
-        GL11.glPopMatrix()
-    }
-
 }

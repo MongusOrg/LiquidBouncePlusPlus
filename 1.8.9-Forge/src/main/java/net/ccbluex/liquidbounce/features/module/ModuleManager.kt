@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.*
 import net.ccbluex.liquidbounce.features.module.modules.player.*
 import net.ccbluex.liquidbounce.features.module.modules.render.*
 import net.ccbluex.liquidbounce.features.module.modules.world.*
+import net.ccbluex.liquidbounce.features.module.modules.world.Timer
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import java.util.*
@@ -110,7 +111,6 @@ class ModuleManager : Listenable {
                 PotionSaver::class.java,
                 CameraClip::class.java,
                 WaterSpeed::class.java,
-                ForceUnicodeChat::class.java,
                 SuperKnockback::class.java,
                 Reach::class.java,
                 Rotations::class.java,
@@ -141,10 +141,11 @@ class ModuleManager : Listenable {
                 BetterFPS::class.java,
                 SpinBot::class.java,
                 MultiActions::class.java,
-                AntiVoid::class.java,
-                Fucker::class.java,
-                ChestAura::class.java
+                AntiVoid::class.java
         )
+
+        registerModule(Fucker)
+        registerModule(ChestAura)
 
         ClientUtils.getLogger().info("[ModuleManager] Loaded ${modules.size} modules.")
     }

@@ -61,15 +61,6 @@ public abstract class MixinGuiInGame {
 
             int middleScreen = sr.getScaledWidth() / 2;
 
-            //GlStateManager.pushMatrix();
-            //GuiIngame.drawRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight(), Integer.MIN_VALUE);
-            //GuiIngame.drawRect(0, sr.getScaledHeight() - 24, sr.getScaledWidth(), sr.getScaledHeight(), Integer.MIN_VALUE);
-            //GuiIngame.drawRect(middleScreen - 91 - 1 + entityPlayer.inventory.currentItem * 20 + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + entityPlayer.inventory.currentItem * 20 + 22, sr.getScaledHeight(), Integer.MAX_VALUE);
-            //RenderUtils.roundBlur(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3);
-            
-            if (hud.getBlackHotbarBlurValue().get())
-                BlurUtils.blurArea(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 15);
-
             GuiIngame.drawRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, Integer.MIN_VALUE);
             GuiIngame.drawRect(middleScreen - 91 - 1 + entityPlayer.inventory.currentItem * 20 + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + entityPlayer.inventory.currentItem * 20 + 22, sr.getScaledHeight() - 22, Integer.MAX_VALUE);
             //GlStateManager.popMatrix();

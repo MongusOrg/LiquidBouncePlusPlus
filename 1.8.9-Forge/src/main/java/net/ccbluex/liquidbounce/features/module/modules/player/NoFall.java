@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
+import net.ccbluex.liquidbounce.utils.PacketUtils;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.ccbluex.liquidbounce.utils.VecRotation;
 import net.ccbluex.liquidbounce.utils.block.BlockUtils;
@@ -35,7 +36,7 @@ import net.minecraft.util.*;
 
 @ModuleInfo(name = "NoFall", description = "Prevents you from taking fall damage.", category = ModuleCategory.PLAYER)
 public class NoFall extends Module {
-    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "MLG" , "AAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "Spartan", "CubeCraft" , "Hypixel", "Damage", "Edit", "Verus", "HypixelTest"}, "SpoofGround");
+    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "MLG" , "AAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "Spartan", "CubeCraft" , "Hypixel", "Damage", "Edit", "Verus", "NewSpoof"}, "SpoofGround");
     private final FloatValue minFallDistance = new FloatValue("MinMLGHeight", 5F, 2F, 50F);
     private final BoolValue voidCheck = new BoolValue("Void-Check", true);
 
@@ -72,17 +73,17 @@ public class NoFall extends Module {
         switch (modeValue.get().toLowerCase()) {
             case "packet":
                 if (mc.thePlayer.fallDistance > 2F)
-                    mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer(true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer(true));
                 break;
             case "cubecraft":
                 if (mc.thePlayer.fallDistance > 2F) {
                     mc.thePlayer.onGround = true;
-                    mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer(true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer(true));
                 }
                 break;
             case "aac":
                 if (mc.thePlayer.fallDistance > 2F) {
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer(true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer(true));
                     state = 2;
                 } else if (state == 2 && mc.thePlayer.fallDistance < 2) {
                     mc.thePlayer.motionY = 0.1D;
@@ -113,15 +114,15 @@ public class NoFall extends Module {
             case "aac3.3.11":
                 if (mc.thePlayer.fallDistance > 2) {
                     mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
                             mc.thePlayer.posY - 10E-4D, mc.thePlayer.posZ, mc.thePlayer.onGround));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer(true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer(true));
                 }
                 break;
             case "aac3.3.15":
                 if (mc.thePlayer.fallDistance > 2) {
                     if (!mc.isIntegratedServerRunning())
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
                                 Double.NaN, mc.thePlayer.posZ, false));
                     mc.thePlayer.fallDistance = -9999;
                 }
@@ -130,9 +131,9 @@ public class NoFall extends Module {
                 spartanTimer.update();
 
                 if (mc.thePlayer.fallDistance > 1.5 && spartanTimer.hasTimePassed(10)) {
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
                             mc.thePlayer.posY + 10, mc.thePlayer.posZ, true));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
                             mc.thePlayer.posY - 10, mc.thePlayer.posZ, true));
                     spartanTimer.reset();
                 }
@@ -180,10 +181,8 @@ public class NoFall extends Module {
                 shouldSpoof = false;
             }
 
-            if (mode.equalsIgnoreCase("HypixelTest") && mc.thePlayer != null && mc.thePlayer.fallDistance > 3) {
-                playerPacket.onGround = true;
-                mc.thePlayer.fallDistance = 0;
-            }
+            if (mode.equalsIgnoreCase("NewSpoof")) 
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(playerPacket.x, playerPacket.y, playerPacket.z, false));
         }
     }
 
@@ -268,7 +267,7 @@ public class NoFall extends Module {
                 currentMlgBlock = collision.getPos();
 
                 if (mc.thePlayer.inventory.currentItem != index) {
-                    mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(index));
+                    PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(index));
                 }
 
                 currentMlgRotation = RotationUtils.faceBlock(collision.getPos());
@@ -288,7 +287,7 @@ public class NoFall extends Module {
             }
 
             if (mc.thePlayer.inventory.currentItem != currentMlgItemIndex)
-                mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
+                PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
         }
 
 

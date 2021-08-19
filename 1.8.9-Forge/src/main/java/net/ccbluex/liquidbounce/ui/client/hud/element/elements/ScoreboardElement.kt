@@ -47,17 +47,12 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 95, 0, 255)
 
     private val rectValue = BoolValue("Rect", false)
-    private val blurValue = BoolValue("Blur", false)
     private val rectColorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "LiquidSlowly", "Fade", "Sky", "Mixer"), "Custom")
-
-    private val textRedValue = IntegerValue("Text-R", 255, 0, 255)
-    private val textGreenValue = IntegerValue("Text-G", 255, 0, 255)
-    private val textBlueValue = IntegerValue("Text-B", 255, 0, 255)
     
-    private val rectColorRedValue = IntegerValue("Rect-R", 0, 0, 255)
-    private val rectColorGreenValue = IntegerValue("Rect-G", 111, 0, 255)
-    private val rectColorBlueValue = IntegerValue("Rect-B", 255, 0, 255)
-    private val rectColorBlueAlpha = IntegerValue("Rect-Alpha", 255, 0, 255)
+    private val rectColorRedValue = IntegerValue("Red", 0, 0, 255)
+    private val rectColorGreenValue = IntegerValue("Green", 111, 0, 255)
+    private val rectColorBlueValue = IntegerValue("Blue", 255, 0, 255)
+    private val rectColorBlueAlpha = IntegerValue("Alpha", 255, 0, 255)
 
     private val rainbowX = FloatValue("Rainbow-X", -1000F, -2000F, 2000F)
     private val rainbowY = FloatValue("Rainbow-Y", -1000F, -2000F, 2000F)
@@ -83,7 +78,6 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             return null
 
         val fontRenderer = fontValue.get()
-        val textColor = textColor().rgb
         val backColor = backgroundColor().rgb
 
         val rectColorMode = rectColorModeValue.get()
@@ -130,9 +124,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
         var liquidSlowli : Int = LiquidSlowly!!
 
         val mixerColor = ColorMixer.getMixedColor(0, cRainbowSecValue.get()).rgb
-
-        if (blurValue.get())
-            BlurUtils.blurArea(l1.toFloat() - 2F, -2F, 5F, maxHeight.toFloat() + fontRenderer.FONT_HEIGHT.toFloat(), 15)    
+ 
         Gui.drawRect(l1 - 2, -2, 5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
 
         if (rectValue.get() && scoreCollection.size > 0) {
@@ -160,12 +152,12 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             val height = maxHeight - index * fontRenderer.FONT_HEIGHT
 
             GlStateManager.resetColor()
-            var typeColor = textColor
+            var typeColor = -1
             if(changeDomain.get()){
                 for(domain in domainList){
                     if(name.contains(domain,true)){
                         name = hud.domainValue.get()
-                        typeColor =  when {
+                        typeColor = when {
                             rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(
                                 0,
                                 saturationValue.get(),
@@ -189,7 +181,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             
             fontRenderer.drawString(name, l1.toFloat(), height.toFloat(), typeColor, shadowValue.get())
 
-            if (showRedNumbersValue.get()) fontRenderer.drawString(scorePoints, (width - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), textColor, shadowValue.get())
+            if (showRedNumbersValue.get()) fontRenderer.drawString(scorePoints, (width - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
 
             if (index == scoreCollection.size - 1) {
                 val displayName = objective.displayName
@@ -197,7 +189,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                 GlStateManager.resetColor()
 
                 fontRenderer.drawString(displayName, (l1 + maxWidth / 2 - fontRenderer.getStringWidth(displayName) / 2).toFloat(), (height -
-                        fontRenderer.FONT_HEIGHT).toFloat(), textColor, shadowValue.get())
+                        fontRenderer.FONT_HEIGHT).toFloat(), -1, shadowValue.get())
             }
 
         }
@@ -207,8 +199,5 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
     private fun backgroundColor() = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(),
             backgroundColorBlueValue.get(), backgroundColorAlphaValue.get())
-
-    private fun textColor() = Color(textRedValue.get(), textGreenValue.get(),
-            textBlueValue.get())
 
 }

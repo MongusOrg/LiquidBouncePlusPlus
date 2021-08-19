@@ -40,7 +40,7 @@ public class Aesthetic extends Module {
             mc.theWorld.setWorldTime(time.get());
         } else {
             mc.theWorld.setWorldTime(timeCycle);
-            timeCycle += (reverseCycle.get() ? -cycleSpeed.get() : cycleSpeed.get()) * 100;
+            timeCycle += (reverseCycle.get() ? -cycleSpeed.get() : cycleSpeed.get()) * 10;
 
             if (timeCycle > 24000) {
                 timeCycle = 0;

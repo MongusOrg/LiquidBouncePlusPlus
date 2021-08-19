@@ -17,7 +17,7 @@ import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof;
 import net.ccbluex.liquidbounce.file.FileConfig;
 import net.ccbluex.liquidbounce.file.FileManager;
 import net.ccbluex.liquidbounce.ui.client.GuiBackground;
-//import net.ccbluex.liquidbounce.ui.client.altmanager.sub.GuiDonatorCape;
+import net.ccbluex.liquidbounce.ui.client.GuiMainMenu;
 import net.ccbluex.liquidbounce.ui.client.altmanager.sub.altgenerator.GuiTheAltening;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
 import net.ccbluex.liquidbounce.value.Value;
@@ -92,15 +92,9 @@ public class ValuesConfig extends FileConfig {
 
                 if (jsonValue.has("API-Key"))
                     GuiTheAltening.Companion.setApiKey(jsonValue.get("API-Key").getAsString());
-            }/* else if (entry.getKey().equalsIgnoreCase("DonatorCape")) {
-                JsonObject jsonValue = (JsonObject) entry.getValue();
-
-                if (jsonValue.has("TransferCode"))
-                    GuiDonatorCape.Companion.setTransferCode(jsonValue.get("TransferCode").getAsString());
-
-                if (jsonValue.has("CapeEnabled"))
-                    GuiDonatorCape.Companion.setCapeEnabled(jsonValue.get("CapeEnabled").getAsBoolean());
-            } */else if (entry.getKey().equalsIgnoreCase("Background")) {
+            } else if (entry.getKey().equalsIgnoreCase("MainMenuParallax")) {
+                GuiMainMenu.Companion.setUseParallax(entry.getValue().getAsBoolean());
+            } else if (entry.getKey().equalsIgnoreCase("Background")) {
                 JsonObject jsonValue = (JsonObject) entry.getValue();
 
                 if (jsonValue.has("Enabled"))
@@ -160,7 +154,9 @@ public class ValuesConfig extends FileConfig {
         final JsonObject capeObject = new JsonObject();
         /*capeObject.addProperty("TransferCode", GuiDonatorCape.Companion.getTransferCode());
         capeObject.addProperty("CapeEnabled", GuiDonatorCape.Companion.getCapeEnabled());*/
-        jsonObject.add("DonatorCape", capeObject);
+        //jsonObject.add("DonatorCape", capeObject);
+
+        jsonObject.addProperty("MainMenuParallax", GuiMainMenu.Companion.getUseParallax());
 
         final JsonObject backgroundObject = new JsonObject();
         backgroundObject.addProperty("Enabled", GuiBackground.Companion.getEnabled());

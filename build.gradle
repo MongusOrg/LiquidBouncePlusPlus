@@ -1,9 +1,9 @@
-version = "170821"
+version = "190821"
 group = "net.ccbluex"
 
 subprojects {
 
-    version = "170821"
+    version = "190821"
     group = "net.ccbluex"
 
 }

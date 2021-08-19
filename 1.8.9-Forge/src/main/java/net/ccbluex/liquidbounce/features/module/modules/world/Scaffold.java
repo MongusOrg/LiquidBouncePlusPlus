@@ -26,6 +26,7 @@ import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.FloatValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.ccbluex.liquidbounce.value.ListValue;
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -121,11 +122,14 @@ public class Scaffold extends Module {
 
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
     public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static"}, "Normal");
-    private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 0F, 90F);
+
+    private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F);
+
+    //Test AAC Values
+    private final BoolValue aacPitchValue = new BoolValue("AAC-Pitch", false);
 
     private final IntegerValue keepLengthValue = new IntegerValue("KeepRotationLength", 0, 0, 20);
-    private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false) {
-    };
+    private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false);
     private final ListValue placeConditionValue = new ListValue("Place-Condition", new String[] {"Air", "FallDown", "NegativeMotion", "Always"}, "Always");
 
     private final BoolValue rotationStrafeValue = new BoolValue("RotationStrafe", false);
@@ -166,6 +170,7 @@ public class Scaffold extends Module {
 
     // Launch position
     private int launchY;
+    private boolean faceBlock;
 
     // Rotation lock
     private Rotation lockRotation;
@@ -209,6 +214,8 @@ public class Scaffold extends Module {
             LiquidBounce.moduleManager.getModule(Speed.class).setState(false);
             LiquidBounce.hud.addNotification(new Notification("Speed is disabled to prevent flags/errors.", Notification.Type.WARNING));
         }
+
+        faceBlock = false;
     }
 
     /**
@@ -459,7 +466,7 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if (placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 
@@ -549,7 +556,9 @@ public class Scaffold extends Module {
         }
 
         // idfk
+        boolean oldSprint = mc.thePlayer.isSprinting();
         dynamicStopSprint = true;
+        if (sprintModeValue.get().equalsIgnoreCase("dynamic")) mc.thePlayer.setSprinting(false);
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
                 targetPlace.getEnumFacing(), targetPlace.getVec3())) {
             delayTimer.reset();
@@ -567,6 +576,7 @@ public class Scaffold extends Module {
             else
                 mc.getNetHandler().addToSendQueue(new C0APacketAnimation());
         }
+        if (sprintModeValue.get().equalsIgnoreCase("dynamic")) mc.thePlayer.setSprinting(oldSprint);
         dynamicStopSprint = false;
 
         if (!stayAutoBlock.get() && blockSlot >= 0 && !autoBlockMode.get().equalsIgnoreCase("Switch"))
@@ -600,6 +610,7 @@ public class Scaffold extends Module {
         lockRotation = null;
         mc.timer.timerSpeed = 1F;
         shouldGoDown = false;
+        faceBlock = false;
 
         if (lastSlot != mc.thePlayer.inventory.currentItem && autoBlockMode.get().equalsIgnoreCase("switch")) {
             mc.thePlayer.inventory.currentItem = lastSlot;
@@ -742,11 +753,13 @@ public class Scaffold extends Module {
      * @return
      */
     private boolean search(final BlockPos blockPosition, final boolean checks) {
+        faceBlock = false;
+
         if (!BlockUtils.isReplaceable(blockPosition))
             return false;
 
 
-        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC") || rotationModeValue.get().equalsIgnoreCase("Static");
+        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC");
 
         final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
@@ -773,7 +786,7 @@ public class Scaffold extends Module {
                         // face block
                         for (int i = 0; i < (staticYawMode ? 2 : 1); i++) {
                             final double diffX = staticYawMode && i == 0 ? 0 : hitVec.xCoord - eyesPos.xCoord;
-                            final double diffY = hitVec.yCoord - eyesPos.yCoord;
+                            final double diffY = staticYawMode && aacPitchValue.get() && i == 0 ? 0 : hitVec.yCoord - eyesPos.yCoord;
                             final double diffZ = staticYawMode && i == 1 ? 0 : hitVec.zCoord - eyesPos.zCoord;
 
                             final double diffXZ = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
@@ -783,6 +796,8 @@ public class Scaffold extends Module {
                                     MathHelper.wrapAngleTo180_float((float) -Math.toDegrees(Math.atan2(diffY, diffXZ)))
                             );
 
+                            if (rotationModeValue.get().equalsIgnoreCase("static"))
+                                rotation = new Rotation(MovementUtils.getScaffoldRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing), staticPitchValue.get());
 
                             final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotation);
                             final Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4, rotationVector.yCoord * 4, rotationVector.zCoord * 4);
@@ -792,11 +807,6 @@ public class Scaffold extends Module {
                                 continue;
 
                             if (placeRotation == null || RotationUtils.getRotationDifference(rotation) < RotationUtils.getRotationDifference(placeRotation.getRotation()))
-                                if (rotationModeValue.get().equalsIgnoreCase("Static")) rotation = new Rotation(
-                                        MathHelper.wrapAngleTo180_float((float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90F),
-                                        staticPitchValue.get()
-                                );
-
                                 placeRotation = new PlaceRotation(new PlaceInfo(neighbor, side.getOpposite(), hitVec), rotation);
                         }
                     }
@@ -807,8 +817,24 @@ public class Scaffold extends Module {
         if (placeRotation == null) return false;
 
         if (rotationsValue.get()) {
-            RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, placeRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())), keepLengthValue.get());
-            lockRotation = placeRotation.getRotation();
+            if (minTurnSpeed.get() < 180) {
+                final Rotation limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, placeRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get()));
+                if ((int)(10 * MathHelper.wrapAngleTo180_float(limitedRotation.getYaw())) == (int)(10 * MathHelper.wrapAngleTo180_float(placeRotation.getRotation().getYaw()))
+                    && (int)(10 * MathHelper.wrapAngleTo180_float(limitedRotation.getPitch())) == (int)(10 * MathHelper.wrapAngleTo180_float(placeRotation.getRotation().getPitch()))) {
+                    RotationUtils.setTargetRotation(placeRotation.getRotation(), keepLengthValue.get());
+                    lockRotation = placeRotation.getRotation();
+                    faceBlock = true;
+                } else {
+                    RotationUtils.setTargetRotation(limitedRotation, keepLengthValue.get());
+                    lockRotation = limitedRotation;
+                    faceBlock = false;
+                }
+            } else {
+                RotationUtils.setTargetRotation(placeRotation.getRotation(), keepLengthValue.get());
+                lockRotation = placeRotation.getRotation();
+                faceBlock = true;
+            }
+            
         }
         targetPlace = placeRotation.getPlaceInfo();
         return true;
@@ -823,8 +849,10 @@ public class Scaffold extends Module {
         for (int i = 36; i < 45; i++) {
             final ItemStack itemStack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
 
-            if (itemStack != null && itemStack.getItem() instanceof ItemBlock)
-                amount += itemStack.stackSize;
+            if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
+                Block block = ((ItemBlock)itemStack.getItem()).getBlock();
+                if (!InventoryUtils.BLOCK_BLACKLIST.contains(block) && block.isFullCube()) amount += itemStack.stackSize;
+            }
         }
 
         return amount;
