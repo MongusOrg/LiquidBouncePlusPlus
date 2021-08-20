@@ -22,7 +22,7 @@ public class TransformerLoader implements IFMLLoadingPlugin {
      */
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {ForgeNetworkTransformer.class.getName(), AbstractJavaLinkerTransformer.class.getName(), MemoryFixTransformer.class.getName(), ClassTransformer.class.getName()};
+        return new String[] {ForgeNetworkTransformer.class.getName(), AbstractJavaLinkerTransformer.class.getName(), ClassTransformer.class.getName()};
     }
 
     /**

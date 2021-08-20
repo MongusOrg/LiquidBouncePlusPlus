@@ -136,8 +136,8 @@ class Target : Element() {
                     val width = (26F + Fonts.fontSFUI40.getStringWidth(target.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(target.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
                     drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 26, 26)
-                    Fonts.fontSFUI40.drawString(target.name, 27F, 4F, 0xFFFFFF) // Draw target name
-                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 27F, 15F, 0xFFFFFF) // Draw target health   
+                    Fonts.fontSFUI40.drawString(target.name, 29F, 4F, 0xFFFFFF) // Draw target name
+                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 29F, 15F, 0xFFFFFF) // Draw target health   
 
                     // bar icon
                     Fonts.fontSFUI35.drawString("❤", 2F, 29F, -1)
@@ -207,7 +207,7 @@ class Target : Element() {
                 "Simple" -> {
                     val font = Fonts.minecraftFont
                     val health = "${decimalFormat2.format(target.health)}"
-                    val dist = "Distance: ${mc.thePlayer.getDistanceToEntityBox(target)}m"
+                    val dist = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(target))}m"
 
                     val length = font.getStringWidth(target.name).coerceAtLeast(font.getStringWidth(dist)).coerceAtLeast(font.getStringWidth(health)).toFloat() + 10F
                     RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
@@ -220,7 +220,7 @@ class Target : Element() {
                     RenderUtils.drawRect(34F, 12F, 34F + length - 4F, 24F, barColor.darker().rgb)
                     RenderUtils.drawRect(34F, 12F, 34F + (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length - 4F), 24F, barColor.rgb)
                     
-                    font.drawStringWithShadow(health, 34F + (length - 4F) / 2F - font.getStringWidth(health) / 2F, 13F, -1)
+                    font.drawStringWithShadow(health, 34F + (length - 4F) / 2F - font.getStringWidth(health) / 2F, 14F, -1)
                 }
             }
         } else if (target == null) {

@@ -140,7 +140,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     else -> module.arrayY = yPos
                 }
                 inx++
-            } else //instant update
+            } else if (!vAnimation.get().equals("rise", true)) //instant update
                 module.arrayY = yPos
         }
 

@@ -9,7 +9,6 @@ import com.mojang.authlib.GameProfile;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.ServerUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
-import net.mcleaks.MCLeaks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiScreen;
@@ -63,7 +62,7 @@ public abstract class MixinGuiConnecting extends GuiScreen {
     private void headConnect(final String ip, final int port, CallbackInfo callbackInfo) {
         ServerUtils.serverData = new ServerData("", ip + ":" + port, false);
     }
-
+/*
     @Inject(method = "connect", at = @At(value = "NEW", target = "net/minecraft/network/login/client/C00PacketLoginStart"), cancellable = true)
     private void mcLeaks(CallbackInfo callbackInfo) {
         if(MCLeaks.isAltActive()) {
@@ -71,7 +70,7 @@ public abstract class MixinGuiConnecting extends GuiScreen {
             callbackInfo.cancel();
         }
     }
-
+*/
     /**
      * @author CCBlueX
      */
@@ -91,7 +90,7 @@ public abstract class MixinGuiConnecting extends GuiScreen {
                 networkManager = NetworkManager.createNetworkManagerAndConnect(inetaddress, port, mc.gameSettings.isUsingNativeTransport());
                 networkManager.setNetHandler(new NetHandlerLoginClient(networkManager, mc, previousGuiScreen));
                 networkManager.sendPacket(new C00Handshake(47, ip, port, EnumConnectionState.LOGIN, true));
-                networkManager.sendPacket(new C00PacketLoginStart(MCLeaks.isAltActive() ? new GameProfile(null, MCLeaks.getSession().getUsername()) : mc.getSession().getProfile()));
+                networkManager.sendPacket(new C00PacketLoginStart(mc.getSession().getProfile()));
             }catch(UnknownHostException unknownhostexception) {
                 if(cancel)
                     return;
@@ -124,8 +123,6 @@ public abstract class MixinGuiConnecting extends GuiScreen {
         ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
 
         this.drawDefaultBackground();
-
-        RenderUtils.drawLoadingCircle(scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() / 4 + 70);
 
         String ip = "Unknown";
 

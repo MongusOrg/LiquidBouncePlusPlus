@@ -141,8 +141,7 @@ class ModuleManager : Listenable {
                 BetterFPS::class.java,
                 SpinBot::class.java,
                 MultiActions::class.java,
-                AntiVoid::class.java,
-                TargetStrafe::class.java
+                AntiVoid::class.java
         )
 
         registerModule(Fucker)

@@ -26,24 +26,19 @@ public class Jump extends SpeedMode {
     @Override
     public void onUpdate() {
         
+        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
+
+        if(speed == null)
+            return;
+        if(MovementUtils.isMoving() && mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && mc.thePlayer.jumpTicks == 0) {
+            mc.thePlayer.jump();
+            mc.thePlayer.jumpTicks = 10;
+        }
+        if (speed.jumpStrafe.get() && MovementUtils.isMoving() && !mc.thePlayer.onGround && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) 
+            MovementUtils.strafe();
     }
 
     @Override
     public void onMove(MoveEvent event) {
-        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
-        TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
-
-        if(speed == null || targetStrafe == null)
-            return;
-        if(MovementUtils.isMoving() && mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && mc.thePlayer.jumpTicks == 0) {
-            mc.thePlayer.jump();
-            event.setY(mc.thePlayer.motionY = 0.42);
-            mc.thePlayer.jumpTicks = 10;
-        }
-        if (speed.jumpStrafe.get() && MovementUtils.isMoving() && !mc.thePlayer.onGround && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) 
-            if (targetStrafe.getCanStrafe()) 
-                targetStrafe.strafe(event, MovementUtils.getSpeed());
-            else
-                MovementUtils.setSpeed(event, MovementUtils.getSpeed());
     }
 }

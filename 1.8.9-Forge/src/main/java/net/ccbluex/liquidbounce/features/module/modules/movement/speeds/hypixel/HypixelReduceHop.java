@@ -30,21 +30,15 @@ public class HypixelReduceHop extends SpeedMode {
 
     @Override
     public void onMove(MoveEvent event) {
-        TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
-        if (targetStrafe == null) return;
-
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
-                event.setY(mc.thePlayer.motionY = 0.41);
+                event.setY(mc.thePlayer.motionY = 0.42);
                 mc.thePlayer.jumpTicks = 9;
-            } else if (mc.thePlayer.motionY < 0) {
-                event.setY(mc.thePlayer.motionY *= 1.001255);
+            } else if (mc.thePlayer.motionY < 0 && mc.thePlayer.ticksExisted % 2 == 0) {
+                mc.thePlayer.motionY *= 0.98;
             }
-
-            if (targetStrafe.getCanStrafe())
-                targetStrafe.strafe(event, MovementUtils.getBaseMoveSpeed() * 1.0095);
-            else
-                MovementUtils.setSpeed(event, MovementUtils.getBaseMoveSpeed() * 1.0095);
+                
+            MovementUtils.setSpeed(event, MovementUtils.getBaseMoveSpeed() * 1.0295);
         }
     }
 }

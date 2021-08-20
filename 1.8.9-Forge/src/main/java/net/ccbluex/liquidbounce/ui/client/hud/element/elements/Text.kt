@@ -57,7 +57,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
          * Create default element
          */
         fun defaultClient(): Text {
-            val text = Text(x = 2.0, y = 2.0, scale = 1F)
+            val text = Text(x = 5.0, y = 5.0, scale = 1F)
 
             text.displayString.set("%clientName%")
             text.shadow.set(true)

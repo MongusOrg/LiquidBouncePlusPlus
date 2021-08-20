@@ -40,7 +40,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        val creditInfo = "Made with <3 by WYSI-Foundation."
+        val creditInfo = "im suck at coding"
         drawBackground(0)
         GL11.glPushMatrix()
         renderSwitchButton()

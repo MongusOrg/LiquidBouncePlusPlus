@@ -26,8 +26,9 @@ public class CustomSpeed extends SpeedMode {
         if(MovementUtils.isMoving()) {
             mc.timer.timerSpeed = speed.customTimerValue.get();
 
-            if(mc.thePlayer.onGround) {
+            if(mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
                 mc.thePlayer.jump();
+                mc.thePlayer.jumpTicks = 10;
                 mc.thePlayer.motionX *= speed.customSpeedValue.get();
                 mc.thePlayer.motionZ *= speed.customSpeedValue.get();
                 mc.thePlayer.motionY = speed.customYValue.get();
