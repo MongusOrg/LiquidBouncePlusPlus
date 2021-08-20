@@ -50,7 +50,6 @@ public class ClickGUI extends Module {
     private static final IntegerValue mixerSecondsValue = new IntegerValue("Mixer-Seconds", 2, 1, 10);
 
     public final ListValue backgroundValue = new ListValue("Background", new String[] {"Default", "Gradient", "None"}, "Default");
-    public static final IntegerValue blurStrengthValue = new IntegerValue("Blur-Strength", 10, 1, 20);
 
     public final ListValue animationValue = new ListValue("Animation", new String[] {"Azura", "Slide", "SlideBounce", "Zoom", "ZoomBounce", "None"}, "Azura");
 

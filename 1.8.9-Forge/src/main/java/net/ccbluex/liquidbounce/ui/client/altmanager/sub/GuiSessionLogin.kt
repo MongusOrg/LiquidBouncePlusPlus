@@ -10,7 +10,6 @@ import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.login.LoginUtils
-import net.mcleaks.MCLeaks
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
@@ -103,8 +102,6 @@ class GuiSessionLogin(private val prevGui: GuiAltManager) : GuiScreen() {
                                     ClientUtils.getLogger().error("Something went wrong while trying to switch alt service.", e)
                                 }
                             }
-
-                            MCLeaks.remove()
 
                             "§cYour name is now §f§l${mc.session.username}§c"
                         }

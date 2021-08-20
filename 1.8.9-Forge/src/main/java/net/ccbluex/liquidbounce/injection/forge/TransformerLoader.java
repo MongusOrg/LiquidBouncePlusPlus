@@ -6,7 +6,6 @@
 package net.ccbluex.liquidbounce.injection.forge;
 
 import net.ccbluex.liquidbounce.injection.transformers.ForgeNetworkTransformer;
-import net.ccbluex.liquidbounce.injection.transformers.MemoryFixTransformer;
 import net.ccbluex.liquidbounce.packexploitfix.ClassTransformer;
 import net.ccbluex.liquidbounce.script.remapper.injection.transformers.AbstractJavaLinkerTransformer;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;

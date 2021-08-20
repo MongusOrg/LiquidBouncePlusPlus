@@ -18,7 +18,6 @@ import net.ccbluex.liquidbounce.ui.elements.GuiPasswordField
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.misc.MiscUtils
-import net.mcleaks.MCLeaks
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiScreen
@@ -139,7 +138,6 @@ class GuiTheAltening(private val prevGui: GuiAltManager) : GuiScreen() {
                                     .selectedProfile.id.toString(),
                                     yggdrasilUserAuthentication.authenticatedToken, "mojang")
                             LiquidBounce.eventManager.callEvent(SessionEvent())
-                            MCLeaks.remove()
 
                             prevGui.status = "§aYour name is now §b§l${yggdrasilUserAuthentication.selectedProfile.name}§c."
                             mc.displayGuiScreen(prevGui)
@@ -189,7 +187,6 @@ class GuiTheAltening(private val prevGui: GuiAltManager) : GuiScreen() {
                                     .selectedProfile.id.toString(),
                                     yggdrasilUserAuthentication.authenticatedToken, "mojang")
                             LiquidBounce.eventManager.callEvent(SessionEvent())
-                            MCLeaks.remove()
 
                             prevGui.status = "§aYour name is now §b§l${yggdrasilUserAuthentication.selectedProfile.name}§c."
                             mc.displayGuiScreen(prevGui)
