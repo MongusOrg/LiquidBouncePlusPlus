@@ -39,7 +39,6 @@
     "item.MixinItemRenderer",
     "item.MixinItemStack",
     "math.MixinMathHelper",
-    "network.MixinNetHandlerLoginClient",
     "network.MixinNetHandlerPlayClient",
     "network.MixinNetworkManagerChInit",
     "network.MixinNetworkManager",
