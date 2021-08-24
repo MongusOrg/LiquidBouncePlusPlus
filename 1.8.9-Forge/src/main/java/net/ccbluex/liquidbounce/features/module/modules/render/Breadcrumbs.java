@@ -18,18 +18,22 @@ import net.ccbluex.liquidbounce.value.IntegerValue;
 
 import java.awt.*;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
 
 import static org.lwjgl.opengl.GL11.*;
 
 @ModuleInfo(name = "Breadcrumbs", description = "Leaves a trail behind you.", category = ModuleCategory.RENDER)
 public class Breadcrumbs extends Module {
     public final BoolValue unlimitedValue = new BoolValue("Unlimited", false);
-    public final IntegerValue maxPointsValue = new IntegerValue("MaxPoints", 60, 0, 1000);
     public final IntegerValue colorRedValue = new IntegerValue("R", 255, 0, 255);
     public final IntegerValue colorGreenValue = new IntegerValue("G", 179, 0, 255);
     public final IntegerValue colorBlueValue = new IntegerValue("B", 72, 0, 255);
+    public final IntegerValue fadeSpeedValue = new IntegerValue("Fade-Speed", 25, 0, 255);
     public final BoolValue colorRainbow = new BoolValue("Rainbow", false);
-    private final LinkedList<double[]> positions = new LinkedList<>();
+    private final LinkedList<Dot> positions = new LinkedList<>();
+
+    private double lastX, lastY, lastZ = 0;
 
     @EventTarget
     public void onRender3D(Render3DEvent event) {
@@ -45,13 +49,20 @@ public class Breadcrumbs extends Module {
             glDisable(GL_DEPTH_TEST);
             mc.entityRenderer.disableLightmap();
             glBegin(GL_LINE_STRIP);
-            RenderUtils.glColor(color);
+            
             final double renderPosX = mc.getRenderManager().viewerPosX;
             final double renderPosY = mc.getRenderManager().viewerPosY;
             final double renderPosZ = mc.getRenderManager().viewerPosZ;
 
-            for (final double[] pos : positions)
-                glVertex3d(pos[0] - renderPosX, pos[1] - renderPosY, pos[2] - renderPosZ);
+            List<Dot> removeQueue = new ArrayList<>();
+
+            for (final Dot dot : positions) {
+                if (dot.alpha > 0) dot.render(color, renderPosX, renderPosY, renderPosZ, unlimitedValue.get() ? 0 : fadeSpeedValue.get());
+                else removeQueue.add(dot);
+            }
+
+            for (Dot removeDot : removeQueue) 
+                positions.remove(removeDot);
 
             glColor4d(1, 1, 1, 1);
             glEnd();
@@ -66,8 +77,12 @@ public class Breadcrumbs extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         synchronized (positions) {
-            positions.add(new double[]{mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY, mc.thePlayer.posZ});
-            if (!unlimitedValue.get() && positions.size() >= maxPointsValue.get()) positions.remove(0);
+            if (mc.thePlayer.posX != lastX || mc.thePlayer.getEntityBoundingBox().minY != lastY || mc.thePlayer.posZ != lastZ) {
+                positions.add(new Dot(new double[]{mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY, mc.thePlayer.posZ}));
+                lastX = mc.thePlayer.posX;
+                lastY = mc.thePlayer.getEntityBoundingBox().minY;
+                lastZ = mc.thePlayer.posZ;
+            }
         }
     }
 
@@ -77,10 +92,10 @@ public class Breadcrumbs extends Module {
             return;
 
         synchronized (positions) {
-            positions.add(new double[]{mc.thePlayer.posX,
+            positions.add(new Dot(new double[]{mc.thePlayer.posX,
                     mc.thePlayer.getEntityBoundingBox().minY + (mc.thePlayer.getEyeHeight() * 0.5f),
-                    mc.thePlayer.posZ});
-            positions.add(new double[]{mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY, mc.thePlayer.posZ});
+                    mc.thePlayer.posZ}));
+            positions.add(new Dot(new double[]{mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY, mc.thePlayer.posZ}));
         }
         super.onEnable();
     }
@@ -91,5 +106,22 @@ public class Breadcrumbs extends Module {
             positions.clear();
         }
         super.onDisable();
+    }
+
+    class Dot {
+        public int alpha = 255;
+        private final double[] pos;
+
+        public Dot(double[] position) {
+            this.pos = position;
+        }
+
+        public void render(Color color, double renderPosX, double renderPosY, double renderPosZ, int decreaseBy) {
+            Color reColor = ColorUtils.reAlpha(color, alpha);
+            RenderUtils.glColor(reColor);
+            glVertex3d(pos[0] - renderPosX, pos[1] - renderPosY, pos[2] - renderPosZ);
+            alpha -= decreaseBy;
+            if (alpha < 0) alpha = 0;
+        }
     }
 }

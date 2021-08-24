@@ -33,7 +33,7 @@ object LiquidBounce {
 
     // Client information
     const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "190821"
+    const val CLIENT_VERSION = "240821"
     const val CLIENT_CREATOR = "CCBlueX, WYSI-Foundation"
     const val CLIENT_CLOUD = "https://wysi-foundation.github.io/LiquidCloud/LiquidBounce"
 
@@ -60,13 +60,16 @@ object LiquidBounce {
     // Discord RPC
     lateinit var clientRichPresence: ClientRichPresence
 
+    var lastTick : Long = 0L
+
     /**
      * Execute if client will be started
      */
     fun startClient() {
         isStarting = true
 
-        ClientUtils.getLogger().info("Starting $CLIENT_NAME build $CLIENT_VERSION")
+        ClientUtils.getLogger().info("Starting $CLIENT_NAME build $CLIENT_VERSION :sunglasses:")
+        lastTick = System.currentTimeMillis()
 
         // Create file manager
         fileManager = FileManager()
@@ -140,6 +143,8 @@ object LiquidBounce {
                 }
             }
         }
+
+        ClientUtils.getLogger().info("Finished loading the client in ${System.currentTimeMillis() - lastTick}ms. :axocooler:")
 
         // Set is starting status
         isStarting = false

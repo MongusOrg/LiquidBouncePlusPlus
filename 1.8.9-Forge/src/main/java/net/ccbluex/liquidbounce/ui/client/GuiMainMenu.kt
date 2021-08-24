@@ -28,6 +28,8 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
     var sliderX : Float = 0F
 
+    var easterEgg : Boolean = false
+
     companion object {
         var useParallax = true
     }
@@ -36,11 +38,12 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         slideX = 0F
         fade = 0F
         sliderX = 0F
+        easterEgg = Math.random() < 0.01
         super.initGui()
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        val creditInfo = "im suck at coding"
+        val creditInfo = if (easterEgg) "727 wysi wyfsi!!" else "by WYSI-Foundation."
         drawBackground(0)
         GL11.glPushMatrix()
         renderSwitchButton()
@@ -103,7 +106,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         val staticX = width / 2F - 120F
         val staticY = height / 2F + 20F
 
-        RenderUtils.drawRoundedRect(staticX, staticY, staticX + 240F, staticY + 20F, 10F, Color(255, 255, 255, 100).rgb)
+        RenderUtils.drawRoundedRect(staticX, staticY, staticX + 240F, staticY + 20F, 10F, Color(255, 255, 255, 40).rgb)
         
         var index: Int = 0
         var shouldAnimate = false
@@ -119,7 +122,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         }
 
         if (displayString != null)
-            Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 24F, -1)
+            Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
 
         if (shouldAnimate) {
             if (fade == 0F)
@@ -135,7 +138,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         }
 
         if (fade != 0F)
-            RenderUtils.drawRoundedRect(slideX, staticY, slideX + 40F, staticY + 20F, 10F, Color(1F, 1F, 1F, fade / 100F * 0.8F).rgb)
+            RenderUtils.drawRoundedRect(slideX, staticY, slideX + 40F, staticY + 20F, 10F, Color(1F, 1F, 1F, fade / 100F * 0.5F).rgb)
 
         index = 0
         GlStateManager.disableAlpha()

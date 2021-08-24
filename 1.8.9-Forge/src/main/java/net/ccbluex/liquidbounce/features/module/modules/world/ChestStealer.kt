@@ -185,9 +185,4 @@ class ChestStealer : Module() {
     private val fullInventory: Boolean
         get() = mc.thePlayer.inventory.mainInventory.none { it == null }
 
-    /**
-     * HUD Tag
-     */
-    override val tag: String?
-        get() = "${minDelayValue.get()}, ${maxDelayValue.get()}${if (silenceValue.get()) ", Silent" else ""}"
 }

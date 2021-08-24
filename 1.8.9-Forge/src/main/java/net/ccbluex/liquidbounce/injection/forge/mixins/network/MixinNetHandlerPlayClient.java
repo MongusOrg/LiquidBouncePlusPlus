@@ -9,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EntityMovementEvent;
 import net.ccbluex.liquidbounce.features.special.AntiForge;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
@@ -64,8 +65,13 @@ public abstract class MixinNetHandlerPlayClient {
             if(!"http".equals(scheme) && !"https".equals(scheme) && !isLevelProtocol)
                 throw new URISyntaxException(url, "Wrong protocol");
 
-            if(isLevelProtocol && (url.contains("..") || !url.endsWith("/resources.zip")))
+            if(isLevelProtocol && (url.contains("..") || !url.endsWith("/resources.zip"))) {
+                ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §6The current server has triggered an exploit, luckily we patched it.");
+                ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §7Exploit target directory: §r" + url);
+                LiquidBounce.hud.addNotification(new Notification("Blocked resource pack exploit attempt.", Notification.Type.WARNING));
                 throw new URISyntaxException(url, "Invalid levelstorage resourcepack path");
+            }
+               
         }catch(final URISyntaxException e) {
             ClientUtils.getLogger().error("Failed to handle resource pack", e);
             netManager.sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));

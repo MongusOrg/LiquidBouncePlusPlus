@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.ui.font.Fonts
+import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -154,7 +155,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             var typeColor = -1
             if(changeDomain.get()){
                 for(domain in domainList){
-                    if(name.contains(domain,true)){
+                    if(StringUtils.fixString(ColorUtils.stripColor(name)!!).contains(domain,true)){
                         name = hud.domainValue.get()
                         typeColor = when {
                             rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(

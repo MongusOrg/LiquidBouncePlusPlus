@@ -223,7 +223,7 @@ public class ClickGui extends GuiScreen {
             case "slide":
             case "zoom":
             case "azura":
-            slide = AnimationUtils.animate(1D, slide, 0.005 * (1 - partialTicks));//EaseUtils.easeOutQuart(progress);
+            slide = EaseUtils.easeOutQuart(progress);
             break;
             case "none":
             slide = 1;

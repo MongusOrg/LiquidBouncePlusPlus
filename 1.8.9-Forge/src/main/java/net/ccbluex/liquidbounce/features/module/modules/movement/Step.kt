@@ -180,11 +180,7 @@ class Step : Module() {
         if (fly.state) {
             val flyMode = fly.modeValue.get()
 
-            if (flyMode.equals("Hypixel", ignoreCase = true) ||
-                    flyMode.equals("OtherHypixel", ignoreCase = true) ||
-                    flyMode.equals("LatestHypixel", ignoreCase = true) ||
-                    flyMode.equals("Rewinside", ignoreCase = true) ||
-                    flyMode.equals("Mineplex", ignoreCase = true) && mc.thePlayer.inventory.getCurrentItem() == null) {
+            if (flyMode.equals("Rewinside", ignoreCase = true)) {
                 event.stepHeight = 0F
                 return
             }

@@ -105,7 +105,7 @@ public class ESP extends Module {
 		//</editor-fold>
 
 		for (final Entity entity : mc.theWorld.loadedEntityList) {
-			if (entity != null && entity != mc.thePlayer && EntityUtils.isSelected(entity, false)) {
+			if (entity != null && entity != mc.thePlayer && EntityUtils.isSelected(entity, false) && RenderUtils.isInViewFrustrum(entity)) {
 				final EntityLivingBase entityLiving = (EntityLivingBase) entity;
 
 				Color color = getColor(entityLiving);
@@ -279,8 +279,8 @@ public class ESP extends Module {
 
 								GL11.glVertex2f(maxX + 2, minY + barHeight);
 								GL11.glVertex2f(maxX + 2, maxY);
-								GL11.glVertex2f(maxX + 3, maxY);
-								GL11.glVertex2f(maxX + 3, minY + barHeight);
+								GL11.glVertex2f(maxX + 4, maxY);
+								GL11.glVertex2f(maxX + 4, minY + barHeight);
 
 								GL11.glEnd();
 
@@ -288,7 +288,7 @@ public class ESP extends Module {
 								glEnable(GL_TEXTURE_2D);
 								glEnable(GL_DEPTH_TEST);
 
-								mc.fontRendererObj.drawStringWithShadow(decimalFormat.format(entityLiving.getHealth()) + "§c❤", maxX + 4, minY + barHeight, -1);
+								mc.fontRendererObj.drawStringWithShadow(decimalFormat.format(entityLiving.getHealth()) + " HP", maxX + 4, minY + barHeight, -1);
 
 								glDisable(GL_TEXTURE_2D);
 								glDisable(GL_DEPTH_TEST);
@@ -370,11 +370,6 @@ public class ESP extends Module {
 				? shaderGlowRadius.get() : 1F;
 
 		shader.stopDraw(getColor(null), radius, 1F);
-	}
-
-	@Override
-	public String getTag() {
-		return modeValue.get();
 	}
 
 	public final Color getColor(final Entity entity) {

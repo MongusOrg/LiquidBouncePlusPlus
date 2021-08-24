@@ -193,7 +193,7 @@ class Target : Element() {
                 "Slowly" -> {
                     val font = Fonts.minecraftFont
 
-                    val length = font.getStringWidth(target.name).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(target.health)} ❤")).toFloat() + 10F
+                    val length = 70.coerceAtLeast(font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(target.health)} ❤")).toFloat() + 10F
                     RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
                     drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 30, 30)
                     font.drawStringWithShadow(target.name, 33F, 2F, -1)
@@ -210,7 +210,7 @@ class Target : Element() {
                     val dist = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(target))}m"
 
                     val length = font.getStringWidth(target.name).coerceAtLeast(font.getStringWidth(dist)).coerceAtLeast(font.getStringWidth(health)).toFloat() + 10F
-                    RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
+                    RenderUtils.drawRect(-2F, -2F, 34F + length, 38F, bgColor.rgb)
                     drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 32, 32)
                     font.drawStringWithShadow(target.name, 34F, 2F, -1)
                     font.drawStringWithShadow(dist, 34F, 26F, -1)

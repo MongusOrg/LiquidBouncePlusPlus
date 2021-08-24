@@ -33,7 +33,7 @@ class NoSlow : Module() {
     private val bowStrafeMultiplier = FloatValue("BowStrafeMultiplier", 1.0F, 0.2F, 1.0F)
     private val customOnGround = BoolValue("CustomOnGround", false)
     private val customDelayValue = IntegerValue("CustomDelay",60,10,200)
-    private val modeValue = ListValue("PacketMode", arrayOf("Custom","WatchDog","NCP","AAC","AAC5","None"), "None")
+    private val modeValue = ListValue("PacketMode", arrayOf("Custom","WatchDog","Watchdog2","NCP","AAC","AAC5","None"), "None")
     // Soulsand
     val soulsandValue = BoolValue("Soulsand", true)
     val liquidPushValue = BoolValue("LiquidPush", true)
@@ -111,6 +111,13 @@ class NoSlow : Module() {
                     } else {
                         sendPacket(event, false, true, false, 0, true, true)
                     }
+                }
+
+                "watchdog2" -> {
+                    if (event.eventState == EventState.PRE)
+                        mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+                    else
+                        mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
                 }
 
                 "aac5" -> {

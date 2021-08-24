@@ -130,9 +130,6 @@ class Notification(message : String,type : Type, displayLength: Long) {
 
         var y = firstY
 
-        GL11.glPushMatrix()
-        GL11.glScalef(x / width, x / width, x / width)
-        
         //bg
         RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
 
@@ -180,8 +177,6 @@ class Notification(message : String,type : Type, displayLength: Long) {
                 Type.WARNING -> Color(255, 255, 0).rgb
             }
         )*/
-
-        GL11.glPopMatrix()
 
         GlStateManager.resetColor()
         

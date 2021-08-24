@@ -9,9 +9,31 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 @SideOnly(Side.CLIENT)
 public final class StringUtils {
+
+    private static HashMap<String,String> stringCache = new HashMap<>();
+
+    public static String fixString(String str){
+        if(stringCache.containsKey(str)) return stringCache.get(str);
+
+        str=str.replaceAll("\uF8FF","");//remove air chars
+
+        StringBuilder sb=new StringBuilder();
+        for(char c:str.toCharArray()){
+            if((int) c >(33+65248)&& (int) c <(128+65248)){
+                sb.append(Character.toChars((int) c - 65248));
+            }else{
+                sb.append(c);
+            }
+        }
+        String result=sb.toString();
+        stringCache.put(str,result);
+
+        return result;
+    }
 
     public static String toCompleteString(final String[] args, final int start) {
         if(args.length <= start) return "";

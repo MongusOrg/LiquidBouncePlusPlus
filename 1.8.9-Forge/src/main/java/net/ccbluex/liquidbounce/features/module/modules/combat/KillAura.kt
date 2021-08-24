@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.misc.AntiBot
 import net.ccbluex.liquidbounce.features.module.modules.misc.Teams
+import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
 import net.ccbluex.liquidbounce.utils.EntityUtils
@@ -95,9 +96,6 @@ class KillAura : Module() {
     // Bypass
     private val swingValue = BoolValue("Swing", true)
     private val keepSprintValue = BoolValue("KeepSprint", true)
-
-
-
 
     // AutoBlock
     private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick", "NCP"), "None")
@@ -249,13 +247,40 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        if (rotationStrafeValue.get().equals("Off", true))
+        val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!! as TargetStrafe
+        if (!targetStrafe.state && rotationStrafeValue.get().equals("Off", true))
             return
 
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {
-            when (rotationStrafeValue.get().toLowerCase()) {
+            if (targetStrafe.state && targetStrafe.checkSpeed() && targetStrafe.keyMode && !mc.thePlayer.isSneaking) {
+                val (yaw) = RotationUtils.targetRotation ?: return
+                var strafe = event.strafe
+                var forward = event.forward
+                val friction = event.friction
+
+                var f = strafe * strafe + forward * forward
+
+                if (f >= 1.0E-4F) {
+                    f = MathHelper.sqrt_float(f)
+
+                    if (f < 1.0F)
+                        f = 1.0F
+
+                    f = friction / f
+                    strafe *= f
+                    forward *= f
+
+                    val yawSin = MathHelper.sin((yaw * Math.PI / 180F).toFloat())
+                    val yawCos = MathHelper.cos((yaw * Math.PI / 180F).toFloat())
+
+                    mc.thePlayer.motionX += strafe * yawCos - forward * yawSin
+                    mc.thePlayer.motionZ += forward * yawCos + strafe * yawSin
+                }
+                event.cancelEvent()
+            }
+            else when (rotationStrafeValue.get().toLowerCase()) {
                 "strict" -> {
                     val (yaw) = RotationUtils.targetRotation ?: return
                     var strafe = event.strafe
@@ -490,7 +515,7 @@ class KillAura : Module() {
      */
     private fun updateTarget() {
         // Reset fixed target to null
-        target = null
+        var searchTarget = null
 
         // Settings
         val hurtTime = hurtTimeValue.get()
@@ -528,6 +553,13 @@ class KillAura : Module() {
             // Set target to current entity
             target = entity
             return
+        }
+
+        if (searchTarget != null) {
+            if (target != searchTarget) target = searchTarget
+            return
+        } else {
+            target = null
         }
 
         // Cleanup last targets when no target found and try again

@@ -1,13 +1,18 @@
 package net.ccbluex.liquidbounce.features.module.modules.player;
 
+import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
+import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
+import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
+import net.ccbluex.liquidbounce.features.module.modules.world.Tower;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
 import net.ccbluex.liquidbounce.utils.block.BlockUtils;
 import net.ccbluex.liquidbounce.utils.misc.FallingPlayer;
+import net.ccbluex.liquidbounce.utils.misc.RandomUtils;
 import net.ccbluex.liquidbounce.value.*;
 
 import net.minecraft.block.BlockAir;
@@ -26,25 +31,30 @@ import static org.lwjgl.opengl.GL11.*;
 public class AntiVoid extends Module {
 
     public final ListValue voidDetectionAlgorithm = new ListValue("Detect-Method", new String[]{"Collision", "Predict"}, "Collision");
-    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "HypixelTest", "Test"}, "Teleport");
+    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Hypixel"}, "Teleport");
     public final IntegerValue maxFallDistSimulateValue = new IntegerValue("Simulate-CheckFallDistance", 255, 0, 255);
     public final IntegerValue maxFindRangeValue = new IntegerValue("Simulate-MaxFindRange", 60, 0, 255);
     public final IntegerValue illegalDupeValue = new IntegerValue("Illegal-Dupe", 1, 1, 5);
     public final FloatValue setBackFallDistValue = new FloatValue("Max-FallDistance", 5F, 0F, 255F);
     public final BoolValue resetFallDistanceValue = new BoolValue("Reset-FallDistance", true);
     public final BoolValue renderTraceValue = new BoolValue("Render-Trace", true);
+    public final BoolValue scaffoldValue = new BoolValue("AutoScaffold", true);
+    public final BoolValue towerValue = new BoolValue("AutoTower", true);
 
     private BlockPos detectedLocation = null;
     private double lastX = 0; 
     private double lastY = 0; 
     private double lastZ = 0;
     private double lastFound = 0;
-    private boolean shouldRender = false;
+    private boolean shouldRender, shouldStopMotion = false;
 
     private final LinkedList<double[]> positions = new LinkedList<>();
 
     @EventTarget
     public void onUpdate(UpdateEvent event) {
+        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+            return;
+
         detectedLocation = null;
 
         if (voidDetectionAlgorithm.get().equalsIgnoreCase("collision")) {
@@ -56,8 +66,10 @@ public class AntiVoid extends Module {
 
             shouldRender = renderTraceValue.get() && !MovementUtils.isBlockUnder();
 
+            shouldStopMotion = false;
             if (!MovementUtils.isBlockUnder()) {
                 if (mc.thePlayer.fallDistance >= setBackFallDistValue.get()) {
+                    shouldStopMotion = true;
                     switch (setBackModeValue.get()) {
                     case "IllegalTeleport":
                         mc.thePlayer.setPositionAndUpdate(lastX, lastY, lastZ);
@@ -70,16 +82,22 @@ public class AntiVoid extends Module {
                     case "FlyFlag":
                         mc.thePlayer.motionY = 0F;
                         break;
-                    case "HypixelTest":
+                    case "StopMotion":
                         float oldFallDist = mc.thePlayer.fallDistance;
                         mc.thePlayer.motionY = 0F;
                         mc.thePlayer.fallDistance = oldFallDist;
                         break;
-                    case "Test":
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + 255F, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                    case "Hypixel":
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextFloat(6F, 12F), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         break;
                     }
-                    if (resetFallDistanceValue.get() && !setBackModeValue.get().equalsIgnoreCase("HypixelTest")) mc.thePlayer.fallDistance = 0;
+                    if (resetFallDistanceValue.get() && !setBackModeValue.get().equalsIgnoreCase("StopMotion")) mc.thePlayer.fallDistance = 0;
+
+                    if (scaffoldValue.get() && !LiquidBounce.moduleManager.getModule(Scaffold.class).getState())
+                        LiquidBounce.moduleManager.getModule(Scaffold.class).setState(true);
+
+                    if (towerValue.get() && !LiquidBounce.moduleManager.getModule(Tower.class).getState())
+                        LiquidBounce.moduleManager.getModule(Tower.class).setState(true);
                 }
             }
         } else {
@@ -111,7 +129,9 @@ public class AntiVoid extends Module {
 
                 shouldRender = renderTraceValue.get() && detectedLocation == null;
 
+                shouldStopMotion = false;
                 if (mc.thePlayer.fallDistance - lastFound > setBackFallDistValue.get()) {
+                    shouldStopMotion = true;
                     switch (setBackModeValue.get()) {
                     case "IllegalTeleport":
                         mc.thePlayer.setPositionAndUpdate(lastX, lastY, lastZ);
@@ -124,16 +144,22 @@ public class AntiVoid extends Module {
                     case "FlyFlag":
                         mc.thePlayer.motionY = 0F;
                         break;
-                    case "HypixelTest":
+                    case "StopMotion":
                         float oldFallDist = mc.thePlayer.fallDistance;
                         mc.thePlayer.motionY = 0F;
                         mc.thePlayer.fallDistance = oldFallDist;
                         break;
-                    case "Test":
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY - 1E-11 * (mc.thePlayer.ticksExisted % 20), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                    case "Hypixel":
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextFloat(6F, 12F), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         break;
                     }
-                    if (resetFallDistanceValue.get() && !setBackModeValue.get().equalsIgnoreCase("HypixelTest")) mc.thePlayer.fallDistance = 0;
+                    if (resetFallDistanceValue.get() && !setBackModeValue.get().equalsIgnoreCase("StopMotion")) mc.thePlayer.fallDistance = 0;
+
+                    if (scaffoldValue.get() && !LiquidBounce.moduleManager.getModule(Scaffold.class).getState())
+                        LiquidBounce.moduleManager.getModule(Scaffold.class).setState(true);
+
+                    if (towerValue.get() && !LiquidBounce.moduleManager.getModule(Tower.class).getState())
+                        LiquidBounce.moduleManager.getModule(Tower.class).setState(true);
                 }
             }
         }
@@ -148,19 +174,28 @@ public class AntiVoid extends Module {
 
     @EventTarget
     public void onPacket(PacketEvent event) {
-        if (setBackModeValue.get().equalsIgnoreCase("HypixelTest") && event.getPacket() instanceof S08PacketPlayerPosLook)
+        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+            return;
+            
+        if (setBackModeValue.get().equalsIgnoreCase("StopMotion") && event.getPacket() instanceof S08PacketPlayerPosLook)
             mc.thePlayer.fallDistance = 0;
     }
 
     @EventTarget
     public void onMove(MoveEvent event) {
-        if (setBackModeValue.get().equalsIgnoreCase("HypixelTest") && mc.thePlayer.fallDistance >= setBackFallDistValue.get()) {
+        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+            return;
+
+        if (setBackModeValue.get().equalsIgnoreCase("StopMotion") && shouldStopMotion) {
             event.zero();
         }
     }
 
     @EventTarget
     public void onRender3D(Render3DEvent event) {
+        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+            return;
+            
         if (shouldRender) synchronized (positions) {
             glPushMatrix();
 
@@ -172,7 +207,7 @@ public class AntiVoid extends Module {
             mc.entityRenderer.disableLightmap();
             glLineWidth(1F);
             glBegin(GL_LINE_STRIP);
-            glColor4f(1F, 1F, 0.1F, 0.7F);
+            glColor4f(1F, 1F, 0.1F, 1F);
             final double renderPosX = mc.getRenderManager().viewerPosX;
             final double renderPosY = mc.getRenderManager().viewerPosY;
             final double renderPosZ = mc.getRenderManager().viewerPosZ;
@@ -204,12 +239,13 @@ public class AntiVoid extends Module {
 
     @Override
     public String getTag() {
-        return voidDetectionAlgorithm.get() + ", " + setBackModeValue.get();
+        return setBackModeValue.get();
     }
 
     private void reset() {
         detectedLocation = null;
         lastX = lastY = lastZ = lastFound = 0;
+        shouldStopMotion = shouldRender = false;
         synchronized (positions) {
             positions.clear();
         }

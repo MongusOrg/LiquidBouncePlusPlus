@@ -17,12 +17,23 @@ class AutoDisableCommand : Command("autodisable", emptyArray()) {
      * Execute commands with provided [args]
      */
     override fun execute(args: Array<String>) {
-        if (args.size == 2 && args[1].equals("list", ignoreCase = true)) {
-            chat("§c§lAutoDisable modules:")
-            LiquidBounce.moduleManager.modules.filter { it.autoDisable != DisableEvent.NONE }.forEach {
-                ClientUtils.displayChatMessage("§6> §c${it.name} §7| §a${it.autoDisable.name.toLowerCase()}")
+        if (args.size == 2) {
+            when (args[1].toLowerCase()) {
+                "list" -> {
+                    chat("§c§lAutoDisable modules:")
+                    LiquidBounce.moduleManager.modules.filter { it.autoDisable != DisableEvent.NONE }.forEach {
+                        ClientUtils.displayChatMessage("§6> §c${it.name} §7| §a${it.autoDisable.name.toLowerCase()}")
+                    }
+                    return
+                }
+                "clear" -> {
+                    LiquidBounce.moduleManager.modules.filter { it.autoDisable != DisableEvent.NONE }.forEach {
+                        it.autoDisable = DisableEvent.NONE
+                    }
+                    chat("Successfully cleared the AutoDisable list.")
+                    return
+                }
             }
-            return
         }
         else if (args.size > 2) {
             // Get module by name

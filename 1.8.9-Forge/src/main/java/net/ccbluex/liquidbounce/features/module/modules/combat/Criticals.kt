@@ -28,7 +28,7 @@ import javax.smartcardio.CommandAPDU
 @ModuleInfo(name = "Criticals", description = "Automatically deals critical hits.", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "SLAACv4", "Hop", "TPHop", "Jump", "Visual", "Edit"), "Packet")
+    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Corona"), "Packet")
     val delayValue = IntegerValue("Delay", 0, 0, 500)
     private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.1F, 0.42F)
     private val downYValue = FloatValue("DownY", 0f, 0f, 0.1F)
@@ -68,6 +68,7 @@ class Criticals : Module() {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.00150000001304, z, false))
                     mc.thePlayer.onCriticalHit(entity)
                 }
+
                 "packet" -> {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.0625, z, true))
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y, z, false))
@@ -90,11 +91,6 @@ class Criticals : Module() {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 8e-15, mc.thePlayer.posZ, true))
                 }
 
-                "slaacv4" -> { //gay
-                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1.949e-13, mc.thePlayer.posZ, false))
-                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1.153e-13, mc.thePlayer.posZ, false))
-                }
-
                 "hop" -> {
                     mc.thePlayer.motionY = 0.1
                     mc.thePlayer.fallDistance = 0.1f
@@ -106,6 +102,7 @@ class Criticals : Module() {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.01, z, false))
                     mc.thePlayer.setPosition(x, y + 0.01, z)
                 }
+
                 "jump" -> {
                     if (mc.thePlayer.onGround) {
                         mc.thePlayer.motionY = jumpHeightValue.get().toDouble()
@@ -113,6 +110,33 @@ class Criticals : Module() {
                         mc.thePlayer.motionY -= downYValue.get()
                     }
                 }
+
+                "miniphase" -> {
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 0.0125, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.01275, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 0.00025, z, true))
+                }
+
+                "nanopacket" -> {
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.00973333333333, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.001, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 0.01200000000007, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 0.0005, z, false))
+                }
+
+                "non-calculable" -> {
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E-5, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E-7, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 1E-6, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 1E-4, z, false))
+                }
+
+                "corona" -> {
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E+27, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 1E+68, z, false))
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E+41, z, false))
+                }
+
                 "visual" -> mc.thePlayer.onCriticalHit(entity)
             }
 

@@ -32,8 +32,7 @@ class TargetStrafe : Module() {
     private val render = BoolValue("Render", true)
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "None")
     private val safewalk = BoolValue("SafeWalk", true)
-    private val thirdPerson = BoolValue("ThirdPerson", true)
-    private val strafeCustomMotion = BoolValue("StrafeCustomMotion", true)
+    val thirdPerson = BoolValue("ThirdPerson", true)
     private val colorType = ListValue("Color", arrayOf("Custom", "Dynamic", "Rainbow", "Rainbow2", "Sky", "Fade", "Mixer"), "Custom")
     private val redValue = IntegerValue("Red", 255, 0, 255)
     private val greenValue = IntegerValue("Green", 255, 0, 255)
@@ -46,14 +45,12 @@ class TargetStrafe : Module() {
     private val outLine = BoolValue("Outline", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
-    private lateinit var fly: Fly
 
     var direction: Int = 1
 
     override fun onInitialize() {
         killAura=LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
         speed=LiquidBounce.moduleManager.getModule(Speed::class.java) as Speed
-        fly=LiquidBounce.moduleManager.getModule(Fly::class.java) as Fly
     }
 
     @EventTarget
@@ -74,41 +71,8 @@ class TargetStrafe : Module() {
     }
 
     @EventTarget
-    fun onStrafe(event: StrafeEvent) {
-        if (canStrafe && ((speed.state && (speed.getModeName().equals("HypixelLowHop", true) || speed.getModeName().equals("HypixelReduceHop", true) || (speed.getModeName().equals("Jump", true) && speed.jumpStrafe.get()))) || fly.state)) {
-            if (strafeCustomMotion.get()) {
-                val (yaw) = RotationUtils.targetRotation ?: return
-                var strafe = event.strafe
-                var forward = event.forward
-                val friction = event.friction
-
-                var f = strafe * strafe + forward * forward
-
-                if (f >= 1.0E-4F) {
-                    f = MathHelper.sqrt_float(f)
-
-                    if (f < 1.0F)
-                        f = 1.0F
-
-                    f = friction / f
-                    strafe *= f
-                    forward *= f
-
-                    val yawSin = MathHelper.sin((yaw * Math.PI / 180F).toFloat())
-                    val yawCos = MathHelper.cos((yaw * Math.PI / 180F).toFloat())
-
-                    mc.thePlayer.motionX += strafe * yawCos - forward * yawSin
-                    mc.thePlayer.motionZ += forward * yawCos + strafe * yawSin
-                }
-            }
-
-            event.cancelEvent()
-        }
-    }
-
-    @EventTarget
     fun onMove(event: MoveEvent) {
-        if (safewalk.get() && checkVoid())
+        if (canStrafe && safewalk.get() && checkVoid())
             event.isSafeWalk = true
     }
 
@@ -130,7 +94,9 @@ class TargetStrafe : Module() {
         }
 
     val canStrafe: Boolean
-        get() = (state && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
+        get() = (state && checkSpeed() && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
+
+    public fun checkSpeed(): Boolean = speed.state && speed.typeValue.get().equals("Hypixel", true)
 
     private fun checkVoid(): Boolean {
         for (x in -1..0) {
@@ -205,7 +171,7 @@ class TargetStrafe : Module() {
             for (i in 0..360 step 60 - accuracyValue.get()) { // You can change circle accuracy  (60 - accuracy)
                 when (colorType.get()) {
                     "Custom" -> GL11.glColor3f(redValue.get() / 255.0f, greenValue.get() / 255.0f, blueValue.get() / 255.0f)
-                    "Dynamic" -> if (speed.state || fly.state) GL11.glColor4f(0.1f, 1f, 0.1f, 1f) else GL11.glColor4f(1f, 1f, 1f, 1f)
+                    "Dynamic" -> if (canStrafe) GL11.glColor4f(0.1f, 1f, 0.1f, 1f) else GL11.glColor4f(1f, 1f, 1f, 1f)
                     "Rainbow" -> {
                         val rainbow = Color(Color.HSBtoRGB((mc.thePlayer.ticksExisted / 70.0 + sin(i / 50.0 * 1.75)).toFloat() % 1.0f, 0.7f, 1.0f))
                         GL11.glColor3f(rainbow.red / 255.0f, rainbow.green / 255.0f, rainbow.blue / 255.0f)

@@ -83,7 +83,7 @@ public class Scaffold extends Module {
 
 
     //make sprint compatible with tower.add sprint tricks
-    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"Same", "Ground", "Dynamic", "Off"}, "Off");
+    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"Same", "Ground", "Off"}, "Off");
     // Basic stuff
     private final BoolValue swingValue = new BoolValue("Swing", true);
     private final BoolValue downValue = new BoolValue("Down", false);
@@ -121,7 +121,7 @@ public class Scaffold extends Module {
     };
 
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
-    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static"}, "Normal");
+    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2"}, "Normal");
 
     private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F);
 
@@ -189,9 +189,6 @@ public class Scaffold extends Module {
     // Eagle
     private int placedBlocksWithoutEagle = 0;
     private boolean eagleSneaking;
-
-    // Sprint
-    private boolean dynamicStopSprint = false;
 
     // Down
     private boolean shouldGoDown = false;
@@ -316,10 +313,6 @@ public class Scaffold extends Module {
         }
 
         if (sprintModeValue.get().equalsIgnoreCase("off") || (sprintModeValue.get().equalsIgnoreCase("ground") && !mc.thePlayer.onGround)) {
-            mc.thePlayer.setSprinting(false);
-        }
-
-        if (sprintModeValue.get().equalsIgnoreCase("dynamic") && dynamicStopSprint) {
             mc.thePlayer.setSprinting(false);
         }
 
@@ -555,10 +548,6 @@ public class Scaffold extends Module {
 
         }
 
-        // idfk
-        boolean oldSprint = mc.thePlayer.isSprinting();
-        dynamicStopSprint = true;
-        if (sprintModeValue.get().equalsIgnoreCase("dynamic")) mc.thePlayer.setSprinting(false);
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
                 targetPlace.getEnumFacing(), targetPlace.getVec3())) {
             delayTimer.reset();
@@ -576,8 +565,6 @@ public class Scaffold extends Module {
             else
                 mc.getNetHandler().addToSendQueue(new C0APacketAnimation());
         }
-        if (sprintModeValue.get().equalsIgnoreCase("dynamic")) mc.thePlayer.setSprinting(oldSprint);
-        dynamicStopSprint = false;
 
         if (!stayAutoBlock.get() && blockSlot >= 0 && !autoBlockMode.get().equalsIgnoreCase("Switch"))
             mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
@@ -759,7 +746,7 @@ public class Scaffold extends Module {
             return false;
 
 
-        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC");
+        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC") || rotationModeValue.get().contains("Static");
 
         final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
@@ -796,8 +783,11 @@ public class Scaffold extends Module {
                                     MathHelper.wrapAngleTo180_float((float) -Math.toDegrees(Math.atan2(diffY, diffXZ)))
                             );
 
-                            if (rotationModeValue.get().equalsIgnoreCase("static"))
+                            if (rotationModeValue.get().equalsIgnoreCase("static") && !mc.gameSettings.keyBindJump.isKeyDown())
                                 rotation = new Rotation(MovementUtils.getScaffoldRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing), staticPitchValue.get());
+
+                            if (rotationModeValue.get().equalsIgnoreCase("static2") && !mc.gameSettings.keyBindJump.isKeyDown())
+                                rotation = new Rotation(rotation.getYaw(), staticPitchValue.get());
 
                             final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotation);
                             final Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4, rotationVector.yCoord * 4, rotationVector.zCoord * 4);

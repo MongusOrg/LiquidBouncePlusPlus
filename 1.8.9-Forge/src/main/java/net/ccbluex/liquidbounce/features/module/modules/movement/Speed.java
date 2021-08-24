@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel.
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.ncp.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spartan.SpartanYPort;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.FloatValue;
@@ -44,8 +45,8 @@ public class Speed extends Module {
             new AACv4BHop(),
 
             // Hypixel
-            new HypixelReduceHop(),
             new HypixelLowHop(),
+            new HypixelStable(),
 
             // Spartan
             new SpartanYPort(),
@@ -109,7 +110,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"ReduceHop", "LowHop"}, "ReduceHop") {
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"LowHop", "Stable"}, "Stable") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -147,6 +148,7 @@ public class Speed extends Module {
     public final BoolValue resetYValue = new BoolValue("CustomResetY", false);
 
     public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false);
+    public final BoolValue bypassWarning = new BoolValue("BypassWarning", true);
 /*
     public final FloatValue portMax = new FloatValue("AAC-PortLength", 1, 1, 20);
     public final FloatValue aacGroundTimerValue = new FloatValue("AACGround-Timer", 3F, 1.1F, 10F);
@@ -209,6 +211,9 @@ public class Speed extends Module {
         if(mc.thePlayer == null)
             return;
 
+        if (bypassWarning.get() && typeValue.get().equalsIgnoreCase("hypixel"))
+            LiquidBounce.hud.addNotification(new Notification("Hypixel speeds are working in progress and may silent flag/ban!", Notification.Type.WARNING, 3000L));
+
         mc.timer.timerSpeed = 1F;
 
         final SpeedMode speedMode = getMode();
@@ -233,7 +238,26 @@ public class Speed extends Module {
 
     @Override
     public String getTag() {
-        return typeValue.get();
+        return typeValue.get() == "Other" ? otherModeValue.get() : typeValue.get() == "Custom" ? "Custom" : typeValue.get() + ", " + getOnlySingleName();
+    }
+
+    private String getOnlySingleName() {
+        String mode = "";
+        switch (typeValue.get()) {
+            case "NCP":
+            mode = ncpModeValue.get();
+            break;
+            case "AAC":
+            mode = aacModeValue.get();
+            break;
+            case "Spartan":
+            mode = "Spartan";
+            break;
+            case "Hypixel":
+            mode = hypixelModeValue.get();
+            break;
+        }
+        return mode;
     }
 
     public String getModeName() {

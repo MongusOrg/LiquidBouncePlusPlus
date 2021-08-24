@@ -48,9 +48,7 @@ public class Fly extends Module {
             "Motion",
             "Creative",
             "Damage",
-
-            // Hypixel
-            "Hypixel-Pearl",
+            "Pearl",
 
             // Rewinside
             "Rewinside",
@@ -87,7 +85,6 @@ public class Fly extends Module {
     private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
 
     // AAC
-    private final BoolValue aac5SkidNotificationValue = new BoolValue("AAC5-SkidInfo", false);
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
@@ -163,9 +160,6 @@ public class Fly extends Module {
             mc.thePlayer.motionX *= 0.1D;
             mc.thePlayer.motionZ *= 0.1D;
             mc.thePlayer.swingItem();
-        } else if (mode.equalsIgnoreCase("AAC5-Vanilla")) {
-            if (aac5SkidNotificationValue.get()) LiquidBounce.hud.addNotification(new Notification("FDPClient skid (gone wrong)", 2000L));
-            //if (aac5PursePacketsValue.get() != 7) LiquidBounce.hud.addNotification(new Notification("Only change the values if you know what you are going to do!", Notification.Type.WARNING, 3000L));
         }
 
         startY = mc.thePlayer.posY;
@@ -184,7 +178,7 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
 
-        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus")) || (mode.equalsIgnoreCase("Hypixel-Pearl") && pearlState != -1)) {
+        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus")) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
             mc.thePlayer.motionZ = 0;
@@ -304,7 +298,7 @@ public class Fly extends Module {
                 if(mc.thePlayer.ticksExisted % 8 == 0)
                     mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 10, mc.thePlayer.posZ, true));
                 break;
-            case "hypixel-pearl":
+            case "pearl":
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
 
@@ -389,6 +383,11 @@ public class Fly extends Module {
             }
 
             if (mode.equalsIgnoreCase("AAC5-Vanilla")) {
+                if (mc.isIntegratedServerRunning()) {
+                    LiquidBounce.hud.addNotification(new Notification("This fly will CRASH your client in Singleplayer!", Notification.Type.WARNING, 2000L));
+                    this.setState(false);
+                    return;
+                }
                 aac5C03List.add(packetPlayer);
                 event.cancelEvent();
                 if(aac5C03List.size()>aac5PursePacketsValue.get())
@@ -424,7 +423,7 @@ public class Fly extends Module {
     @EventTarget
     public void onMove(final MoveEvent event) {
         switch(modeValue.get().toLowerCase()) {
-            case "hypixel-pearl": {
+            case "pearl": {
                 if (pearlState != 2) {
                     event.cancelEvent();
                 }
