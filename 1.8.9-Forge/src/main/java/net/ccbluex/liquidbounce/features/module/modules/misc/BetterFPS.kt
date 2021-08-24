@@ -7,13 +7,8 @@ import net.ccbluex.liquidbounce.value.ListValue
 
 import net.ccbluex.liquidbounce.event.*
 
-@ModuleInfo(name = "BetterFPS", description = "Make math calc faster.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "BetterFPS", description = "Make math calc faster.", category = ModuleCategory.MISC, canEnable = false)
 class BetterFPS : Module() {
     val sinMode = ListValue("SinMode", arrayOf("Vanilla", "Taylor", "LibGDX", "RivensFull", "RivensHalf", "Rivens", "Java", "1.16"), "Vanilla")
     val cosMode = ListValue("CosMode", arrayOf("Vanilla", "Taylor", "LibGDX", "RivensFull", "RivensHalf", "Rivens", "Java", "1.16"), "Vanilla")
-
-    @EventTarget
-    fun onTick(event: TickEvent) {
-        this.state = false
-    }
 }

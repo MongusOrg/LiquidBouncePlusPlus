@@ -9,7 +9,7 @@ import net.ccbluex.liquidbounce.utils.render.BlendUtils;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 import java.awt.Color;
 
-@ModuleInfo(name = "ColorMixer", description = "Mix two colors together.", category = ModuleCategory.COLOR)
+@ModuleInfo(name = "ColorMixer", description = "Mix two colors together.", category = ModuleCategory.COLOR, canEnable = false)
 public class ColorMixer extends Module {
 
     public static IntegerValue col1RedValue = new IntegerValue("Color1-Red", 255, 0, 255);
@@ -25,10 +25,5 @@ public class ColorMixer extends Module {
         Color col2 = new Color(col2RedValue.get(), col2GreenValue.get(), col2BlueValue.get());
         return BlendUtils.blendColors(new float[] {0, 0.5F, 1F}, new Color[] {col1, col2, col1}, (System.currentTimeMillis() + index) % (seconds * 1000) / (float) (seconds * 1000));
     }
-
-    @EventTarget
-    public void onTick(TickEvent event) {
-        this.setState(false);
-    }
-
+    
 }

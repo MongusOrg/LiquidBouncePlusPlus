@@ -61,7 +61,7 @@ open class Module : MinecraftInstance(), Listenable {
     // Current state of module
     var state = false
         set(value) {
-            if (field == value) return
+            if (field == value || !canEnable) return
 
             // Call toggle
             onToggle(value)
@@ -74,7 +74,7 @@ open class Module : MinecraftInstance(), Listenable {
                     2 -> (if (value) LiquidBounce.tipSoundManager.enableSound else LiquidBounce.tipSoundManager.disableSound).asyncPlay()
                 }
                 if (LiquidBounce.moduleManager.shouldNotify)
-                    LiquidBounce.hud.addNotification(Notification("$name ${if (value) "§aEnabled" else "§cDisabled"}", Notification.Type.INFO, 1000L))
+                    LiquidBounce.hud.addNotification(Notification("${if (value) "§aEnabled" else "§cDisabled"} §r$name", Notification.Type.INFO, 1000L))
             }
 
             // Call on enabled or disabled

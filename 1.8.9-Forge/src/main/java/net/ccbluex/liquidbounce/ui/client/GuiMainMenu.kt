@@ -38,7 +38,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         slideX = 0F
         fade = 0F
         sliderX = 0F
-        easterEgg = Math.random() < 0.01
+        easterEgg = Math.random() < 0.1
         super.initGui()
     }
 

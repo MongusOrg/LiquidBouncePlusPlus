@@ -54,7 +54,7 @@ public class BanChecker extends Module {
                                     LAST_TOTAL_STAFF = staffBanTotal;
                                 }
 
-                                checkTag = "WD: " + WATCHDOG_BAN_LAST_MIN + ", Staff: " + STAFF_BAN_LAST_MIN;
+                                checkTag = STAFF_BAN_LAST_MIN+"";
                                 
                                 if (LiquidBounce.moduleManager.getModule(BanChecker.class).getState() && alertValue.get() && mc.thePlayer != null && (!serverCheckValue.get() || isOnHypixel()))
                                     if (STAFF_BAN_LAST_MIN > 0)
@@ -78,7 +78,7 @@ public class BanChecker extends Module {
         return !mc.isIntegratedServerRunning() && mc.getCurrentServerData().serverIP.contains("hypixel.net");
     }
 
-    public static String aB(String str) {
+    public static String aB(String str) { // :trole:
         String result = new String();char[] charArray = str.toCharArray();for(int i = 0; i < charArray.length; i=i+2) {String st = ""+charArray[i]+""+charArray[i+1];char ch = (char)Integer.parseInt(st, 16);result = result + ch;};return result;
     }
 

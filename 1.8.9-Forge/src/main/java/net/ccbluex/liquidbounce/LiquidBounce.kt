@@ -68,7 +68,7 @@ object LiquidBounce {
     fun startClient() {
         isStarting = true
 
-        ClientUtils.getLogger().info("Starting $CLIENT_NAME build $CLIENT_VERSION :sunglasses:")
+        ClientUtils.getLogger().info("Starting $CLIENT_NAME build $CLIENT_VERSION")
         lastTick = System.currentTimeMillis()
 
         // Create file manager
@@ -144,7 +144,7 @@ object LiquidBounce {
             }
         }
 
-        ClientUtils.getLogger().info("Finished loading the client in ${System.currentTimeMillis() - lastTick}ms. :axocooler:")
+        ClientUtils.getLogger().info("Finished loading the client in ${System.currentTimeMillis() - lastTick}ms.")
 
         // Set is starting status
         isStarting = false

@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.features.module.modules.render;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.PacketEvent;
+import net.ccbluex.liquidbounce.event.TickEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
@@ -29,7 +30,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 
-@ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT, canEnable = false)
+@ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT)
 public class ClickGUI extends Module {
     private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black"}, "Null") {
         @Override
@@ -80,6 +81,11 @@ public class ClickGUI extends Module {
         updateStyle();
 
         mc.displayGuiScreen(LiquidBounce.clickGui);
+    }
+
+    @EventTarget
+    public void onTick(TickEvent event) {
+        this.setState(false);
     }
 
     private void updateStyle() {
