@@ -34,6 +34,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
 
     private val smoothYTransition = BoolValue("Smooth-YTransition", true)
     private val barValue = BoolValue("Bar", true)
+    private val newValue = BoolValue("New", true)
     private val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgGreenValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgBlueValue = IntegerValue("Background-Red", 0, 0, 255)
@@ -55,9 +56,9 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
             notifications.add(i)
         for(i in notifications)
             if(mc.currentScreen !is GuiHudDesigner)
-            i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
+            i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
         else
-            exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get())
+            exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get())
         if (mc.currentScreen is GuiHudDesigner) {
             if (!hud.notifications.contains(exampleNotification))
                 hud.addNotification(exampleNotification)
@@ -105,18 +106,18 @@ class Notification(message : String,type : Type, displayLength: Long) {
 
     constructor(message: String, displayLength: Long) : this(message, Type.INFO, displayLength)
 
-    enum class Type(var notifName: String) {
-        SUCCESS("Success"),
-        INFO("Info"),
-        WARNING("Warning"),
-        ERROR("Error")
+    enum class Type {
+        SUCCESS,
+        INFO,
+        WARNING,
+        ERROR
     }
 
     enum class FadeState {
         IN,STAY,OUT,END
     }
 
-    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side, bar: Boolean) {
+    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side, bar: Boolean, new: Boolean) {
         val delta = RenderUtils.deltaTime
         val width = textLength.toFloat() + 8.0f
         
@@ -131,53 +132,54 @@ class Notification(message : String,type : Type, displayLength: Long) {
 
         var y = firstY
 
-        //bg
-        RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
+        if (new) {
+            RenderUtils.customRounded(-x + 6F + textLength, -y, -x - 2F, -28F - y, 0F, 2F, 2F, 0F, backgroundColor.rgb)
+            RenderUtils.customRounded(-x - 2F, -y, -x - 4F, -28F - y, 2F, 0F, 0F, 2F, when(type) {
+                    Type.SUCCESS -> Color(80, 255, 80).rgb
+                    Type.ERROR -> Color(255, 80, 80).rgb
+                    Type.INFO -> Color(255, 255, 255).rgb
+                    Type.WARNING -> Color(255, 255, 0).rgb
+                })  
+        } else {
+            //bg
+            RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
 
-        GL11.glPushMatrix()
-        GlStateManager.disableAlpha()
-        RenderUtils.drawImage2(when (type) {
-            Type.SUCCESS -> imgSuccess
-            Type.ERROR -> imgError
-            Type.WARNING -> imgWarning
-            Type.INFO -> imgInfo
-        }, -x - 1 - 26F, -27F - y, 26, 26)
-        GlStateManager.enableAlpha()
-        GL11.glPopMatrix()
-        
-        val dist = (x + 1 + 26F) - (x - 8 - textLength)
+            GL11.glPushMatrix()
+            GlStateManager.disableAlpha()
+            RenderUtils.drawImage2(when (type) {
+                Type.SUCCESS -> imgSuccess
+                Type.ERROR -> imgError
+                Type.WARNING -> imgWarning
+                Type.INFO -> imgInfo
+            }, -x - 1 - 26F, -27F - y, 26, 26)
+            GlStateManager.enableAlpha()
+            GL11.glPopMatrix()
 
-        val kek = -x - 1 - 26F
+            val dist = (x + 1 + 26F) - (x - 8 - textLength)
 
-        //notification bar xd
-        if (bar) if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
-            RenderUtils.drawRect(kek, -y, kek + (dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())), -1F - y, when(type) {
-                Type.SUCCESS -> Color(80, 255, 80).rgb
-                Type.ERROR -> Color(255, 80, 80).rgb
-                Type.INFO -> Color(255, 255, 255).rgb
-                Type.WARNING -> Color(255, 255, 0).rgb
-            })
-        } else if (fadeState == FadeState.IN) {
-            RenderUtils.drawRect(kek, -y, kek + dist, -1F - y, when(type) {
-                Type.SUCCESS -> Color(80, 255, 80).rgb
-                Type.ERROR -> Color(255, 80, 80).rgb
-                Type.INFO -> Color(255, 255, 255).rgb
-                Type.WARNING -> Color(255, 255, 0).rgb
-            })
+            val kek = -x - 1 - 26F
+
+            //notification bar xd
+            if (bar) if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
+                RenderUtils.drawRect(kek, -y, kek + (dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())), -1F - y, when(type) {
+                    Type.SUCCESS -> Color(80, 255, 80).rgb
+                    Type.ERROR -> Color(255, 80, 80).rgb
+                    Type.INFO -> Color(255, 255, 255).rgb
+                    Type.WARNING -> Color(255, 255, 0).rgb
+                })
+            } else if (fadeState == FadeState.IN) {
+                RenderUtils.drawRect(kek, -y, kek + dist, -1F - y, when(type) {
+                    Type.SUCCESS -> Color(80, 255, 80).rgb
+                    Type.ERROR -> Color(255, 80, 80).rgb
+                    Type.INFO -> Color(255, 255, 255).rgb
+                    Type.WARNING -> Color(255, 255, 0).rgb
+                })
+            }
         }
 
         GlStateManager.resetColor()
 
-        //message thingy uwu
         Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
-        /*Fonts.fontSFUI40.drawString(if(message.contains("Enabled") || message.contains("Disabled")) "Module" else type.notifName, -x + 2, -23F - y,
-            when(type) {
-                Type.SUCCESS -> Color(80, 255, 80).rgb
-                Type.ERROR -> Color(255, 80, 80).rgb
-                Type.INFO -> Color(255, 255, 255).rgb
-                Type.WARNING -> Color(255, 255, 0).rgb
-            }
-        )*/
 
         GlStateManager.resetColor()
         
