@@ -44,10 +44,11 @@ public class HypixelStable extends SpeedMode {
                 mc.thePlayer.jumpTicks = 10;
             }
 
-            if (!mc.thePlayer.onGround && mc.thePlayer.motionY < -0.36) 
-                mc.timer.timerSpeed = 1.08F;
+            if (!mc.thePlayer.onGround && mc.thePlayer.motionY < -0.24)  {
+                mc.thePlayer.motionY *= 0.990000125;
+            }
             
-            double moveSpeed = Math.max(lastDist - lastDist / 159.0D, MovementUtils.getBaseMoveSpeed());
+            double moveSpeed = Math.max(lastDist - lastDist / 159.0D, MovementUtils.getSpeed());
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }
