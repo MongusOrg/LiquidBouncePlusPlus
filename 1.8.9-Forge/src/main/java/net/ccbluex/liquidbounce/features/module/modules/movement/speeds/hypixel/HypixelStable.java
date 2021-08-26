@@ -14,17 +14,13 @@ import net.ccbluex.liquidbounce.utils.MovementUtils;
 
 public class HypixelStable extends SpeedMode {
 
-    private double lastDist;
-
     public HypixelStable() {
         super("HypixelStable");
     }
 
     @Override
     public void onMotion() {
-        double xDist = mc.thePlayer.posX - mc.thePlayer.prevPosX;
-        double zDist = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
-        lastDist = Math.sqrt(xDist * xDist + zDist * zDist);
+
     }
 
     @Override
@@ -44,11 +40,11 @@ public class HypixelStable extends SpeedMode {
                 mc.thePlayer.jumpTicks = 10;
             }
 
-            if (!mc.thePlayer.onGround && mc.thePlayer.motionY < -0.24)  {
-                mc.thePlayer.motionY *= 0.990000125;
+            if (!mc.thePlayer.onGround && mc.thePlayer.motionY < -0.2333333333333)  {
+                mc.thePlayer.motionY *= 1.08;
             }
             
-            double moveSpeed = Math.max(lastDist - lastDist / 159.0D, MovementUtils.getSpeed());
+            double moveSpeed = Math.max(MovementUtils.getSpeed(), MovementUtils.getBaseMoveSpeed());
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }

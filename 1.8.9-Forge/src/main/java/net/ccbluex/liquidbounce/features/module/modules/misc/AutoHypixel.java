@@ -17,11 +17,13 @@ import net.ccbluex.liquidbounce.value.ListValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 
+import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class AutoHypixel extends Module {
     public boolean shouldChangeGame, useOtherWord = false;
     private final DecimalFormat dFormat = new DecimalFormat("0.0");
 
-    private float posY = -20;
+    private float posY = -15;
 
     private final String[] strings = new String[]{
         "1st Killer - ", 
@@ -71,17 +73,23 @@ public class AutoHypixel extends Module {
 
     @EventTarget
     public void onRender2D(Render2DEvent event) {
+        if (checkValue.get() && !gameMode.toLowerCase().contains("skywars"))
+            return;
+
         ScaledResolution sc = new ScaledResolution(mc);
         float middleX = sc.getScaledWidth() / 2F;
         String detail = "Sending you to another game in " + dFormat.format((float)timer.hasTimeLeft(delayValue.get()) / 1000F) + "s...";
         float middleWidth = Fonts.font40.getStringWidth(detail) / 2F;
 
-        posY = AnimationUtils.animate(shouldChangeGame ? 10 : -20, posY, 0.25F);
+        posY = AnimationUtils.animate(shouldChangeGame ? 10 : -15, posY, 0.25F);
         if (posY < -14 || !renderValue.get())
             return;
 
-        RenderUtils.drawRoundedRect(middleX - 10F - middleWidth, posY, middleX + 10F + middleWidth, posY + 14F, 7F, 0xB0000000);
-        Fonts.font40.drawStringWithShadow(detail, middleX - middleWidth, posY + 3F, -1);
+        RenderUtils.customRounded(middleX - 5F - middleWidth, posY - 2F, middleX + 8F + middleWidth, posY + 14F, 0F, 3F, 3F, 0F, 0xA0000000);
+        RenderUtils.customRounded(middleX - 5F - middleWidth, posY - 2F, middleX - 8F - middleWidth, posY + 14F, 3F, 0F, 0F, 3F, new Color(80, 255, 80).getRGB());
+
+        GlStateManager.resetColor();
+        Fonts.font40.drawStringWithShadow(detail, middleX - middleWidth + 1F, posY + 3F, -1);
     }
 
     @EventTarget
@@ -89,9 +97,9 @@ public class AutoHypixel extends Module {
         if ((!checkValue.get() || gameMode.toLowerCase().contains("skywars")) && shouldChangeGame && timer.hasTimePassed(delayValue.get())) {
             if (antiAtlasValue.get()) {
                 for (EntityPlayer entity : (List<EntityPlayer>) mc.theWorld.playerEntities) {
-                    if (entity == null && mc.thePlayer.ticksExisted % 10 == 0) continue;
+                    if (entity == null && (mc.thePlayer.ticksExisted % 10 == 0 || entity == mc.thePlayer)) continue;
                     if (!LiquidBounce.moduleManager.getModule(AntiBot.class).getState() || !AntiBot.isBot(entity)) {
-                        mc.thePlayer.sendChatMessage("/wdr " + entity.getName() + (useOtherWord ? " ka,speed,antikb" : " aimassist,antikb"));
+                        mc.thePlayer.sendChatMessage("/wdr " + entity.getName() + (useOtherWord ? " ka,speed,velocity" : " aimbot,safewalk"));
                         useOtherWord = !useOtherWord;
                     }
                 }

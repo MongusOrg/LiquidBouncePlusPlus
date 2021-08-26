@@ -12,10 +12,10 @@ import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 
-public class HypixelLowHop extends SpeedMode {
+public class HypixelSafe extends SpeedMode {
 
-    public HypixelLowHop() {
-        super("HypixelLowHop");
+    public HypixelSafe() {
+        super("HypixelSafe");
     }
 
     @Override
@@ -33,15 +33,14 @@ public class HypixelLowHop extends SpeedMode {
         final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) return;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
+            mc.timer.timerSpeed = 1F;
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
-                mc.timer.timerSpeed = 1.08F;
-                event.setY(mc.thePlayer.motionY = 0.1666666666666);
+                mc.thePlayer.jump();
+                event.setY(mc.thePlayer.motionY = 0.42);
                 mc.thePlayer.jumpTicks = 10;
-            } else if (event.getY() < 0) {
-                mc.timer.timerSpeed = 0.997F;
             }
-
-            double moveSpeed = MovementUtils.getBaseMoveSpeed() * 0.98999999999;
+            
+            double moveSpeed = MovementUtils.getBaseMoveSpeed();
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }

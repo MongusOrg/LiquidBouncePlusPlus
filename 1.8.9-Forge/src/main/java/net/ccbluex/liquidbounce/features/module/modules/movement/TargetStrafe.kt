@@ -43,6 +43,8 @@ class TargetStrafe : Module() {
     private val accuracyValue = IntegerValue("Accuracy", 0, 0, 59)
     private val thicknessValue = FloatValue("Thickness", 1F, 0.1F, 5F)
     private val outLine = BoolValue("Outline", true)
+    private val alwaysRender = BoolValue("Always-Render", true)
+    private val behindTarget = BoolValue("Behind-Test", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
 
@@ -78,12 +80,17 @@ class TargetStrafe : Module() {
 
     fun strafe(event: MoveEvent, moveSpeed: Double) {
         val target = killAura.target
+        if (target == null)
+            return
+            
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
-        if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
-            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
-        else
+        if (!behindTarget.get() || MathHelper.wrapAngleTo180_float(target!!.rotationYaw) * 2F != MathHelper.wrapAngleTo180_float(RotationUtils.serverRotation!!.yaw) * 2F)
+            if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
+            else
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
+        else if (mc.thePlayer.getDistanceToEntity(target) > radius.get()) 
             MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
-    
     }
 
     val keyMode: Boolean
@@ -133,7 +140,7 @@ class TargetStrafe : Module() {
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
         val target = killAura.target
-        if (canStrafe && render.get()) {
+        if ((canStrafe || (alwaysRender.get() && target != null)) && render.get()) {
             target?:return
             GL11.glPushMatrix()
             GL11.glTranslated(

@@ -45,7 +45,9 @@ public class Speed extends Module {
             new AACv4BHop(),
 
             // Hypixel
+            new HypixelBoost(),
             new HypixelLowHop(),
+            new HypixelSafe(),
             new HypixelStable(),
 
             // Spartan
@@ -110,7 +112,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"LowHop", "Stable"}, "Stable") {
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "LowHop", "Safe", "Stable"}, "Stable") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {

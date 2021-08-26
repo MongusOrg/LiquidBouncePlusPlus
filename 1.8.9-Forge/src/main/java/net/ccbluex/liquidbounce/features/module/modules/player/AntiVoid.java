@@ -31,7 +31,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class AntiVoid extends Module {
 
     public final ListValue voidDetectionAlgorithm = new ListValue("Detect-Method", new String[]{"Collision", "Predict"}, "Collision");
-    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Hypixel"}, "Teleport");
+    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Position"}, "Teleport");
     public final IntegerValue maxFallDistSimulateValue = new IntegerValue("Simulate-CheckFallDistance", 255, 0, 255);
     public final IntegerValue maxFindRangeValue = new IntegerValue("Simulate-MaxFindRange", 60, 0, 255);
     public final IntegerValue illegalDupeValue = new IntegerValue("Illegal-Dupe", 1, 1, 5);
@@ -87,7 +87,7 @@ public class AntiVoid extends Module {
                         mc.thePlayer.motionY = 0F;
                         mc.thePlayer.fallDistance = oldFallDist;
                         break;
-                    case "Hypixel":
+                    case "Position":
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextFloat(6F, 12F), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         break;
                     }
@@ -149,7 +149,7 @@ public class AntiVoid extends Module {
                         mc.thePlayer.motionY = 0F;
                         mc.thePlayer.fallDistance = oldFallDist;
                         break;
-                    case "Hypixel":
+                    case "Position":
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextFloat(6F, 12F), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         break;
                     }

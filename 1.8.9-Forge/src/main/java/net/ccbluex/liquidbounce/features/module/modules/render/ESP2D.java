@@ -340,7 +340,7 @@ public final class ESP2D extends Module {
       GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
       RenderHelper.enableGUIStandardItemLighting();
       mc.getRenderItem().renderItemAndEffectIntoGUI(stack, 0, 0);
-      //mc.getRenderItem().renderItemOverlays(mc.fontRendererObj, stack, x, y);
+      mc.getRenderItem().renderItemOverlays(mc.fontRendererObj, stack, 0, 0);
       RenderHelper.disableStandardItemLighting();
       GlStateManager.disableRescaleNormal();
       GlStateManager.disableBlend();

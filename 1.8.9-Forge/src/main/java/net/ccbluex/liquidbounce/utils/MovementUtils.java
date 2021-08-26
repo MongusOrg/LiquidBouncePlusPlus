@@ -100,7 +100,7 @@ public final class MovementUtils extends MinecraftInstance {
     }
 
     public static double getBaseMoveSpeed() {
-        double baseSpeed = 0.2875D;
+        double baseSpeed = 0.2873D;
         if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
             baseSpeed *= 1.0D + 0.2D * (double)(mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier() + 1);
         }

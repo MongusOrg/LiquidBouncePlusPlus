@@ -55,7 +55,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         for(i in hud.notifications)
             notifications.add(i)
         for(i in notifications)
-            if(mc.currentScreen !is GuiHudDesigner)
+            if(mc.currentScreen !is GuiHudDesigner || !hud.notifications.isEmpty())
             i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
         else
             exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get())
@@ -67,7 +67,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
             //exampleNotification.stayTimer.reset()
             exampleNotification.x = exampleNotification.textLength + 8F
 
-            return if (newValue.get()) Border(-102F, -48F, 0F, -30F) else Border(-128F, -58F, 0F, -30F)
+            return if (newValue.get()) Border(-102F, -48F, 0F, -30F) else Border(-130F, -58F, 0F, -30F)
         }
 
         return null
@@ -133,6 +133,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         var y = firstY
 
         if (new) {
+            GlStateManager.resetColor()
             RenderUtils.customRounded(-x + 8F + textLength, -y, -x - 2F, -18F - y, 0F, 3F, 3F, 0F, backgroundColor.rgb)
             RenderUtils.customRounded(-x - 2F, -y, -x - 5F, -18F - y, 3F, 0F, 0F, 3F, when(type) {
                     Type.SUCCESS -> Color(80, 255, 80).rgb
@@ -141,9 +142,11 @@ class Notification(message : String,type : Type, displayLength: Long) {
                     Type.WARNING -> Color(255, 255, 0).rgb
                 })  
 
-            Fonts.font40.drawString(message, -x + 3, -14F - y, -1)
+            GlStateManager.resetColor()
+            Fonts.font40.drawString(message, -x + 3, -13F - y, -1)
         } else {
             //bg
+            GlStateManager.resetColor()
             RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
 
             GL11.glPushMatrix()
@@ -162,6 +165,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
             val kek = -x - 1 - 26F
 
             //notification bar xd
+            GlStateManager.resetColor()
             if (bar) if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
                 RenderUtils.drawRect(kek, -y, kek + (dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())), -1F - y, when(type) {
                     Type.SUCCESS -> Color(80, 255, 80).rgb
@@ -178,10 +182,9 @@ class Notification(message : String,type : Type, displayLength: Long) {
                 })
             }
             
+            GlStateManager.resetColor()
             Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
         }
-
-        GlStateManager.resetColor()
         
         when (fadeState) {
             FadeState.IN -> {
