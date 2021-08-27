@@ -24,7 +24,7 @@ import java.awt.Color;
 @ModuleInfo(name = "TargetMark", description = "Display your KillAura's target in 3D. (lol)", category = ModuleCategory.RENDER)
 public class TargetMark extends Module {
 
-    public final ListValue modeValue = new ListValue("Mode", new String[]{"Default", "Box", "Jello"}, "Normal");
+    public final ListValue modeValue = new ListValue("Mode", new String[]{"Default", "Box", "Jello"}, "Default");
     public final IntegerValue red = new IntegerValue("Red", 255, 0, 255);
     public final IntegerValue green = new IntegerValue("Green", 255, 0, 255);
     public final IntegerValue blue = new IntegerValue("Blue", 255, 0, 255);
@@ -49,7 +49,7 @@ public class TargetMark extends Module {
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
         if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .65F);
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .5F);
 
 		    double lastY = yPos;
 
@@ -73,7 +73,7 @@ public class TargetMark extends Module {
 
 	        yPos = easeInOutQuart(progress) * height;
 
-	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 5F;
+	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 4F;
     
 	        if (al <= 0 && entity != null) {
                 entity = null;
@@ -91,8 +91,8 @@ public class TargetMark extends Module {
 		    GL11.glBegin(GL11.GL_LINE_LOOP);
 
 		    for (float i = 0; i <= 360; i += 0.1F) {
-			    double posX2 = posX - Math.sin(i * Math.PI / 180) * (radius - 0.2F);
-			    double posZ2 = posZ + Math.cos(i * Math.PI / 180) * (radius - 0.2F);
+			    double posX2 = posX - Math.sin(i * Math.PI / 180) * radius;
+			    double posZ2 = posZ + Math.cos(i * Math.PI / 180) * radius;
 
 			    if (direction > 0) {
 				    GL11.glColor4f(r, g, b, 0);
@@ -114,7 +114,7 @@ public class TargetMark extends Module {
 		    GL11.glEnd();
 		    GL11.glShadeModel(7424);
 
-		    drawCircle(posX, posY + yPos, posZ, 2.25F, radius - 0.2F, r, g, b, al);
+		    //drawCircle(posX, posY + yPos, posZ, 2.25F, radius - 0.2F, r, g, b, al);
 
 		    post3D();
         } else if (modeValue.get().equalsIgnoreCase("default")) {

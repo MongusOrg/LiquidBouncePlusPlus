@@ -31,6 +31,12 @@ public class Fonts {
     @FontDetails(fontName = "Roboto Medium", fontSize = 40)
     public static GameFontRenderer font40;
 
+    @FontDetails(fontName = "Roboto Medium", fontSize = 50)
+    public static GameFontRenderer font50;
+
+    @FontDetails(fontName = "Roboto Medium", fontSize = 60)
+    public static GameFontRenderer font60;
+
     @FontDetails(fontName = "Roboto Medium", fontSize = 30)
     public static GameFontRenderer fontSmall;
 

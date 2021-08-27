@@ -9,13 +9,16 @@ package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
+import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
+import net.ccbluex.liquidbounce.utils.misc.RandomUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.utils.render.EaseUtils
 import net.ccbluex.liquidbounce.utils.render.UiUtils
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.value.FloatValue
@@ -49,7 +52,7 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Simple"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
@@ -73,8 +76,11 @@ class Target : Element() {
     private var easingHealth: Float = 0F
     private var lastTarget: Entity? = null
 
+    private val particleList = mutableListOf<Particle>()
+    private var lastHurtTime = 0
+
     override fun drawElement(): Border {
-        val target = if (mc.currentScreen is GuiChat && showUrselfWhenChatOpen.get()) mc.thePlayer!! else (LiquidBounce.moduleManager[KillAura::class.java] as KillAura).target
+        val target = if ((mc.currentScreen is GuiChat && showUrselfWhenChatOpen.get()) || mc.currentScreen is GuiHudDesigner) mc.thePlayer!! else (LiquidBounce.moduleManager[KillAura::class.java] as KillAura).target
         val barColor = when (colorModeValue.get()) {
             "Custom" -> Color(redValue.get(), greenValue.get(), blueValue.get())
             "Sky" -> RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get())
@@ -135,8 +141,8 @@ class Target : Element() {
                 "Flux" -> {
                     val width = (26F + Fonts.fontSFUI35.getStringWidth(target.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(target.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 25, 25)
-                    RenderUtils.drawBorder(0F, 0F, 26F, 26F, 1F, Color(15, 255, 15).rgb)
+                    RenderUtils.drawBorder(0F, 0F, 25F, 25F, 0.75F, Color(15, 255, 15).rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 25, 25)
                     Fonts.fontSFUI35.drawString(target.name, 30F, 4F, 0xFFFFFF) // Draw target name
                     Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 30F, 15F, 0xFFFFFF) // Draw target health   
 
@@ -171,30 +177,30 @@ class Target : Element() {
                     val mainColor = barColor
                     val percent = target.health.toFloat()/target.maxHealth.toFloat() * 100F
                     val nameLength = (font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(percent)}%")).toFloat() + 10F
-                    val barWidth = (target.health / target.maxHealth).coerceIn(0F, target.maxHealth.toFloat()) * nameLength
+                    val barWidth = (target.health / target.maxHealth).coerceIn(0F, target.maxHealth.toFloat()) * (nameLength - 2F)
 
-                    RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
-                    RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 36, 36)
-                    font.drawStringWithShadow(target.name, 2F + 36F, 2F, -1)
-                    RenderUtils.drawRect(1F + 36F, 14F, 1F + 36F + nameLength, 24F, Color(24, 24, 24, 255).rgb)
+                    RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 30F, 2F + 30F, Color(24, 24, 24, 255).rgb)
+                    RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 30F, 1F + 30F, Color(31, 31, 31, 255).rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 30, 30)
+                    font.drawStringWithShadow(target.name, 2F + 30F, 2F, -1)
+                    RenderUtils.drawRect(2F + 30F, 14F, 30F + nameLength, 24F, Color(24, 24, 24, 255).rgb)
 
                     easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
-                    val animateThingy = (easingHealth.coerceIn(target.health, target.maxHealth) / target.maxHealth) * nameLength
+                    val animateThingy = (easingHealth.coerceIn(target.health, target.maxHealth) / target.maxHealth) * (nameLength - 2F)
 
                     if (easingHealth > target.health)
-                        RenderUtils.drawRect(1F + 36F, 14F, 1F + 36F + animateThingy, 24F, mainColor.darker().rgb)
+                        RenderUtils.drawRect(2F + 30F, 14F, 2F + 30F + animateThingy, 24F, mainColor.darker().rgb)
                     
-                    RenderUtils.drawRect(1F + 36F, 14F, 1F + 36F + barWidth, 24F, mainColor.rgb)
+                    RenderUtils.drawRect(2F + 30F, 14F, 2F + 30F + barWidth, 24F, mainColor.rgb)
                     
-                    font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 1F + 36F + nameLength / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 15F, -1)
+                    font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 2F + 30F + (nameLength - 2F) / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 15F, -1)
                 }
 
                 "Slowly" -> {
                     val font = Fonts.minecraftFont
 
-                    val length = 70.coerceAtLeast(font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(target.health)} ❤")).toFloat() + 10F
+                    val length = 60.coerceAtLeast(font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(target.health)} ❤")).toFloat() + 10F
                     RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
                     drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 30, 30)
                     font.drawStringWithShadow(target.name, 33F, 2F, -1)
@@ -205,35 +211,88 @@ class Target : Element() {
                     RenderUtils.drawRect(0F, 32F, (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
                 }
 
-                "Simple" -> {
-                    val font = Fonts.minecraftFont
-                    val health = "${decimalFormat2.format(target.health)}"
-                    val dist = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(target))}m"
-
-                    val length = font.getStringWidth(target.name).coerceAtLeast(font.getStringWidth(dist)).coerceAtLeast(font.getStringWidth(health)).toFloat() + 10F
-                    RenderUtils.drawRect(-2F, -2F, 34F + length, 38F, bgColor.rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 32, 32)
-                    font.drawStringWithShadow(target.name, 34F, 2F, -1)
-                    font.drawStringWithShadow(dist, 34F, 26F, -1)
+                "Rise" -> {
+                    val font = Fonts.fontSFUI40
+                    val name = "Name ${target.name}"
+                    val info = "Distance ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(target))} Hurt ${target.hurtTime}"
 
                     easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
-                    RenderUtils.drawRect(34F, 12F, 34F + length - 4F, 24F, barColor.darker().rgb)
-                    RenderUtils.drawRect(34F, 12F, 34F + (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length - 4F), 24F, barColor.rgb)
+                    val healthName = decimalFormat2.format(easingHealth).toString()
+
+                    val length = 80.coerceAtLeast(font.getStringWidth(name)).coerceAtLeast(font.getStringWidth(info)).toFloat() + 25F
+                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
                     
-                    font.drawStringWithShadow(health, 34F + (length - 4F) / 2F - font.getStringWidth(health) / 2F, 14F, -1)
+                    if (lastHurtTime != target.hurtTime) {
+                        particleList.add(Particle(if (RandomUtils.nextBoolean()) barColor else Color.white, RandomUtils.nextFloat(40F, 55F), RandomUtils.nextFloat(5F, 15F)))
+                        lastHurtTime = target.hurtTime
+                    }
+
+                    val deleteQueue = mutableListOf<Particle>()
+
+                    particleList.forEach { particle ->
+                        if (particle.alpha > 0F)
+                            particle.render(5F + 18F, 5 + 18F)
+                        else
+                            deleteQueue.add(particle)
+                    }
+
+                    for (p in deleteQueue)
+                        particleList.remove(p)
+
+                    val scaleHT = (target.hurtTime.toFloat() / target.maxHurtTime.toFloat()).coerceIn(0F, 1F)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 
+                            5F + 36F * (scaleHT * 0.2F), 
+                            5F + 36F * (scaleHT * 0.2F), 
+                            1F - scaleHT * 0.2F, 
+                            36, 36, 
+                            1F, 0.5F + (1F - scaleHT) * 0.5F, 0.5F + (1F - scaleHT) * 0.5F)
+
+                    val maxHealthLength = font.getStringWidth(decimalFormat2.format(target.maxHealth).toString()).toFloat()
+
+                    font.drawStringWithShadow(name, 9F + 36F, 9F, -1)
+                    font.drawStringWithShadow(info, 9F + 36F, 22F, -1)
+
+                    val barWidth = (length - 5F - maxHealthLength) * (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, 1F)
+
+                    //temporary, will code another better bar tomorrow might be since im kinda busy with school stuffs
+                    RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
+
+                    font.drawStringWithShadow(healthName, 10F + barWidth, 39F, -1)
                 }
             }
         } else if (target == null) {
             easingHealth = 0F
+            lastHurtTime = 0
+            particleList.clear()
         }
 
         lastTarget = target
         return when (styleValue.get()) {
             "LiquidBounce" -> Border(0F, 0F, 90F, 36F)
             "Flux" -> Border(0F, 0F, 90F, 46F)
-            "Novoline" -> Border(-1F, -1F, 90F, 36F)
-            else -> Border(0F, 0F, 90F, 36F)
+            "Novoline" -> Border(-1F, -1F, 90F, 30F)
+            "Slowly" -> Border(0F, 0F, 90F, 36F)
+            else -> Border(0F, 0F, 90F, 55F)
+        }
+    }
+    
+    private class Particle(var color: Color, var dist: Float, var radius: Float) {
+        var alpha = 1F
+        var progress = 0.0
+        fun render(x: Float, y: Float) {
+            if (progress >= 1F) {
+                alpha -= 0.1F
+                if (alpha < 0F) alpha = 0F
+            } else
+                progress += 0.1
+
+            if (alpha <= 0F) return
+
+            var reColored = Color(color.red / 255.0F, color.green / 255.0F, color.blue / 255.0F, alpha)
+            var easeOut = EaseUtils.easeOutQuart(progress).toFloat()
+
+            RenderUtils.drawFilledCircle(x + dist * easeOut, y + dist * easeOut, radius, reColored)
         }
     }
 
@@ -249,6 +308,17 @@ class Target : Element() {
         mc.textureManager.bindTexture(skin)
         Gui.drawScaledCustomSizeModalRect(x, y, 8F, 8F, 8, 8, width, height,
                 64F, 64F)
+    }
+
+    private fun drawHead(skin: ResourceLocation, x: Float, y: Float, scale: Float, width: Int, height: Int, red: Int, green: Int, blue: Int) {
+        GL11.glPushMatrix()
+        GL11.glTranslatef(x, y, x)
+        GL11.glScalef(scale, scale, scale)
+        GL11.glColor4f(red.toFloat() / 255.0F, green.toFloat() / 255.0F, blue.toFloat() / 255.0F, 1F)
+        mc.textureManager.bindTexture(skin)
+        Gui.drawScaledCustomSizeModalRect(0, 0, 8F, 8F, 8, 8, width, height,
+                64F, 64F)
+        GL11.glPopMatrix()
     }
 
     private fun drawArmorIcon(x: Int, y: Int, width: Int, height: Int) {

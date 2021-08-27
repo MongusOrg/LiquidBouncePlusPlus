@@ -805,6 +805,34 @@ public final class RenderUtils extends MinecraftInstance {
         glPopAttrib();
     }
 
+    public static void drawFilledCircle(final float xx, final float yy, final float radius, final Color color) {
+        int sections = 50;
+        double dAngle = 2 * Math.PI / sections;
+        float x, y;
+
+        glPushAttrib(GL_ENABLE_BIT);
+
+        glEnable(GL_BLEND);
+        glDisable(GL_TEXTURE_2D);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_LINE_SMOOTH);
+        glBegin(GL_TRIANGLE_FAN);
+
+        for (int i = 0; i < sections; i++) {
+            x = (float) (radius * Math.sin((i * dAngle)));
+            y = (float) (radius * Math.cos((i * dAngle)));
+
+            glColor4f(color.getRed() / 255F, color.getGreen() / 255F, color.getBlue() / 255F, color.getAlpha() / 255F);
+            glVertex2f(xx + x, yy + y);
+        }
+
+        GlStateManager.color(0, 0, 0);
+
+        glEnd();
+
+        glPopAttrib();
+    }
+
     public static void drawImage(ResourceLocation image, int x, int y, int width, int height) {
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);

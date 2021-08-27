@@ -84,15 +84,33 @@ class TargetStrafe : Module() {
             return
             
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
+
+        /* Smart direction prediction (by the only person committing everyday)
+         -1 <------> 1
+
+              B1  B2
+            \  |  /
+         A2 -- o -- 
+            /  |  \
+                  A1
+
+        A: current, B: target
+
+        A1 > B1: 1
+        A2 < B2: -1
+         */
+
+        val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 9
+        val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 9
+
+        val prediction = if (currentReduced > targetReduced) 1.0 else if (currentReduced < targetReduced) -1.0 else 0.0
         
         // behind targetstrafe moment $$$
         if (behindTarget.get()) {
             if (mc.thePlayer.getDistanceToEntity(target) > radius.get())
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 5 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 5) direction.toDouble() else 0.0, 1.0)
-            else if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 5 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 5)
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, prediction, 1.0)
             else
-                MovementUtils.setSpeed(event, 0.0, rotYaw, 0.0, 0.0)
+                MovementUtils.setSpeed(event,  if (currentReduced != targetReduced) moveSpeed else 0.0, rotYaw, prediction, 0.0)
         } else { // classic targetstrafe
             if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
                 MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
