@@ -516,6 +516,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 .replaceFirst("AutoHypixel", "Auto Hypixel", ignoreCase = false)
                 .replaceFirst("InvCleaner", "Inv Cleaner", ignoreCase = false)
                 .replaceFirst("BanChecker", "Ban Checker", ignoreCase = false)
+                .replaceFirst("TargetMark", "Target Mark", ignoreCase = false)
         }
 
         if (lowerCaseValue.get()) 

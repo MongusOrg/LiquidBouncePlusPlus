@@ -60,11 +60,8 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         else
             exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get())
         if (mc.currentScreen is GuiHudDesigner) {
-            if (!hud.notifications.contains(exampleNotification))
-                hud.addNotification(exampleNotification)
-
             exampleNotification.fadeState = Notification.FadeState.STAY
-            //exampleNotification.stayTimer.reset()
+            exampleNotification.stayTimer.reset()
             exampleNotification.x = exampleNotification.textLength + 8F
 
             return if (newValue.get()) Border(-102F, -48F, 0F, -30F) else Border(-130F, -58F, 0F, -30F)

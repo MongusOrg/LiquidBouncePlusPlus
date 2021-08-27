@@ -28,8 +28,6 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
     var sliderX : Float = 0F
 
-    var easterEgg : Boolean = false
-
     companion object {
         var useParallax = true
     }
@@ -38,12 +36,11 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         slideX = 0F
         fade = 0F
         sliderX = 0F
-        easterEgg = Math.random() < 0.1
         super.initGui()
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        val creditInfo = if (easterEgg) "727 wysi wyfsi!!" else "by WYSI-Foundation."
+        val creditInfo = "made by WYSI-Foundation."
         drawBackground(0)
         GL11.glPushMatrix()
         renderSwitchButton()

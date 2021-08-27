@@ -3,7 +3,7 @@ package net.ccbluex.liquidbounce.utils.render
 import kotlin.math.*
 
 /***
- * Skid from https://github.com/ai/easings.net
+ * Thanks https://github.com/ai/easings.net for this util, converted to Kotlin.
  */
 object EaseUtils {
     @JvmStatic

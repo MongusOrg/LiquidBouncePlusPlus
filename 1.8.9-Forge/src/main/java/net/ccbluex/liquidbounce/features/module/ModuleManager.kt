@@ -146,7 +146,8 @@ class ModuleManager : Listenable {
                 //InvManager::class.java
                 TargetStrafe::class.java,
                 ESP2D::class.java,
-                BanChecker::class.java
+                BanChecker::class.java,
+                TargetMark::class.java
         )
 
         registerModule(Fucker)

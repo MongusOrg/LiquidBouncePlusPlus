@@ -69,7 +69,7 @@ public class NoFall extends Module {
                 BlockUtils.collideBlock(new AxisAlignedBB(mc.thePlayer.getEntityBoundingBox().maxX, mc.thePlayer.getEntityBoundingBox().maxY, mc.thePlayer.getEntityBoundingBox().maxZ, mc.thePlayer.getEntityBoundingBox().minX, mc.thePlayer.getEntityBoundingBox().minY - 0.01D, mc.thePlayer.getEntityBoundingBox().minZ), block -> block instanceof BlockLiquid))
             return;
 
-        if (LiquidBounce.moduleManager.getModule(Fly.class).getState() || (voidCheck.get() && !MovementUtils.isBlockUnder())) return;
+        if (!LiquidBounce.moduleManager.getModule(Fly.class).getState() && voidCheck.get() && !MovementUtils.isBlockUnder()) return;
 
         switch (modeValue.get().toLowerCase()) {
             case "packet":

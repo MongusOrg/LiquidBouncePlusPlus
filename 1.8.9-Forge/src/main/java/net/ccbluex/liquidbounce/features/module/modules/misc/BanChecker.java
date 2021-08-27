@@ -58,7 +58,7 @@ public class BanChecker extends Module {
                                 
                                 if (LiquidBounce.moduleManager.getModule(BanChecker.class).getState() && alertValue.get() && mc.thePlayer != null && (!serverCheckValue.get() || isOnHypixel()))
                                     if (STAFF_BAN_LAST_MIN > 0)
-                                        LiquidBounce.hud.addNotification(new Notification(STAFF_BAN_LAST_MIN + " player(s) got banned by staffs in the last minute!", Notification.Type.WARNING, alertTimeValue.get() * 1000L));
+                                        LiquidBounce.hud.addNotification(new Notification(STAFF_BAN_LAST_MIN + " player(s) got banned by staffs in the last minute!", STAFF_BAN_LAST_MIN > 3 ? Notification.Type.ERROR : Notification.Type.WARNING, alertTimeValue.get() * 1000L));
                                     else
                                         LiquidBounce.hud.addNotification(new Notification("Staffs didn't ban any player in the last minute.", Notification.Type.SUCCESS, alertTimeValue.get() * 1000L));
                                 

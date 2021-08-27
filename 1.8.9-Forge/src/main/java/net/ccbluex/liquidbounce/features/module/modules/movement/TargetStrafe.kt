@@ -84,13 +84,21 @@ class TargetStrafe : Module() {
             return
             
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
-        if (!behindTarget.get() || MathHelper.wrapAngleTo180_float(target!!.rotationYaw) * 2F != MathHelper.wrapAngleTo180_float(RotationUtils.serverRotation!!.yaw) * 2F)
+        
+        // behind targetstrafe moment $$$
+        if (behindTarget.get()) {
+            if (mc.thePlayer.getDistanceToEntity(target) > radius.get())
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 3 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 3) direction.toDouble() else 0.0, 1.0)
+            else if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 3 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 3)
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
+            else
+                MovementUtils.setSpeed(event, 0, rotYaw, 0.0, 0.0)
+        } else { // classic targetstrafe
             if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
                 MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
             else
                 MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
-        else if (mc.thePlayer.getDistanceToEntity(target) > radius.get()) 
-            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
+        }
     }
 
     val keyMode: Boolean

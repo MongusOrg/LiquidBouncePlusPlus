@@ -81,15 +81,15 @@ public class AutoHypixel extends Module {
         String detail = "Sending you to another game in " + dFormat.format((float)timer.hasTimeLeft(delayValue.get()) / 1000F) + "s...";
         float middleWidth = Fonts.font40.getStringWidth(detail) / 2F;
 
-        posY = AnimationUtils.animate(shouldChangeGame ? 10 : -15, posY, 0.25F);
+        posY = AnimationUtils.animate(shouldChangeGame ? 10F : -15F, posY, 0.25F);
         if (posY < -14 || !renderValue.get())
             return;
 
-        RenderUtils.customRounded(middleX - 5F - middleWidth, posY - 2F, middleX + 8F + middleWidth, posY + 14F, 0F, 3F, 3F, 0F, 0xA0000000);
-        RenderUtils.customRounded(middleX - 5F - middleWidth, posY - 2F, middleX - 8F - middleWidth, posY + 14F, 3F, 0F, 0F, 3F, new Color(80, 255, 80).getRGB());
+        RenderUtils.customRounded(middleX - 5F - middleWidth, posY, middleX + 8F + middleWidth, posY + 14F, 0F, 3F, 3F, 0F, 0xA0000000);
+        RenderUtils.customRounded(middleX - 5F - middleWidth, posY, middleX - 8F - middleWidth, posY + 14F, 3F, 0F, 0F, 3F, new Color(80, 255, 80).getRGB());
 
         GlStateManager.resetColor();
-        Fonts.font40.drawStringWithShadow(detail, middleX - middleWidth + 1F, posY + 3F, -1);
+        Fonts.font40.drawStringWithShadow(detail, middleX - middleWidth + 1F, posY + 2F, -1);
     }
 
     @EventTarget
