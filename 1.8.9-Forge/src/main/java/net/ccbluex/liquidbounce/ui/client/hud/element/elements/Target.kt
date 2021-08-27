@@ -135,9 +135,10 @@ class Target : Element() {
                 "Flux" -> {
                     val width = (26F + Fonts.fontSFUI35.getStringWidth(target.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(target.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 26, 26)
-                    Fonts.fontSFUI35.drawString(target.name, 29F, 4F, 0xFFFFFF) // Draw target name
-                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 29F, 15F, 0xFFFFFF) // Draw target health   
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 25, 25)
+                    RenderUtils.drawBorder(0F, 0F, 26F, 26F, 1F, Color(15, 255, 15).rgb)
+                    Fonts.fontSFUI35.drawString(target.name, 30F, 4F, 0xFFFFFF) // Draw target name
+                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 30F, 15F, 0xFFFFFF) // Draw target health   
 
                     // bar icon
                     Fonts.fontSFUI35.drawString("❤", 2F, 29F, -1)

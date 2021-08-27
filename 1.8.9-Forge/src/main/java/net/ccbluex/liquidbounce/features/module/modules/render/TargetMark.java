@@ -73,7 +73,7 @@ public class TargetMark extends Module {
 
 	        yPos = easeInOutQuart(progress) * height;
 
-	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 6F;
+	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 5F;
     
 	        if (al <= 0 && entity != null) {
                 entity = null;

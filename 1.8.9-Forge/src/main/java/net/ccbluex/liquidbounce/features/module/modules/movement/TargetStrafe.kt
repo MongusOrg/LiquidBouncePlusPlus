@@ -88,8 +88,8 @@ class TargetStrafe : Module() {
         // behind targetstrafe moment $$$
         if (behindTarget.get()) {
             if (mc.thePlayer.getDistanceToEntity(target) > radius.get())
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 3 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 3) direction.toDouble() else 0.0, 1.0)
-            else if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 2 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 2)
+                MovementUtils.setSpeed(event, moveSpeed, rotYaw, if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 5 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 5) direction.toDouble() else 0.0, 1.0)
+            else if (MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 5 != MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 5)
                 MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
             else
                 MovementUtils.setSpeed(event, 0.0, rotYaw, 0.0, 0.0)
