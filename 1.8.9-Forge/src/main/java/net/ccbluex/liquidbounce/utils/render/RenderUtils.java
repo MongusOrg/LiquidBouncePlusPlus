@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.shader.ShaderGroup;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,6 +48,13 @@ public final class RenderUtils extends MinecraftInstance {
     private static final Map<Integer, Boolean> glCapMap = new HashMap<>();
 
     public static int deltaTime;
+
+    private static ShaderGroup blurShader;
+	private static Framebuffer buffer;
+	private static int lastScale;
+	private static int lastScaleWidth;
+	private static int lastScaleHeight;
+	private static ResourceLocation shader = new ResourceLocation("shaders/post/blur.json");
 
     private static final int[] DISPLAY_LISTS_2D = new int[4];
 
@@ -106,6 +114,28 @@ public final class RenderUtils extends MinecraftInstance {
 
     public static double interpolate(double current, double old, double scale) {
         return old + (current - old) * scale;
+    }
+
+	public static void initFboAndShader() {
+		try {	
+			blurShader = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), mc.getFramebuffer(), shader);
+			blurShader.createBindFramebuffers(mc.displayWidth, mc.displayHeight);
+			buffer = blurShader.mainFramebuffer;	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+    public static void blurDynamic(boolean post) {
+        if (!OpenGlHelper.isFramebufferEnabled())
+            return;
+
+        if (post) {
+            Stencil.erase(true);
+        } else {
+            buffer.framebufferClear(); //Clear framebuffer for blur
+            Stencil.write(false); //silently drawing the buffer
+        }
     }
 
     public static int SkyRainbow(int var2, float st, float bright) {

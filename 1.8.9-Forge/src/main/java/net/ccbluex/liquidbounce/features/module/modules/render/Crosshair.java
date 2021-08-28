@@ -36,6 +36,7 @@ public class Crosshair extends Module {
     public IntegerValue colorRedValue = new IntegerValue("Red", 0, 0, 255);
     public IntegerValue colorGreenValue = new IntegerValue("Green", 0, 0, 255);
     public IntegerValue colorBlueValue = new IntegerValue("Blue", 0, 0, 255);
+    public IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
 
     //Rainbow thingy
     private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
@@ -59,10 +60,10 @@ public class Crosshair extends Module {
         float gap = gapVal.get();
 
         glPushMatrix();
-        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F - width, scaledRes.getScaledHeight() / 2F - gap - size - (this.isMoving() ? 2 : 0), scaledRes.getScaledWidth() / 2F + 1.0f + width, scaledRes.getScaledHeight() / 2F - gap - (this.isMoving() ? 2 : 0), 0.5F, new Color(0, 0, 0).getRGB(), getCrosshairColor().getRGB());
-        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F - width, scaledRes.getScaledHeight() / 2F + gap + 1 + (this.isMoving() ? 2 : 0) - 0.15F, scaledRes.getScaledWidth() / 2F + 1.0f + width, scaledRes.getScaledHeight() / 2F + 1 + gap + size + (this.isMoving() ? 2 : 0) - 0.15F, 0.5F, new Color(0, 0, 0).getRGB(), getCrosshairColor().getRGB());
-        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F - gap - size - (this.isMoving() ? 2 : 0) + 0.15F, scaledRes.getScaledHeight() / 2F - width, scaledRes.getScaledWidth() / 2F - gap - (this.isMoving() ? 2 : 0) + 0.15F, scaledRes.getScaledHeight() / 2 + 1.0f + width, 0.5F, new Color(0, 0, 0).getRGB(), getCrosshairColor().getRGB());
-        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F + 1 + gap + (this.isMoving() ? 2 : 0), scaledRes.getScaledHeight() / 2F - width, scaledRes.getScaledWidth() / 2F + size + gap + 1.0F + (this.isMoving() ? 2 : 0), scaledRes.getScaledHeight() / 2 + 1.0f + width, 0.5F, new Color(0, 0, 0).getRGB(), getCrosshairColor().getRGB());
+        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F - width, scaledRes.getScaledHeight() / 2F - gap - size - (this.isMoving() ? 2 : 0), scaledRes.getScaledWidth() / 2F + 1.0f + width, scaledRes.getScaledHeight() / 2F - gap - (this.isMoving() ? 2 : 0), 0.5F, new Color(0, 0, 0, colorAlphaValue.get()).getRGB(), getCrosshairColor().getRGB());
+        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F - width, scaledRes.getScaledHeight() / 2F + gap + 1 + (this.isMoving() ? 2 : 0) - 0.15F, scaledRes.getScaledWidth() / 2F + 1.0f + width, scaledRes.getScaledHeight() / 2F + 1 + gap + size + (this.isMoving() ? 2 : 0) - 0.15F, 0.5F, new Color(0, 0, 0, colorAlphaValue.get()).getRGB(), getCrosshairColor().getRGB());
+        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F - gap - size - (this.isMoving() ? 2 : 0) + 0.15F, scaledRes.getScaledHeight() / 2F - width, scaledRes.getScaledWidth() / 2F - gap - (this.isMoving() ? 2 : 0) + 0.15F, scaledRes.getScaledHeight() / 2 + 1.0f + width, 0.5F, new Color(0, 0, 0, colorAlphaValue.get()).getRGB(), getCrosshairColor().getRGB());
+        RenderUtils.drawBorderedRect(scaledRes.getScaledWidth() / 2F + 1 + gap + (this.isMoving() ? 2 : 0), scaledRes.getScaledHeight() / 2F - width, scaledRes.getScaledWidth() / 2F + size + gap + 1.0F + (this.isMoving() ? 2 : 0), scaledRes.getScaledHeight() / 2 + 1.0f + width, 0.5F, new Color(0, 0, 0, colorAlphaValue.get()).getRGB(), getCrosshairColor().getRGB());
         glPopMatrix();
 
         GlStateManager.resetColor();
@@ -121,15 +122,15 @@ public class Crosshair extends Module {
     private Color getCrosshairColor() {
         switch (colorModeValue.get()) {
 			case "Custom":
-				return new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+				return new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get());
 			case "Sky":
-				return RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
+				return ColorUtils.reAlpha(RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get()), colorAlphaValue.get());
 			case "LiquidSlowly":
-				return ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get());
+				return ColorUtils.reAlpha(ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get()), colorAlphaValue.get());
 			case "Mixer":
-				return ColorMixer.getMixedColor(0, mixerSecondsValue.get());
+				return ColorUtils.reAlpha(ColorMixer.getMixedColor(0, mixerSecondsValue.get()), colorAlphaValue.get());
 			default:
-				return ColorUtils.fade(new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get()), 0, 100);
+				return ColorUtils.reAlpha(ColorUtils.fade(new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get()), 0, 100), colorAlphaValue.get());
 		}
     }
 

@@ -49,6 +49,7 @@ class TargetStrafe : Module() {
     private lateinit var speed: Speed
 
     var direction: Int = 1
+    var lastYaw: Int = -999
 
     override fun onInitialize() {
         killAura=LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
@@ -80,8 +81,10 @@ class TargetStrafe : Module() {
 
     fun strafe(event: MoveEvent, moveSpeed: Double) {
         val target = killAura.target
-        if (target == null)
+        if (target == null) {
+            lastYaw = -999
             return
+        }
             
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
 
@@ -94,7 +97,7 @@ class TargetStrafe : Module() {
             /  |  \
                   A1
 
-        A: current, B: target
+        A: last, B: target
 
         A1 > B1: 1
         A2 < B2: -1
@@ -103,14 +106,24 @@ class TargetStrafe : Module() {
         val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 6
         val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 6
 
-        val prediction = if (currentReduced > targetReduced) 1.0 else if (currentReduced < targetReduced) -1.0 else 0.0
+        val rotationYaw = target!!.yaw.toInt()
+
+        val prediction = if (currentReduced != targetReduced) 
+                             (if (lastYaw > rotationYaw) 
+                                  1.0 
+                             else if (lastYaw < rotationYaw) 
+                                 -1.0 
+                             else 0.0) 
+                         else 0.0
+
+        lastYaw = rotationYaw
         
         // behind targetstrafe moment $$$
         if (behindTarget.get()) {
             if (mc.thePlayer.getDistanceToEntity(target) > radius.get())
                 MovementUtils.setSpeed(event, moveSpeed, rotYaw, prediction, 1.0)
             else
-                MovementUtils.setSpeed(event,  if (currentReduced != targetReduced) moveSpeed else 0.0, rotYaw, prediction, 0.0)
+                MovementUtils.setSpeed(event,  moveSpeed, rotYaw, prediction, 0.0)
         } else { // classic targetstrafe
             if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
                 MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
@@ -206,7 +219,7 @@ class TargetStrafe : Module() {
                     "Custom" -> GL11.glColor3f(redValue.get() / 255.0f, greenValue.get() / 255.0f, blueValue.get() / 255.0f)
                     "Dynamic" -> if (canStrafe) GL11.glColor4f(0.1f, 1f, 0.1f, 1f) else GL11.glColor4f(1f, 1f, 1f, 1f)
                     "Rainbow" -> {
-                        val rainbow = Color(Color.HSBtoRGB((mc.thePlayer.ticksExisted / 70.0 + sin(i / 50.0 * 1.75)).toFloat() % 1.0f, 0.7f, 1.0f))
+                        val rainbow = Color(RenderUtils.getNormalRainbow(i, saturationValue.get(), brightnessValue.get()))
                         GL11.glColor3f(rainbow.red / 255.0f, rainbow.green / 255.0f, rainbow.blue / 255.0f)
                     }
                     "Rainbow2" -> GL11.glColor3f(rainbow2!!.red / 255.0f, rainbow2!!.green / 255.0f, rainbow2!!.blue / 255.0f)

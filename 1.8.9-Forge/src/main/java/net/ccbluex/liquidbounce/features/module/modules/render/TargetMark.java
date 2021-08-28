@@ -49,7 +49,7 @@ public class TargetMark extends Module {
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
         if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .5F);
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .65F);
 
 		    double lastY = yPos;
 

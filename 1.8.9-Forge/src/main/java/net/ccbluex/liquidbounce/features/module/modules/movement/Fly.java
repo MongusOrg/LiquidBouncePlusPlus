@@ -86,7 +86,7 @@ public class Fly extends Module {
 
     // AAC
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
-    private final BoolValue aac5TruePacketValue = new BoolValue("AAC5-TruePacket", true);
+    private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
 
@@ -398,18 +398,18 @@ public class Fly extends Module {
         float yaw = mc.thePlayer.rotationYaw;
         float pitch = mc.thePlayer.rotationPitch;
         for(C03PacketPlayer packet : aac5C03List){
-            if (aac5TruePacketValue.get()) PacketUtils.sendPacketNoEvent(packet);
-            if(!aac5TruePacketValue.get() || packet.isMoving()){
+            PacketUtils.sendPacketNoEvent(packet);
+            if(packet.isMoving()){
                 if (packet.getRotating()) {
                     yaw = packet.yaw;
                     pitch = packet.pitch;
                 }
                 if (aac5UseC04Packet.get()) {
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,1e+159,packet.z, true));
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,1e+159,packet.z, !aac5NofallValue.get()));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, !aac5NofallValue.get()));
                 } else {
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,1e+159,packet.z, yaw, pitch, true));
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,1e+159,packet.z, yaw, pitch, !aac5NofallValue.get()));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, !aac5NofallValue.get()));
                 }
             }
         }
@@ -420,7 +420,7 @@ public class Fly extends Module {
     public void onMove(final MoveEvent event) {
         switch(modeValue.get().toLowerCase()) {
             case "pearl": {
-                if (pearlState != 2) {
+                if (pearlState != 2 && pearlState != -1) {
                     event.cancelEvent();
                 }
             }

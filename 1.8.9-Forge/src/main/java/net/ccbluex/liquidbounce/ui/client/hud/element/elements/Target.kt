@@ -55,6 +55,7 @@ class Target : Element() {
     private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
+    private val riseParticle = BoolValue("Rise-Particle", true)
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
     private val redValue = IntegerValue("Red", 252, 0, 255)
     private val greenValue = IntegerValue("Green", 96, 0, 255)
@@ -78,6 +79,8 @@ class Target : Element() {
     private var lastTarget: Entity? = null
 
     private val particleList = mutableListOf<Particle>()
+
+    private var gotDamaged: Boolean = false
 
     override fun drawElement(): Border {
         val target = if ((mc.currentScreen is GuiChat && showUrselfWhenChatOpen.get()) || mc.currentScreen is GuiHudDesigner) mc.thePlayer else (LiquidBounce.moduleManager[KillAura::class.java] as KillAura).target
@@ -223,21 +226,30 @@ class Target : Element() {
                     val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
                     RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
                     
-                    if (target.hurtTime == (target.maxHurtTime.coerceAtLeast(1) * (3 / 4)).coerceAtLeast(1)) {
-                        for (j in 0..7) particleList.add(Particle(if (RandomUtils.nextBoolean()) barColor else Color.white, RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(1F, 4F)))
+                    if (riseParticle.get()) {
+                        if (target.hurtTime > target.maxHurtTime / 2) {
+                            if (!gotDamaged) {
+                                for (j in 0..8) 
+                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.6F, 1.0F) else 0F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(0.5F, 2F)))
+
+                                gotDamaged = true
+                            }
+                        } else if (gotDamaged) {
+                            gotDamaged = false
+                        }
+
+                        val deleteQueue = mutableListOf<Particle>()
+
+                        particleList.forEach { particle ->
+                            if (particle.alpha > 0F)
+                                particle.render(5F + 15F, 5 + 15F)
+                            else
+                                deleteQueue.add(particle)
+                        }
+
+                        for (p in deleteQueue)
+                            particleList.remove(p)
                     }
-
-                    val deleteQueue = mutableListOf<Particle>()
-
-                    particleList.forEach { particle ->
-                        if (particle.alpha > 0F)
-                            particle.render(5F + 15F, 5 + 15F)
-                        else
-                            deleteQueue.add(particle)
-                    }
-
-                    for (p in deleteQueue)
-                        particleList.remove(p)
 
                     val scaleHT = (target.hurtTime.toFloat() / target.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
                     if (mc.netHandler.getPlayerInfo(target.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 
@@ -255,7 +267,7 @@ class Target : Element() {
 
                     val barWidth = (length - 5F - maxHealthLength) * (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, 1F)
 
-                    //RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
+                    // no gradient: RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
 
                     when (colorModeValue.get().toLowerCase()) {
                         "custom" -> RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
@@ -295,6 +307,7 @@ class Target : Element() {
             }
         } else if (target == null) {
             easingHealth = 0F
+            gotDamaged = false
             particleList.clear()
         }
 
