@@ -86,6 +86,7 @@ public class Fly extends Module {
 
     // AAC
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
+    private final BoolValue aac5TruePacketValue = new BoolValue("AAC5-TruePacket", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
 
@@ -189,7 +190,7 @@ public class Fly extends Module {
             mc.thePlayer.motionZ = 0;
         }
 
-        if (mode.equalsIgnoreCase("AAC5-Vanilla")) {
+        if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
             sendAAC5Packets();
         }
 
@@ -382,12 +383,7 @@ public class Fly extends Module {
                 packetPlayer.pitch = RandomUtils.nextFloat(-90F, 90F);
             }
 
-            if (mode.equalsIgnoreCase("AAC5-Vanilla")) {
-                if (mc.isIntegratedServerRunning()) {
-                    LiquidBounce.hud.addNotification(new Notification("This fly will CRASH your client in Singleplayer!", Notification.Type.WARNING, 2000L));
-                    this.setState(false);
-                    return;
-                }
+            if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
                 aac5C03List.add(packetPlayer);
                 event.cancelEvent();
                 if(aac5C03List.size()>aac5PursePacketsValue.get())
@@ -402,8 +398,8 @@ public class Fly extends Module {
         float yaw = mc.thePlayer.rotationYaw;
         float pitch = mc.thePlayer.rotationPitch;
         for(C03PacketPlayer packet : aac5C03List){
-            PacketUtils.sendPacketNoEvent(packet);
-            if(packet.isMoving()){
+            if (aac5TruePacketValue.get()) PacketUtils.sendPacketNoEvent(packet);
+            if(!aac5TruePacketValue.get() || packet.isMoving()){
                 if (packet.getRotating()) {
                     yaw = packet.yaw;
                     pitch = packet.pitch;

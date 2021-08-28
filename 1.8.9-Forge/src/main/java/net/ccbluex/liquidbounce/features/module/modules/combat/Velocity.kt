@@ -269,7 +269,7 @@ class Velocity : Module() {
 
                 "aac5.2.0" -> {
                     event.cancelEvent()
-                    mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
+                    if (!mc.isIntegratedServerRunning()) mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
                 }
 
                 "glitch" -> {

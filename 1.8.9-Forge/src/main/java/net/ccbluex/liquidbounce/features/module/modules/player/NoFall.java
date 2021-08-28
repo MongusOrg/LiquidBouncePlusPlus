@@ -156,7 +156,7 @@ public class NoFall extends Module {
         final Packet<?> packet = event.getPacket();
         final String mode = modeValue.get();
 
-        if (voidCheck.get() && !MovementUtils.isBlockUnder()) return;
+        if (!LiquidBounce.moduleManager.getModule(Fly.class).getState() && voidCheck.get() && !MovementUtils.isBlockUnder()) return;
 
         if (packet instanceof C03PacketPlayer) {
             final C03PacketPlayer playerPacket = (C03PacketPlayer) packet;
@@ -194,7 +194,7 @@ public class NoFall extends Module {
         if (BlockUtils.collideBlock(mc.thePlayer.getEntityBoundingBox(), block -> block instanceof BlockLiquid) || BlockUtils.collideBlock(new AxisAlignedBB(mc.thePlayer.getEntityBoundingBox().maxX, mc.thePlayer.getEntityBoundingBox().maxY, mc.thePlayer.getEntityBoundingBox().maxZ, mc.thePlayer.getEntityBoundingBox().minX, mc.thePlayer.getEntityBoundingBox().minY - 0.01D, mc.thePlayer.getEntityBoundingBox().minZ), block -> block instanceof BlockLiquid))
             return;
 
-        if (voidCheck.get() && !MovementUtils.isBlockUnder()) return;
+        if (!LiquidBounce.moduleManager.getModule(Fly.class).getState() && voidCheck.get() && !MovementUtils.isBlockUnder()) return;
 
         if (modeValue.get().equalsIgnoreCase("laac")) {
             if (!jumped && !mc.thePlayer.onGround && !mc.thePlayer.isOnLadder() && !mc.thePlayer.isInWater() && !mc.thePlayer.isInWeb && mc.thePlayer.motionY < 0D) {
@@ -210,7 +210,7 @@ public class NoFall extends Module {
         if (!modeValue.get().equalsIgnoreCase("MLG"))
             return;
 
-        if (voidCheck.get() && !MovementUtils.isBlockUnder()) return;
+        if (!LiquidBounce.moduleManager.getModule(Fly.class).getState() && voidCheck.get() && !MovementUtils.isBlockUnder()) return;
 
         if (event.getEventState() == EventState.PRE) {
             currentMlgRotation = null;

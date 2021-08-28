@@ -59,7 +59,8 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val backgroundColorGreenValue = IntegerValue("Background-G", 0, 0, 255)
     private val backgroundColorBlueValue = IntegerValue("Background-B", 0, 0, 255)
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 0, 0, 255)
-    private val rectValue = ListValue("Rect", arrayOf("None", "Left", "Right", "Outline", "Special"), "None")
+    private val rectRightValue = ListValue("Rect-Right", arrayOf("None", "Left", "Right", "Outline", "Special", "Top"), "None")
+    private val rectLeftValue = ListValue("Rect-Left", arrayOf("None", "Left", "Right"), "None")
     private val lowerCaseValue = BoolValue("LowerCase", false)
     private val spaceValue = FloatValue("Space", 0F, 0F, 5F)
     private val textHeightValue = FloatValue("TextHeight", 11F, 1F, 20F)
@@ -90,7 +91,6 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
         val space = spaceValue.get()
         val textHeight = textHeightValue.get()
         val textY = textYValue.get()
-        val rectMode = rectValue.get()
         val backgroundCustomColor = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(),
                 backgroundColorBlueValue.get(), backgroundColorAlphaValue.get()).rgb
         val textShadow = shadow.get()
@@ -221,13 +221,13 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     val mixerColor = ColorMixer.getMixedColor(-index * mixerDistValue.get() * 10, mixerSecValue.get()).rgb
 
                     RenderUtils.drawRect(
-                            xPos - if (rectMode.equals("right", true)) 5 else 2,
+                            xPos - if (rectRightValue.get().equals("right", true)) 5 else 2,
                             module.arrayY,
-                            if (rectMode.equals("right", true)) -3F else 0F,
+                            if (rectRightValue.get().equals("right", true)) -3F else 0F,
                             module.arrayY + textHeight, backgroundCustomColor
                     )
                     
-                    fontRenderer.drawString(displayString, xPos - if (rectMode.equals("right", true)) 3 else 0, module.arrayY + textY, when {
+                    fontRenderer.drawString(displayString, xPos - if (rectRightValue.get().equals("right", true)) 3 else 0, module.arrayY + textY, when {
                         colorMode.equals("Random", ignoreCase = true) -> moduleColor
                         colorMode.equals("Sky", ignoreCase = true) -> Sky
                         colorMode.equals("CRainbow", ignoreCase = true) -> CRainbow
@@ -238,7 +238,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     }, textShadow)
                     
 
-                    if (!rectMode.equals("none", true)) {
+                    if (!rectRightValue.get().equals("none", true)) {
                         val rectColor = when {
                                 rectColorMode.equals("Random", ignoreCase = true) -> moduleColor
                                 rectColorMode.equals("Sky", ignoreCase = true) -> Sky
@@ -250,11 +250,11 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             }
 
                             when {
-                                rectMode.equals("left", true) -> RenderUtils.drawRect(xPos - 5, module.arrayY, xPos - 2, module.arrayY + textHeight,
+                                rectRightValue.get().equals("left", true) -> RenderUtils.drawRect(xPos - 5, module.arrayY, xPos - 2, module.arrayY + textHeight,
                                         rectColor)
-                                rectMode.equals("right", true) -> RenderUtils.drawRect(-3F, module.arrayY, 0F,
+                                rectRightValue.get().equals("right", true) -> RenderUtils.drawRect(-3F, module.arrayY, 0F,
                                         module.arrayY + textHeight, rectColor)
-                                rectMode.equals("outline", true) -> {                          
+                                rectRightValue.get().equals("outline", true) -> {                          
                                     RenderUtils.drawRect(-1F, module.arrayY - 1F, 0F,
                                             module.arrayY + textHeight, rectColor)
                                     RenderUtils.drawRect(xPos - 3, module.arrayY, xPos - 2, module.arrayY + textHeight,
@@ -272,12 +272,17 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                         RenderUtils.drawRect(xPos - 3, module.arrayY, 0F, module.arrayY - 1, rectColor)
                                     }
                                 }
-                                rectMode.equals("special", true) -> {
+                                rectRightValue.get().equals("special", true) -> {
                                     if (module == modules[0]) {
                                         RenderUtils.drawRect(xPos - 2, module.arrayY, 0F, module.arrayY - 1, rectColor)
                                     }
                                     if (module == modules[modules.size - 1]) {
                                         RenderUtils.drawRect(xPos - 2, module.arrayY + textHeight, 0F, module.arrayY + textHeight + 1, rectColor)
+                                    }
+                                }
+                                rectRightValue.get().equals("top", true) -> {
+                                    if (module == modules[0]) {
+                                        RenderUtils.drawRect(xPos - 2, module.arrayY, 0F, module.arrayY - 1, rectColor)
                                     }
                                 }
                             }
@@ -290,7 +295,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     var displayString = getModName(module)
 
                     val width = fontRenderer.getStringWidth(displayString)
-                    val xPos = -(width - module.slide) + if (rectMode.equals("left", true)) 5 else 2
+                    val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 5 else 2
                     
                     val moduleColor = Color.getHSBColor(module.hue, saturation, brightness).rgb 
 
@@ -308,7 +313,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     RenderUtils.drawRect(
                             0F,
                             module.arrayY,
-                            xPos + width + if (rectMode.equals("right", true)) 5 else 2,
+                            xPos + width + if (rectLeftValue.get().equals("right", true)) 5 else 2,
                             module.arrayY + textHeight, backgroundCustomColor
                     )
 
@@ -322,7 +327,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         else -> customColor
                     }, textShadow)
                     
-                    if (!rectMode.equals("none", true)) {
+                    if (!rectLeftValue.get().equals("none", true)) {
                         val rectColor = when {
                             rectColorMode.equals("Random", ignoreCase = true) -> moduleColor
                             rectColorMode.equals("Sky", ignoreCase = true) -> Sky
@@ -334,9 +339,9 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         }
 
                         when {
-                            rectMode.equals("left", true) -> RenderUtils.drawRect(0F,
+                            rectLeftValue.get().equals("left", true) -> RenderUtils.drawRect(0F,
                                     module.arrayY - 1, 3F, module.arrayY + textHeight, rectColor)
-                            rectMode.equals("right", true) ->
+                            rectLeftValue.get().equals("right", true) ->
                                 RenderUtils.drawRect(xPos + width + 2, module.arrayY, xPos + width + 2 + 3,
                                         module.arrayY + textHeight, rectColor)
                         }
@@ -501,14 +506,14 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 .replaceFirst("ResourcePackSpoof", "Resource Pack Spoof", ignoreCase = false)
                 .replaceFirst("PortalMenu", "Portal Menu", ignoreCase = false)
                 .replaceFirst("EnchantEffect", "Enchant Effect", ignoreCase = false)
-                .replaceFirst("NoScoreboard", "No Scoreboard", ignoreCase = false)
+                //.replaceFirst("NoScoreboard", "No Scoreboard", ignoreCase = false)
                 .replaceFirst("ChestAura", "Chest Aura", ignoreCase = false)
                 .replaceFirst("TargetStrafe", "Target Strafe", ignoreCase = false)
                 .replaceFirst("ItemPhysics", "Item Physics", ignoreCase = false)
                 .replaceFirst("NoRender", "No Render", ignoreCase = false)
                 .replaceFirst("AntiVanish", "Anti Vanish", ignoreCase = false)
                 .replaceFirst("DamageParticle", "Damage Particle", ignoreCase = false)
-                .replaceFirst("HackerDetector", "Hacker Detector", ignoreCase = false)
+                //.replaceFirst("HackerDetector", "Hacker Detector", ignoreCase = false)
                 .replaceFirst("AutoLogin", "Auto Login", ignoreCase = false)
                 .replaceFirst("AuthBypass", "Auth Bypass", ignoreCase = false)
                 .replaceFirst("AutoDisable", "Auto Disable", ignoreCase = false)
@@ -517,6 +522,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 .replaceFirst("InvCleaner", "Inv Cleaner", ignoreCase = false)
                 .replaceFirst("BanChecker", "Ban Checker", ignoreCase = false)
                 .replaceFirst("TargetMark", "Target Mark", ignoreCase = false)
+                .replaceFirst("AntiFireBall", "Anti Fire Ball", ignoreCase = false)
         }
 
         if (lowerCaseValue.get()) 

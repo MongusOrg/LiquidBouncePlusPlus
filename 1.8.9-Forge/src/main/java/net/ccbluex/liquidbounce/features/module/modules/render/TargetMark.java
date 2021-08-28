@@ -49,7 +49,7 @@ public class TargetMark extends Module {
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
         if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .5F);
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .6F);
 
 		    double lastY = yPos;
 
@@ -73,7 +73,7 @@ public class TargetMark extends Module {
 
 	        yPos = easeInOutQuart(progress) * height;
 
-	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 4F;
+	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 4.25F;
     
 	        if (al <= 0 && entity != null) {
                 entity = null;
@@ -86,7 +86,7 @@ public class TargetMark extends Module {
 
 		    pre3D();
 		    //post circles
-		    GL11.glLineWidth(1F);
+		    GL11.glLineWidth(1.5F);
 		    GL11.glShadeModel(7425);
 		    GL11.glBegin(GL11.GL_LINE_LOOP);
 
@@ -114,7 +114,7 @@ public class TargetMark extends Module {
 		    GL11.glEnd();
 		    GL11.glShadeModel(7424);
 
-		    //drawCircle(posX, posY + yPos, posZ, 2.25F, radius - 0.2F, r, g, b, al);
+		    drawCircle(posX, posY + yPos, posZ, 2F, radius, r, g, b, al);
 
 		    post3D();
         } else if (modeValue.get().equalsIgnoreCase("default")) {
