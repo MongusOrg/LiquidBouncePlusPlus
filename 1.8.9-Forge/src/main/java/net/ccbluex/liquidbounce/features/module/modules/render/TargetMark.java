@@ -49,7 +49,7 @@ public class TargetMark extends Module {
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
         if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .6F);
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .5F);
 
 		    double lastY = yPos;
 
@@ -73,7 +73,7 @@ public class TargetMark extends Module {
 
 	        yPos = easeInOutQuart(progress) * height;
 
-	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 4.25F;
+	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 5F;
     
 	        if (al <= 0 && entity != null) {
                 entity = null;
@@ -86,7 +86,7 @@ public class TargetMark extends Module {
 
 		    pre3D();
 		    //post circles
-		    GL11.glLineWidth(1.5F);
+		    GL11.glLineWidth(1F);
 		    GL11.glShadeModel(7425);
 		    GL11.glBegin(GL11.GL_LINE_LOOP);
 
@@ -152,7 +152,7 @@ public class TargetMark extends Module {
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 		GL11.glColor4f(red, green, blue, alp);
 
-		for (double i = 0; i <= 360; i += 1) {
+		for (double i = 0; i <= 360; i += 0.1) {
 			double posX = x - Math.sin(i * Math.PI / 180) * radius;
 			double posZ = z + Math.cos(i * Math.PI / 180) * radius;
 			GL11.glVertex3d(posX - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, posZ - mc.getRenderManager().viewerPosZ);

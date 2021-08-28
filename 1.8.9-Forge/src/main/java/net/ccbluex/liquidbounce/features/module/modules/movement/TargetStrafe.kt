@@ -100,8 +100,8 @@ class TargetStrafe : Module() {
         A2 < B2: -1
          */
 
-        val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 9
-        val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 9
+        val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 6
+        val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 6
 
         val prediction = if (currentReduced > targetReduced) 1.0 else if (currentReduced < targetReduced) -1.0 else 0.0
         

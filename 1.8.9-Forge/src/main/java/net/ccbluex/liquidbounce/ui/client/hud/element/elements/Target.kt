@@ -223,7 +223,7 @@ class Target : Element() {
                     val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
                     RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
                     
-                    if (target.hurtTime >= target.maxHurtTime.coerceAtLeast(1)) {
+                    if (target.hurtTime == (target.maxHurtTime.coerceAtLeast(1) * (3 / 4)).coerceAtLeast(1)) {
                         for (j in 0..7) particleList.add(Particle(if (RandomUtils.nextBoolean()) barColor else Color.white, RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(1F, 4F)))
                     }
 
