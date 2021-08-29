@@ -56,6 +56,7 @@ class Target : Element() {
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
+    private val riseBlur = BoolValue("Rise-Blur", true)
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
     private val redValue = IntegerValue("Red", 252, 0, 255)
     private val greenValue = IntegerValue("Green", 96, 0, 255)
@@ -224,7 +225,15 @@ class Target : Element() {
                     val healthName = decimalFormat2.format(easingHealth).toString()
 
                     val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
-                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
+
+                    if (riseBlur.get()) {
+                        GL11.glPushMatrix()
+                        RenderUtils.blurDynamic(false)
+                        RenderUtils.drawRoundedRect(0F + renderX.toFloat(), 0F + renderY.toFloat(), 10F + length + renderX.toFloat(), 55F + renderY.toFloat(), 2.5F, bgColor.rgb, false)
+                        RenderUtils.blurDynamic(true)
+                        GL11.glPopMatrix()
+                    }
+                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb, true)
                     
                     if (riseParticle.get()) {
                         if (target.hurtTime > target.maxHurtTime / 2) {

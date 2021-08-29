@@ -132,9 +132,31 @@ public final class RenderUtils extends MinecraftInstance {
 
         if (post) {
             Stencil.erase(true);
+            blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
+            mc.getFramebuffer().bindFramebuffer(true);
+
+            Stencil.dispose();
+            GlStateManager.enableAlpha();
+
+            mc.getFramebuffer().bindFramebuffer(true);
         } else {
-            buffer.framebufferClear(); //Clear framebuffer for blur
-            Stencil.write(false); //silently drawing the buffer
+            ScaledResolution scale = new ScaledResolution(mc);
+			int factor = scale.getScaleFactor();
+			int factor2 = scale.getScaledWidth();
+			int factor3 = scale.getScaledHeight();
+			if (lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3 || buffer == null
+					|| blurShader == null) {
+				initFboAndShader();
+			}
+			lastScale = factor;
+			lastScaleWidth = factor2;
+			lastScaleHeight = factor3;
+
+            mc.getFramebuffer().bindFramebuffer(false);
+
+            buffer.framebufferClear();
+            buffer.bindFramebuffer(true);
+            Stencil.write(false);
         }
     }
 
@@ -178,6 +200,10 @@ public final class RenderUtils extends MinecraftInstance {
     }
 
     public static void drawRoundedRect(float paramXStart, float paramYStart, float paramXEnd, float paramYEnd, float radius, int color) {
+        drawRoundedRect(paramXStart, paramYStart, paramXEnd, paramYEnd, radius, color, true);
+    }
+
+    public static void drawRoundedRect(float paramXStart, float paramYStart, float paramXEnd, float paramYEnd, float radius, int color, boolean popPush) {
         float alpha = (color >> 24 & 0xFF) / 255.0F;
         float red = (color >> 16 & 0xFF) / 255.0F;
         float green = (color >> 8 & 0xFF) / 255.0F;
@@ -201,7 +227,7 @@ public final class RenderUtils extends MinecraftInstance {
     	double x2 = (double)(paramXEnd - radius);
     	double y2 = (double)(paramYEnd - radius);
 
-        glPushMatrix();
+        if (popPush) glPushMatrix();
         glEnable(GL_BLEND);
         glDisable(GL_TEXTURE_2D);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -225,7 +251,7 @@ public final class RenderUtils extends MinecraftInstance {
         glEnable(GL_TEXTURE_2D);
         glDisable(GL_BLEND);
         glDisable(GL_LINE_SMOOTH);
-        glPopMatrix();
+        if (popPush) glPopMatrix();
     }
 
     // rTL = radius top left, rTR = radius top right, rBR = radius bottom right, rBL = radius bottom left

@@ -83,11 +83,13 @@ public class Fly extends Module {
     private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F);
     private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F);
     private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
+    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", true);
 
     // AAC
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
+    private final BoolValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Reduced", "Reduced2"}, "Original");
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
 
     // Visuals
@@ -375,7 +377,7 @@ public class Fly extends Module {
         if(packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
 
-            if (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("Verus"))
+            if (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && verusSpoofGround.get()))
                 packetPlayer.onGround = true;
 
             if (mode.equalsIgnoreCase("Derp")) {
@@ -384,6 +386,7 @@ public class Fly extends Module {
             }
 
             if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
+                if (aac5NofallValue.get()) packetPlayer.onGround = false;
                 aac5C03List.add(packetPlayer);
                 event.cancelEvent();
                 if(aac5C03List.size()>aac5PursePacketsValue.get())
@@ -405,10 +408,10 @@ public class Fly extends Module {
                     pitch = packet.pitch;
                 }
                 if (aac5UseC04Packet.get()) {
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,1e+159,packet.z, !aac5NofallValue.get()));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,aac5Packet.get().equalsIgnoreCase("original") ? 1e+159 : (aac5Packet.get().equalsIgnoreCase("reduced") ? 1e+49 : 1e+39),packet.z, !aac5NofallValue.get()));
                     PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, !aac5NofallValue.get()));
                 } else {
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,1e+159,packet.z, yaw, pitch, !aac5NofallValue.get()));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,aac5Packet.get().equalsIgnoreCase("original") ? 1e+159 : (aac5Packet.get().equalsIgnoreCase("reduced") ? 1e+49 : 1e+39),packet.z, yaw, pitch, !aac5NofallValue.get()));
                     PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, !aac5NofallValue.get()));
                 }
             }
