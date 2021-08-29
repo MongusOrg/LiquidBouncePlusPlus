@@ -49,18 +49,32 @@ class TargetStrafe : Module() {
     private lateinit var speed: Speed
 
     var direction: Int = 1
-    var lastYaw: Int = -999
+    var lastView: Int = 0
+    var hasChangedThirdPerson: Boolean = true
 
     override fun onInitialize() {
         killAura=LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
         speed=LiquidBounce.moduleManager.getModule(Speed::class.java) as Speed
     }
 
+    override fun onEnable() {
+        hasChangedThirdPerson = true
+        lastView = 0
+    }
+
     @EventTarget
     fun onMotion(event: MotionEvent) {
-        if (thirdPerson.get()) {
-            mc.gameSettings.thirdPersonView = if (canStrafe) 1 else 0
+        if (thirdPerson.get()) { // smart change back lol
+            if (canStrafe) {
+                if (hasChangedThirdPerson) lastView = mc.gameSettings.thirdPersonView
+                mc.gameSettings.thirdPersonView = 1
+                hasChangedThirdPerson = false
+            } else if (!hasChangedThirdPerson) {
+                mc.gameSettings.thirdPersonView = lastView
+                hasChangedThirdPerson = true
+            }
         }
+
         if (event.eventState == EventState.PRE) {
             if (mc.thePlayer.isCollidedHorizontally)
                 this.direction = -this.direction
@@ -82,41 +96,19 @@ class TargetStrafe : Module() {
     fun strafe(event: MoveEvent, moveSpeed: Double) {
         val target = killAura.target
         if (target == null) {
-            lastYaw = -999
             return
         }
             
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
 
-        /* Smart direction prediction (by the only person committing everyday)
-         -1 <------> 1
+        val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt()
+        val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt()
 
-              B1  B2
-            \  |  /
-         A2 -- o -- 
-            /  |  \
-                  A1
-
-        A: last, B: target
-
-        A1 > B1: 1
-        A2 < B2: -1
-         */
-
-        val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt() / 6
-        val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt() / 6
-
-        val rotationYaw = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt()
-
-        val prediction = if (currentReduced != targetReduced) 
-                             (if (lastYaw > rotationYaw) 
-                                  1.0 
-                             else if (lastYaw < rotationYaw) 
-                                 -1.0 
-                             else 0.0) 
+        val prediction = if (currentReduced < targetReduced) 
+                             -1.0
+                         else if (currentReduced > targetReduced)
+                             1.0
                          else 0.0
-
-        lastYaw = rotationYaw
         
         // behind targetstrafe moment $$$
         if (behindTarget.get()) {
@@ -217,7 +209,7 @@ class TargetStrafe : Module() {
             for (i in 0..360 step 60 - accuracyValue.get()) { // You can change circle accuracy  (60 - accuracy)
                 when (colorType.get()) {
                     "Custom" -> GL11.glColor3f(redValue.get() / 255.0f, greenValue.get() / 255.0f, blueValue.get() / 255.0f)
-                    "Dynamic" -> if (canStrafe) GL11.glColor4f(0.1f, 1f, 0.1f, 1f) else GL11.glColor4f(1f, 1f, 1f, 1f)
+                    "Dynamic" -> if (canStrafe) GL11.glColor4f(0.25f, 1f, 0.25f, 1f) else GL11.glColor4f(1f, 1f, 1f, 1f)
                     "Rainbow" -> {
                         val rainbow = Color(RenderUtils.getNormalRainbow(i, saturationValue.get(), brightnessValue.get()))
                         GL11.glColor3f(rainbow.red / 255.0f, rainbow.green / 255.0f, rainbow.blue / 255.0f)

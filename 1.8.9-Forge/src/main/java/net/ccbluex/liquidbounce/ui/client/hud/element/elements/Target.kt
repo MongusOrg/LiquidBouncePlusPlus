@@ -56,7 +56,11 @@ class Target : Element() {
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
+    private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
     private val riseBlur = BoolValue("Rise-Blur", true)
+    private val riseAsync = BoolValue("Rise-FPSAsync", true)
+    private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
+    private val distanceValue = IntegerValue("Rise-Distance", 50, 1, 200)
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
     private val redValue = IntegerValue("Red", 252, 0, 255)
     private val greenValue = IntegerValue("Green", 96, 0, 255)
@@ -64,7 +68,6 @@ class Target : Element() {
     private val saturationValue = FloatValue("Saturation", 1F, 0F, 1F)
     private val brightnessValue = FloatValue("Brightness", 1F, 0F, 1F)
     private val mixerSecondsValue = IntegerValue("Mixer-Seconds", 2, 1, 10)
-    private val distanceValue = IntegerValue("Distance", 50, 1, 500)
     private val backgroundColorRedValue = IntegerValue("Background-Red", 0, 0, 255)
     private val backgroundColorGreenValue = IntegerValue("Background-Green", 0, 0, 255)
     private val backgroundColorBlueValue = IntegerValue("Background-Blue", 0, 0, 255)
@@ -226,11 +229,13 @@ class Target : Element() {
 
                     val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
 
-                    if (riseBlur.get()) {
+                    if (riseBlur.get()) { //this is so weird, i hate shader thingy
                         GL11.glPushMatrix()
+                        GlStateManager.pushAttrib()
                         RenderUtils.blurDynamic(false)
                         RenderUtils.drawRoundedRect(0F + renderX.toFloat(), 0F + renderY.toFloat(), 10F + length + renderX.toFloat(), 55F + renderY.toFloat(), 2.5F, bgColor.rgb, false)
                         RenderUtils.blurDynamic(true)
+                        GlStateManager.popAttrib()
                         GL11.glPopMatrix()
                     }
                     RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb, true)
@@ -239,7 +244,7 @@ class Target : Element() {
                         if (target.hurtTime > target.maxHurtTime / 2) {
                             if (!gotDamaged) {
                                 for (j in 0..8) 
-                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.6F, 1.0F) else 0F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(0.5F, 2F)))
+                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.7F, 1.0F) else 0F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(0.5F, 2.5F)))
 
                                 gotDamaged = true
                             }
@@ -251,7 +256,7 @@ class Target : Element() {
 
                         particleList.forEach { particle ->
                             if (particle.alpha > 0F)
-                                particle.render(5F + 15F, 5 + 15F)
+                                particle.render(5F + 15F, 5 + 15F, riseParticleFade.get(), riseAsync.get())
                             else
                                 deleteQueue.add(particle)
                         }
@@ -266,7 +271,7 @@ class Target : Element() {
                             5F + 15F * (scaleHT * 0.2F), 
                             1F - scaleHT * 0.2F, 
                             30, 30, 
-                            1F, 0.5F + (1F - scaleHT) * 0.5F, 0.5F + (1F - scaleHT) * 0.5F)
+                            1F, 0.4F + (1F - scaleHT) * 0.6F, 0.4F + (1F - scaleHT) * 0.6F)
 
                     val maxHealthLength = font.getStringWidth(decimalFormat2.format(target.maxHealth).toString()).toFloat()
 
@@ -285,9 +290,9 @@ class Target : Element() {
                             GL11.glPushMatrix()
                             GL11.glEnable(3089)
                             RenderUtils.makeScissorBox(5F + renderX.toFloat(), 40F + renderY.toFloat(), 5F + renderX.toFloat() + barWidth, 50F + renderY.toFloat())
-                            for (i in 0..3) {
-                                val barStart = i.toDouble() / 4.0 * (length - 5F - maxHealthLength).toDouble()
-                                val barEnd = (i + 1).toDouble() / 4.0 * (length - 5F - maxHealthLength).toDouble()
+                            for (i in 0..(gradientAmountValue.get()-1)) {
+                                val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
+                                val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 RenderUtils.drawGradientSideways(5.0 + barStart, 40.0, 5.0 + barEnd, 50.0, 
                                 when (colorModeValue.get()) {
                                     "Sky" -> RenderUtils.SkyRainbow(i * distanceValue.get(), saturationValue.get(), brightnessValue.get())
@@ -333,12 +338,12 @@ class Target : Element() {
     private class Particle(var color: Color, var distX: Float, var distY: Float, var radius: Float) {
         var alpha = 1F
         var progress = 0.0
-        fun render(x: Float, y: Float) {
+        fun render(x: Float, y: Float, fade: Boolean, async: Boolean) {
             if (progress >= 1F) {
-                alpha -= 0.1F
+                if (fade) alpha -= 0.1F
                 if (alpha < 0F) alpha = 0F
             } else
-                progress += 0.025
+                progress += 0.025 * if (async) (1.5 - mc.timer.renderPartialTicks!!.toDouble()) else 1.0
 
             if (alpha <= 0F) return
 

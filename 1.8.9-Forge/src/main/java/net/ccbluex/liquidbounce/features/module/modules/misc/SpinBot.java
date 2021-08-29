@@ -5,7 +5,7 @@ import net.ccbluex.liquidbounce.value.*;
 import net.ccbluex.liquidbounce.event.*;
 import org.jetbrains.annotations.*;
 
-@ModuleInfo(name = "SpinBot", description = "CS-GO Feeling but client side", category = ModuleCategory.MISC)
+@ModuleInfo(name = "SpinBot", description = "CS-GO Feeling but client side (by the old solegit)", category = ModuleCategory.MISC)
 public class SpinBot extends Module
 {
     public final ListValue yawMode;

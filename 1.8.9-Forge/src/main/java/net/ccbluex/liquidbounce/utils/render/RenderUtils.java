@@ -129,21 +129,19 @@ public final class RenderUtils extends MinecraftInstance {
     public static void blurDynamic(boolean post) {
         if (!OpenGlHelper.isFramebufferEnabled())
             return;
+        
+        ScaledResolution scale = new ScaledResolution(mc);
+		int factor = scale.getScaleFactor();
+		int factor2 = scale.getScaledWidth();
+		int factor3 = scale.getScaledHeight();
 
         if (post) {
             Stencil.erase(true);
-            blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
-            mc.getFramebuffer().bindFramebuffer(true);
-
+            buffer.framebufferRender(factor2, factor3);
+            buffer.unbindFramebuffer();
             Stencil.dispose();
             GlStateManager.enableAlpha();
-
-            mc.getFramebuffer().bindFramebuffer(true);
         } else {
-            ScaledResolution scale = new ScaledResolution(mc);
-			int factor = scale.getScaleFactor();
-			int factor2 = scale.getScaledWidth();
-			int factor3 = scale.getScaledHeight();
 			if (lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3 || buffer == null
 					|| blurShader == null) {
 				initFboAndShader();
@@ -152,10 +150,11 @@ public final class RenderUtils extends MinecraftInstance {
 			lastScaleWidth = factor2;
 			lastScaleHeight = factor3;
 
-            mc.getFramebuffer().bindFramebuffer(false);
-
             buffer.framebufferClear();
             buffer.bindFramebuffer(true);
+            blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
+            mc.getFramebuffer().bindFramebuffer(true);
+
             Stencil.write(false);
         }
     }

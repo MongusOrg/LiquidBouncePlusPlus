@@ -14,7 +14,7 @@ public class Animations extends Module {
     //some ListValue
     public static final ListValue Sword = new ListValue("PresetAnimationSword", new String[]{"Normal","SlideDown1", "SlideDown2" , "Slide", "Minecraft",
             "Avatar", "Tap1", "Tap2", "Poke", "Push1", "Push2" , "Up" , "Shield", "Akrien", "VisionFX", "Swong",
-            "SigmaOld", "ETB", "Lucky", "Rotate360", "SmoothFloat", "Strange" , "Reverse", "Zoom", "Move", "Stab", "Jello"}, "Slide");
+            "SigmaOld", "ETB", "Rotate360", "SmoothFloat", "Strange" , "Reverse", "Zoom", "Move", "Stab", "Jello"}, "Slide");
 
     public static final ListValue transformFirstPersonRotate = new ListValue("TransformFirstPersonRotate", new String[]{"Rotate1", "Rotate2", "Custom" , "None"}, "Rotate1");
 

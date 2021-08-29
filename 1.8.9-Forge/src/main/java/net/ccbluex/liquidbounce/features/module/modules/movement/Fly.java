@@ -89,7 +89,7 @@ public class Fly extends Module {
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
-    private final BoolValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Reduced", "Reduced2"}, "Original");
+    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Reduced", "Reduced2"}, "Original");
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
 
     // Visuals

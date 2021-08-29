@@ -8,27 +8,36 @@ package net.ccbluex.liquidbounce.features.module.modules.render;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.Render3DEvent;
+import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
+import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
+import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.AxisAlignedBB;
 
 import org.lwjgl.opengl.GL11;
 import java.awt.Color;
 
-@ModuleInfo(name = "TargetMark", description = "Display your KillAura's target in 3D. (lol)", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "TargetMark", description = "Display your KillAura's target in 3D.", category = ModuleCategory.RENDER)
 public class TargetMark extends Module {
 
     public final ListValue modeValue = new ListValue("Mode", new String[]{"Default", "Box", "Jello"}, "Default");
-    public final IntegerValue red = new IntegerValue("Red", 255, 0, 255);
-    public final IntegerValue green = new IntegerValue("Green", 255, 0, 255);
-    public final IntegerValue blue = new IntegerValue("Blue", 255, 0, 255);
-    public final IntegerValue alpha = new IntegerValue("Alpha", 255, 0, 255);
+    private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
+	private final IntegerValue colorRedValue = new IntegerValue("Red", 255, 0, 255);
+	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
+	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
+	private final IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
+	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
+	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
+	private final IntegerValue mixerSecondsValue = new IntegerValue("Mixer-Seconds", 2, 1, 10);
+   	private final BoolValue colorTeam = new BoolValue("Team", false);
 
 	private EntityLivingBase entity;
 	
@@ -80,9 +89,10 @@ public class TargetMark extends Module {
                 return;
             }
 
-            float r = red.get() / 255.0F;
-            float g = green.get() / 255.0F;
-            float b = blue.get() / 255.0F;
+			Color colour = getColor(entity);
+            float r = colour.getRed() / 255.0F;
+            float g = colour.getGreen() / 255.0F;
+            float b = colour.getBlue() / 255.0F;
 
 		    pre3D();
 		    //post circles
@@ -118,10 +128,49 @@ public class TargetMark extends Module {
 
 		    post3D();
         } else if (modeValue.get().equalsIgnoreCase("default")) {
-            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawPlatform(aura.getTarget(), (aura.getHitable()) ? new Color(red.get(), green.get(), blue.get(), alpha.get()) : new Color(255, 0, 0, alpha.get()));
+            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawPlatform(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()));
         } else {
-            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawEntityBox(aura.getTarget(), (aura.getHitable()) ? new Color(red.get(), green.get(), blue.get(), alpha.get()) : new Color(255, 0, 0, alpha.get()), false);
+            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawEntityBox(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()), false);
         }
+	}
+
+	public final Color getColor(final Entity ent) {
+		if (ent instanceof EntityLivingBase) {
+			final EntityLivingBase entityLivingBase = (EntityLivingBase) ent;
+
+			if (colorTeam.get()) {
+				final char[] chars = entityLivingBase.getDisplayName().getFormattedText().toCharArray();
+				int color = Integer.MAX_VALUE;
+
+				for (int i = 0; i < chars.length; i++) {
+					if (chars[i] != '§' || i + 1 >= chars.length)
+						continue;
+
+					final int index = GameFontRenderer.getColorIndex(chars[i + 1]);
+
+					if (index < 0 || index > 15)
+						continue;
+
+					color = ColorUtils.hexColors[index];
+					break;
+				}
+
+				return new Color(color);
+			}
+		}
+
+		switch (colorModeValue.get()) {
+			case "Custom":
+				return new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+			case "Sky":
+				return RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
+			case "LiquidSlowly":
+				return ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get());
+			case "Mixer":
+				return ColorMixer.getMixedColor(0, mixerSecondsValue.get());
+			default:
+				return ColorUtils.fade(new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get()), 0, 100);
+		}
 	}
 
     public static void pre3D() {

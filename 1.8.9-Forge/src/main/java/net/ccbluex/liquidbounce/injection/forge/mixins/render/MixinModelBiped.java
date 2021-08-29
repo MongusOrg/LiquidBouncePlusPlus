@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
+import net.ccbluex.liquidbounce.features.module.modules.misc.SpinBot;
 import net.ccbluex.liquidbounce.features.module.modules.render.Rotations;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.minecraft.client.Minecraft;
@@ -39,9 +40,13 @@ public class MixinModelBiped {
         if(heldItemRight == 3)
             this.bipedRightArm.rotateAngleY = 0F;
 
-        if (LiquidBounce.moduleManager.getModule(Rotations.class).getState() && RotationUtils.serverRotation != null && p_setRotationAngles_7_ instanceof EntityPlayer
-                && p_setRotationAngles_7_.equals(Minecraft.getMinecraft().thePlayer)) {
-            this.bipedHead.rotateAngleX = RotationUtils.serverRotation.getPitch() / (180F / (float) Math.PI);
+        if (p_setRotationAngles_7_ instanceof EntityPlayer && p_setRotationAngles_7_.equals(Minecraft.getMinecraft().thePlayer)) {
+            if (LiquidBounce.moduleManager.getModule(SpinBot.class).getState()) {
+                this.bipedHead.rotateAngleX = SpinBot.pitch / (180F / (float) Math.PI);
+            }
+            else if (LiquidBounce.moduleManager.getModule(Rotations.class).getState() && RotationUtils.serverRotation != null) {
+                this.bipedHead.rotateAngleX = RotationUtils.serverRotation.getPitch() / (180F / (float) Math.PI);
+            }
         }
     }
 }
