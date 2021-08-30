@@ -54,12 +54,10 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val rectColorBlueValue = IntegerValue("Blue", 255, 0, 255)
     private val rectColorBlueAlpha = IntegerValue("Alpha", 255, 0, 255)
 
-    private val rainbowX = FloatValue("Rainbow-X", -1000F, -2000F, 2000F)
-    private val rainbowY = FloatValue("Rainbow-Y", -1000F, -2000F, 2000F)
-    
     private val saturationValue = FloatValue("Saturation", 0.9f, 0f, 1f)
     private val brightnessValue = FloatValue("Brightness", 1f, 0f, 1f)
     private val cRainbowSecValue = IntegerValue("Seconds", 2, 1, 10)
+    private val delayValue = IntegerValue("Delay", 2, 0, 20)
 
     private val shadowValue = BoolValue("Shadow", false)
     private val changeDomain = BoolValue("ChangeDomain", false)
@@ -151,15 +149,24 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             val width = 5
             val height = maxHeight - index * fontRenderer.FONT_HEIGHT
 
+            var changed = false
+
             GlStateManager.resetColor()
-            var typeColor = -1
             if(changeDomain.get()){
                 for(domain in domainList){
                     if(StringUtils.fixString(ColorUtils.stripColor(name)!!).contains(domain,true)){
                         name = hud.domainValue.get()
-                        typeColor = when {
+                        changed = true
+                        break;
+                    }
+                }
+            }
+            
+            if (changed)
+                for (z in 0..(name.length-1)) {
+                    val typeColor = when {
                             rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(
-                                0,
+                                z * delayValue.get(),
                                 saturationValue.get(),
                                 brightnessValue.get()
                             )
@@ -167,19 +174,19 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                                 cRainbowSecValue.get(),
                                 saturationValue.get(),
                                 brightnessValue.get(),
-                                0
+                                z * delayValue.get()
                             )
-                            rectColorMode.equals("LiquidSlowly", ignoreCase = true) -> liquidSlowli
-                            rectColorMode.equals("Fade", ignoreCase = true) -> FadeColor
-                            rectColorMode.equals("Mixer", ignoreCase = true) -> mixerColor
+                            rectColorMode.equals("LiquidSlowly", ignoreCase = true) -> ColorUtils.LiquidSlowly(System.nanoTime(), z * delayValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
+                            rectColorMode.equals("Fade", ignoreCase = true) -> ColorUtils.fade(
+                                Color(rectColorRedValue.get(), rectColorGreenValue.get(), rectColorBlueValue.get(), rectColorBlueAlpha.get()), 
+                                z * delayValue.get(), 
+                                100).rgb
+                            rectColorMode.equals("Mixer", ignoreCase = true) -> ColorMixer.getMixedColor(z * delayValue.get(), cRainbowSecValue.get()).rgb
                             else -> rectCustomColor
                         }
-                        break;
-                    }
+                    fontRenderer.drawString(name.get(z).toString(), l1.toFloat(), height.toFloat(), typeColor, shadowValue.get())
                 }
-            }
-            
-            fontRenderer.drawString(name, l1.toFloat(), height.toFloat(), typeColor, shadowValue.get())
+            else fontRenderer.drawString(name, l1.toFloat(), height.toFloat(), typeColor, shadowValue.get())
 
             if (showRedNumbersValue.get()) fontRenderer.drawString(scorePoints, (width - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
 

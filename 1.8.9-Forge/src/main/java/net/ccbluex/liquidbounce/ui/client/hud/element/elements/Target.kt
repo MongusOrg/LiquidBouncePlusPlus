@@ -57,7 +57,6 @@ class Target : Element() {
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
-    private val riseBlur = BoolValue("Rise-Blur", true)
     private val riseAsync = BoolValue("Rise-FPSAsync", true)
     private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
     private val distanceValue = IntegerValue("Rise-Distance", 50, 1, 200)
@@ -218,6 +217,7 @@ class Target : Element() {
                     RenderUtils.drawRect(0F, 32F, (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
                 }
 
+                // without the new rise update i would never think of recreating this targethud lol
                 "Rise" -> {
                     val font = Fonts.fontSFUI40
                     val name = "Name ${target.name}"
@@ -229,22 +229,13 @@ class Target : Element() {
 
                     val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
 
-                    if (riseBlur.get()) { //this is so weird, i hate shader thingy
-                        GL11.glPushMatrix()
-                        GlStateManager.pushAttrib()
-                        RenderUtils.blurDynamic(false)
-                        RenderUtils.drawRoundedRect(0F + renderX.toFloat(), 0F + renderY.toFloat(), 10F + length + renderX.toFloat(), 55F + renderY.toFloat(), 2.5F, bgColor.rgb, false)
-                        RenderUtils.blurDynamic(true)
-                        GlStateManager.popAttrib()
-                        GL11.glPopMatrix()
-                    }
                     RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb, true)
-                    
+
                     if (riseParticle.get()) {
                         if (target.hurtTime > target.maxHurtTime / 2) {
                             if (!gotDamaged) {
                                 for (j in 0..8) 
-                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.7F, 1.0F) else 0F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(0.5F, 2.5F)))
+                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.4F, 1.0F) else 0F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(0.5F, 2.5F)))
 
                                 gotDamaged = true
                             }
@@ -343,7 +334,7 @@ class Target : Element() {
                 if (fade) alpha -= 0.1F
                 if (alpha < 0F) alpha = 0F
             } else
-                progress += 0.025 * if (async) (1.5 - mc.timer.renderPartialTicks!!.toDouble()) else 1.0
+                progress += if (async) 0.1 * (1.0 - mc.timer.renderPartialTicks!!.toDouble()) else 0.025 
 
             if (alpha <= 0F) return
 

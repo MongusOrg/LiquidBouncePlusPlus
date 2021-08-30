@@ -49,13 +49,6 @@ public final class RenderUtils extends MinecraftInstance {
 
     public static int deltaTime;
 
-    private static ShaderGroup blurShader;
-	private static Framebuffer buffer;
-	private static int lastScale;
-	private static int lastScaleWidth;
-	private static int lastScaleHeight;
-	private static ResourceLocation shader = new ResourceLocation("shaders/post/blur.json");
-
     private static final int[] DISPLAY_LISTS_2D = new int[4];
 
     static {
@@ -114,49 +107,6 @@ public final class RenderUtils extends MinecraftInstance {
 
     public static double interpolate(double current, double old, double scale) {
         return old + (current - old) * scale;
-    }
-
-	public static void initFboAndShader() {
-		try {	
-			blurShader = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), mc.getFramebuffer(), shader);
-			blurShader.createBindFramebuffers(mc.displayWidth, mc.displayHeight);
-			buffer = blurShader.mainFramebuffer;	
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-    public static void blurDynamic(boolean post) {
-        if (!OpenGlHelper.isFramebufferEnabled())
-            return;
-        
-        ScaledResolution scale = new ScaledResolution(mc);
-		int factor = scale.getScaleFactor();
-		int factor2 = scale.getScaledWidth();
-		int factor3 = scale.getScaledHeight();
-
-        if (post) {
-            Stencil.erase(true);
-            buffer.framebufferRender(factor2, factor3);
-            buffer.unbindFramebuffer();
-            Stencil.dispose();
-            GlStateManager.enableAlpha();
-        } else {
-			if (lastScale != factor || lastScaleWidth != factor2 || lastScaleHeight != factor3 || buffer == null
-					|| blurShader == null) {
-				initFboAndShader();
-			}
-			lastScale = factor;
-			lastScaleWidth = factor2;
-			lastScaleHeight = factor3;
-
-            buffer.framebufferClear();
-            buffer.bindFramebuffer(true);
-            blurShader.loadShaderGroup(mc.timer.renderPartialTicks);
-            mc.getFramebuffer().bindFramebuffer(true);
-
-            Stencil.write(false);
-        }
     }
 
     public static int SkyRainbow(int var2, float st, float bright) {
