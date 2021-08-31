@@ -21,7 +21,7 @@ class NoRender : Module() {
     private val playersValue = BoolValue("Players", true)
     private val mobsValue = BoolValue("Mobs", true)
     private val animalsValue = BoolValue("Animals", true)
-    private val armorStandValue = BoolValue("ArmorStand", true)
+    val armorStandValue = BoolValue("ArmorStand", true) // going to redirect armor stand bounding box return instead, since the original method doesn't work
     private val allValue = BoolValue("All", true)
     private val autoResetValue = BoolValue("AutoReset", true)
     private val maxRenderRange = FloatValue("MaxRenderRange", 4F, 0F, 16F)

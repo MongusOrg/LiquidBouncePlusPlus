@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.AutoClicker;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AbortBreaking;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.MultiActions;
+import net.ccbluex.liquidbounce.features.module.modules.misc.HitDelayFix;
 import net.ccbluex.liquidbounce.features.module.modules.world.FastPlace;
 import net.ccbluex.liquidbounce.ui.client.GuiMainMenu;
 //import net.ccbluex.liquidbounce.ui.client.GuiWelcome;
@@ -187,7 +188,7 @@ public abstract class MixinMinecraft {
     private void clickMouse(CallbackInfo callbackInfo) {
         CPSCounter.registerClick(CPSCounter.MouseButton.LEFT);
 
-        if (LiquidBounce.moduleManager.getModule(AutoClicker.class).getState())
+        if (LiquidBounce.moduleManager.getModule(AutoClicker.class).getState() || LiquidBounce.moduleManager.getModule(HitDelayFix.class).getState())
             leftClickCounter = 0;
     }
 

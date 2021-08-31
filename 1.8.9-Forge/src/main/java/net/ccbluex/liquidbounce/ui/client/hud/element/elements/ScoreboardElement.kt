@@ -57,7 +57,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val saturationValue = FloatValue("Saturation", 0.9f, 0f, 1f)
     private val brightnessValue = FloatValue("Brightness", 1f, 0f, 1f)
     private val cRainbowSecValue = IntegerValue("Seconds", 2, 1, 10)
-    private val delayValue = IntegerValue("Delay", 2, 0, 20)
+    private val delayValue = IntegerValue("Delay", 50, 0, 200)
 
     private val shadowValue = BoolValue("Shadow", false)
     private val changeDomain = BoolValue("ChangeDomain", false)
@@ -107,15 +107,27 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             scores
 
         var maxWidth = fontRenderer.getStringWidth(objective.displayName)
+        
+        val hud = LiquidBounce.moduleManager.getModule(HUD::class.java) as HUD
 
         for (score in scoreCollection) {
             val scorePlayerTeam = scoreboard.getPlayersTeam(score.playerName)
-            val width = "${ScorePlayerTeam.formatPlayerName(scorePlayerTeam, score.playerName)}: ${EnumChatFormatting.RED}${score.scorePoints}"
+            var name = ScorePlayerTeam.formatPlayerName(scorePlayerTeam, score.playerName)
+            var stripped = StringUtils.fixString(ColorUtils.stripColor(name)!!)
+            if(changeDomain.get()){
+                for(domain in domainList){
+                    if(stripped.contains(domain,true)){
+                        name = hud.domainValue.get()
+                        break;
+                    }
+                }
+            }
+            val width = "$name: ${EnumChatFormatting.RED}${score.scorePoints}"
             maxWidth = maxWidth.coerceAtLeast(fontRenderer.getStringWidth(width))
         }
 
         val maxHeight = scoreCollection.size * fontRenderer.FONT_HEIGHT
-        val l1 = -maxWidth - 3
+        val l1 = if (side.horizontal == Side.Horizontal.LEFT) {maxWidth + 3} else {-maxWidth - 3}
 
         var FadeColor : Int = ColorUtils.fade(Color(rectColorRedValue.get(), rectColorGreenValue.get(), rectColorBlueValue.get(), rectColorBlueAlpha.get()), 0, 100).rgb
         val LiquidSlowly = ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get())?.rgb
@@ -123,7 +135,10 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
         val mixerColor = ColorMixer.getMixedColor(0, cRainbowSecValue.get()).rgb
  
-        Gui.drawRect(l1 - 2, -2, 5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
+        if (side.horizontal == Side.Horizontal.LEFT) 
+            Gui.drawRect(l1 + 2, -2, -5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
+        else
+            Gui.drawRect(l1 - 2, -2, 5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
 
         if (rectValue.get() && scoreCollection.size > 0) {
             val rectColor = when {
@@ -135,10 +150,11 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                 else -> rectCustomColor
             }       
 
-            Gui.drawRect(l1 - 2, -2, 5, -3, rectColor)
+            if (side.horizontal == Side.Horizontal.LEFT)
+                Gui.drawRect(l1 + 2, -2, -5, -3, rectColor)
+            else
+                Gui.drawRect(l1 - 2, -2, 5, -3, rectColor)
         }
-        
-        val hud = LiquidBounce.moduleManager.getModule(HUD::class.java) as HUD
 
         scoreCollection.forEachIndexed { index, score ->
             val team = scoreboard.getPlayersTeam(score.playerName)
@@ -151,10 +167,12 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             var changed = false
 
+            var stripped = StringUtils.fixString(ColorUtils.stripColor(name)!!)
+
             GlStateManager.resetColor()
             if(changeDomain.get()){
                 for(domain in domainList){
-                    if(StringUtils.fixString(ColorUtils.stripColor(name)!!).contains(domain,true)){
+                    if(stripped.contains(domain,true)){
                         name = hud.domainValue.get()
                         changed = true
                         break;
@@ -162,7 +180,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                 }
             }
             
-            if (changed)
+            if (changed) {
+                var stringZ = ""
                 for (z in 0..(name.length-1)) {
                     val typeColor = when {
                             rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(
@@ -184,24 +203,38 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                             rectColorMode.equals("Mixer", ignoreCase = true) -> ColorMixer.getMixedColor(z * delayValue.get(), cRainbowSecValue.get()).rgb
                             else -> rectCustomColor
                         }
-                    fontRenderer.drawString(name.get(z).toString(), l1.toFloat(), height.toFloat(), typeColor, shadowValue.get())
-                }
-            else fontRenderer.drawString(name, l1.toFloat(), height.toFloat(), typeColor, shadowValue.get())
+                    if (side.horizontal == Side.Horizontal.LEFT) 
+                        fontRenderer.drawString(name.get(z).toString(), fontRenderer.getStringWidth(stringZ).toFloat(), height.toFloat(), typeColor, shadowValue.get())
+                    else
+                        fontRenderer.drawString(name.get(z).toString(), l1.toFloat() + fontRenderer.getStringWidth(stringZ), height.toFloat(), typeColor, shadowValue.get())
 
-            if (showRedNumbersValue.get()) fontRenderer.drawString(scorePoints, (width - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
+                    stringZ += name.get(z).toString()
+                }
+            } else if (side.horizontal == Side.Horizontal.LEFT) 
+                fontRenderer.drawString(name, -3F, height.toFloat(), -1, shadowValue.get())
+            else
+                fontRenderer.drawString(name, l1.toFloat(), height.toFloat(), -1, shadowValue.get())
+
+            if (showRedNumbersValue.get()) 
+                if (side.horizontal == Side.Horizontal.LEFT) 
+                    fontRenderer.drawString(scorePoints, (l1 - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
+                else
+                    fontRenderer.drawString(scorePoints, (width - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
 
             if (index == scoreCollection.size - 1) {
                 val displayName = objective.displayName
 
                 GlStateManager.resetColor()
 
-                fontRenderer.drawString(displayName, (l1 + maxWidth / 2 - fontRenderer.getStringWidth(displayName) / 2).toFloat(), (height -
-                        fontRenderer.FONT_HEIGHT).toFloat(), -1, shadowValue.get())
+                fontRenderer.drawString(displayName, 
+                    if (side.horizontal == Side.Horizontal.LEFT) (maxWidth / 2 - fontRenderer.getStringWidth(displayName) / 2).toFloat() else (l1 + maxWidth / 2 - fontRenderer.getStringWidth(displayName) / 2).toFloat(), 
+                    (height - fontRenderer.FONT_HEIGHT).toFloat(), 
+                    -1, shadowValue.get())
             }
 
         }
 
-        return Border(-maxWidth.toFloat() - 5, -2F, 5F, maxHeight.toFloat() + fontRenderer.FONT_HEIGHT)
+        return if (side.horizontal == Side.Horizontal.LEFT) Border(maxWidth.toFloat() + 5, -2F, -5F, maxHeight.toFloat() + fontRenderer.FONT_HEIGHT) else Border(-maxWidth.toFloat() - 5, -2F, 5F, maxHeight.toFloat() + fontRenderer.FONT_HEIGHT)
     }
 
     private fun backgroundColor() = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(),

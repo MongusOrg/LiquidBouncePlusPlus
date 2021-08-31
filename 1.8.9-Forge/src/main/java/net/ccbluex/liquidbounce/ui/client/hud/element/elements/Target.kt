@@ -57,9 +57,9 @@ class Target : Element() {
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
-    private val riseAsync = BoolValue("Rise-FPSAsync", true)
     private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
     private val distanceValue = IntegerValue("Rise-Distance", 50, 1, 200)
+    private val riseParticleSpeed = FloatValue("Rise-ParticleSpeed", 0.05F, 0.01F, 0.2F)
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
     private val redValue = IntegerValue("Red", 252, 0, 255)
     private val greenValue = IntegerValue("Green", 96, 0, 255)
@@ -229,7 +229,7 @@ class Target : Element() {
 
                     val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
 
-                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb, true)
+                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
 
                     if (riseParticle.get()) {
                         if (target.hurtTime > target.maxHurtTime / 2) {
@@ -247,7 +247,7 @@ class Target : Element() {
 
                         particleList.forEach { particle ->
                             if (particle.alpha > 0F)
-                                particle.render(5F + 15F, 5 + 15F, riseParticleFade.get(), riseAsync.get())
+                                particle.render(5F + 15F, 5 + 15F, riseParticleFade.get(), riseParticleSpeed.get())
                             else
                                 deleteQueue.add(particle)
                         }
@@ -329,12 +329,13 @@ class Target : Element() {
     private class Particle(var color: Color, var distX: Float, var distY: Float, var radius: Float) {
         var alpha = 1F
         var progress = 0.0
-        fun render(x: Float, y: Float, fade: Boolean, async: Boolean) {
-            if (progress >= 1F) {
+        fun render(x: Float, y: Float, fade: Boolean, speed: Float) {
+            if (progress >= 1.0) {
+                progress = 1.0
                 if (fade) alpha -= 0.1F
                 if (alpha < 0F) alpha = 0F
             } else
-                progress += if (async) 0.1 * (1.0 - mc.timer.renderPartialTicks!!.toDouble()) else 0.025 
+                progress += speed.toDouble()
 
             if (alpha <= 0F) return
 

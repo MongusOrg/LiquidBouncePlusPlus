@@ -148,7 +148,8 @@ class ModuleManager : Listenable {
                 ESP2D::class.java,
                 BanChecker::class.java,
                 TargetMark::class.java,
-                AntiFireBall::class.java
+                AntiFireBall::class.java,
+                HitDelayFix::class.java
         )
 
         registerModule(Fucker)

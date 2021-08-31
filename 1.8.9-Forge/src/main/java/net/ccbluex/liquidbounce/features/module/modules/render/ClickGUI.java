@@ -80,6 +80,8 @@ public class ClickGUI extends Module {
     public void onEnable() {
         updateStyle();
 
+        LiquidBounce.clickGui.progress = 0;
+        LiquidBounce.clickGui.slide = 0;
         mc.displayGuiScreen(LiquidBounce.clickGui);
     }
 

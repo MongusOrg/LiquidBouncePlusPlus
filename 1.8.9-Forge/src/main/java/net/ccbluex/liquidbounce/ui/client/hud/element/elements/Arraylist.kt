@@ -53,7 +53,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val nameBreak = BoolValue("NameBreak", true)
     private val abcOrder = BoolValue("Alphabetical-Order", false)
     private val tags = BoolValue("Tags", true)
-    private val tagsStyleValue = ListValue("TagsStyle", arrayOf("-", "()", "[]", "Default"), "-")
+    private val tagsStyleValue = ListValue("TagsStyle", arrayOf("-", "|", "()", "[]", "Default"), "-")
     private val shadow = BoolValue("ShadowText", true)
     private val backgroundColorRedValue = IntegerValue("Background-R", 0, 0, 255)
     private val backgroundColorGreenValue = IntegerValue("Background-G", 0, 0, 255)
@@ -395,21 +395,30 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     }
 
     fun getModName(mod: Module): String {
-        var displayName : String =  if (!tags.get()) //terrible fix
-                                        mod.name
-                                    else if (tagsArrayColor.get())
-                                        when (tagsStyleValue.get()) {
-                                            "-" -> mod.colorlessTagName
-                                            "[]" -> mod.colorlessTagName.replaceFirst("- ", "[") + if (mod.colorlessTagName.contains("- ")) "]" else ""
-                                            "()" -> mod.colorlessTagName.replaceFirst("- ", "(") + if (mod.colorlessTagName.contains("- ")) ")" else ""
-                                            else -> mod.colorlessTagName.replaceFirst("- ", "")
-                                        }
-                                    else when (tagsStyleValue.get()) {
-                                            "-" -> mod.tagName
-                                            "[]" -> mod.tagName.replaceFirst("- ", "[") + if (mod.tagName.contains("- ")) "]" else ""
-                                            "()" -> mod.tagName.replaceFirst("- ", "(") + if (mod.tagName.contains("- ")) ")" else ""
-                                            else -> mod.tagName.replaceFirst("- ", "")
-                                        }
+        var modTag : String = " "
+        if (tags.get()) {
+            // check and add gray prefix if possible
+            if (!tagsArrayColor.get()) 
+                modTag += "§7"
+
+            // tag prefix, ignore default value
+            if (!tagsStyleValue.get().equals("default", true)) 
+                modTag += tagsStyleValue.get().get(0).toString() + if (tagsStyleValue.get().equals("-", true) || tagsStyleValue.get().equals("|", true)) " " else ""
+
+            // main tag value
+            modTag += mod.tag
+
+            // tag suffix, ignore default, -, | values
+            if (!tagsStyleValue.get().equals("default", true) 
+            && !tagsStyleValue.get().equals("-", true) 
+            && !tagsStyleValue.get().equals("|", true)) 
+                modTag += tagsStyleValue.get().get(1).toString()
+
+        } else // make the string empty
+            modTag = ""
+
+        var displayName : String = mod.name + modTag
+
 
         if (nameBreak.get()) {
             displayName = displayName.replaceFirst("AutoArmor", "Auto Armor", ignoreCase = false)
@@ -523,6 +532,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 .replaceFirst("BanChecker", "Ban Checker", ignoreCase = false)
                 .replaceFirst("TargetMark", "Target Mark", ignoreCase = false)
                 .replaceFirst("AntiFireBall", "Anti Fire Ball", ignoreCase = false)
+                .replaceFirst("HitDelayFix", "Hit Delay Fix", ignoreCase = false)
         }
 
         if (lowerCaseValue.get()) 

@@ -44,7 +44,7 @@ public class ClickGui extends GuiScreen {
     private int mouseX;
     private int mouseY;
 
-    private double slide, progress = 0;
+    public double slide, progress = 0;
 
     public ClickGui() {
         final int width = 100;

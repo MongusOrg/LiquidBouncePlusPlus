@@ -42,6 +42,8 @@ class CommandManager {
         registerCommand(PrefixCommand())
         registerCommand(HideCommand())
         registerCommand(AutoDisableCommand())
+        registerCommand(TeleportCommand())
+        registerCommand(FocusCommand())
     }
 
     /**

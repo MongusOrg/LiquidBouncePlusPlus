@@ -101,13 +101,13 @@ open class Module : MinecraftInstance(), Listenable {
     // Tag
     open val tag: String?
         get() = null
-
+/*
     val tagName: String
         get() = "$name${if (tag == null) "" else "§7 - $tag"}"
 
     val colorlessTagName: String
         get() = "$name${if (tag == null) "" else " - " + stripColor(tag)}"
-
+*/
     /**
      * Toggle module
      */
