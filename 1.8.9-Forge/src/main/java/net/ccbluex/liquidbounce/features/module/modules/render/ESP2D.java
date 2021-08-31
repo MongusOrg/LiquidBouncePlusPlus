@@ -134,8 +134,8 @@ public final class ESP2D extends Module {
 		}
 	}
 
-   public static boolean shouldRenderName(EntityLivingBase entity) {
-      return LiquidBounce.moduleManager.getModule(ESP2D.class) == null || !((ESP2D)LiquidBounce.moduleManager.getModule(ESP2D.class)).tagsValue.get() || !EntityUtils.isSelected(entity, false);
+   public static boolean shouldCancelNameTag(EntityLivingBase entity) {
+      return LiquidBounce.moduleManager.getModule(ESP2D.class) != null && ((ESP2D)LiquidBounce.moduleManager.getModule(ESP2D.class)).tagsValue.get() && collectedEntities.contains(entity);
    }
 
    @EventTarget

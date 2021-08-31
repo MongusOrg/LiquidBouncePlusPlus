@@ -11,9 +11,9 @@ import net.ccbluex.liquidbounce.value.*
 import org.lwjgl.input.Keyboard
 
 /*
- * LiquidBounce Hacked Client
+ * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/CCBlueX/LiquidBounce/
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  */
 object SettingsUtils {
 

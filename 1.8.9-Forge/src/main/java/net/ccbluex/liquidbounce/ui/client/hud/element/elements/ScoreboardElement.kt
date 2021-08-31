@@ -1,7 +1,7 @@
 /*
- * LiquidBounce Hacked Client
+ * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/CCBlueX/LiquidBounce/
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
@@ -204,7 +204,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                             else -> rectCustomColor
                         }
                     if (side.horizontal == Side.Horizontal.LEFT) 
-                        fontRenderer.drawString(name.get(z).toString(), fontRenderer.getStringWidth(stringZ).toFloat(), height.toFloat(), typeColor, shadowValue.get())
+                        fontRenderer.drawString(name.get(z).toString(), -3F + fontRenderer.getStringWidth(stringZ).toFloat(), height.toFloat(), typeColor, shadowValue.get())
                     else
                         fontRenderer.drawString(name.get(z).toString(), l1.toFloat() + fontRenderer.getStringWidth(stringZ), height.toFloat(), typeColor, shadowValue.get())
 
@@ -217,7 +217,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             if (showRedNumbersValue.get()) 
                 if (side.horizontal == Side.Horizontal.LEFT) 
-                    fontRenderer.drawString(scorePoints, (l1 - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
+                    fontRenderer.drawString(scorePoints, (l1 + 1 - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
                 else
                     fontRenderer.drawString(scorePoints, (width - fontRenderer.getStringWidth(scorePoints)).toFloat(), height.toFloat(), -1, shadowValue.get())
 

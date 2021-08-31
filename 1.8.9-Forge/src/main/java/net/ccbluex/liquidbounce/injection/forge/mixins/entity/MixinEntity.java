@@ -1,21 +1,19 @@
 /*
- * LiquidBounce Hacked Client
+ * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/CCBlueX/LiquidBounce/
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.StrafeEvent;
 import net.ccbluex.liquidbounce.features.module.modules.combat.HitBox;
-import net.ccbluex.liquidbounce.features.module.modules.render.NoRender;
 //import net.ccbluex.liquidbounce.features.module.modules.exploit.NoPitchLimit;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
@@ -185,13 +183,6 @@ public abstract class MixinEntity {
 
     public int getFire() {
         return fire;
-    }
-
-    @Inject(method = "getEntityBoundingBox", at = @At("HEAD"), cancellable = true) // idfk
-    public void injectBoundingBox(CallbackInfoReturnable<AxisAlignedBB> callbackInfo) {
-        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
-        if (noRender != null && noRender.getState() && noRender.getArmorStandValue().get() && ((Entity) (Object) this) instanceof EntityArmorStand)
-            callbackInfo.setReturnValue((AxisAlignedBB)null);
     }
 
     @Inject(method = "getCollisionBorderSize", at = @At("HEAD"), cancellable = true)

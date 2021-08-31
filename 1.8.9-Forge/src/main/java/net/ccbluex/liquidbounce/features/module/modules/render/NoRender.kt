@@ -14,7 +14,7 @@ import net.minecraft.entity.item.EntityItem
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.item.EntityArmorStand
 
-@ModuleInfo(name = "NoRender", description = "Increase FPS by decreasing visible entities.", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "NoRender", description = "Increase FPS by decreasing or stop rendering visible entities.", category = ModuleCategory.RENDER)
 class NoRender : Module() {
 
     private val itemsValue = BoolValue("Items", true)
@@ -22,7 +22,7 @@ class NoRender : Module() {
     private val mobsValue = BoolValue("Mobs", true)
     private val animalsValue = BoolValue("Animals", true)
     val armorStandValue = BoolValue("ArmorStand", true) // going to redirect armor stand bounding box return instead, since the original method doesn't work
-    private val allValue = BoolValue("All", true)
+    val allValue = BoolValue("All", true)
     private val autoResetValue = BoolValue("AutoReset", true)
     private val maxRenderRange = FloatValue("MaxRenderRange", 4F, 0F, 16F)
 
@@ -30,18 +30,23 @@ class NoRender : Module() {
     fun onMotion(event: MotionEvent) {
     	for (en in mc.theWorld.loadedEntityList) {
     		val entity = en!! as Entity
-    		if ((allValue.get()
+    		if (shouldStopRender(entity))
+    			entity.renderDistanceWeight = 0.0
+            else if (autoResetValue.get())
+                entity.renderDistanceWeight = 1.0
+    	}
+    }
+
+	fun shouldStopRender(entity: Entity) {
+		return (allValue.get()
                 ||(itemsValue.get() && entity is EntityItem)
     			|| (playersValue.get() && entity is EntityPlayer)
     			|| (mobsValue.get() && EntityUtils.isMob(entity))
     			|| (animalsValue.get() && EntityUtils.isAnimal(entity))
                 || (armorStandValue.get() && entity is EntityArmorStand))
-    			&& entity != mc.thePlayer!!)
-    			entity.renderDistanceWeight = if (mc.thePlayer.getDistanceToEntityBox(entity).toFloat() <= maxRenderRange.get()) 1.0 else 0.0
-            else if (autoResetValue.get())
-                entity.renderDistanceWeight = 1.0
-    	}
-    }
+    			&& entity != mc.thePlayer!!
+				&& (mc.thePlayer!!.getDistanceToEntityBox(entity).toFloat() <= maxRenderRange.get())
+	}
 
  	override fun onDisable() {
  		for (en in mc.theWorld.loadedEntityList) {

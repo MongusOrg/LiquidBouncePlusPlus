@@ -1,7 +1,7 @@
 /*
- * LiquidBounce Hacked Client
+ * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/CCBlueX/LiquidBounce/
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.features.module.modules.render.Chams;
 import net.ccbluex.liquidbounce.features.module.modules.render.ESP;
 import net.ccbluex.liquidbounce.features.module.modules.render.ESP2D;
 import net.ccbluex.liquidbounce.features.module.modules.render.NameTags;
+import net.ccbluex.liquidbounce.features.module.modules.render.NoRender;
 import net.ccbluex.liquidbounce.features.module.modules.render.TrueSight;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
@@ -23,6 +24,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -46,6 +48,12 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
     @Inject(method = "doRender", at = @At("HEAD"))
     private <T extends EntityLivingBase> void injectChamsPre(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
+        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
+
+        if (noRender.getState() && noRender.shouldStopRender(entity)) {
+            callbackInfo.cancel();
+            return;
+        }
 
         if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && EntityUtils.isSelected(entity, false)) {
             GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
@@ -56,6 +64,12 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
     @Inject(method = "doRender", at = @At("RETURN"))
     private <T extends EntityLivingBase> void injectChamsPost(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
+        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
+
+        if (noRender.getState() && noRender.shouldStopRender(entity)) {
+            callbackInfo.cancel();
+            return;
+        }
 
         if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && EntityUtils.isSelected(entity, false)) {
             GL11.glPolygonOffset(1.0F, 1000000F);
@@ -65,7 +79,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
 
     @Inject(method = "canRenderName", at = @At("HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void canRenderName(T entity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        if (!ESP.renderNameTags || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && EntityUtils.isSelected(entity, false)) || !ESP2D.shouldRenderName(entity));
+        if (!ESP.renderNameTags || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && EntityUtils.isSelected(entity, false)) || ESP2D.shouldCancelNameTag(entity));
             callbackInfoReturnable.setReturnValue(false);
     }
 
