@@ -211,10 +211,10 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         }
 
         if (skeetRectValue.get()) {
-            UiUtils.drawRect(-11.0, -9.5, (fontRenderer.getStringWidth(displayText) + 9).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+6,Color(0,0,0).rgb)
-            UiUtils.outlineRect(-10.0, -8.5, (fontRenderer.getStringWidth(displayText) + 8).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+5,8.0, Color(59,59,59).rgb,Color(59,59,59).rgb)
-            UiUtils.outlineRect(-9.0, -7.5, (fontRenderer.getStringWidth(displayText) + 7).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+4,4.0, Color(59,59,59).rgb,Color(40,40,40).rgb)
-            UiUtils.outlineRect(-4.0, -3.0, (fontRenderer.getStringWidth(displayText) + 2).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+0,1.0, Color(18,18,18).rgb,Color(0,0,0).rgb)
+            UiUtils.drawRect(-11.0 / 2.0, -9.5 / 2.0, (fontRenderer.getStringWidth(displayText) + 9).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+6,Color(0,0,0).rgb)
+            UiUtils.outlineRect(-10.0 / 2.0, -8.5 / 2.0, (fontRenderer.getStringWidth(displayText) + 8).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+5,8.0, Color(59,59,59).rgb,Color(59,59,59).rgb)
+            UiUtils.outlineRect(-9.0 / 2.0, -7.5 / 2.0, (fontRenderer.getStringWidth(displayText) + 7).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+4,4.0, Color(59,59,59).rgb,Color(40,40,40).rgb)
+            UiUtils.outlineRect(-4.0 / 2.0, -3.0 / 2.0, (fontRenderer.getStringWidth(displayText) + 2).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+0,1.0, Color(18,18,18).rgb,Color(0,0,0).rgb)
         }
 
         if (newSkeetRectValue.get()) {
@@ -293,6 +293,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
     private fun drawExhiRect(x: Float, y: Float, x2: Float, y2: Float) {
         RenderUtils.drawRect(x - 1, y - 1, x2 + 1, y2 + 1, Color(59, 59, 59).rgb)
+        RenderUtils.drawRect(x - 2, y - 2, x2 + 2, y2 + 2, Color(8, 8, 8).rgb)
         RenderUtils.drawBorderedRect(x + 2F, y + 2F, x2 - 2F, y2 - 2F, 0.5F, Color(18, 18, 18).rgb, Color(28, 28, 28).rgb)
     }
 

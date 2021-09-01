@@ -89,9 +89,9 @@ public abstract class MixinGuiButton extends Gui {
          RenderUtils.drawGradientSideways(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, new Color((int)bright, (int)bright, (int)bright, 160).getRGB(), new Color(0, 0, 0, 160).getRGB());
          GL11.glPopMatrix();*/
          RenderUtils.drawRoundedRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 2F, new Color((int)bright, (int)bright, (int)bright, 150).getRGB());
-         RenderUtils.customRounded(this.xPosition, this.yPosition + this.height - 2F, this.xPosition + this.width, this.yPosition + this.height, 0F, 0F, 2F, 2F, new Color(0, 111, 255).getRGB());
+         RenderUtils.customRounded(this.xPosition, this.yPosition + this.height - 2F, this.xPosition + this.width, this.yPosition + this.height, 0F, 0F, 2F, 2F, (this.enabled ? new Color(0, 111, 255) : new Color(41, 41, 41)).getRGB());
          for (int i = 5; i >= 0; i--)
-            RenderUtils.customRounded(this.xPosition - i, this.yPosition + this.height - 2F - i, this.xPosition + this.width + i, this.yPosition + this.height + i, 0F, 0F, 2F, 2F, new Color(0, 111, 255, (5 - i) * 5).getRGB());
+            RenderUtils.customRounded(this.xPosition - i, this.yPosition + this.height - 2F - i, this.xPosition + this.width + i, this.yPosition + this.height + i, 0F, 0F, 2F, 2F, (this.enabled ? new Color(0, 111, 255, (5 - i) * 10) : new Color(41, 41, 41, (5 - i) * 10)).getRGB());
 
          mc.getTextureManager().bindTexture(buttonTextures);
          mouseDragged(mc, mouseX, mouseY);

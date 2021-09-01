@@ -192,7 +192,7 @@ class KillAura : Module() {
     var blockingStatus = false
 
     // I don't know
-    var focusEntityName = mutableListOf<String>()
+    //var focusEntityName = mutableListOf<String>()
 
     /**
      * Enable kill aura module
@@ -525,7 +525,7 @@ class KillAura : Module() {
         val targets = mutableListOf<EntityLivingBase>()
 
         for (entity in mc.theWorld.loadedEntityList) {
-            if (entity !is EntityLivingBase || !isEnemy(entity) || (switchMode && prevTargetEntities.contains(entity.entityId)) || (!focusEntityName.isEmpty() && !focusEntityName.contains(entity.name.toLowerCase())))
+            if (entity !is EntityLivingBase || !isEnemy(entity) || (switchMode && prevTargetEntities.contains(entity.entityId))/* || (!focusEntityName.isEmpty() && !focusEntityName.contains(entity.name.toLowerCase()))*/)
                 continue
 
             val distance = mc.thePlayer.getDistanceToEntityBox(entity)

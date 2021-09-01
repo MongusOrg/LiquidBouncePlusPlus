@@ -89,7 +89,7 @@ public class Fly extends Module {
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
-    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Reduced", "Reduced2"}, "Original");
+    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise", "FOUR_DIMENSIONS"}, "Original"); // Original is from UnlegitMC/FDPClient, Rise? I don't really know if they took it from Rise src tho.
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
 
     // Visuals
@@ -386,7 +386,7 @@ public class Fly extends Module {
             }
 
             if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
-                if (aac5NofallValue.get()) packetPlayer.onGround = false;
+                if (aac5NofallValue.get()) packetPlayer.onGround = true;
                 aac5C03List.add(packetPlayer);
                 event.cancelEvent();
                 if(aac5C03List.size()>aac5PursePacketsValue.get())
@@ -407,13 +407,36 @@ public class Fly extends Module {
                     yaw = packet.yaw;
                     pitch = packet.pitch;
                 }
-                if (aac5UseC04Packet.get()) {
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,aac5Packet.get().equalsIgnoreCase("original") ? 1e+159 : (aac5Packet.get().equalsIgnoreCase("reduced") ? 1e+49 : 1e+39),packet.z, !aac5NofallValue.get()));
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, !aac5NofallValue.get()));
-                } else {
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,aac5Packet.get().equalsIgnoreCase("original") ? 1e+159 : (aac5Packet.get().equalsIgnoreCase("reduced") ? 1e+49 : 1e+39),packet.z, yaw, pitch, !aac5NofallValue.get()));
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, !aac5NofallValue.get()));
+                switch (aac5Packet.get()) {
+                    case "Original": {
+                        if (aac5UseC04Packet.get()) {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, 1e+159, packet.z, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
+                        } else {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, 1e+159, packet.z, yaw, pitch, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                        }
+                    }
+                    case "Rise": {
+                        if (aac5UseC04Packet.get()) {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, -1e+159, packet.z+10, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
+                        } else {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, -1e+159, packet.z+10, yaw, pitch, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                        }
+                    }
+                    case "FOUR_DIMENSIONS": {
+                        if (aac5UseC04Packet.get()) {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition((RandomUtils.nextBoolean() ? -1e+159 : 1e+159), 1e-159, (RandomUtils.nextBoolean() ? 1e+159 : -1e+159), true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
+                        } else {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook((RandomUtils.nextBoolean() ? -1e+159 : 1e+159), 1e-159, (RandomUtils.nextBoolean() ? 1e+159 : -1e+159), yaw, pitch, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                        }
+                    }
                 }
+                
             }
         }
         aac5C03List.clear();

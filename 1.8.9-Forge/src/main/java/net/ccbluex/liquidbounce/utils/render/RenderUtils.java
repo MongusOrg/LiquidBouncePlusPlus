@@ -187,13 +187,13 @@ public final class RenderUtils extends MinecraftInstance {
         glBegin(GL_POLYGON);
     
         double degree = Math.PI / 180;
-        for (int i = 0; i <= 90; i++)
+        for (double i = 0; i <= 90; i += 0.25)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
-        for (int i = 90; i <= 180; i++)
+        for (double i = 90; i <= 180; i += 0.25)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (int i = 180; i <= 270; i++)
+        for (double i = 180; i <= 270; i += 0.25)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (int i = 270; i <= 360; i++)
+        for (double i = 270; i <= 360; i += 0.25)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
         glEnd();
 
@@ -246,13 +246,13 @@ public final class RenderUtils extends MinecraftInstance {
         glBegin(GL_POLYGON);
     
         double degree = Math.PI / 180;
-        for (int i = 0; i <= 90; i++)
+        for (double i = 0; i <= 90; i += 0.25)
             glVertex2d(xBR + Math.sin(i * degree) * rBR, yBR + Math.cos(i * degree) * rBR);
-        for (int i = 90; i <= 180; i++)
+        for (double i = 90; i <= 180; i += 0.25)
             glVertex2d(xTR + Math.sin(i * degree) * rTR, yTR + Math.cos(i * degree) * rTR);
-        for (int i = 180; i <= 270; i++)
+        for (double i = 180; i <= 270; i += 0.25)
             glVertex2d(xTL + Math.sin(i * degree) * rTL, yTL + Math.cos(i * degree) * rTL);
-        for (int i = 270; i <= 360; i++)
+        for (double i = 270; i <= 360; i += 0.25)
             glVertex2d(xBL + Math.sin(i * degree) * rBL, yBL + Math.cos(i * degree) * rBL);
         glEnd();
 
@@ -287,13 +287,13 @@ public final class RenderUtils extends MinecraftInstance {
         glBegin(GL_POLYGON);
     
         double degree = Math.PI / 180;
-        for (int i = 0; i <= 90; i++)
+        for (double i = 0; i <= 90; i += 0.25)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
-        for (int i = 90; i <= 180; i++)
+        for (double i = 90; i <= 180; i += 0.25)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (int i = 180; i <= 270; i++)
+        for (double i = 180; i <= 270; i += 0.25)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (int i = 270; i <= 360; i++)
+        for (double i = 270; i <= 360; i += 0.25)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
         glEnd();
         glDisable(GL_LINE_SMOOTH);
