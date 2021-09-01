@@ -467,7 +467,7 @@ public class Tower extends Module {
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
             //GL11.glPopMatrix();
-            RenderUtils.drawRoundedRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() - 60, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() - 74, 4F, new Color(0.25F, 0.25F, 0.25F, progress).getRGB());
+            RenderUtils.drawRoundedRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() - 60, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() - 74, 2.5F, new Color(0.25F, 0.25F, 0.25F, progress).getRGB());
             GlStateManager.resetColor();
             Fonts.fontSFUI35.drawCenteredString(info, scaledResolution.getScaledWidth() / 2 + 0.1F, scaledResolution.getScaledHeight() - 70, new Color(1F, 1F, 1F, 0.8F * progress).getRGB(), false);
             GlStateManager.translate(0, 14F + (progress * 4F), 0);

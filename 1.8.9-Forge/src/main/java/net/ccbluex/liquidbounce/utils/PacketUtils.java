@@ -41,6 +41,9 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
         }
     }
 
+    /*
+     * This code is from UnlegitMC/FDPClient. Please credit them when using this code in your repository.
+     */
     public static void sendPacketNoEvent(Packet<INetHandlerPlayServer> packet) {
         packets.add(packet);
         mc.getNetHandler().addToSendQueue(packet);

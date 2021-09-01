@@ -45,7 +45,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
     @Shadow
     protected ModelBase mainModel;
 
-    @Inject(method = "doRender", at = @At("HEAD"))
+    @Inject(method = "doRender", at = @At("HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void injectChamsPre(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
         final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
@@ -64,13 +64,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
     @Inject(method = "doRender", at = @At("RETURN"))
     private <T extends EntityLivingBase> void injectChamsPost(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
-        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
-
-        if (noRender.getState() && noRender.shouldStopRender(entity)) {
-            callbackInfo.cancel();
-            return;
-        }
-
+        
         if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && EntityUtils.isSelected(entity, false)) {
             GL11.glPolygonOffset(1.0F, 1000000F);
             GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);

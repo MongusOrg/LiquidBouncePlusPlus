@@ -74,7 +74,7 @@ class Image : Element() {
     /**
      * Draw element
      */
-    override fun drawElement(): Border { //fixes image being gay
+    override fun drawElement(): Border { //fix image
         GlStateManager.disableAlpha() 
         RenderUtils.drawImage(resourceLocation, 0, 0, width / 2, height / 2)
         GlStateManager.enableAlpha()

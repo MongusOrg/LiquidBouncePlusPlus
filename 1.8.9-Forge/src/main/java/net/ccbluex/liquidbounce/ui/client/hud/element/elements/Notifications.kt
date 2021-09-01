@@ -2,6 +2,8 @@
  * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * 
+ * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
@@ -52,16 +54,18 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         val bgColor = Color(bgRedValue.get(), bgGreenValue.get(), bgBlueValue.get(), bgAlphaValue.get())
         var animationY = 30F
         val notifications = mutableListOf<Notification>()
-        for(i in hud.notifications)
+
+        for (i in hud.notifications)
             notifications.add(i)
-        for(i in notifications)
-            if(mc.currentScreen !is GuiHudDesigner || !hud.notifications.isEmpty())
-            i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
+        
+        if (mc.currentScreen !is GuiHudDesigner || !notifications.isEmpty()) 
+            for(i in notifications)
+                i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
         else
             exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get())
         if (mc.currentScreen is GuiHudDesigner) {
             exampleNotification.fadeState = Notification.FadeState.STAY
-            exampleNotification.stayTimer.reset()
+            //exampleNotification.stayTimer.reset()
             exampleNotification.x = exampleNotification.textLength + 8F
 
             return if (newValue.get()) Border(-102F, -48F, 0F, -30F) else Border(-130F, -58F, 0F, -30F)

@@ -183,7 +183,7 @@ public class NoFall extends Module {
             }
 
             if (mode.equalsIgnoreCase("NewSpoof")) 
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(playerPacket.x, playerPacket.y, playerPacket.z, false));
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(playerPacket.x, playerPacket.y, playerPacket.z, true));
         }
     }
 

@@ -37,7 +37,7 @@ class NoRender : Module() {
     	}
     }
 
-	fun shouldStopRender(entity: Entity) {
+	fun shouldStopRender(entity: Entity): Boolean {
 		return (allValue.get()
                 ||(itemsValue.get() && entity is EntityItem)
     			|| (playersValue.get() && entity is EntityPlayer)
@@ -45,7 +45,7 @@ class NoRender : Module() {
     			|| (animalsValue.get() && EntityUtils.isAnimal(entity))
                 || (armorStandValue.get() && entity is EntityArmorStand))
     			&& entity != mc.thePlayer!!
-				&& (mc.thePlayer!!.getDistanceToEntityBox(entity).toFloat() <= maxRenderRange.get())
+				&& (mc.thePlayer!!.getDistanceToEntityBox(entity).toFloat() > maxRenderRange.get())
 	}
 
  	override fun onDisable() {

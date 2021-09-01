@@ -2,12 +2,15 @@
  * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * 
+ * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
 package net.ccbluex.liquidbounce.features.command.commands
 
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.utils.misc.StringUtils
+import net.ccbluex.liquidbounce.utils.render.ColorUtils
 
 class FriendCommand : Command("friend", arrayOf("friends")) {
     /**
@@ -36,6 +39,50 @@ class FriendCommand : Command("friend", arrayOf("friends")) {
                         return
                     }
                     chatSyntax("friend add <name> [alias]")
+                    return
+                }
+
+                args[1].equals("addall", ignoreCase = true) -> {
+                    if (args.size == 3) {
+                        val regex = args[2]
+                        val coloredRegex = ColorUtils.translateAlternateColorCodes(regex)
+
+                        var added : Int = 0
+
+                        mc.theWorld.playerEntities
+                            .filter { !AntiBot.isBot(it) && it.displayName.getFormattedText().contains(coloredRegex, false) }
+                            .forEach {
+                                if (friendsConfig.addFriend(it.name))
+                                    added++
+                            }
+
+                        chat("Added §a§l$added §3players matching the same regex to your friend list.")
+                        playEdit()
+                        return
+                    }
+                    chatSyntax("friend addall <colored regex>")
+                    return
+                }
+
+                args[1].equals("removeall", ignoreCase = true) -> {
+                    if (args.size == 3) {
+                        val regex = args[2]
+
+                        var remove : Int = 0
+
+                        friendsConfig.friends
+                            .map { it.playerName }
+                            .filter { it.contains(regex, false) }
+                            .forEach {
+                                if (friendsConfig.removeFriend(it))
+                                    remove++
+                            }
+
+                        chat("Removed §a§l$remove §3players matching the same regex from your friend list.")
+                        playEdit()
+                        return
+                    }
+                    chatSyntax("friend removeall <regex>")
                     return
                 }
 
@@ -75,14 +122,14 @@ class FriendCommand : Command("friend", arrayOf("friends")) {
             }
         }
 
-        chatSyntax("friend <add/remove/list/clear>")
+        chatSyntax("friend <add/addall/removeall/list/clear>")
     }
 
     override fun tabComplete(args: Array<String>): List<String> {
         if (args.isEmpty()) return emptyList()
 
         return when (args.size) {
-            1 -> listOf("add", "remove", "list", "clear").filter { it.startsWith(args[0], true) }
+            1 -> listOf("add", "addall", "remove", "removeall", "list", "clear").filter { it.startsWith(args[0], true) }
             2 -> {
                 when (args[0].toLowerCase()) {
                     "add" -> {
