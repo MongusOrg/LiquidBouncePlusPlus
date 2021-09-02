@@ -34,7 +34,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Crosshair extends Module {
 
     //Color
-    public ListValue colorModeValue = new ListValue("Color", new String[]{ "Custom", "LiquidSlowly", "Sky", "Fade", "Mixer" }, "Custom");
+    public ListValue colorModeValue = new ListValue("Color", new String[]{ "Custom", "Rainbow", "LiquidSlowly", "Sky", "Fade", "Mixer" }, "Custom");
     public IntegerValue colorRedValue = new IntegerValue("Red", 0, 0, 255);
     public IntegerValue colorGreenValue = new IntegerValue("Green", 0, 0, 255);
     public IntegerValue colorBlueValue = new IntegerValue("Blue", 0, 0, 255);
@@ -43,7 +43,7 @@ public class Crosshair extends Module {
     //Rainbow thingy
     private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
-	private final IntegerValue mixerSecondsValue = new IntegerValue("Mixer-Seconds", 2, 1, 10);
+	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
 
     //Size, width, hitmarker
     public FloatValue widthVal = new FloatValue("Width", 2, 0.25F, 10);
@@ -125,6 +125,8 @@ public class Crosshair extends Module {
         switch (colorModeValue.get()) {
 			case "Custom":
 				return new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get());
+            case "Rainbow":
+                return new Color(RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), 0));
 			case "Sky":
 				return ColorUtils.reAlpha(RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get()), colorAlphaValue.get());
 			case "LiquidSlowly":

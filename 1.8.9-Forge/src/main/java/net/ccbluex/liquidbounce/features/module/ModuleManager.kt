@@ -142,14 +142,13 @@ class ModuleManager : Listenable {
                 SpinBot::class.java,
                 MultiActions::class.java,
                 AntiVoid::class.java,
-                AutoHypixel::class.java, 
-                //InvManager::class.java
+                AutoHypixel::class.java,
                 TargetStrafe::class.java,
                 ESP2D::class.java,
                 BanChecker::class.java,
                 TargetMark::class.java,
                 AntiFireBall::class.java,
-                HitDelayFix::class.java
+                KeepSprint::class.java
         )
 
         registerModule(Fucker)

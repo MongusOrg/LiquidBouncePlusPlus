@@ -61,13 +61,13 @@ public class ESP extends Module {
 	public final FloatValue wireframeWidth = new FloatValue("WireFrame-Width", 2F, 0.5F, 5F);
 	private final FloatValue shaderOutlineRadius = new FloatValue("ShaderOutline-Radius", 1.35F, 1F, 2F);
 	private final FloatValue shaderGlowRadius = new FloatValue("ShaderGlow-Radius", 2.3F, 2F, 3F);
-	private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
+	private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
 	private final IntegerValue colorRedValue = new IntegerValue("Red", 255, 0, 255);
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
 	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
-	private final IntegerValue mixerSecondsValue = new IntegerValue("Mixer-Seconds", 2, 1, 10);
+	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
 	private final BoolValue colorTeam = new BoolValue("Team", false);
 
 	@EventTarget
@@ -406,6 +406,8 @@ public class ESP extends Module {
 		switch (colorModeValue.get()) {
 			case "Custom":
 				return new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+			case "Rainbow":
+				return new Color(RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), 0));
 			case "Sky":
 				return RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
 			case "LiquidSlowly":

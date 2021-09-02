@@ -52,7 +52,7 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Simplistic"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
@@ -60,13 +60,13 @@ class Target : Element() {
     private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
     private val distanceValue = IntegerValue("Rise-Distance", 50, 1, 200)
     private val riseParticleSpeed = FloatValue("Rise-ParticleSpeed", 0.05F, 0.01F, 0.2F)
-    private val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
+    private val colorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
     private val redValue = IntegerValue("Red", 252, 0, 255)
     private val greenValue = IntegerValue("Green", 96, 0, 255)
     private val blueValue = IntegerValue("Blue", 66, 0, 255)
     private val saturationValue = FloatValue("Saturation", 1F, 0F, 1F)
     private val brightnessValue = FloatValue("Brightness", 1F, 0F, 1F)
-    private val mixerSecondsValue = IntegerValue("Mixer-Seconds", 2, 1, 10)
+    private val mixerSecondsValue = IntegerValue("Seconds", 2, 1, 10)
     private val backgroundColorRedValue = IntegerValue("Background-Red", 0, 0, 255)
     private val backgroundColorGreenValue = IntegerValue("Background-Green", 0, 0, 255)
     private val backgroundColorBlueValue = IntegerValue("Background-Blue", 0, 0, 255)
@@ -88,6 +88,7 @@ class Target : Element() {
     override fun drawElement(): Border {
         val target = if ((mc.currentScreen is GuiChat && showUrselfWhenChatOpen.get()) || mc.currentScreen is GuiHudDesigner) mc.thePlayer else (LiquidBounce.moduleManager[KillAura::class.java] as KillAura).target
         val barColor = when (colorModeValue.get()) {
+            "Rainbow" -> Color(RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), 0))
             "Custom" -> Color(redValue.get(), greenValue.get(), blueValue.get())
             "Sky" -> RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get())
             "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), 0, 100)
@@ -147,8 +148,8 @@ class Target : Element() {
                 "Flux" -> {
                     val width = (26F + Fonts.fontSFUI35.getStringWidth(target.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(target.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
-                    RenderUtils.drawBorder(0F, 0F, 25F, 25F, 0.75F, Color(45, 255, 45).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 25, 25)
+                    //RenderUtils.drawBorder(1F, 1F, 26F, 26F, 1F, Color(115, 255, 115).rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 26, 26)
                     Fonts.fontSFUI35.drawString(target.name, 30F, 4F, 0xFFFFFF) // Draw target name
                     Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 30F, 15F, 0xFFFFFF) // Draw target health   
 
@@ -185,22 +186,22 @@ class Target : Element() {
                     val nameLength = (font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(percent)}%")).toFloat() + 10F
                     val barWidth = (target.health / target.maxHealth).coerceIn(0F, target.maxHealth.toFloat()) * (nameLength - 2F)
 
-                    RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 30F, 2F + 30F, Color(24, 24, 24, 255).rgb)
-                    RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 30F, 1F + 30F, Color(31, 31, 31, 255).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 30, 30)
-                    font.drawStringWithShadow(target.name, 2F + 30F, 2F, -1)
-                    RenderUtils.drawRect(2F + 30F, 14F, 30F + nameLength, 24F, Color(24, 24, 24, 255).rgb)
+                    RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
+                    RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 36, 36)
+                    font.drawStringWithShadow(target.name, 2F + 36F + 3F, 2F, -1)
+                    RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
 
                     easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     val animateThingy = (easingHealth.coerceIn(target.health, target.maxHealth) / target.maxHealth) * (nameLength - 2F)
 
                     if (easingHealth > target.health)
-                        RenderUtils.drawRect(2F + 30F, 14F, 2F + 30F + animateThingy, 24F, mainColor.darker().rgb)
+                        RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + animateThingy, 25F, mainColor.darker().rgb)
                     
-                    RenderUtils.drawRect(2F + 30F, 14F, 2F + 30F + barWidth, 24F, mainColor.rgb)
+                    RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + barWidth, 25F, mainColor.rgb)
                     
-                    font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 2F + 30F + (nameLength - 2F) / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 15F, -1)
+                    font.drawStringWithShadow("${decimalFormat2.format(percent)}%", 2F + 36F + (nameLength - 2F) / 2F - font.getStringWidth("${decimalFormat2.format(percent)}%").toFloat() / 2F, 16F, -1)
                 }
 
                 "Slowly" -> {
@@ -286,6 +287,7 @@ class Target : Element() {
                                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 RenderUtils.drawGradientSideways(5.0 + barStart, 40.0, 5.0 + barEnd, 50.0, 
                                 when (colorModeValue.get()) {
+                                    "Rainbow" -> RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), i * distanceValue.get())
                                     "Sky" -> RenderUtils.SkyRainbow(i * distanceValue.get(), saturationValue.get(), brightnessValue.get())
                                     "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), i * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
                                     "Mixer" -> ColorMixer.getMixedColor(i * distanceValue.get(), mixerSecondsValue.get()).rgb
@@ -293,6 +295,7 @@ class Target : Element() {
                                     else -> -1
                                 },
                                 when (colorModeValue.get()) {
+                                    "Rainbow" -> RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), (i + 1) * distanceValue.get())
                                     "Sky" -> RenderUtils.SkyRainbow((i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())
                                     "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), (i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
                                     "Mixer" -> ColorMixer.getMixedColor((i + 1) * distanceValue.get(), mixerSecondsValue.get()).rgb
@@ -309,6 +312,26 @@ class Target : Element() {
 
                     font.drawString(healthName, 10F + barWidth, 41F, -1)
                 }
+
+                "Simplistic" -> {
+                    val width = Fonts.fontSFUI40.getStringWidth(target.name)
+                    RenderUtils.customRounded(0F, 0F, 3F, 16F, 2.5F, 0F, 0F, 2.5F, barColor.rgb)
+                    RenderUtils.customRounded(3F, 0F, width + 130F, 16F, 0F, 2.5F, 2.5F, 0F, bgColor.rgb)
+
+                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    val healthColor = BlendUtils.blendColors(floatArrayOf(0F, 0.5F, 1F), arrayOf<Color>(Color.red, Color.yellow, Color.green), (easingHealth / target.maxHealth).coerceIn(0F, 1F))
+
+                    val barWidth = (easingHealth / target.maxHealth).coerceIn(0F, 1F) * 100F
+
+                    GlStateManager.resetColor()
+                    Fonts.fontSFUI40.drawString(target.name, 10F, 4F, -1)
+                    
+                    RenderUtils.drawGradientSideways(20F + width, 7F, 20F + width + 50F, 9F, Color.red.rgb, Color.yellow.rgb)
+                    RenderUtils.drawGradientSideways(20F + width + 50F, 7F, 20F + width + 100F, 9F, Color.yellow.rgb, Color.green.rgb)
+
+                    RenderUtils.drawFilledCircle(20F + width + barWidth, 8F, 6F, ColorUtils.reAlpha(healthColor, 50))
+                    RenderUtils.drawFilledCircle(20F + width + barWidth, 8F, 5F, healthColor)
+                }
             }
         } else if (target == null) {
             easingHealth = 0F
@@ -322,7 +345,8 @@ class Target : Element() {
             "Flux" -> Border(0F, 0F, 90F, 46F)
             "Novoline" -> Border(-1F, -1F, 90F, 30F)
             "Slowly" -> Border(0F, 0F, 90F, 36F)
-            else -> Border(0F, 0F, 90F, 55F)
+            "Rise" -> Border(0F, 0F, 90F, 55F)
+            else -> Border(0F, 0F, 120F, 16F)
         }
     }
     

@@ -64,8 +64,10 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
     @Inject(method = "doRender", at = @At("RETURN"))
     private <T extends EntityLivingBase> void injectChamsPost(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
+        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
         
-        if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && EntityUtils.isSelected(entity, false)) {
+        if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && EntityUtils.isSelected(entity, false)
+            && !(noRender.getState() && noRender.shouldStopRender(entity))) {
             GL11.glPolygonOffset(1.0F, 1000000F);
             GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
         }
@@ -168,6 +170,8 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                 case "Custom":
                 chamsColor = new Color(chams.getRedValue().get(), chams.getGreenValue().get(), chams.getBlueValue().get());
                 break;
+                case "Rainbow":
+                chamsColor = new Color(RenderUtils.getRainbowOpaque(chams.getMixerSecondsValue().get(), chams.getSaturationValue().get(), chams.getBrightnessValue(), 0));
                 case "Sky":
 				chamsColor = RenderUtils.skyRainbow(0, chams.getSaturationValue().get(), chams.getBrightnessValue().get());
                 break;

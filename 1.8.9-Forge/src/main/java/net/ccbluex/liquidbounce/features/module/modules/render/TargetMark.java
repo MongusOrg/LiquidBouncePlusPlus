@@ -31,14 +31,14 @@ import java.awt.Color;
 public class TargetMark extends Module {
 
     public final ListValue modeValue = new ListValue("Mode", new String[]{"Default", "Box", "Jello"}, "Default");
-    private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
+    private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
 	private final IntegerValue colorRedValue = new IntegerValue("Red", 255, 0, 255);
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
 	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
 	private final IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
-	private final IntegerValue mixerSecondsValue = new IntegerValue("Mixer-Seconds", 2, 1, 10);
+	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
    	private final BoolValue colorTeam = new BoolValue("Team", false);
 
 	private EntityLivingBase entity;
@@ -164,6 +164,8 @@ public class TargetMark extends Module {
 		switch (colorModeValue.get()) {
 			case "Custom":
 				return new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
+			case "Rainbow":
+			 	return new Color(RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), 0));
 			case "Sky":
 				return RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
 			case "LiquidSlowly":

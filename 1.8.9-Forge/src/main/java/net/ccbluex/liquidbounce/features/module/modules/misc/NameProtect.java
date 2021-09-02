@@ -23,9 +23,10 @@ public class NameProtect extends Module {
 
     private final TextValue fakeNameValue = new TextValue("FakeName", "&cMe");
     private final TextValue allFakeNameValue = new TextValue("AllPlayersFakeName", "Censored");
-    public final BoolValue selfValue = new BoolValue("Yourself", false);
+    public final BoolValue selfValue = new BoolValue("Yourself", true);
+    public final BoolValue tagValue = new BoolValue("Tag", false);
     public final BoolValue allPlayersValue = new BoolValue("AllPlayers", false);
-    public final BoolValue skinProtectValue = new BoolValue("SkinProtect", true);
+    public final BoolValue skinProtectValue = new BoolValue("SkinProtect", false);
 
     @EventTarget(ignoreCondition = true)
     public void onText(final TextEvent event) {
@@ -38,7 +39,11 @@ public class NameProtect extends Module {
         for (final FriendsConfig.Friend friend : LiquidBounce.fileManager.friendsConfig.getFriends())
             event.setText(StringUtils.replace(event.getText(), friend.getPlayerName(), ColorUtils.translateAlternateColorCodes(friend.getAlias()) + "§f"));
 
-        event.setText(StringUtils.replace(event.getText(), mc.thePlayer.getName(), (selfValue.get() ? ColorUtils.translateAlternateColorCodes(fakeNameValue.get()) + "§r" : mc.thePlayer.getName())));
+        event.setText(StringUtils.replace(
+            event.getText(), 
+            mc.thePlayer.getName(), 
+            (selfValue.get() ? (tagValue.get() ? StringUtils.injectAirString(mc.thePlayer.getName()) + " §7(§r" + ColorUtils.translateAlternateColorCodes(fakeNameValue.get() + "§r§7)") : ColorUtils.translateAlternateColorCodes(fakeNameValue.get()) + "§r") : mc.thePlayer.getName())
+        ));
 
         if(allPlayersValue.get())
             for(final NetworkPlayerInfo playerInfo : mc.getNetHandler().getPlayerInfoMap())

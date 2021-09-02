@@ -53,7 +53,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val nameBreak = BoolValue("NameBreak", true)
     private val abcOrder = BoolValue("Alphabetical-Order", false)
     private val tags = BoolValue("Tags", true)
-    private val tagsStyleValue = ListValue("TagsStyle", arrayOf("-", "|", "()", "[]", "Default"), "-")
+    private val tagsStyleValue = ListValue("TagsStyle", arrayOf("-", "|", "()", "[]", "<>", "Default"), "-")
     private val shadow = BoolValue("ShadowText", true)
     private val backgroundColorRedValue = IntegerValue("Background-R", 0, 0, 255)
     private val backgroundColorGreenValue = IntegerValue("Background-G", 0, 0, 255)
@@ -395,8 +395,11 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     }
 
     fun getModName(mod: Module): String {
-        var modTag : String = " "
-        if (tags.get()) {
+        var modTag : String = ""
+        if (tags.get() && mod.tag != null) {
+            // add space
+            modTag += " "
+
             // check and add gray prefix if possible
             if (!tagsArrayColor.get()) 
                 modTag += "§7"
@@ -414,8 +417,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
             && !tagsStyleValue.get().equals("|", true)) 
                 modTag += tagsStyleValue.get().get(1).toString()
 
-        } else // make the string empty
-            modTag = ""
+        }
 
         var displayName : String = mod.name + modTag
 
@@ -532,7 +534,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 .replaceFirst("BanChecker", "Ban Checker", ignoreCase = false)
                 .replaceFirst("TargetMark", "Target Mark", ignoreCase = false)
                 .replaceFirst("AntiFireBall", "Anti Fire Ball", ignoreCase = false)
-                .replaceFirst("HitDelayFix", "Hit Delay Fix", ignoreCase = false)
+                .replaceFirst("KeepSprint", "Keep Sprint", ignoreCase = false)
         }
 
         if (lowerCaseValue.get()) 

@@ -33,7 +33,7 @@ object LiquidBounce {
 
     // Client information
     const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "090121"
+    const val CLIENT_VERSION = "090221"
     const val CLIENT_CREATOR = "CCBlueX, WYSI-Foundation"
     const val CLIENT_CLOUD = "https://wysi-foundation.github.io/LiquidCloud/LiquidBounce"
 
@@ -128,7 +128,7 @@ object LiquidBounce {
         fileManager.loadConfig(fileManager.hudConfig)
 
         // Disable optifine fastrender
-        ClientUtils.disableFastRender()
+        //ClientUtils.disableFastRender()
 
         // Load generators
         GuiAltManager.loadGenerators()

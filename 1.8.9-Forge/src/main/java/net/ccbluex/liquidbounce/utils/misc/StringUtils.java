@@ -15,6 +15,7 @@ import java.util.HashMap;
 public final class StringUtils {
 
     private static HashMap<String,String> stringCache = new HashMap<>();
+    private static HashMap<String,String> airCache = new HashMap<>();
 
     public static String fixString(String str){
         if(stringCache.containsKey(str)) return stringCache.get(str);
@@ -31,6 +32,24 @@ public final class StringUtils {
         }
         String result=sb.toString();
         stringCache.put(str,result);
+
+        return result;
+    }
+
+    public static String injectAirString(String str) {
+        if(airCache.containsKey(str)) return airCache.get(str);
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        boolean hasAdded = false;
+        for(char c : str.toCharArray()) {
+            stringBuilder.append(c);
+            if (!hasAdded) stringBuilder.append('\uF8FF');
+            hasAdded = true;
+        }
+
+        String result = stringBuilder.toString();
+        airCache.put(str, result);
 
         return result;
     }

@@ -72,7 +72,6 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     private val displayString = TextValue("DisplayText", "")
     private val backgroundValue = BoolValue("Background", true)
     private val skeetRectValue = BoolValue("SkeetRect", false)
-    private val newSkeetRectValue = BoolValue("NewSkeetRect", false)
     private val lineValue = BoolValue("Line", true)
     private val redValue = IntegerValue("Red", 255, 0, 255)
     private val greenValue = IntegerValue("Green", 255, 0, 255)
@@ -86,6 +85,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     private val saturationValue = FloatValue("Saturation", 0.9f, 0f, 1f)
     private val brightnessValue = FloatValue("Brightness", 1f, 0f, 1f)
     private val cRainbowSecValue = IntegerValue("Seconds", 2, 1, 10)
+    private val distanceValue = IntegerValue("Line-Distance", 0, 0, 400)
+    private val gradientAmountValue = IntegerValue("Gradient-Amount", 25, 1, 50)
     private val shadow = BoolValue("Shadow", true)
     private var fontValue = FontValue("Font", Fonts.font40)
 
@@ -211,14 +212,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         }
 
         if (skeetRectValue.get()) {
-            UiUtils.drawRect(-11.0 / 2.0, -9.5 / 2.0, (fontRenderer.getStringWidth(displayText) + 9).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+6,Color(0,0,0).rgb)
-            UiUtils.outlineRect(-10.0 / 2.0, -8.5 / 2.0, (fontRenderer.getStringWidth(displayText) + 8).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+5,8.0, Color(59,59,59).rgb,Color(59,59,59).rgb)
-            UiUtils.outlineRect(-9.0 / 2.0, -7.5 / 2.0, (fontRenderer.getStringWidth(displayText) + 7).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+4,4.0, Color(59,59,59).rgb,Color(40,40,40).rgb)
-            UiUtils.outlineRect(-4.0 / 2.0, -3.0 / 2.0, (fontRenderer.getStringWidth(displayText) + 2).toDouble(), fontRenderer.FONT_HEIGHT.toDouble()+0,1.0, Color(18,18,18).rgb,Color(0,0,0).rgb)
-        }
-
-        if (newSkeetRectValue.get()) {
-            drawExhiRect(-4F, -4F, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT + 2F)
+            drawExhiRect(-4F, if (lineValue.get()) -5F else -4F, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT + 2F)
         }
 
         var FadeColor : Int = ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get(), alphaValue.get()), 0, 100).rgb
@@ -228,14 +222,38 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         val mixerColor = ColorMixer.getMixedColor(0, cRainbowSecValue.get()).rgb
 
         if (lineValue.get()) {
-            RenderUtils.drawRect(-2F, -3F, fontRenderer.getStringWidth(displayText) + 2F, -2F, when (rainbowType) {
+            /*RenderUtils.drawRect(-2F, -3F, fontRenderer.getStringWidth(displayText) + 2F, -2F, when (rainbowType) {
                 "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
                 "Sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
                 "LiquidSlowly" -> liquidSlowli
                 "Fade" -> FadeColor
                 "Mixer" -> mixerColor
                 else -> color
-            })
+            })*/
+
+            val barLength = (fontRenderer.getStringWidth(displayText) + 4F).toDouble()
+
+            for (i in 0..(gradientAmountValue.get()-1)) {
+                val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * barLength
+                val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * barLength
+                RenderUtils.drawGradientSideways(-2.0 + barStart, -3.0, -2.0 + barEnd, -2.0, 
+                when (rainbowType) {
+                    "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), i * distanceValue.get())
+                    "Sky" -> RenderUtils.SkyRainbow(i * distanceValue.get(), saturationValue.get(), brightnessValue.get())
+                    "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), i * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
+                    "Mixer" -> ColorMixer.getMixedColor(i * distanceValue.get(), cRainbowSecValue.get()).rgb
+                    "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), i * distanceValue.get(), 100).rgb
+                    else -> color
+                },
+                when (rainbowType) {
+                    "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), (i + 1) * distanceValue.get())
+                    "Sky" -> RenderUtils.SkyRainbow((i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())
+                    "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), (i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
+                    "Mixer" -> ColorMixer.getMixedColor((i + 1) * distanceValue.get(), cRainbowSecValue.get()).rgb
+                    "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), (i + 1) * distanceValue.get(), 100).rgb
+                    else -> color
+                })
+            }
         }
 
         fontRenderer.drawString(displayText, 0F, 0F, when (rainbowType) {
@@ -292,8 +310,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     }
 
     private fun drawExhiRect(x: Float, y: Float, x2: Float, y2: Float) {
-        RenderUtils.drawRect(x - 1, y - 1, x2 + 1, y2 + 1, Color(59, 59, 59).rgb)
         RenderUtils.drawRect(x - 2, y - 2, x2 + 2, y2 + 2, Color(8, 8, 8).rgb)
+        RenderUtils.drawRect(x - 1, y - 1, x2 + 1, y2 + 1, Color(59, 59, 59).rgb)
         RenderUtils.drawBorderedRect(x + 2F, y + 2F, x2 - 2F, y2 - 2F, 0.5F, Color(18, 18, 18).rgb, Color(28, 28, 28).rgb)
     }
 

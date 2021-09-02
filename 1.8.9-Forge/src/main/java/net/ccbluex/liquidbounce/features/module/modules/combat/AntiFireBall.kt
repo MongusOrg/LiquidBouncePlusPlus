@@ -20,14 +20,13 @@ import net.minecraft.entity.projectile.EntityFireball
 import net.minecraft.network.play.client.C02PacketUseEntity
 import net.minecraft.network.play.client.C0APacketAnimation
 
-
-// credit to opZywl for the code.
-@ModuleInfo(name = "AntiFireBall", category = ModuleCategory.COMBAT, description = "Automatically punch fire balls away from you.")
+// woah fdp stuff is here
+@ModuleInfo(name = "AntiFireBall", category = ModuleCategory.COMBAT, description = "Automatically punch fireballs away from you.")
 class AntiFireBall : Module() {
     private val timer = MSTimer()
 
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
-    private val rotationValue = BoolValue("Rotation",true)
+    private val rotationValue = BoolValue("Rotation", true)
 
     @EventTarget
     private fun onUpdate(event: UpdateEvent) {

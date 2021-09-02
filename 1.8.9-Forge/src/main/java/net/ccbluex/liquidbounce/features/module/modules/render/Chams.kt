@@ -17,7 +17,7 @@ class Chams : Module() {
     val itemsValue = BoolValue("Items", true)
     val legacyMode = BoolValue("Legacy-Mode", false)
     val texturedValue = BoolValue("Textured", true)
-    val colorModeValue = ListValue("Color", arrayOf("Custom", "Sky", "LiquidSlowly", "Fade", "Mixer"), "Custom")
+    val colorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"), "Custom")
     val behindColorModeValue = ListValue("Behind-Color", arrayOf("Same", "Opposite", "Red"), "Same")
 	val redValue = IntegerValue("Red", 255, 0, 255)
 	val greenValue = IntegerValue("Green", 255, 0, 255)
@@ -25,5 +25,5 @@ class Chams : Module() {
     val alphaValue = IntegerValue("Alpha", 255, 0, 255)
 	val saturationValue = FloatValue("Saturation", 1F, 0F, 1F)
 	val brightnessValue = FloatValue("Brightness", 1F, 0F, 1F)
-	val mixerSecondsValue = IntegerValue("Mixer-Seconds", 2, 1, 10)
+	val mixerSecondsValue = IntegerValue("Seconds", 2, 1, 10)
 }

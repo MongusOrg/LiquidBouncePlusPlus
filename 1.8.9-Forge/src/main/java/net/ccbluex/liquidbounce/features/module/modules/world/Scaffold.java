@@ -121,9 +121,12 @@ public class Scaffold extends Module {
     };
 
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
-    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2"}, "Normal");
+    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Custom"}, "Normal");
 
     private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F);
+
+    private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F);
+    private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F);
 
     //Test AAC Values
     private final BoolValue aacPitchValue = new BoolValue("AAC-Pitch", false);
@@ -746,7 +749,7 @@ public class Scaffold extends Module {
             return false;
 
 
-        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC") || rotationModeValue.get().contains("Static");
+        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC") || (rotationModeValue.get().contains("Static") && !rotationModeValue.get().equalsIgnoreCase("static3"));
 
         final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
@@ -786,8 +789,11 @@ public class Scaffold extends Module {
                             if (rotationModeValue.get().equalsIgnoreCase("static") && !mc.gameSettings.keyBindJump.isKeyDown())
                                 rotation = new Rotation(MovementUtils.getScaffoldRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing), staticPitchValue.get());
 
-                            if (rotationModeValue.get().equalsIgnoreCase("static2") && !mc.gameSettings.keyBindJump.isKeyDown())
+                            if ((rotationModeValue.get().equalsIgnoreCase("static2") || rotationModeValue.get().equalsIgnoreCase("static3")) && !mc.gameSettings.keyBindJump.isKeyDown())
                                 rotation = new Rotation(rotation.getYaw(), staticPitchValue.get());
+
+                            if (rotationModeValue.get().equalsIgnoreCase("custom") && !mc.gameSettings.keyBindJump.isKeyDown()) 
+                                rotation = new Rotation(mc.thePlayer.rotationYaw + customYawValue.get(), customPitchValue.get());
 
                             final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotation);
                             final Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4, rotationVector.yCoord * 4, rotationVector.zCoord * 4);

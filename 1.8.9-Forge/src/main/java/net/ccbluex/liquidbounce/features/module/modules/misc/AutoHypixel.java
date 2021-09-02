@@ -52,7 +52,7 @@ public class AutoHypixel extends Module {
     public boolean shouldChangeGame, useOtherWord = false;
     private final DecimalFormat dFormat = new DecimalFormat("0.0");
 
-    private float posY = -25F;
+    private float posY = -20F;
 
     private final String[] strings = new String[]{
         "1st Killer - ", 
@@ -88,15 +88,14 @@ public class AutoHypixel extends Module {
         String detail = "Sending you to another game in " + dFormat.format((float)timer.hasTimeLeft(delayValue.get()) / 1000F) + "s...";
         float middleWidth = Fonts.font40.getStringWidth(detail) / 2F;
 
-        posY = AnimationUtils.animate(shouldChangeGame ? 10F : -25F, posY, 0.25F);
-        if (posY < -20 || !renderValue.get())
+        posY = AnimationUtils.animate(shouldChangeGame ? 10F : -20F, posY, 0.25F);
+        if (!renderValue.get() || posY < -15)
             return;
 
-        RenderUtils.customRounded(middleX - 5F - middleWidth, posY, middleX + 8F + middleWidth, posY + 20F, 0F, 3F, 3F, 0F, 0xA0000000);
-        RenderUtils.customRounded(middleX - 5F - middleWidth, posY, middleX - 8F - middleWidth, posY + 20F, 3F, 0F, 0F, 3F, new Color(80, 255, 80).getRGB());
+        RenderUtils.drawRoundedRect(middleX - 5F - middleWidth, posY, middleX + 5F + middleWidth, posY + 15F, 3F, 0xA0000000);
 
         GlStateManager.resetColor();
-        Fonts.font40.drawString(detail, middleX - middleWidth + 1F, posY + 5F, -1);
+        Fonts.fontSFUI40.drawString(detail, middleX - middleWidth - 1F, posY + 4F, -1);
     }
 
     @EventTarget
