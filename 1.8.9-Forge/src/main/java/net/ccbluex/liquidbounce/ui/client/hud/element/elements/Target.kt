@@ -332,6 +332,8 @@ class Target : Element() {
                     RenderUtils.drawFilledCircle(20F + width + barWidth, 8F, 6F, ColorUtils.reAlpha(healthColor, 50))
                     RenderUtils.drawFilledCircle(20F + width + barWidth, 8F, 5F, healthColor)
                 }
+
+                // TODO: Exhibition (real) TargetHUD.
             }
         } else if (target == null) {
             easingHealth = 0F

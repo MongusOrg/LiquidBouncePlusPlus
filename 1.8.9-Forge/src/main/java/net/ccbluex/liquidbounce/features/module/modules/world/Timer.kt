@@ -23,15 +23,12 @@ class Timer : Module() {
     private val autoDisableValue = BoolValue("AutoDisable", true)
 
     override fun onDisable() {
-        if (mc.thePlayer == null)
-            return
-
         mc.timer.timerSpeed = 1F
     }
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if (mc.thePlayer == null) return
+        if (mc.thePlayer == null || mc.theWorld == null) return
 
         if(MovementUtils.isMoving() || !onMoveValue.get()) {
             mc.timer.timerSpeed = speedValue.get()

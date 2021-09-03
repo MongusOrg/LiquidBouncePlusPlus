@@ -23,12 +23,11 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
-import javax.smartcardio.CommandAPDU
 
 @ModuleInfo(name = "Criticals", description = "Automatically deals critical hits.", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Corona"), "Packet")
+    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Invalid"), "Packet")
     val delayValue = IntegerValue("Delay", 0, 0, 500)
     private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.1F, 0.42F)
     private val downYValue = FloatValue("DownY", 0f, 0f, 0.1F)
@@ -131,7 +130,7 @@ class Criticals : Module() {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 1E-4, z, false))
                 }
 
-                "corona" -> {
+                "invalid" -> {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E+27, z, false))
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 1E+68, z, false))
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E+41, z, false))

@@ -7,71 +7,130 @@
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
 import net.ccbluex.liquidbounce.LiquidBounce
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
-import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
+import net.ccbluex.liquidbounce.features.module.modules.misc.AntiBot
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
-import net.ccbluex.liquidbounce.utils.misc.RandomUtils
-import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
-import net.ccbluex.liquidbounce.utils.render.EaseUtils
-import net.ccbluex.liquidbounce.utils.render.UiUtils
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
-import net.ccbluex.liquidbounce.value.FloatValue
-import net.ccbluex.liquidbounce.value.IntegerValue
-import net.ccbluex.liquidbounce.value.BoolValue
-import net.ccbluex.liquidbounce.value.ListValue
-import net.ccbluex.liquidbounce.value.FontValue
-import net.minecraft.client.gui.Gui
-import net.minecraft.client.gui.GuiChat
-import net.minecraft.client.gui.inventory.GuiInventory
+import net.ccbluex.liquidbounce.utils.render.ColorUtils
+import net.ccbluex.liquidbounce.value.*
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.util.ResourceLocation
-import net.minecraft.util.MathHelper
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.*
-import kotlin.math.abs
-import kotlin.math.pow
+import java.util.Locale
 
 /**
  * A target hud
  */
-@ElementInfo(name = "Target")
-class Target : Element() {
+@ElementInfo(name = "PlayerList")
+class PlayerList : Element() {
 
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
     private val sortValue = ListValue("Sort", arrayOf("Alphabet", "Distance", "Health"), "Alphabet")
-
-    private val playerDataList = mutableListOf<PlayerData>()
+    private val fontOffsetValue = FloatValue("Font-Offset", 0F, 3F, -3F)
+    private val reverseValue = BoolValue("Reverse", false)
+    private val fontValue = FontValue("Font", Fonts.font35)
+    private val shadowValue = BoolValue("Shadow", false)
+    private val lineValue = BoolValue("Line", true)
+    private val redValue = IntegerValue("Red", 255, 0, 255)
+    private val greenValue = IntegerValue("Green", 255, 0, 255)
+    private val blueValue = IntegerValue("Blue", 255, 0, 255)
+    private val alphaValue = IntegerValue("Alpha", 255, 0, 255)
+    private val bgredValue = IntegerValue("Background-Red", 0, 0, 255)
+    private val bggreenValue = IntegerValue("Background-Green", 0, 0, 255)
+    private val bgblueValue = IntegerValue("Background-Blue", 0, 0, 255)
+    private val bgalphaValue = IntegerValue("Background-Alpha", 120, 0, 255)
+    private val rainbowList = ListValue("Rainbow", arrayOf("Off", "CRainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"), "Off")
+    private val saturationValue = FloatValue("Saturation", 0.9f, 0f, 1f)
+    private val brightnessValue = FloatValue("Brightness", 1f, 0f, 1f)
+    private val cRainbowSecValue = IntegerValue("Seconds", 2, 1, 10)
+    private val distanceValue = IntegerValue("Line-Distance", 0, 0, 400)
+    private val gradientAmountValue = IntegerValue("Gradient-Amount", 25, 1, 50)
 
     override fun drawElement(): Border {
-        if (playerDataList.isEmpty()) 
-            mc.theWorld.playerEntities
-            .filter { !AntiBot.isBot(it) }
-            .sortBy { ent1, ent2 -> ent1.name.compareTo(ent2.name) }
-            .forEachIndexed { player, index ->
+        val reverse = reverseValue.get()
+        val font = fontValue.get()
+        val fontOffset = fontOffsetValue.get()
 
+        var nameLength = font.getStringWidth("Name").toFloat()
+        var hpLength = font.getStringWidth("Health").toFloat()
+        var distLength = font.getStringWidth("Distance").toFloat()
+
+        var height = 4F + font.FONT_HEIGHT.toFloat()
+
+        val color = Color(redValue.get(), greenValue.get(), blueValue.get(), alphaValue.get()).rgb
+        val bgColor = Color(bgredValue.get(), bggreenValue.get(), bgblueValue.get(), bgalphaValue.get())
+
+        var playerList: MutableList<EntityPlayer> = mc.theWorld.playerEntities.filter { !AntiBot.isBot(it) && it != mc.thePlayer }.toMutableList()
+
+        when (sortValue.get()) {
+            "Alphabet" -> playerList.sortWith(compareBy { it.name })
+            "Alphabet" -> playerList.sortWith(compareBy { mc.thePlayer.getDistanceToEntityBox(it) })
+            else -> playerList.sortWith(compareBy { it.health })
+        }
+
+        if (reverse) playerList = playerList.reversed().toMutableList()
+
+        playerList.forEach {
+            if (font.getStringWidth(it.name) > nameLength)
+                nameLength = font.getStringWidth(it.name).toFloat()
+
+            if (font.getStringWidth("${decimalFormat3.format(it.health)} HP") > hpLength)
+                hpLength = font.getStringWidth("${decimalFormat3.format(it.health)} HP").toFloat()
+
+            if (font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))) > distLength)
+                distLength = font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))).toFloat()
+
+            // TODO: finish render part
+            RenderUtils.drawRect(0F, height, nameLength + hpLength + distLength + 30F, height + 2F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+
+            font.drawString(it.name, 5F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it)), 5F + nameLength + 2F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString("${decimalFormat3.format(it.health)} HP", 5F + nameLength + distLength + 4F, height + 1F + fontOffset, -1, shadowValue.get())
+
+            height += 2F + font.FONT_HEIGHT.toFloat()
+        }
+
+        if (lineValue.get()) {
+            val barLength = (nameLength + hpLength + distLength + 30F).toDouble()
+
+            for (i in 0..(gradientAmountValue.get()-1)) {
+                val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * barLength
+                val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * barLength
+                RenderUtils.drawGradientSideways(barStart, -1.0, barEnd, 0.0, 
+                when (rainbowList.get()) {
+                    "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), i * distanceValue.get())
+                    "Sky" -> RenderUtils.SkyRainbow(i * distanceValue.get(), saturationValue.get(), brightnessValue.get())
+                    "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), i * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
+                    "Mixer" -> ColorMixer.getMixedColor(i * distanceValue.get(), cRainbowSecValue.get()).rgb
+                    "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), i * distanceValue.get(), 100).rgb
+                    else -> color
+                },
+                when (rainbowList.get()) {
+                    "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), (i + 1) * distanceValue.get())
+                    "Sky" -> RenderUtils.SkyRainbow((i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())
+                    "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), (i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
+                    "Mixer" -> ColorMixer.getMixedColor((i + 1) * distanceValue.get(), cRainbowSecValue.get()).rgb
+                    "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), (i + 1) * distanceValue.get(), 100).rgb
+                    else -> color
+                })
             }
-    }
-    
-    private class PlayerData(var entity: EntityPlayer) {
-        var yPos = 0F
-    }
+        }
 
-    private fun drawHead(skin: ResourceLocation, x: Int, y: Int, width: Int, height: Int) {
-        GL11.glColor4f(1F, 1F, 1F, 1F)
-        mc.textureManager.bindTexture(skin)
-        Gui.drawScaledCustomSizeModalRect(x, y, 8F, 8F, 8, 8, width, height,
-                64F, 64F)
+        RenderUtils.drawRect(0F, 0F, nameLength + hpLength + distLength + 30F, 4F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+        
+        font.drawString("Name", 5F, 2F, -1, shadowValue.get())
+        font.drawString("Distance", 5F + nameLength + 2F, 2F, -1, shadowValue.get())
+        font.drawString("Health", 5F + nameLength + distLength + 4F, 2F, -1, shadowValue.get())
+
+        return Border(0F, 0F, nameLength + hpLength + distLength + 30F, 4F + height + font.FONT_HEIGHT.toFloat())
     }
 }

@@ -5,36 +5,37 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.misc;
 
+import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.*;
+import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.value.*;
 import net.ccbluex.liquidbounce.event.*;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.Nullable;
 
 @ModuleInfo(name = "SpinBot", description = "CS-GO Feeling but client side (by the old solegit)", category = ModuleCategory.MISC)
 public class SpinBot extends Module
 {
-    public final ListValue yawMode;
-    public final ListValue pitchMode;
-    private final IntegerValue YawSet;
-    private final IntegerValue PitchSet;
-    private final IntegerValue YawJitterTimer;
-    private final IntegerValue PitchJitterTimer;
-    private final IntegerValue YawSpin;
+    public final ListValue yawMode = new ListValue("Yaw", new String[] { "Static", "Offset", "Random", "Jitter", "Spin", "Off" }, "Offset");
+    public final ListValue pitchMode = new ListValue("Pitch", new String[] { "Static", "Offset", "Random", "Jitter", "Off" }, "Offset");
+    private final IntegerValue YawSet = new IntegerValue("YawSet", 0, -180, 180);
+    private final IntegerValue PitchSet = new IntegerValue("PitchSet", 0, -180, 180);
+    private final IntegerValue YawJitterTimer = new IntegerValue("YawJitterTimer", 1, 1, 40);
+    private final IntegerValue PitchJitterTimer = new IntegerValue("PitchJitterTimer", 1, 1, 40);
+    private final IntegerValue YawSpin = new IntegerValue("YawSpin", 5, -50, 50);
+    private final BoolValue auraOnly = new BoolValue("Aura-Only", false);
+
     public static float pitch;
     public static float lastSpin;
     public static float yawTimer;
     public static float pitchTimer;
-    
-    public SpinBot() {
-        this.yawMode = new ListValue("Yaw", new String[] { "Static", "Offset", "Random", "Jitter", "Spin", "Off" }, "Offset");
-        this.pitchMode = new ListValue("Pitch", new String[] { "Static", "Offset", "Random", "Jitter", "Off" }, "Offset");
-        this.YawSet = new IntegerValue("YawSet", 0, -180, 180);
-        this.PitchSet = new IntegerValue("PitchSet", 0, -180, 180);
-        this.YawJitterTimer = new IntegerValue("YawJitterTimer", 1, 1, 40);
-        this.PitchJitterTimer = new IntegerValue("PitchJitterTimer", 1, 1, 40);
-        this.YawSpin = new IntegerValue("YawSpin", 5, -50, 50);
+
+    private KillAura aura;
+
+    @Override
+    public void onInitialize() {
+        aura = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
     }
-    
+
     @Override
     public void onDisable() {
         super.onDisable();
@@ -46,6 +47,9 @@ public class SpinBot extends Module
     
     @EventTarget
     public void onTick(final TickEvent e) {
+        if (auraOnly.get() && (!aura.getState() || aura.getTarget() == null))
+            return;
+
         final String s = this.yawMode.get();
         float yaw = 0.0f;
         switch (s) {
@@ -83,6 +87,7 @@ public class SpinBot extends Module
             mc.thePlayer.renderYawOffset = yaw;
             mc.thePlayer.rotationYawHead = yaw;
         }
+        lastSpin = yaw;
         final String s2 = this.pitchMode.get();
         switch (s2) {
             case "Static": {

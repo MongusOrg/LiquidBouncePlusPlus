@@ -45,6 +45,8 @@ class Velocity : Module() {
     private val modeValue = ListValue("Mode", arrayOf("Cancel", "Simple", "AACv4", "AAC4Reduce", "AAC5Reduce", "AAC5.2.0", "AAC", "AACPush", "AACZero",
             "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit"), "Simple")
 
+    private val aac5KillAuraValue = BoolValue("AAC5.2.0-Attack-Only", true)
+
     // Affect chance
     private val reduceChance = FloatValue("Reduce-Chance", 100F, 0F, 100F)
     private var shouldAffect : Boolean = true
@@ -240,6 +242,7 @@ class Velocity : Module() {
     @EventTarget
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
+        val killAura = LiquidBounce.moduleManager[KillAura::class.java] as KillAura
 
         if (packet is S12PacketEntityVelocity) {
 
@@ -269,7 +272,7 @@ class Velocity : Module() {
 
                 "aac5.2.0" -> {
                     event.cancelEvent()
-                    if (!mc.isIntegratedServerRunning()) mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
+                    if (!mc.isIntegratedServerRunning() && (!aac5KillAuraValue.get() || killAura.target != null)) mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,1.7976931348623157E+308,mc.thePlayer.posZ,true))
                 }
 
                 "glitch" -> {
