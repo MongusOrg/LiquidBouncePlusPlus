@@ -428,10 +428,10 @@ public class Fly extends Module {
                     }
                     case "FOUR_DIMENSIONS": {
                         if (aac5UseC04Packet.get()) {
-                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition((RandomUtils.nextBoolean() ? -1e+159 : 1e+159), 1e-159, (RandomUtils.nextBoolean() ? 1e+159 : -1e+159), true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, 1.7976931348623157E+308, packet.z, true));
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
                         } else {
-                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook((RandomUtils.nextBoolean() ? -1e+159 : 1e+159), 1e-159, (RandomUtils.nextBoolean() ? 1e+159 : -1e+159), yaw, pitch, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, 1.7976931348623157E+308, packet.z, yaw, pitch, true));
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
                         }
                     }

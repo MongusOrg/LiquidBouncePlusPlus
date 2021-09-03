@@ -59,8 +59,9 @@ class PlayerList : Element() {
         val reverse = reverseValue.get()
         val font = fontValue.get()
         val fontOffset = fontOffsetValue.get()
+        val rainbowType = rainbowList.get()
 
-        var nameLength = font.getStringWidth("Name").toFloat()
+        var nameLength = font.getStringWidth("Name (0)").toFloat()
         var hpLength = font.getStringWidth("Health").toFloat()
         var distLength = font.getStringWidth("Distance").toFloat()
 
@@ -71,10 +72,12 @@ class PlayerList : Element() {
 
         var playerList: MutableList<EntityPlayer> = mc.theWorld.playerEntities.filter { !AntiBot.isBot(it) && it != mc.thePlayer }.toMutableList()
 
+        nameLength = font.getStringWidth("Name (${playerList.size})").toFloat()
+
         when (sortValue.get()) {
-            "Alphabet" -> playerList.sortWith(compareBy { it.name })
-            "Alphabet" -> playerList.sortWith(compareBy { mc.thePlayer.getDistanceToEntityBox(it) })
-            else -> playerList.sortWith(compareBy { it.health })
+            "Alphabet" -> playerList.sortWith(compareBy { it.name.toLowerCase() })
+            "Distance" -> playerList.sortWith(Comparator{ a, b -> mc.thePlayer.getDistanceToEntityBox(a).compareTo(mc.thePlayer.getDistanceToEntityBox(b)) })
+            else -> playerList.sortWith(Comparator{ a, b -> a.health.compareTo(b.health) })
         }
 
         if (reverse) playerList = playerList.reversed().toMutableList()
@@ -88,25 +91,16 @@ class PlayerList : Element() {
 
             if (font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))) > distLength)
                 distLength = font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))).toFloat()
-
-            // TODO: finish render part
-            RenderUtils.drawRect(0F, height, nameLength + hpLength + distLength + 30F, height + 2F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
-
-            font.drawString(it.name, 5F, height + 1F + fontOffset, -1, shadowValue.get())
-            font.drawString(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it)), 5F + nameLength + 2F, height + 1F + fontOffset, -1, shadowValue.get())
-            font.drawString("${decimalFormat3.format(it.health)} HP", 5F + nameLength + distLength + 4F, height + 1F + fontOffset, -1, shadowValue.get())
-
-            height += 2F + font.FONT_HEIGHT.toFloat()
         }
 
         if (lineValue.get()) {
-            val barLength = (nameLength + hpLength + distLength + 30F).toDouble()
+            val barLength = (nameLength + hpLength + distLength + 40F).toDouble()
 
             for (i in 0..(gradientAmountValue.get()-1)) {
                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * barLength
                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * barLength
                 RenderUtils.drawGradientSideways(barStart, -1.0, barEnd, 0.0, 
-                when (rainbowList.get()) {
+                when (rainbowType) {
                     "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), i * distanceValue.get())
                     "Sky" -> RenderUtils.SkyRainbow(i * distanceValue.get(), saturationValue.get(), brightnessValue.get())
                     "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), i * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
@@ -114,7 +108,7 @@ class PlayerList : Element() {
                     "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), i * distanceValue.get(), 100).rgb
                     else -> color
                 },
-                when (rainbowList.get()) {
+                when (rainbowType) {
                     "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), (i + 1) * distanceValue.get())
                     "Sky" -> RenderUtils.SkyRainbow((i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())
                     "LiquidSlowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), (i + 1) * distanceValue.get(), saturationValue.get(), brightnessValue.get())!!.rgb
@@ -125,12 +119,22 @@ class PlayerList : Element() {
             }
         }
 
-        RenderUtils.drawRect(0F, 0F, nameLength + hpLength + distLength + 30F, 4F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+        RenderUtils.drawRect(0F, 0F, nameLength + hpLength + distLength + 40F, 4F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
         
-        font.drawString("Name", 5F, 2F, -1, shadowValue.get())
-        font.drawString("Distance", 5F + nameLength + 2F, 2F, -1, shadowValue.get())
-        font.drawString("Health", 5F + nameLength + distLength + 4F, 2F, -1, shadowValue.get())
+        font.drawString("Name (${playerList.size})", 5F, 2F, -1, shadowValue.get())
+        font.drawString("Distance", 5F + nameLength + 5F, 2F, -1, shadowValue.get())
+        font.drawString("Health", 5F + nameLength + distLength + 5F, 2F, -1, shadowValue.get())
 
-        return Border(0F, 0F, nameLength + hpLength + distLength + 30F, 4F + height + font.FONT_HEIGHT.toFloat())
+        playerList.forEach {
+            RenderUtils.drawRect(0F, height, nameLength + hpLength + distLength + 40F, height + 2F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+
+            font.drawString(it.name, 5F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it)), 5F + nameLength + 5F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString("${decimalFormat3.format(it.health)} HP", 5F + nameLength + distLength + 10F, height + 1F + fontOffset, -1, shadowValue.get())
+
+            height += 2F + font.FONT_HEIGHT.toFloat()
+        }
+
+        return Border(0F, 0F, nameLength + hpLength + distLength + 40F, 4F + height + font.FONT_HEIGHT.toFloat())
     }
 }
