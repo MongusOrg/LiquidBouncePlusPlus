@@ -265,7 +265,7 @@ public class Fly extends Module {
                     MovementUtils.strafe(motion);
                 } else if (verusDmged) {
                     mc.timer.timerSpeed = 1F;
-                    MovementUtils.strafe(MovementUtils.getBaseMoveSpeed());
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
                 }
                 break;
             case "creative":
