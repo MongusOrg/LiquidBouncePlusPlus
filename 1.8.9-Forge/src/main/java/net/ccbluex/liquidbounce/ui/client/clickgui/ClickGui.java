@@ -46,6 +46,8 @@ public class ClickGui extends GuiScreen {
 
     public double slide, progress = 0;
 
+    public long lastMS = System.currentTimeMillis();
+
     public ClickGui() {
         final int width = 100;
         final int height = 18;
@@ -207,12 +209,13 @@ public class ClickGui extends GuiScreen {
     @Override
     public void initGui() {
         slide = progress = 0;
+        lastMS = System.currentTimeMillis();
         super.initGui();
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (progress < 1) progress += 0.1 * (1 - partialTicks);
+        if (progress < 1) progress = (float)(System.currentTimeMillis() - lastMS) / 750F; // fully fps async
         else progress = 1;
 
         switch (((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).animationValue.get().toLowerCase()) {

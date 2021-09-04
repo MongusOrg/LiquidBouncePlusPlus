@@ -214,7 +214,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
 
             FadeState.OUT -> if (x > 0) {
                 x = AnimationUtils.easeOut(fadeStep, width) * width
-                fadeStep -= delta / 2F
+                fadeStep -= delta / 4F
             } else
                 fadeState = FadeState.END
 

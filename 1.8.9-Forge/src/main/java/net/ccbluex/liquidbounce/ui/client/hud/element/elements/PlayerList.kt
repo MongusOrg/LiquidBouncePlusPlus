@@ -89,12 +89,12 @@ class PlayerList : Element() {
             if (font.getStringWidth("${decimalFormat3.format(it.health)} HP") > hpLength)
                 hpLength = font.getStringWidth("${decimalFormat3.format(it.health)} HP").toFloat()
 
-            if (font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))) > distLength)
-                distLength = font.getStringWidth(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))).toFloat()
+            if (font.getStringWidth("${decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))}m") > distLength)
+                distLength = font.getStringWidth("${decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it))}m").toFloat()
         }
 
         if (lineValue.get()) {
-            val barLength = (nameLength + hpLength + distLength + 40F).toDouble()
+            val barLength = (nameLength + hpLength + distLength + 50F).toDouble()
 
             for (i in 0..(gradientAmountValue.get()-1)) {
                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * barLength
@@ -119,22 +119,22 @@ class PlayerList : Element() {
             }
         }
 
-        RenderUtils.drawRect(0F, 0F, nameLength + hpLength + distLength + 40F, 4F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+        RenderUtils.drawRect(0F, 0F, nameLength + hpLength + distLength + 50F, 4F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
         
-        font.drawString("Name (${playerList.size})", 5F, 2F, -1, shadowValue.get())
-        font.drawString("Distance", 5F + nameLength + 5F, 2F, -1, shadowValue.get())
-        font.drawString("Health", 5F + nameLength + distLength + 5F, 2F, -1, shadowValue.get())
+        font.drawString("Name (${playerList.size})", 5F, 3F, -1, shadowValue.get())
+        font.drawString("Distance", 5F + nameLength + 10F, 3F, -1, shadowValue.get())
+        font.drawString("Health", 5F + nameLength + distLength + 20F, 3F, -1, shadowValue.get())
 
-        playerList.forEach {
-            RenderUtils.drawRect(0F, height, nameLength + hpLength + distLength + 40F, height + 2F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
+        playerList.forEachIndexed { index, player ->
+            RenderUtils.drawRect(0F, height, nameLength + hpLength + distLength + 50F, height + 2F + font.FONT_HEIGHT.toFloat(), bgColor.rgb)
 
-            font.drawString(it.name, 5F, height + 1F + fontOffset, -1, shadowValue.get())
-            font.drawString(decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(it)), 5F + nameLength + 5F, height + 1F + fontOffset, -1, shadowValue.get())
-            font.drawString("${decimalFormat3.format(it.health)} HP", 5F + nameLength + distLength + 10F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString(player.name, 5F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString("${decimalFormat3.format(mc.thePlayer.getDistanceToEntityBox(player))}m", 5F + nameLength + 10F, height + 1F + fontOffset, -1, shadowValue.get())
+            font.drawString("${decimalFormat3.format(player.health)} HP", 5F + nameLength + distLength + 20F, height + 1F + fontOffset, -1, shadowValue.get())
 
             height += 2F + font.FONT_HEIGHT.toFloat()
         }
 
-        return Border(0F, 0F, nameLength + hpLength + distLength + 40F, 4F + height + font.FONT_HEIGHT.toFloat())
+        return Border(0F, 0F, nameLength + hpLength + distLength + 50F, 4F + height + font.FONT_HEIGHT.toFloat())
     }
 }

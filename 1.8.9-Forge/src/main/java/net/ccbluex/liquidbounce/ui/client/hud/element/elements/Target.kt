@@ -52,7 +52,7 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Simplistic"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Simplistic", "Exhibition"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
@@ -60,6 +60,7 @@ class Target : Element() {
     private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
     private val distanceValue = IntegerValue("Rise-Distance", 50, 1, 200)
     private val riseParticleSpeed = FloatValue("Rise-ParticleSpeed", 0.05F, 0.01F, 0.2F)
+    private val exhiFontValue = FontValue("Exhi-Font", Fonts.fontSFUI35)
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
     private val redValue = IntegerValue("Red", 252, 0, 255)
     private val greenValue = IntegerValue("Green", 96, 0, 255)
@@ -189,7 +190,7 @@ class Target : Element() {
                     RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
                     RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
                     drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 36, 36)
-                    font.drawStringWithShadow(target.name, 2F + 36F + 3F, 2F, -1)
+                    font.drawStringWithShadow(target.name, 2F + 36F + 2F, 2F, -1)
                     RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
 
                     easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
@@ -334,6 +335,71 @@ class Target : Element() {
                 }
 
                 // TODO: Exhibition (real) TargetHUD.
+                "Exhibition" -> {
+                    // Draw the rectangle (bro wtf)
+                    RenderUtils.drawRect(-3.5F, -3.5F, 143.5F, 48.5F, Color.black.rgb)
+                    RenderUtils.drawRect(-3F, -3F, 143F, 48F, Color(59, 59, 59).rgb)
+                    RenderUtils.drawBorder(-1.5F, -1.5F, 141.5F, 46.5F, 3.25F, Color(39, 39, 39, 170).rgb)
+                    RenderUtils.drawRect(0F, 0F, 140F, 45F, Color(19, 19, 19).rgb)
+
+                    RenderUtils.drawRect(2.5F, 2.5F, 42.5F, 42.5F, Color(59, 59, 59).rgb)
+                    RenderUtils.drawRect(3F, 3F, 42F, 42F, Color(19, 19, 19).rgb)
+
+                    GL11.glColor4f(1f, 1f, 1f, 1f)
+                    RenderUtils.drawEntityOnScreen(22, 40, 15, target)
+
+                    val font = exhiFontValue.get()
+                    font.drawString(target.name, 46, 4, -1)
+
+                    val barLength = 60F * (target.health / target.maxHealth).coerceIn(0F, 1F)
+                    RenderUtils.drawRect(45F, 15F, 45F + barLength, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).rgb)
+
+                    for (i in 0..9) {
+                        RenderUtils.drawBorder(45F + i * 6F, 15F, 45F + (i + 1F) * 6F, 18F, 0.25F, Color.black.rgb)
+                    }
+
+                    GL11.glPushMatrix()
+                    GL11.glTranslatef(46F, 20F, 0F)
+                    GL11.glScalef(0.5f, 0.5f, 0.5f)
+                    Fonts.minecraftFont.drawString("HP: ${target.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(target).toInt()}", 0, 0, -1)
+                    GL11.glPopMatrix()
+
+                    GlStateManager.resetColor()
+
+                    GL11.glPushMatrix()
+                    GL11.glColor4f(1f, 1f, 1f, 1f)
+                    RenderHelper.enableGUIStandardItemLighting()
+
+                    val renderItem = mc.renderItem
+
+                    var x = 45
+                    var y = 26
+
+                    for (index in 3 downTo 0) {
+                        val stack = target.inventory.armorInventory[index] ?: continue
+
+                        if (stack.getItem() == null)
+                            continue
+
+                        renderItem.renderItemIntoGUI(stack, x, y)
+                        renderItem.renderItemOverlays(mc.fontRendererObj, stack, x, y)
+
+                        x += 18
+                    }
+
+                    val mainStack = target.heldItem
+                    if (mainStack != null && mainStack.getItem() != null) {
+                        renderItem.renderItemIntoGUI(mainStack, x, y)
+                        renderItem.renderItemOverlays(mc.fontRendererObj, mainStack, x, y)
+                    }
+
+                    RenderHelper.disableStandardItemLighting()
+                    GlStateManager.enableAlpha()
+                    GlStateManager.disableBlend()
+                    GlStateManager.disableLighting()
+                    GlStateManager.disableCull()
+                    GL11.glPopMatrix()
+                }
             }
         } else if (target == null) {
             easingHealth = 0F
@@ -348,6 +414,7 @@ class Target : Element() {
             "Novoline" -> Border(-1F, -1F, 90F, 30F)
             "Slowly" -> Border(0F, 0F, 90F, 36F)
             "Rise" -> Border(0F, 0F, 90F, 55F)
+            "Exhibition" -> Border(0F, 0F, 140F, 45F)
             else -> Border(0F, 0F, 120F, 16F)
         }
     }

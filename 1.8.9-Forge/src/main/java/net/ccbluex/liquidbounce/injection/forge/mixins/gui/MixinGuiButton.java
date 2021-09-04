@@ -61,8 +61,8 @@ public abstract class MixinGuiButton extends Gui {
    @Shadow
    @Final
    protected static ResourceLocation buttonTextures;
-   private float bright;
 
+   private float bright = 0F;
    private float moveX = 0F;
 
    /**
@@ -79,58 +79,31 @@ public abstract class MixinGuiButton extends Gui {
          final int delta = RenderUtils.deltaTime;
 
          if (enabled && hovered) {
-            bright += 0.3F * delta;
+            /*bright += 0.3F * delta;
 
-            if (bright >= 80) bright = 80;
+            if (bright >= 80) bright = 80;*/
 
-            moveX = AnimationUtils.animate(5F, moveX, 0.2F * (1.25F - mc.timer.renderPartialTicks));
+            moveX = AnimationUtils.animate(this.width - 2.4F, moveX, 0.2F * (1.5F - mc.timer.renderPartialTicks));
          } else {
-            bright -= 0.3F * delta;
+            /*bright -= 0.3F * delta;
 
-            if (bright <= 0) bright = 0;
-            moveX = AnimationUtils.animate(0F, moveX, 0.2F * (1.25F - mc.timer.renderPartialTicks));
+            if (bright <= 0) bright = 0;*/
+            moveX = AnimationUtils.animate(0F, moveX, 0.2F * (1.5F - mc.timer.renderPartialTicks));
          }
 
-         /*GL11.glPushMatrix();
-         RenderUtils.drawGradientSideways(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, new Color((int)bright, (int)bright, (int)bright, 160).getRGB(), new Color(0, 0, 0, 160).getRGB());
-         GL11.glPopMatrix();*/
-         RenderUtils.drawRoundedRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 2.4F, /*new Color((int)bright, (int)bright, (int)bright, 150).getRGB()*/ new Color(0, 0, 0, 180).getRGB());
-         //RenderUtils.customRounded(this.xPosition, this.yPosition + this.height - 2F, this.xPosition + this.width, this.yPosition + this.height, 0F, 0F, 2F, 2F, (this.enabled ? new Color(0, 111, 255) : new Color(71, 71, 71)).getRGB());
-         /*for (float i = 5; i >= 0; i -= 0.5F)
-            RenderUtils.customRounded(
-               this.xPosition - i, 
-               this.yPosition + this.height - 2F - i, 
-               this.xPosition + this.width + i, 
-               this.yPosition + this.height + i, 
-               0F, 0F, 2F, 2F, 
-               (this.enabled ? new Color(0F, 111F / 255F, 1F, ((5F - i) / 5F) * (40F / 255F)) 
-                              : new Color(71F / 255F, 71F / 255F, 71F / 255F, ((5F - i) / 5F) * (40F / 255F))).getRGB()
-            );*/
+         float roundCorner = (float) Math.max(0F, 2.4F + moveX - (this.width - 2.4F));
 
-         RenderUtils.customRounded(this.xPosition, this.yPosition, this.xPosition + 2.4F, this.yPosition + this.height, 2.4F, 0F, 0F, 2.4F, (this.enabled ? new Color(0, 111, 255) : new Color(71, 71, 71)).getRGB());
-         for (float i = 5; i >= 0; i -= 1F)
-            RenderUtils.customRounded(
-               this.xPosition - i, 
-               this.yPosition - i, 
-               this.xPosition + 2.4F + i, 
-               this.yPosition + this.height + i, 
-               2.4F, 0F, 0F, 2.4F, 
-               (this.enabled ? new Color(0F, 111F / 255F, 1F, ((5F - i) / 5F) * (50F / 255F)) 
-                              : new Color(71F / 255F, 71F / 255F, 71F / 255F, ((5F - i) / 5F) * (50F / 255F))).getRGB()
-            );
+         RenderUtils.drawRoundedRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 2.4F, new Color((int)bright, (int)bright, (int)bright, 150).getRGB());
+         RenderUtils.customRounded(this.xPosition, this.yPosition, this.xPosition + 2.4F + moveX, this.yPosition + this.height, 2.4F, roundCorner, roundCorner, 2.4F, (this.enabled ? new Color(0, 111, 255) : new Color(71, 71, 71)).getRGB());
 
          mc.getTextureManager().bindTexture(buttonTextures);
          mouseDragged(mc, mouseX, mouseY);
 
          AWTFontRenderer.Companion.setAssumeNonVolatile(true);
 
-         /*fontRenderer.drawStringWithShadow(displayString,
+         fontRenderer.drawStringWithShadow(displayString,
                  (float) ((this.xPosition + this.width / 2) -
                          fontRenderer.getStringWidth(displayString) / 2),
-                 this.yPosition + (this.height - 5) / 2F - 2, 14737632);*/
-
-         fontRenderer.drawStringWithShadow(displayString,
-                 this.xPosition + 5F + moveX,
                  this.yPosition + (this.height - 5) / 2F - 2, 14737632);
 
          AWTFontRenderer.Companion.setAssumeNonVolatile(false);

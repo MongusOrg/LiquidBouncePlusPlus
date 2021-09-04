@@ -112,6 +112,8 @@ public class Fly extends Module {
 
     private int boostTicks = 0;
 
+    private boolean verusDmged = false;
+
     private float lastYaw, lastPitch;
     
     @Override
@@ -133,6 +135,8 @@ public class Fly extends Module {
         boostTicks = 0;
         pearlState = 0;
 
+        verusDmged = false;
+
         if (mode.equalsIgnoreCase("Verus")) {
             if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
                 if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
@@ -142,9 +146,7 @@ public class Fly extends Module {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
                     mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
                 }
-            }
-
-            if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit")) {
+            } else if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit")) {
                 if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
@@ -152,6 +154,9 @@ public class Fly extends Module {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
                     mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
                 }
+            } else {
+                // set dmged = true since there's no damage method
+                verusDmged = true;
             }
             if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
         } else if (mode.equalsIgnoreCase("BugSpartan")) {
@@ -243,7 +248,10 @@ public class Fly extends Module {
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionX = mc.thePlayer.motionZ = mc.thePlayer.motionY = 0;
 
-                if (boostTicks <= 0 && mc.thePlayer.hurtTime > 0) boostTicks = verusDmgTickValue.get();
+                if (!verusDmged && mc.thePlayer.hurtTime > 0) {
+                    verusDmged = true;
+                    boostTicks = verusDmgTickValue.get();
+                }
 
                 //if (verusGlideValue.get() && mc.thePlayer.ticksExisted % 6 == 0 && boostTicks <= 0) mc.thePlayer.motionY -= 0.2125;
                 //else mc.thePlayer.motionY = 0;
@@ -255,9 +263,9 @@ public class Fly extends Module {
                     boostTicks--;
 
                     MovementUtils.strafe(motion);
-                } else {
+                } else if (verusDmged) {
                     mc.timer.timerSpeed = 1F;
-                    MovementUtils.strafe(0.18F);
+                    MovementUtils.strafe(MovementUtils.getBaseMoveSpeed());
                 }
                 break;
             case "creative":
@@ -449,6 +457,10 @@ public class Fly extends Module {
                 if (pearlState != 2 && pearlState != -1) {
                     event.cancelEvent();
                 }
+            }
+            case "verus": {
+                if (!verusDmged)
+                    event.cancelEvent();
             }
         }
     }

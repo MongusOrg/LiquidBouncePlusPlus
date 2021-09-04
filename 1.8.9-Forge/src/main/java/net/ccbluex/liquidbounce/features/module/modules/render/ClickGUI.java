@@ -82,6 +82,7 @@ public class ClickGUI extends Module {
 
         LiquidBounce.clickGui.progress = 0;
         LiquidBounce.clickGui.slide = 0;
+        LiquidBounce.clickGui.lastMS = System.currentTimeMillis();
         mc.displayGuiScreen(LiquidBounce.clickGui);
     }
 
