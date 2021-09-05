@@ -100,6 +100,13 @@ class ChestStealer : Module() {
     fun onRender3D(event: Render3DEvent?) {
         val screen = mc.currentScreen
 
+        if (once && screen !is GuiChest) {
+            // prevent a bug where the chest suddenly closed while not finishing stealing items inside, leaving cheststealer turned on alone.
+            once = false
+            state = false
+            return
+        }
+
         if (screen !is GuiChest || !delayTimer.hasTimePassed(nextDelay)) {
             autoCloseTimer.reset()
             return

@@ -339,11 +339,6 @@ class Target : Element() {
                     val font = exhiFontValue.get()
                     val minWidth = 140F.coerceAtLeast(45F + font.getStringWidth(target.name))
 
-                    // Draw the rectangle (bro wtf)
-                    /*RenderUtils.drawRect(-3.5F, -3.5F, minWidth + 3.5F, 48.5F, Color.black.rgb)
-                    RenderUtils.drawRect(-3F, -3F, minWidth + 3F, 48F, Color(59, 59, 59).rgb)
-                    RenderUtils.drawBorder(-1.5F, -1.5F, minWidth + 1.5F, 46.5F, 3.125F, Color(39, 39, 39, 170).rgb)
-                    RenderUtils.drawRect(0F, 0F, minWidth, 45F, Color(19, 19, 19).rgb)*/
                     RenderUtils.drawExhiRect(0F, 0F, minWidth, 45F)
 
                     RenderUtils.drawRect(2.5F, 2.5F, 42.5F, 42.5F, Color(59, 59, 59).rgb)

@@ -83,13 +83,14 @@ public class Fly extends Module {
     private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F);
     private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F);
     private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
-    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", true);
+    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false);
+    private final BoolValue verusBlink = new BoolValue("Verus-Blink", true);
 
     // AAC
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
     private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true);
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
-    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise", "FOUR_DIMENSIONS"}, "Original"); // Original is from UnlegitMC/FDPClient, Rise? I don't really know if they took it from Rise src tho.
+    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise"}, "Original"); // Original is from UnlegitMC/FDPClient.
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
 
     // Visuals
@@ -253,8 +254,6 @@ public class Fly extends Module {
                     boostTicks = verusDmgTickValue.get();
                 }
 
-                //if (verusGlideValue.get() && mc.thePlayer.ticksExisted % 6 == 0 && boostTicks <= 0) mc.thePlayer.motionY -= 0.2125;
-                //else mc.thePlayer.motionY = 0;
                 if (boostTicks > 0) {
                     mc.timer.timerSpeed = verusTimerValue.get();
                     float motion = 0F;
@@ -265,7 +264,7 @@ public class Fly extends Module {
                     MovementUtils.strafe(motion);
                 } else if (verusDmged) {
                     mc.timer.timerSpeed = 1F;
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.8F);
                 }
                 break;
             case "creative":
@@ -374,6 +373,8 @@ public class Fly extends Module {
         }
     }
 
+    private final ArrayList<C03PacketPlayer> verusC03 = new ArrayList<>();
+
     @EventTarget
     public void onPacket(PacketEvent event) {
         final Packet<?> packet = event.getPacket();
@@ -391,6 +392,18 @@ public class Fly extends Module {
             if (mode.equalsIgnoreCase("Derp")) {
                 packetPlayer.yaw = RandomUtils.nextFloat(0F, 360F);
                 packetPlayer.pitch = RandomUtils.nextFloat(-90F, 90F);
+            }
+
+            if (mode.equalsIgnoreCase("Verus") && verusBlink.get() && boostTicks > 0) {
+                verusC03.add(packetPlayer);
+                event.cancelEvent();
+
+                if (verusC03.size() >= 8) {
+                    for (C03PacketPlayer c03 : verusC03)
+                        PacketUtils.sendPacketNoEvent(c03);
+
+                    verusC03.clear();
+                }
             }
 
             if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
@@ -434,15 +447,6 @@ public class Fly extends Module {
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
                         }
                     }
-                    case "FOUR_DIMENSIONS": {
-                        if (aac5UseC04Packet.get()) {
-                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, 1.7976931348623157E+308, packet.z, true));
-                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
-                        } else {
-                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, 1.7976931348623157E+308, packet.z, yaw, pitch, true));
-                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
-                        }
-                    }
                 }
                 
             }
@@ -475,7 +479,7 @@ public class Fly extends Module {
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, startY, event.getZ() + 1));
         }
 
-        if ((mode.equalsIgnoreCase("collide")) && !mc.thePlayer.isSneaking()) 
+        if (mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) 
             event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
 
         if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("Verus")) 

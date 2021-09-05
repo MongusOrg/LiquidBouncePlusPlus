@@ -119,27 +119,15 @@ class Radar(x: Double = 5.0, y: Double = 130.0) : Element(x, y) {
                     
         // border section
         if (borderValue.get()) {
-            glEnable(GL_BLEND)
-            glDisable(GL_TEXTURE_2D)
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-            glEnable(GL_LINE_SMOOTH)
+            val strength = borderStrengthValue.get() / 2F
+            val borderColor = Color(borderRedValue.get(), borderGreenValue.get(), borderBlueValue.get(), borderAlphaValue.get()).rgb
 
-            RenderUtils.glColor(borderRedValue.get(), borderGreenValue.get(), borderBlueValue.get(), borderAlphaValue.get())
-            glLineWidth(borderStrengthValue.get())
+            // vertical
+            RenderUtils.drawRect(halfSize - strength, 0F, halfSize + strength, size, borderColor)
 
-            glBegin(GL_LINES)
-
-            glVertex2f(halfSize, 0f)
-            glVertex2f(halfSize, size)
-
-            glVertex2f(0f, halfSize)
-            glVertex2f(size, halfSize)
-
-            glEnd()
-
-            glEnable(GL_TEXTURE_2D)
-            glDisable(GL_BLEND)
-            glDisable(GL_LINE_SMOOTH)
+            // horizontal
+            RenderUtils.drawRect(0F, halfSize - strength, halfSize - strength, halfSize + strength, borderColor)
+            RenderUtils.drawRect(halfSize + strength, halfSize - strength, size, halfSize + strength, borderColor)
 
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f)
         }

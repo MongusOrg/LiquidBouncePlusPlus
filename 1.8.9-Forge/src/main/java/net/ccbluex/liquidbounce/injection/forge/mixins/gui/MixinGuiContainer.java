@@ -83,11 +83,23 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                 
                 //hide GUI
                 if (chestStealer.getShowStringValue().get() && !chestStealer.getStillDisplayValue().get()) {
-                    long dunno = System.currentTimeMillis() % 750L;
                     String tipString = "Stealing... Press Esc to stop.";
+                    
+                    mc.fontRendererObj.drawString(tipString,
+                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2)-1,
+                        (height/2)+30,0,false);
+                    mc.fontRendererObj.drawString(tipString,
+                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2)+1,
+                        (height/2)+30,0,false);
                     mc.fontRendererObj.drawString(tipString,
                         (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30,0xffffffff,true);
+                        (height/2)+30-1,0,false);
+                    mc.fontRendererObj.drawString(tipString,
+                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
+                        (height/2)+30+1,0,false);
+                    mc.fontRendererObj.drawString(tipString,
+                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
+                        (height/2)+30,0xffffffff,false);
                 }
                 
                 if (!chestStealer.getStillDisplayValue().get()) callbackInfo.cancel();

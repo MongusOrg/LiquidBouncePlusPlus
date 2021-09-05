@@ -77,7 +77,7 @@ public abstract class MixinGuiButton extends Gui {
                     mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height);
 
          final int delta = RenderUtils.deltaTime;
-         final float speedDelta = 0.05F * delta;
+         final float speedDelta = 0.01F * delta;
 
          if (enabled && hovered) {
             /*bright += 0.3F * delta;
