@@ -336,11 +336,15 @@ class Target : Element() {
 
                 // TODO: Exhibition (real) TargetHUD.
                 "Exhibition" -> {
+                    val font = exhiFontValue.get()
+                    val minWidth = 140F.coerceAtLeast(45F + font.getStringWidth(target.name))
+
                     // Draw the rectangle (bro wtf)
-                    RenderUtils.drawRect(-3.5F, -3.5F, 143.5F, 48.5F, Color.black.rgb)
-                    RenderUtils.drawRect(-3F, -3F, 143F, 48F, Color(59, 59, 59).rgb)
-                    RenderUtils.drawBorder(-1.5F, -1.5F, 141.5F, 46.5F, 3.25F, Color(39, 39, 39, 170).rgb)
-                    RenderUtils.drawRect(0F, 0F, 140F, 45F, Color(19, 19, 19).rgb)
+                    /*RenderUtils.drawRect(-3.5F, -3.5F, minWidth + 3.5F, 48.5F, Color.black.rgb)
+                    RenderUtils.drawRect(-3F, -3F, minWidth + 3F, 48F, Color(59, 59, 59).rgb)
+                    RenderUtils.drawBorder(-1.5F, -1.5F, minWidth + 1.5F, 46.5F, 3.125F, Color(39, 39, 39, 170).rgb)
+                    RenderUtils.drawRect(0F, 0F, minWidth, 45F, Color(19, 19, 19).rgb)*/
+                    RenderUtils.drawExhiRect(0F, 0F, minWidth, 45F)
 
                     RenderUtils.drawRect(2.5F, 2.5F, 42.5F, 42.5F, Color(59, 59, 59).rgb)
                     RenderUtils.drawRect(3F, 3F, 42F, 42F, Color(19, 19, 19).rgb)
@@ -348,10 +352,10 @@ class Target : Element() {
                     GL11.glColor4f(1f, 1f, 1f, 1f)
                     RenderUtils.drawEntityOnScreen(22, 40, 15, target)
 
-                    val font = exhiFontValue.get()
                     font.drawString(target.name, 46, 4, -1)
 
                     val barLength = 60F * (target.health / target.maxHealth).coerceIn(0F, 1F)
+                    RenderUtils.drawRect(45F, 15F, 45F + 60F, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).darker().rgb)
                     RenderUtils.drawRect(45F, 15F, 45F + barLength, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).rgb)
 
                     for (i in 0..9) {

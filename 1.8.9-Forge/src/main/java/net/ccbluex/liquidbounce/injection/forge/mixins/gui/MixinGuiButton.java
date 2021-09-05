@@ -77,18 +77,19 @@ public abstract class MixinGuiButton extends Gui {
                     mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height);
 
          final int delta = RenderUtils.deltaTime;
+         final float speedDelta = 0.05F * delta;
 
          if (enabled && hovered) {
             /*bright += 0.3F * delta;
 
             if (bright >= 80) bright = 80;*/
 
-            moveX = AnimationUtils.animate(this.width - 2.4F, moveX, 0.2F * (1.5F - mc.timer.renderPartialTicks));
+            moveX = AnimationUtils.animate(this.width - 2.4F, moveX, speedDelta);
          } else {
             /*bright -= 0.3F * delta;
 
             if (bright <= 0) bright = 0;*/
-            moveX = AnimationUtils.animate(0F, moveX, 0.2F * (1.5F - mc.timer.renderPartialTicks));
+            moveX = AnimationUtils.animate(0F, moveX, speedDelta);
          }
 
          float roundCorner = (float) Math.max(0F, 2.4F + moveX - (this.width - 2.4F));

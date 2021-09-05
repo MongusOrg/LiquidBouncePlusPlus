@@ -103,7 +103,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         val staticX = width / 2F - 120F
         val staticY = height / 2F + 20F
 
-        RenderUtils.drawRoundedRect(staticX, staticY, staticX + 240F, staticY + 20F, 10F, Color(255, 255, 255, 40).rgb)
+        RenderUtils.drawRoundedRect(staticX, staticY, staticX + 240F, staticY + 20F, 10F, Color(255, 255, 255, 100).rgb)
         
         var index: Int = 0
         var shouldAnimate = false
@@ -132,10 +132,12 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         } else {
             fade -= 10F
             if (fade <= 0F) fade = 0F
+
+            slideX = AnimationUtils.animate(staticX, slideX, 0.5F * (1F - partialTicks))
         }
 
         if (fade != 0F)
-            RenderUtils.drawRoundedRect(slideX, staticY, slideX + 40F, staticY + 20F, 10F, Color(1F, 1F, 1F, fade / 100F * 0.5F).rgb)
+            RenderUtils.drawRoundedRect(slideX, staticY, slideX + 40F, staticY + 20F, 10F, Color(1F, 1F, 1F, fade / 100F * 0.6F).rgb)
 
         index = 0
         GlStateManager.disableAlpha()

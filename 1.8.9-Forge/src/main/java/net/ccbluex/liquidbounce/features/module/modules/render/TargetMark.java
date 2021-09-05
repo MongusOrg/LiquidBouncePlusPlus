@@ -102,7 +102,7 @@ public class TargetMark extends Module {
 		    GL11.glShadeModel(7425);
 		    GL11.glBegin(GL11.GL_LINE_LOOP);
 
-		    for (float i = 0; i <= 360; i += 0.1F) {
+		    for (float i = 0; i <= 360; i += 0.2F) {
 			    double posX2 = posX - Math.sin(i * Math.PI / 180) * radius;
 			    double posZ2 = posZ + Math.cos(i * Math.PI / 180) * radius;
 
@@ -205,7 +205,7 @@ public class TargetMark extends Module {
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 		GL11.glColor4f(red, green, blue, alp);
 
-		for (double i = 0; i <= 360; i += 0.1) {
+		for (double i = 0; i <= 360; i += 0.2) {
 			double posX = x - Math.sin(i * Math.PI / 180) * radius;
 			double posZ = z + Math.cos(i * Math.PI / 180) * radius;
 			GL11.glVertex3d(posX - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, posZ - mc.getRenderManager().viewerPosZ);

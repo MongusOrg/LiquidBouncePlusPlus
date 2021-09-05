@@ -47,9 +47,6 @@ public class SpinBot extends Module
     
     @EventTarget
     public void onTick(final TickEvent e) {
-        if (auraOnly.get() && (!aura.getState() || aura.getTarget() == null))
-            return;
-
         final String s = this.yawMode.get();
         float yaw = 0.0f;
         switch (s) {
@@ -83,7 +80,7 @@ public class SpinBot extends Module
                 break;
             }
         }
-        if (!this.yawMode.get().equalsIgnoreCase("off")) {
+        if (!this.yawMode.get().equalsIgnoreCase("off") && (!auraOnly.get() || (aura.getState() && aura.getTarget() != null))) {
             mc.thePlayer.renderYawOffset = yaw;
             mc.thePlayer.rotationYawHead = yaw;
         }
@@ -116,7 +113,7 @@ public class SpinBot extends Module
                 break;
             }
         }
-        if (this.pitchMode.get().equalsIgnoreCase("off")) {
+        if (this.pitchMode.get().equalsIgnoreCase("off") || (auraOnly.get() && (!aura.getState() || aura.getTarget() == null))) {
             pitch = -4.9531336E7f;
         }
     }

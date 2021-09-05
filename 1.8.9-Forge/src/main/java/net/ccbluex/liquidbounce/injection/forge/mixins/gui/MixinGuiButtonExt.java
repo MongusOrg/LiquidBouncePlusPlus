@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import net.ccbluex.liquidbounce.ui.font.Fonts;
+import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,7 +26,9 @@ import org.lwjgl.opengl.GL11;
 @Mixin(GuiButtonExt.class)
 @SideOnly(Side.CLIENT)
 public abstract class MixinGuiButtonExt extends GuiButton {
+
    private float bright;
+   private float moveX = 0F;
 
    public MixinGuiButtonExt(int p_i1020_1_, int p_i1020_2_, int p_i1020_3_, String p_i1020_4_) {
       super(p_i1020_1_, p_i1020_2_, p_i1020_3_, p_i1020_4_);
@@ -48,29 +51,34 @@ public abstract class MixinGuiButtonExt extends GuiButton {
                     mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height);
 
          final int delta = RenderUtils.deltaTime;
+         final float speedDelta = 0.05F * delta;
 
          if (enabled && hovered) {
-            bright += 0.3F * delta;
+            /*bright += 0.3F * delta;
 
-            if (bright >= 80) bright = 80;
+            if (bright >= 80) bright = 80;*/
+
+            moveX = AnimationUtils.animate(this.width - 2.4F, moveX, speedDelta);
          } else {
-            bright -= 0.3F * delta;
+            /*bright -= 0.3F * delta;
 
-            if (bright <= 0) bright = 0;
+            if (bright <= 0) bright = 0;*/
+            moveX = AnimationUtils.animate(0F, moveX, speedDelta);
          }
 
-         /*GL11.glPushMatrix();
-         RenderUtils.drawGradientSideways(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, new Color((int)bright, (int)bright, (int)bright, 160).getRGB(), new Color(0, 0, 0, 160).getRGB());
-         GL11.glPopMatrix();*/
+         float roundCorner = (float) Math.max(0F, 2.4F + moveX - (this.width - 2.4F));
+
          RenderUtils.drawRoundedRect(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 2.4F, new Color((int)bright, (int)bright, (int)bright, 150).getRGB());
+         RenderUtils.customRounded(this.xPosition, this.yPosition, this.xPosition + 2.4F + moveX, this.yPosition + this.height, 2.4F, roundCorner, roundCorner, 2.4F, (this.enabled ? new Color(0, 111, 255) : new Color(71, 71, 71)).getRGB());
 
          mc.getTextureManager().bindTexture(buttonTextures);
          mouseDragged(mc, mouseX, mouseY);
 
          fontRenderer.drawStringWithShadow(displayString,
-                                           (float) ((this.xPosition + this.width / 2) -
-                                                    fontRenderer.getStringWidth(displayString) / 2),
-                                           this.yPosition + (this.height - 5) / 2F - 2, 14737632);
+                 (float) ((this.xPosition + this.width / 2) -
+                         fontRenderer.getStringWidth(displayString) / 2),
+                 this.yPosition + (this.height - 5) / 2F - 2, 14737632);
+
          GlStateManager.resetColor();
       }
    }

@@ -20,7 +20,6 @@ import net.minecraft.entity.projectile.EntityFireball
 import net.minecraft.network.play.client.C02PacketUseEntity
 import net.minecraft.network.play.client.C0APacketAnimation
 
-// woah fdp stuff is here
 @ModuleInfo(name = "AntiFireBall", category = ModuleCategory.COMBAT, description = "Automatically punch fireballs away from you.")
 class AntiFireBall : Module() {
     private val timer = MSTimer()

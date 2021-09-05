@@ -37,21 +37,31 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     @Shadow
     protected int guiTop;
 
+    private GuiButton stealButton;
+
     @Inject(method = "initGui", at = @At("RETURN"), cancellable = true)
     public void injectInitGui(CallbackInfo callbackInfo){
         GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
         if (guiScreen instanceof GuiChest) {
             buttonList.add(new GuiButton(1024576, this.width / 2 - 100, this.guiTop - 30, 99, 20, "Disable KillAura"));
             buttonList.add(new GuiButton(727, this.width / 2 + 1, this.guiTop - 30, 99, 20, "Disable Stealer"));
+            buttonList.add(stealButton = new GuiButton(1234123, this.width / 2 - 100, this.guiTop - 55, 200, 20, "Steal this chest"));
         }
     }
 
     @Override
     protected void injectedActionPerformed(GuiButton button) {
+        ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
+
         if (button.id == 1024576)
             LiquidBounce.moduleManager.getModule(KillAura.class).setState(false);
         if (button.id == 727)
-            LiquidBounce.moduleManager.getModule(ChestStealer.class).setState(false);
+            chestStealer.setState(false);
+        if (button.id == 1234123 && !chestStealer.getState()) {
+            chestStealer.setContentReceived(mc.thePlayer.openContainer.windowId);
+            chestStealer.setOnce(true);
+            chestStealer.setState(true);
+        }
     }
 
     @Inject(method = "drawScreen", at = @At("HEAD"), cancellable = true)
@@ -60,6 +70,9 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         try {
             Minecraft mc = Minecraft.getMinecraft();
             GuiScreen guiScreen = mc.currentScreen;
+
+            stealButton.enabled = !chestStealer.getState();
+
             if(chestStealer.getState() && chestStealer.getSilenceValue().get() && guiScreen instanceof GuiChest) {
                 //mouse focus
                 if (!mc.inGameHasFocus) {

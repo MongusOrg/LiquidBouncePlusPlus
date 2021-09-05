@@ -148,6 +148,13 @@ public final class RenderUtils extends MinecraftInstance {
         glEnable(2832);
     }
 
+    public static void drawExhiRect(float x, float y, float x2, float y2) {
+        drawRect(x - 3.5F, y - 3.5F, x2 + 3.5F, y2 + 3.5F, Color.black.getRGB());
+        drawRect(x - 3F, y - 3F, x2 + 3F, y2 + 3F, new Color(50, 50, 50).getRGB());
+        drawBorder(x - 1.5F, y - 1.5F, x2 + 1.5F, y2 + 1.5F, 2.5F, new Color(26, 26, 26).getRGB());
+        drawRect(x, y, x2, y2, new Color(18, 18, 18).getRGB());
+    }
+
     public static void drawRoundedRect(float paramXStart, float paramYStart, float paramXEnd, float paramYEnd, float radius, int color) {
         drawRoundedRect(paramXStart, paramYStart, paramXEnd, paramYEnd, radius, color, true);
     }

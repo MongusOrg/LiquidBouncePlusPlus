@@ -92,7 +92,9 @@ class ChestStealer : Module() {
     private val autoCloseTimer = MSTimer()
     private var nextCloseDelay = TimeUtils.randomDelay(autoCloseMinDelayValue.get(), autoCloseMaxDelayValue.get())
 
-    private var contentReceived = 0
+    public var contentReceived = 0
+
+    public var once = false
 
     @EventTarget
     fun onRender3D(event: Render3DEvent?) {
@@ -104,11 +106,11 @@ class ChestStealer : Module() {
         }
 
         // No Compass
-        if (noCompassValue.get() && mc.thePlayer.inventory.getCurrentItem()?.item?.unlocalizedName == "item.compass")
+        if (!once && noCompassValue.get() && mc.thePlayer.inventory.getCurrentItem()?.item?.unlocalizedName == "item.compass")
             return
 
         // Chest title
-        if (chestTitleValue.get() && (screen.lowerChestInventory == null || !screen.lowerChestInventory.name.contains(ItemStack(Item.itemRegistry.getObject(ResourceLocation("minecraft:chest"))).displayName)))
+        if (!once && chestTitleValue.get() && (screen.lowerChestInventory == null || !screen.lowerChestInventory.name.contains(ItemStack(Item.itemRegistry.getObject(ResourceLocation("minecraft:chest"))).displayName)))
             return
 
         // inventory cleaner
@@ -152,6 +154,12 @@ class ChestStealer : Module() {
 
             if (silenceValue.get() && !stillDisplayValue.get()) LiquidBounce.hud.addNotification(Notification("Closed chest.", Notification.Type.INFO))
             nextCloseDelay = TimeUtils.randomDelay(autoCloseMinDelayValue.get(), autoCloseMaxDelayValue.get())
+
+            if (once) {
+                once = false
+                state = false
+                return
+            }
         }
     }
 
