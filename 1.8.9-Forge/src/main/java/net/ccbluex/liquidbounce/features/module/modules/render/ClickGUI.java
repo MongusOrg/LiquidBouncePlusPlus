@@ -42,13 +42,13 @@ public class ClickGUI extends Module {
     public final FloatValue scaleValue = new FloatValue("Scale", 1F, 0.7F, 2F);
     public final IntegerValue maxElementsValue = new IntegerValue("MaxElements", 15, 1, 20);
 
-    private static final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
+    private static final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Sky", "Rainbow", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
     private static final IntegerValue colorRedValue = new IntegerValue("Red", 0, 0, 255);
     private static final IntegerValue colorGreenValue = new IntegerValue("Green", 160, 0, 255);
     private static final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
     private static final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
     private static final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
-    private static final IntegerValue mixerSecondsValue = new IntegerValue("Mixer-Seconds", 2, 1, 10);
+    private static final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
 
     public final ListValue backgroundValue = new ListValue("Background", new String[] {"Default", "Gradient", "None"}, "Default");
 
@@ -60,6 +60,8 @@ public class ClickGUI extends Module {
             case "custom":
                 c = new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get());
                 break;
+            case "rainbow":
+                c = new Color(RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), 0));
             case "sky":
                 c = RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
                 break;

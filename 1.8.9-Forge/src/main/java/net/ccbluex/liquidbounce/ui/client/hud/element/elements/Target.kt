@@ -334,7 +334,6 @@ class Target : Element() {
                     RenderUtils.drawFilledCircle(20F + width + barWidth, 8F, 5F, healthColor)
                 }
 
-                // TODO: Exhibition (real) TargetHUD.
                 "Exhibition" -> {
                     val font = exhiFontValue.get()
                     val minWidth = 140F.coerceAtLeast(45F + font.getStringWidth(target.name))
@@ -350,7 +349,7 @@ class Target : Element() {
                     font.drawString(target.name, 46, 4, -1)
 
                     val barLength = 60F * (target.health / target.maxHealth).coerceIn(0F, 1F)
-                    RenderUtils.drawRect(45F, 15F, 45F + 60F, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).darker().rgb)
+                    RenderUtils.drawRect(45F, 15F, 45F + 60F, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).darker().darker().darker().rgb)
                     RenderUtils.drawRect(45F, 15F, 45F + barLength, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).rgb)
 
                     for (i in 0..9) {

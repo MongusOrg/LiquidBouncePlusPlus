@@ -253,7 +253,7 @@ public final class ESP2D extends Module {
 
                      durabilityWidth = (double)(armorValue / itemDurability);
                      textWidth = (endPosY - posY) * durabilityWidth; 
-                     String healthDisplay = ((int)armorValue) + "§c❤";
+                     String healthDisplay = dFormat.format(armorValue) + "§c❤";
                      //if (details.get()) Fonts.fontSmall.drawStringWithShadow(healthDisplay, (float)posX - 4F - Fonts.fontSmall.getStringWidth(healthDisplay), (float)(endPosY - textWidth) - Fonts.fontSmall.FONT_HEIGHT / 2F, -1);
                      if (details.get()) drawScaledString(healthDisplay, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                      RenderUtils.drawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
