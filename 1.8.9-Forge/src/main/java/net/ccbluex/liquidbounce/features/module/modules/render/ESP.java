@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
+import net.ccbluex.liquidbounce.utils.render.BlendUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.utils.render.WorldToScreen;
@@ -61,7 +62,7 @@ public class ESP extends Module {
 	public final FloatValue wireframeWidth = new FloatValue("WireFrame-Width", 2F, 0.5F, 5F);
 	private final FloatValue shaderOutlineRadius = new FloatValue("ShaderOutline-Radius", 1.35F, 1F, 2F);
 	private final FloatValue shaderGlowRadius = new FloatValue("ShaderGlow-Radius", 2.3F, 2F, 3F);
-	private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
+	private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Health", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
 	private final IntegerValue colorRedValue = new IntegerValue("Red", 255, 0, 255);
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
 	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
@@ -376,6 +377,9 @@ public class ESP extends Module {
 		if (entity instanceof EntityLivingBase) {
 			final EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
 
+			if (colorModeValue.get().equalsIgnoreCase("Health"))
+				return new Color(BlendUtils.getHealthColor(entityLivingBase.getHealth(), entityLivingBase.getMaxHealth()));
+
 			if (entityLivingBase.hurtTime > 0)
 				return Color.RED;
 
@@ -414,8 +418,10 @@ public class ESP extends Module {
 				return ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get());
 			case "Mixer":
 				return ColorMixer.getMixedColor(0, mixerSecondsValue.get());
-			default:
+			case "Fade":
 				return ColorUtils.fade(new Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get()), 0, 100);
+			default:
+				return Color.white;
 		}
 	}
 }

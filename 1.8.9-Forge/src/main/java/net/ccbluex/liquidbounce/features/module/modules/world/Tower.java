@@ -125,6 +125,12 @@ public class Tower extends Module {
     private float progress = 0;
 
     @Override
+    public void onEnable() {
+        if (mc.thePlayer == null) return;
+        slot = mc.thePlayer.inventory.currentItem;
+    }
+
+    @Override
     public void onDisable() {
         if (mc.thePlayer == null) return;
 

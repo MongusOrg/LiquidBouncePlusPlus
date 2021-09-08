@@ -7,7 +7,6 @@ package net.ccbluex.liquidbounce.features.module.modules.misc;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.*;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.value.*;
 import net.ccbluex.liquidbounce.event.*;
 import org.jetbrains.annotations.Nullable;
@@ -28,13 +27,6 @@ public class SpinBot extends Module
     public static float lastSpin;
     public static float yawTimer;
     public static float pitchTimer;
-
-    private KillAura aura;
-
-    @Override
-    public void onInitialize() {
-        aura = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
-    }
 
     @Override
     public void onDisable() {
@@ -80,7 +72,7 @@ public class SpinBot extends Module
                 break;
             }
         }
-        if (!this.yawMode.get().equalsIgnoreCase("off") && (!auraOnly.get() || (aura.getState() && aura.getTarget() != null))) {
+        if (!this.yawMode.get().equalsIgnoreCase("off")) {
             mc.thePlayer.renderYawOffset = yaw;
             mc.thePlayer.rotationYawHead = yaw;
         }
@@ -113,7 +105,7 @@ public class SpinBot extends Module
                 break;
             }
         }
-        if (this.pitchMode.get().equalsIgnoreCase("off") || (auraOnly.get() && (!aura.getState() || aura.getTarget() == null))) {
+        if (this.pitchMode.get().equalsIgnoreCase("off")) {
             pitch = -4.9531336E7f;
         }
     }

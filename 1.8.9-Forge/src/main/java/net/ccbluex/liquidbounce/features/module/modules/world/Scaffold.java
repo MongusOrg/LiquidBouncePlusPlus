@@ -209,6 +209,7 @@ public class Scaffold extends Module {
         progress = 0;
         launchY = (int) mc.thePlayer.posY;
         lastSlot = mc.thePlayer.inventory.currentItem;
+        slot = mc.thePlayer.inventory.currentItem;
 
         if (autoDisableSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState()) {
             LiquidBounce.moduleManager.getModule(Speed.class).setState(false);
