@@ -378,7 +378,7 @@ public class ESP extends Module {
 			final EntityLivingBase entityLivingBase = (EntityLivingBase) entity;
 
 			if (colorModeValue.get().equalsIgnoreCase("Health"))
-				return new Color(BlendUtils.getHealthColor(entityLivingBase.getHealth(), entityLivingBase.getMaxHealth()));
+				return BlendUtils.getHealthColor(entityLivingBase.getHealth(), entityLivingBase.getMaxHealth());
 
 			if (entityLivingBase.hurtTime > 0)
 				return Color.RED;
