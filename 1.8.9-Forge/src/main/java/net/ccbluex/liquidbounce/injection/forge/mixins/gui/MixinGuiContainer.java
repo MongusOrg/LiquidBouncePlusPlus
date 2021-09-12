@@ -44,9 +44,9 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
         if (guiScreen instanceof GuiChest) {
             if (this.guiTop < 50) { //prevent weird things
-                buttonList.add(new GuiButton(1024576, 10, 25, 99, 20, "Disable KillAura"));
-                buttonList.add(new GuiButton(727, 110, 25, 99, 20, "Disable Stealer"));
-                buttonList.add(stealButton = new GuiButton(1234123, 10, this.guiTop - 55, 200, 10, "Steal this chest"));
+                buttonList.add(new GuiButton(1024576, 10, 35, 99, 20, "Disable KillAura"));
+                buttonList.add(new GuiButton(727, 110, 35, 99, 20, "Disable Stealer"));
+                buttonList.add(stealButton = new GuiButton(1234123, 10, 10, 200, 20, "Steal this chest"));
             } else {
                 buttonList.add(new GuiButton(1024576, this.width / 2 - 100, this.guiTop - 30, 99, 20, "Disable KillAura"));
                 buttonList.add(new GuiButton(727, this.width / 2 + 1, this.guiTop - 30, 99, 20, "Disable Stealer"));

@@ -11,7 +11,7 @@ import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.features.module.modules.misc.AntiBot
 
-class TeleportCommand : Command("teleport", arrayOf("tp")) {
+class TeleportCommand : Command("tp", emptyArray()) {
 
     /**
      * Execute commands with provided [args]

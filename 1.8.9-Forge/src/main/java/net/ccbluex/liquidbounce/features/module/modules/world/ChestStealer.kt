@@ -96,13 +96,16 @@ class ChestStealer : Module() {
 
     public var once = false
 
+    override fun onDisable() {
+        once = false
+    }
+
     @EventTarget
     fun onRender3D(event: Render3DEvent?) {
         val screen = mc.currentScreen
 
         if (once && screen !is GuiChest) {
             // prevent a bug where the chest suddenly closed while not finishing stealing items inside, leaving cheststealer turned on alone.
-            once = false
             state = false
             return
         }

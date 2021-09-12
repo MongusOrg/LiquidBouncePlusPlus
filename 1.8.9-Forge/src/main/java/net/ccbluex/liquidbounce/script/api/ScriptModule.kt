@@ -42,6 +42,11 @@ class ScriptModule(private val moduleObject: JSObject) : Module() {
                 _values[settingName] = settings.getMember(settingName) as Value<*>
         }
 
+        if (moduleObject.hasMember("spacedName"))
+            spacedName = moduleObject.getMember("spacedName") as String
+        else 
+            spacedName = name
+
         if (moduleObject.hasMember("tag"))
             _tag = moduleObject.getMember("tag") as String
     }

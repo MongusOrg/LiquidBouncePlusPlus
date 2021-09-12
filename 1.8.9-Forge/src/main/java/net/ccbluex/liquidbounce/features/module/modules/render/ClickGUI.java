@@ -62,6 +62,7 @@ public class ClickGUI extends Module {
                 break;
             case "rainbow":
                 c = new Color(RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), 0));
+                break;
             case "sky":
                 c = RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get());
                 break;

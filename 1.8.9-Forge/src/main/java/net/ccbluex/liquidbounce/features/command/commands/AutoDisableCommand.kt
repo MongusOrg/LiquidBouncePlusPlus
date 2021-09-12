@@ -13,7 +13,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.misc.AutoDisable.DisableEvent
 import net.ccbluex.liquidbounce.utils.ClientUtils
 
-class AutoDisableCommand : Command("autodisable", emptyArray()) {
+class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
 
     /**
      * Execute commands with provided [args]

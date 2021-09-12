@@ -50,6 +50,10 @@ public class Fly extends Module {
             "Damage",
             "Pearl",
 
+            // NCP
+            "NCP",
+            "OldNCP",
+
             // Rewinside
             "Rewinside",
 
@@ -74,6 +78,8 @@ public class Fly extends Module {
 
     private final FloatValue vanillaSpeedValue = new FloatValue("MotionSpeed", 2F, 0F, 5F);
     private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false);
+
+    private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
     private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit"}, "None");
@@ -138,37 +144,58 @@ public class Fly extends Module {
 
         verusDmged = false;
 
-        if (mode.equalsIgnoreCase("Verus")) {
-            if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
-                if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.4, mc.thePlayer.posZ, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 0.00125, mc.thePlayer.posZ, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
-                    mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+        switch (mode.toLowerCase()) {
+            case "ncp":
+                mc.thePlayer.motionY = -ncpMotionValue.get();
+
+                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                    mc.thePlayer.motionY = -0.5D;
+                MovementUtils.strafe();
+                break;
+            case "oldncp":
+                if(startY > mc.thePlayer.posY)
+                    mc.thePlayer.motionY = -0.000000000000000000000000000000001D;
+
+                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                    mc.thePlayer.motionY = -0.2D;
+
+                if(mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.posY < (startY - 0.1D))
+                    mc.thePlayer.motionY = 0.2D;
+                MovementUtils.strafe();
+                break;
+            case "verus": {
+                if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
+                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.4, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 0.00125, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                        mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+                    }
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit")) {
+                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                        mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+                    }
+                } else {
+                    // set dmged = true since there's no damage method
+                    verusDmged = true;
                 }
-            } else if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit")) {
-                if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
-                    mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+                if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
+            }
+            case "bugspartan": {
+                for(int i = 0; i < 65; ++i) {
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 }
-            } else {
-                // set dmged = true since there's no damage method
-                verusDmged = true;
+                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.1D, z, true));
+                mc.thePlayer.motionX *= 0.1D;
+                mc.thePlayer.motionZ *= 0.1D;
+                mc.thePlayer.swingItem();
             }
-            if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
-        } else if (mode.equalsIgnoreCase("BugSpartan")) {
-            for(int i = 0; i < 65; ++i) {
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
-            }
-            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.1D, z, true));
-            mc.thePlayer.motionX *= 0.1D;
-            mc.thePlayer.motionZ *= 0.1D;
-            mc.thePlayer.swingItem();
         }
 
         startY = mc.thePlayer.posY;
@@ -227,6 +254,24 @@ public class Fly extends Module {
                 MovementUtils.strafe(vanillaSpeed);
 
                 handleVanillaKickBypass();
+                break;
+            case "ncp":
+                mc.thePlayer.motionY = -ncpMotionValue.get();
+
+                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                    mc.thePlayer.motionY = -0.5D;
+                MovementUtils.strafe();
+                break;
+            case "oldncp":
+                if(startY > mc.thePlayer.posY)
+                    mc.thePlayer.motionY = -0.000000000000000000000000000000001D;
+
+                if(mc.gameSettings.keyBindSneak.isKeyDown())
+                    mc.thePlayer.motionY = -0.2D;
+
+                if(mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.posY < (startY - 0.1D))
+                    mc.thePlayer.motionY = 0.2D;
+                MovementUtils.strafe();
                 break;
             case "damage":
                 mc.thePlayer.capabilities.isFlying = false;
@@ -386,7 +431,7 @@ public class Fly extends Module {
         if(packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
 
-            if (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && verusSpoofGround.get()))
+            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && verusSpoofGround.get()))
                 packetPlayer.onGround = true;
 
             if (mode.equalsIgnoreCase("Derp")) {

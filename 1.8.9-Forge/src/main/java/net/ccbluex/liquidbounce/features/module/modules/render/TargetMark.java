@@ -60,7 +60,7 @@ public class TargetMark extends Module {
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
         if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .65F);
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .75F);
 
 		    double lastY = yPos;
 
@@ -102,23 +102,23 @@ public class TargetMark extends Module {
 		    GL11.glShadeModel(7425);
 		    GL11.glBegin(GL11.GL_LINE_LOOP);
 
-		    for (float i = 0; i <= 360; i += 0.2F) {
+		    for (float i = 0; i <= 360; i += 0.1F) {
 			    double posX2 = posX - Math.sin(i * Math.PI / 180) * radius;
 			    double posZ2 = posZ + Math.cos(i * Math.PI / 180) * radius;
 
 			    if (direction > 0) {
 				    GL11.glColor4f(r, g, b, 0);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * 0.25F);
+				    GL11.glColor4f(r, g, b, al * 0.35F);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 				    GL11.glColor4f(r, g, b, 0);
     				GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 			    } else {
-				    GL11.glColor4f(r, g, b, al * 0.25F);
+				    GL11.glColor4f(r, g, b, al * 0.35F);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 				    GL11.glColor4f(r, g, b, 0);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * 0.25F);
+				    GL11.glColor4f(r, g, b, al * 0.35F);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
     			}
 		    }
@@ -205,7 +205,7 @@ public class TargetMark extends Module {
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 		GL11.glColor4f(red, green, blue, alp);
 
-		for (double i = 0; i <= 360; i += 0.2) {
+		for (double i = 0; i <= 360; i += 0.1) {
 			double posX = x - Math.sin(i * Math.PI / 180) * radius;
 			double posZ = z + Math.cos(i * Math.PI / 180) * radius;
 			GL11.glVertex3d(posX - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, posZ - mc.getRenderManager().viewerPosZ);
