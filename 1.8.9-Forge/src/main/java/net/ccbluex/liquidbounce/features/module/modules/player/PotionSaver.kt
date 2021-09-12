@@ -13,7 +13,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.client.C03PacketPlayer.*
 
-@ModuleInfo(name = "PotionSaver", description = "Freezes all potion effects while you are standing still.", category = ModuleCategory.PLAYER)
+@ModuleInfo(name = "PotionSaver", spacedName = "Potion Saver", description = "Freezes all potion effects while you are standing still.", category = ModuleCategory.PLAYER)
 class PotionSaver : Module() {
 
     @EventTarget

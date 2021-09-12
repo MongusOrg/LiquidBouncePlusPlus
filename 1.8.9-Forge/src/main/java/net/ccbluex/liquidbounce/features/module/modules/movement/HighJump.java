@@ -21,7 +21,7 @@ import net.minecraft.block.BlockPane;
 import net.minecraft.block.Block;
 import net.minecraft.util.BlockPos;
 
-@ModuleInfo(name = "HighJump", description = "Allows you to jump higher.", category = ModuleCategory.MOVEMENT)
+@ModuleInfo(name = "HighJump", spacedName = "High Jump", description = "Allows you to jump higher.", category = ModuleCategory.MOVEMENT)
 public class HighJump extends Module {
 
     private final FloatValue heightValue = new FloatValue("Height", 2F, 1.1F, 10F);

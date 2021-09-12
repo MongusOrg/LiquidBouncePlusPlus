@@ -20,7 +20,7 @@ import net.ccbluex.liquidbounce.value.ListValue;
 import java.awt.*;
 import java.util.Random;
 
-@ModuleInfo(name = "EnchantEffect", description = "qwq", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "EnchantEffect", spacedName = "Enchant Effect", description = "qwq", category = ModuleCategory.RENDER)
 public class EnchantEffect extends Module {
     public IntegerValue redValue = new IntegerValue("Red", 255, 0, 255);
     public IntegerValue greenValue = new IntegerValue("Green", 0, 0, 255);

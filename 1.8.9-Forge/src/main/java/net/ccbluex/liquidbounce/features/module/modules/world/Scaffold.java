@@ -75,6 +75,7 @@ public class Scaffold extends Module {
         }
     };
     private final BoolValue placeableDelay = new BoolValue("PlaceableDelay", false);
+    private final BoolValue smartDelay = new BoolValue("SmartDelay", true);
 
     // AutoBlock
     private final ListValue autoBlockMode = new ListValue("AutoBlock", new String[]{"Spoof", "Switch", "Off"}, "Spoof");
@@ -527,7 +528,7 @@ public class Scaffold extends Module {
             return;
         }
 
-        if (!delayTimer.hasTimePassed(delay) || ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord))
+        if (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord))
             return;
 
         int blockSlot = -1;

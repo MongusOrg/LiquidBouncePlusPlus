@@ -52,7 +52,7 @@ import kotlin.math.min
 import kotlin.math.cos
 import kotlin.math.sin
 
-@ModuleInfo(name = "KillAura", description = "Automatically attacks targets around you.",
+@ModuleInfo(name = "KillAura", spacedName = "Kill Aura", description = "Automatically attacks targets around you.",
         category = ModuleCategory.COMBAT, keyBind = Keyboard.KEY_R)
 class KillAura : Module() {
 

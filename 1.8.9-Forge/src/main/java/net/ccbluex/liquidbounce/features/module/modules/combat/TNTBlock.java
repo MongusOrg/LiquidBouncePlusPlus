@@ -19,7 +19,7 @@ import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
-@ModuleInfo(name = "TNTBlock", description = "Automatically blocks with your sword when TNT around you explodes.", category = ModuleCategory.COMBAT)
+@ModuleInfo(name = "TNTBlock", spacedName = "TNT Block", description = "Automatically blocks with your sword when TNT around you explodes.", category = ModuleCategory.COMBAT)
 public class TNTBlock extends Module {
 
     private final IntegerValue fuseValue = new IntegerValue("Fuse", 10, 0, 80);

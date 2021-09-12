@@ -23,7 +23,7 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.math.abs
 
-@ModuleInfo(name = "DamageParticle", description = "Allows you to see targets damage.", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "DamageParticle", spacedName = "Damage Particle", description = "Allows you to see targets damage.", category = ModuleCategory.RENDER)
 class DamageParticle : Module() {
     private val healthData=HashMap<Int,Float>()
     private val particles=ArrayList<SingleParticle>()

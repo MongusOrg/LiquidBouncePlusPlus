@@ -34,7 +34,7 @@ import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.List;
 
-@ModuleInfo(name = "AutoHypixel", description = "Automatically send you into random games on Hypixel after you die or win.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "AutoHypixel", spacedName = "AutoHypixel", description = "Automatically send you into random games on Hypixel after you die or win.", category = ModuleCategory.MISC)
 public class AutoHypixel extends Module {
 
     private final IntegerValue delayValue = new IntegerValue("Delay", 0, 0, 5000);

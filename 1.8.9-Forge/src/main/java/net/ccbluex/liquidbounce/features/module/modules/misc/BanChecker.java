@@ -21,7 +21,7 @@ import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 
-@ModuleInfo(name = "BanChecker", description = "Checks for ban on Hypixel every minute and alert you if there is any.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "BanChecker", spacedName = "Ban Checker", description = "Checks for ban on Hypixel every minute and alert you if there is any.", category = ModuleCategory.MISC)
 public class BanChecker extends Module {
     
     // no u

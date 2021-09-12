@@ -14,7 +14,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.minecraft.client.gui.GuiGameOver
 
-@ModuleInfo(name = "AutoRespawn", description = "Automatically respawns you after dying.", category = ModuleCategory.PLAYER)
+@ModuleInfo(name = "AutoRespawn", spacedName = "Auto Respawn", description = "Automatically respawns you after dying.", category = ModuleCategory.PLAYER)
 class AutoRespawn : Module() {
 
     private val instantValue = BoolValue("Instant", true)

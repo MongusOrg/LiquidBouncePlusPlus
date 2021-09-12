@@ -15,7 +15,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.minecraft.network.play.server.S08PacketPlayerPosLook
 
-@ModuleInfo(name = "AutoDisable", description = "Automatically disable modules for you on flag or world respawn.", category = ModuleCategory.MISC, array = false)
+@ModuleInfo(name = "AutoDisable", spacedName = "Auto Disable", description = "Automatically disable modules for you on flag or world respawn.", category = ModuleCategory.MISC, array = false)
 class AutoDisable : Module() {
     @EventTarget
     fun onPacket(event: PacketEvent) {

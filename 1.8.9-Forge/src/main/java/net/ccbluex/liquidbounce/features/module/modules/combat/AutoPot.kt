@@ -32,7 +32,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.*
 
-@ModuleInfo(name = "AutoPot", category = ModuleCategory.COMBAT, description = "Automatically throw pots for you.")
+@ModuleInfo(name = "AutoPot", spacedName = "Auto Pot", category = ModuleCategory.COMBAT, description = "Automatically throw pots for you.")
 class AutoPot : Module() {
     private val healthValue = FloatValue("Health", 15F, 1F, 20F)
     private val delayValue = IntegerValue("Delay", 500, 500, 1000)

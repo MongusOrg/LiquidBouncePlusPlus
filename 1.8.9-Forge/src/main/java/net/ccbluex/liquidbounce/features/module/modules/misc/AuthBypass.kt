@@ -31,7 +31,7 @@ import java.util.*
  * @author liulihaocai
  * FILHO DA PUTA CLIENT SKIDDED 2012 BYEPASS?!??!
  */
-@ModuleInfo(name = "AuthBypass", description = "Bypass auth when join server.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "AuthBypass", spacedName = "Auth Bypass", description = "Bypass auth when join server.", category = ModuleCategory.MISC)
 class AuthBypass : Module(){
     private val delayValue=IntegerValue("Delay",1500,100,5000)
 

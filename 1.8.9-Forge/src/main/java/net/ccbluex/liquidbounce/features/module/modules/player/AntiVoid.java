@@ -34,7 +34,7 @@ import java.util.LinkedList;
 
 import static org.lwjgl.opengl.GL11.*;
 
-@ModuleInfo(name = "AntiVoid", description = "Prevents you from falling into the void.", category = ModuleCategory.PLAYER)
+@ModuleInfo(name = "AntiVoid", spacedName = "Anti Void", description = "Prevents you from falling into the void.", category = ModuleCategory.PLAYER)
 public class AntiVoid extends Module {
 
     public final ListValue voidDetectionAlgorithm = new ListValue("Detect-Method", new String[]{"Collision", "Predict"}, "Collision");

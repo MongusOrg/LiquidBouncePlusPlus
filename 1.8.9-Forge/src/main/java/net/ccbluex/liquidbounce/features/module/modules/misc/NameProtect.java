@@ -18,7 +18,7 @@ import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.TextValue;
 import net.minecraft.client.network.NetworkPlayerInfo;
 
-@ModuleInfo(name = "NameProtect", description = "Changes playernames clientside.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "NameProtect", spacedName = "Name Protect", description = "Changes playernames clientside.", category = ModuleCategory.MISC)
 public class NameProtect extends Module {
 
     private final TextValue fakeNameValue = new TextValue("FakeName", "&cMe");

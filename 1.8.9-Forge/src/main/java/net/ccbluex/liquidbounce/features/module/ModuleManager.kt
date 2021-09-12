@@ -148,7 +148,9 @@ class ModuleManager : Listenable {
                 BanChecker::class.java,
                 TargetMark::class.java,
                 AntiFireBall::class.java,
-                KeepSprint::class.java
+                KeepSprint::class.java,
+                ItemTeleport::class.java,
+                Teleport::class.java
         )
 
         registerModule(Fucker)

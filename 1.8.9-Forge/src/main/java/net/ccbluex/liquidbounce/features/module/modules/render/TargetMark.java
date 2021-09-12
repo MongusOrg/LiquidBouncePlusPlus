@@ -27,7 +27,7 @@ import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
 import java.awt.Color;
 
-@ModuleInfo(name = "TargetMark", description = "Display your KillAura's target in 3D.", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "TargetMark", spacedName = "Target Mark", description = "Display your KillAura's target in 3D.", category = ModuleCategory.RENDER)
 public class TargetMark extends Module {
 
     public final ListValue modeValue = new ListValue("Mode", new String[]{"Default", "Box", "Jello"}, "Default");

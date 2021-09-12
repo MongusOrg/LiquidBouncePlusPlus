@@ -24,7 +24,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 
 import java.awt.*;
 
-@ModuleInfo(name = "ItemESP", description = "Allows you to see items through walls.", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "ItemESP", spacedName = "Item ESP", description = "Allows you to see items through walls.", category = ModuleCategory.RENDER)
 public class ItemESP extends Module {
     private final ListValue modeValue = new ListValue("Mode", new String[]{"Box", "ShaderOutline"}, "Box");
     private final IntegerValue colorRedValue = new IntegerValue("R", 0, 0, 255);

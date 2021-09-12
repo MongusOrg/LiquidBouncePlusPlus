@@ -14,7 +14,7 @@ import net.ccbluex.liquidbounce.utils.block.BlockUtils;
 import net.ccbluex.liquidbounce.value.FloatValue;
 import net.minecraft.block.BlockLiquid;
 
-@ModuleInfo(name = "WaterSpeed", description = "Allows you to swim faster.", category = ModuleCategory.MOVEMENT)
+@ModuleInfo(name = "WaterSpeed", spacedName = "Water Speed", description = "Allows you to swim faster.", category = ModuleCategory.MOVEMENT)
 public class WaterSpeed extends Module {
 
     private final FloatValue speedValue = new FloatValue("Speed", 1.2F, 1.1F, 1.5F);

@@ -21,7 +21,7 @@ import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.TextValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 
-@ModuleInfo(name = "AutoLogin", description = "Automatically login into some servers for you.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "AutoLogin", spacedName = "Auto Login", description = "Automatically login into some servers for you.", category = ModuleCategory.MISC)
 class AutoLogin : Module() {
 
 	private val password = TextValue("Password", "example@01")
