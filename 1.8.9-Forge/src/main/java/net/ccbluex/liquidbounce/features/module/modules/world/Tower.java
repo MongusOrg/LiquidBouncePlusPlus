@@ -123,11 +123,13 @@ public class Tower extends Module {
 
     // Render thingy
     private float progress = 0;
+    private long lastMS = 0L;
 
     @Override
     public void onEnable() {
         if (mc.thePlayer == null) return;
         slot = mc.thePlayer.inventory.currentItem;
+        lastMS = System.currentTimeMillis();
     }
 
     @Override
@@ -425,7 +427,7 @@ public class Tower extends Module {
      */
     @EventTarget
     public void onRender2D(final Render2DEvent event) {
-        progress += 0.25F;
+        progress = (float) (System.currentTimeMillis() - lastMS) / 100F;
         if (progress >= 1) progress = 1;
 
         if (LiquidBounce.moduleManager.getModule(Scaffold.class).getState()) return;

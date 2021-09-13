@@ -30,7 +30,7 @@ import net.minecraft.network.play.client.C16PacketClientStatus
 
 
 @ModuleInfo(name = "InvCleaner", spacedName = "Inv Cleaner", description = "Automatically throws away useless items.", category = ModuleCategory.PLAYER)
-class InventoryCleaner : Module() {
+class InvCleaner : Module() {
 
     /**
      * OPTIONS
@@ -175,7 +175,7 @@ class InventoryCleaner : Module() {
                     item is ItemPotion || item is ItemEnderPearl || item is ItemEnchantedBook || item is ItemBucket || itemStack.unlocalizedName == "item.stick" || 
                     ignoreVehiclesValue.get() && (item is ItemBoat || item is ItemMinecart)
         } catch (ex: Exception) {
-            ClientUtils.getLogger().error("(InventoryCleaner) Failed to check item: ${itemStack.unlocalizedName}.", ex)
+            ClientUtils.getLogger().error("(InvCleaner) Failed to check item: ${itemStack.unlocalizedName}.", ex)
 
             true
         }

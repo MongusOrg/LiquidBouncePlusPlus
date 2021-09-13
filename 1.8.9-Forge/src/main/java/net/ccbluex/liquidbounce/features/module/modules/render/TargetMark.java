@@ -18,10 +18,10 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
-import net.ccbluex.liquidbounce.utils.timer.TickTimer;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.*;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.AxisAlignedBB;
@@ -54,7 +54,8 @@ public class TargetMark extends Module {
 
 	private KillAura aura;
 
-	private TickTimer renderTimer = new TickTimer();
+	private long lastMS = System.currentTimeMillis();
+	private long lastDeltaMS = 0L;
 
     @Override
     public void onInitialize() {
@@ -63,24 +64,26 @@ public class TargetMark extends Module {
 
 	@EventTarget
 	public void onMotion(MotionEvent event) {
-		if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.025F : -0.025F), 0F, .75F);
-
-		    if (al > 0F) {
-				renderTimer.update();
-			    progress = (direction > 0 ? renderTimer.tick : 2500D - renderTimer.tick) / 2500.0D;
-				if (renderTimer.hasTimePassed(2500)) {
-					renderTimer.reset();
-					direction = -direction;
-				}
-		    }
-		}
+		if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi"))
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F), 0F, .75F);
 	}
 	
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
         if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
 		    double lastY = yPos;
+
+			if (al > 0F) {
+				if (System.currentTimeMillis() - lastMS >= 1000L) {
+					direction = -direction;
+					lastMS = System.currentTimeMillis();
+				}
+				long weird = (direction > 0 ? System.currentTimeMillis() - lastMS : 1000L - (System.currentTimeMillis() - lastMS));
+				progress = (double)weird / 1000D;
+				lastDeltaMS = System.currentTimeMillis() - lastMS;
+			} else { // keep the progress
+				lastMS = System.currentTimeMillis() - lastDeltaMS;
+			}
 
 		    if (aura.getTarget() != null) {
 			    entity = aura.getTarget();
@@ -97,7 +100,7 @@ public class TargetMark extends Module {
 
 	        yPos = easeInOutQuart(progress) * height;
 
-	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 3.75F;
+	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 3.5F;
     
 	        if (al <= 0 && entity != null) {
                 entity = null;
@@ -110,6 +113,7 @@ public class TargetMark extends Module {
             float b = colour.getBlue() / 255.0F;
 
 		    pre3D();
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		    //post circles
 		    GL11.glLineWidth(1F);
 		    GL11.glShadeModel(7425);
@@ -122,16 +126,16 @@ public class TargetMark extends Module {
 			    if (direction > 0) {
 				    GL11.glColor4f(r, g, b, 0);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * 0.35F);
+				    GL11.glColor4f(r, g, b, al * 0.4F);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 				    GL11.glColor4f(r, g, b, 0);
     				GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 			    } else {
-				    GL11.glColor4f(r, g, b, al * 0.35F);
+				    GL11.glColor4f(r, g, b, al * 0.4F);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 				    GL11.glColor4f(r, g, b, 0);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * 0.35F);
+				    GL11.glColor4f(r, g, b, al * 0.4F);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
     			}
 		    }

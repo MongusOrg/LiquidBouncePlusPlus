@@ -103,7 +103,7 @@ class ModuleManager : Listenable {
                 Animations::class.java,
                 ReverseStep::class.java,
                 TNTBlock::class.java,
-                InventoryCleaner::class.java,
+                InvCleaner::class.java,
                 TrueSight::class.java,
                 AntiBlind::class.java,
                 Breadcrumbs::class.java,

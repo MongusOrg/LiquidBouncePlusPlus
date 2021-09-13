@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.*;
+import net.minecraft.init.Items;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -345,12 +346,18 @@ public abstract class MixinItemRenderer {
         if (this.itemToRender != null) {
             final KillAura killAura = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
 
+            boolean canBlockEverything = LiquidBounce.moduleManager.getModule(Animations.class).getState() && Animations.blockEverything.get() && killAura.getTarget() != null 
+                            && (itemToRender.getItem() instanceof ItemBucketMilk || itemToRender.getItem() instanceof ItemFood 
+                                || itemToRender.getItem() instanceof ItemPotion || itemToRender.getItem().equals(Items.stick));
+
             if (this.itemToRender.getItem() instanceof net.minecraft.item.ItemMap) {
                 this.renderItemMap(abstractclientplayer, f2, f, f1);
-            } else if (abstractclientplayer.getItemInUseCount() > 0 || (itemToRender.getItem() instanceof ItemSword && killAura.getBlockingStatus()) ||
-                    (itemToRender.getItem() instanceof ItemSword && LiquidBounce.moduleManager.getModule(Animations.class).getState() && Animations.fakeBlock.get() && killAura.getTarget() != null)) {
+            } else if (abstractclientplayer.getItemInUseCount() > 0 
+                        || (itemToRender.getItem() instanceof ItemSword && killAura.getBlockingStatus())
+                        || (itemToRender.getItem() instanceof ItemSword && LiquidBounce.moduleManager.getModule(Animations.class).getState() 
+                            && Animations.fakeBlock.get() && killAura.getTarget() != null) || canBlockEverything) {
 
-                EnumAction enumaction = killAura.getBlockingStatus() ? EnumAction.BLOCK : this.itemToRender.getItemUseAction();
+                EnumAction enumaction = (killAura.getBlockingStatus() || canBlockEverything) ? EnumAction.BLOCK : this.itemToRender.getItemUseAction();
 
                 switch (enumaction) {
                     case NONE:

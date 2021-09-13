@@ -60,5 +60,10 @@ public class Animations extends Module {
     //some stuff i cannot add in actual modules
     public static final FloatValue bobbing = new FloatValue("Bobbing", 0.3f, 0.3f, 10F);
 
+    //wtf i just block a block!
+    public static final BoolValue blockEverything = new BoolValue("BlockEverything", false);
+
+    //gui animations (yet we injected the translation/scaling using a very weird method, the code is no similar to what fdp has)
+    public static final ListValue guiAnimations = new ListValue("Container-Animation", new String[]{"None", "Zoom", "VSlide", "HSlide", "HVSlide"}, "None");
 
 }

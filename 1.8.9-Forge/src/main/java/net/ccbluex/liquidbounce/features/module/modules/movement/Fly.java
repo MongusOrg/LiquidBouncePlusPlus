@@ -214,7 +214,7 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
 
-        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus")) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
+        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus") && !mode.equalsIgnoreCase("Jump")) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
             mc.thePlayer.motionZ = 0;
@@ -240,6 +240,8 @@ public class Fly extends Module {
         final float vanillaSpeed = vanillaSpeedValue.get();
 
         mc.thePlayer.noClip = false;
+        if (modeValue.get().equalsIgnoreCase("aac5-vanilla") && aac5NoClipValue.get())
+            mc.thePlayer.noClip = true;
 
         switch (modeValue.get().toLowerCase()) {
             case "motion":
@@ -278,7 +280,6 @@ public class Fly extends Module {
                 if (mc.thePlayer.hurtTime <= 0) break;
             case "derp":
             case "aac5-vanilla":
-                if (aac5NoClipValue.get()) mc.thePlayer.noClip = true;
             case "bugspartan":
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionY = 0;
@@ -474,7 +475,7 @@ public class Fly extends Module {
                     pitch = packet.pitch;
                 }
                 switch (aac5Packet.get()) {
-                    case "Original": {
+                    case "Original":
                         if (aac5UseC04Packet.get()) {
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, 1e+159, packet.z, true));
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
@@ -482,8 +483,8 @@ public class Fly extends Module {
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, 1e+159, packet.z, yaw, pitch, true));
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
                         }
-                    }
-                    case "Rise": {
+                        break;
+                    case "Rise":
                         if (aac5UseC04Packet.get()) {
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, -1e+159, packet.z+10, true));
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
@@ -491,7 +492,7 @@ public class Fly extends Module {
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, -1e+159, packet.z+10, yaw, pitch, true));
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
                         }
-                    }
+                        break;
                 }
                 
             }
@@ -502,15 +503,15 @@ public class Fly extends Module {
     @EventTarget
     public void onMove(final MoveEvent event) {
         switch(modeValue.get().toLowerCase()) {
-            case "pearl": {
+            case "pearl":
                 if (pearlState != 2 && pearlState != -1) {
                     event.cancelEvent();
                 }
-            }
-            case "verus": {
+                break;
+            case "verus": 
                 if (!verusDmged)
                     event.cancelEvent();
-            }
+                break;
         }
     }
 

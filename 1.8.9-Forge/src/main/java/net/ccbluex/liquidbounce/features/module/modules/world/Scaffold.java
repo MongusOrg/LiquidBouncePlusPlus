@@ -199,6 +199,7 @@ public class Scaffold extends Module {
 
     // Render thingy
     private float progress = 0;
+    private long lastMS = 0L;
 
     /**
      * Enable module
@@ -218,6 +219,7 @@ public class Scaffold extends Module {
         }
 
         faceBlock = false;
+        lastMS = System.currentTimeMillis();
     }
 
     /**
@@ -634,7 +636,7 @@ public class Scaffold extends Module {
      */
     @EventTarget
     public void onRender2D(final Render2DEvent event) {
-        progress += 0.25F;
+        progress = (float) (System.currentTimeMillis() - lastMS) / 100F;
         if (progress >= 1) progress = 1;
 
         String counterMode = counterDisplayValue.get();

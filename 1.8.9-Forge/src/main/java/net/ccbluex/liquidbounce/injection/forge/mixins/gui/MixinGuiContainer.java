@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
 import net.ccbluex.liquidbounce.features.module.modules.world.ChestStealer;
+import net.ccbluex.liquidbounce.utils.render.EaseUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiButton;
@@ -39,6 +40,10 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
     private GuiButton stealButton;
 
+    private float progress = 0F;
+
+    private long lastMS = 0L;
+
     @Inject(method = "initGui", at = @At("RETURN"), cancellable = true)
     public void injectInitGui(CallbackInfo callbackInfo){
         GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
@@ -53,6 +58,8 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                 buttonList.add(stealButton = new GuiButton(1234123, this.width / 2 - 100, this.guiTop - 55, 200, 20, "Steal this chest"));
             }
         }
+        lastMS = System.currentTimeMillis();
+        progress = 0F;
     }
 
     @Override
@@ -72,6 +79,29 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
     @Inject(method = "drawScreen", at = @At("HEAD"), cancellable = true)
     private void drawScreenHead(CallbackInfo callbackInfo){
+        if (progress >= 1F) progress = 1F;
+        else progress = (float)(System.currentTimeMillis() - lastMS) / 750F;
+
+        double trueAnim = EaseUtils.easeOutQuart(progress);
+        if (LiquidBounce.moduleManager.getModule(Animations.class).getState()) {
+            GL11.glPushMatrix();
+            switch (Animations.guiAnimations.get()) {
+                case "Zoom":
+                    GL11.glTranslated((1 - trueAnim) * (width / 2D), (1 - trueAnim) * (height / 2D), 0D);
+                    GL11.glScaled(trueAnim, trueAnim, trueAnim);
+                    break;
+                case "HSlide":
+                    GL11.glTranslated((1 - trueAnim) * -width, 0D, 0D);
+                    break;
+                case "VSlide":
+                    GL11.glTranslated(0D, (1 - trueAnim) * -height, 0D);
+                    break;
+                case "HVSlide":
+                    GL11.glTranslated((1 - trueAnim) * -width, (1 - trueAnim) * -height, 0D);
+                    break;
+            }
+        }
+        
         ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
         try {
             Minecraft mc = Minecraft.getMinecraft();
@@ -113,5 +143,11 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Inject(method = "drawScreen", at = @At("RETURN"), cancellable = true) 
+    public void drawScreenReturn(CallbackInfo callbackInfo) {
+        if (LiquidBounce.moduleManager.getModule(Animations.class).getState())
+            GL11.glPopMatrix();
     }
 }
