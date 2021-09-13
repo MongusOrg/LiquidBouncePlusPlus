@@ -9,6 +9,7 @@ package net.ccbluex.liquidbounce.features.module.modules.render;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EventTarget;
+import net.ccbluex.liquidbounce.event.MotionEvent;
 import net.ccbluex.liquidbounce.event.Render3DEvent;
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
@@ -17,6 +18,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
+import net.ccbluex.liquidbounce.utils.timer.TickTimer;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.*;
@@ -52,22 +54,33 @@ public class TargetMark extends Module {
 
 	private KillAura aura;
 
+	private TickTimer renderTimer = new TickTimer();
+
     @Override
     public void onInitialize() {
         aura = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
     }
+
+	@EventTarget
+	public void onMotion(MotionEvent event) {
+		if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.025F : -0.025F), 0F, .75F);
+
+		    if (al > 0F) {
+				renderTimer.update();
+			    progress = (direction > 0 ? renderTimer.tick : 2500D - renderTimer.tick) / 2500.0D;
+				if (renderTimer.hasTimePassed(2500)) {
+					renderTimer.reset();
+					direction = -direction;
+				}
+		    }
+		}
+	}
 	
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
         if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F) * (1.25F - event.getPartialTicks()), 0F, .75F);
-
 		    double lastY = yPos;
-
-		    if (al > 0F) {
-			    progress = AnimationUtils.changer(progress, 0.035F * (1.25F - event.getPartialTicks()) * direction, 0F, 1F);
-    			if (progress == 0 || progress == 1) direction = -direction;
-		    }
 
 		    if (aura.getTarget() != null) {
 			    entity = aura.getTarget();
@@ -84,7 +97,7 @@ public class TargetMark extends Module {
 
 	        yPos = easeInOutQuart(progress) * height;
 
-	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 5F;
+	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 3.75F;
     
 	        if (al <= 0 && entity != null) {
                 entity = null;

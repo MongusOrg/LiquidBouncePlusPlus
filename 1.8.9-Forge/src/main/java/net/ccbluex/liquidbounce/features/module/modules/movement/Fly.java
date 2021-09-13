@@ -163,7 +163,7 @@ public class Fly extends Module {
                     mc.thePlayer.motionY = 0.2D;
                 MovementUtils.strafe();
                 break;
-            case "verus": {
+            case "verus":
                 if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.4, mc.thePlayer.posZ, false));
@@ -185,8 +185,8 @@ public class Fly extends Module {
                     verusDmged = true;
                 }
                 if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
-            }
-            case "bugspartan": {
+                break;
+            case "bugspartan":
                 for(int i = 0; i < 65; ++i) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
@@ -195,7 +195,7 @@ public class Fly extends Module {
                 mc.thePlayer.motionX *= 0.1D;
                 mc.thePlayer.motionZ *= 0.1D;
                 mc.thePlayer.swingItem();
-            }
+                break;
         }
 
         startY = mc.thePlayer.posY;

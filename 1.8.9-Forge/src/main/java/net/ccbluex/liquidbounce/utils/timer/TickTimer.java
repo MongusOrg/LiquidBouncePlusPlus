@@ -7,7 +7,7 @@ package net.ccbluex.liquidbounce.utils.timer;
 
 public final class TickTimer {
 
-    private int tick;
+    public int tick;
 
     public void update() {
         tick++;
