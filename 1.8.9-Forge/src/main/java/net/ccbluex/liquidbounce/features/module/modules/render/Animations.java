@@ -63,7 +63,7 @@ public class Animations extends Module {
     //wtf i just block a block!
     public static final BoolValue blockEverything = new BoolValue("BlockEverything", false);
 
-    //gui animations (yet we injected the translation/scaling using a very weird method, the code is no similar to what fdp has)
+    //gui animations
     public static final ListValue guiAnimations = new ListValue("Container-Animation", new String[]{"None", "Zoom", "VSlide", "HSlide", "HVSlide"}, "None");
 
 }

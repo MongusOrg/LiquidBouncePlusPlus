@@ -83,9 +83,11 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         else progress = (float)(System.currentTimeMillis() - lastMS) / 750F;
 
         double trueAnim = EaseUtils.easeOutQuart(progress);
-        if (LiquidBounce.moduleManager.getModule(Animations.class).getState()) {
+
+        final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
+        if (animMod.getState()) {
             GL11.glPushMatrix();
-            switch (Animations.guiAnimations.get()) {
+            switch (animMod.guiAnimations.get()) {
                 case "Zoom":
                     GL11.glTranslated((1 - trueAnim) * (width / 2D), (1 - trueAnim) * (height / 2D), 0D);
                     GL11.glScaled(trueAnim, trueAnim, trueAnim);

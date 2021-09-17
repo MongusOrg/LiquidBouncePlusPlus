@@ -57,7 +57,7 @@ public class Fly extends Module {
             // Rewinside
             "Rewinside",
 
-            // Other anticheats
+            // Verus
             "Verus",
 
             // Spartan
@@ -82,7 +82,7 @@ public class Fly extends Module {
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit"}, "None");
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit", "One-Hit2", "Test"}, "None");
     private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
     private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
     private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
@@ -91,6 +91,9 @@ public class Fly extends Module {
     private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
     private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false);
     private final BoolValue verusBlink = new BoolValue("Verus-Blink", true);
+    private final BoolValue verusLongjump = new BoolValue("Verus-Longjump", false);
+    private final FloatValue verusLongJumpHeight = new FloatValue("Verus-LongjumpHeight", 1F, 0F, 5F);
+    private final BoolValue verusFakeJump = new BoolValue("Verus-FakeJumpPacket", true);
 
     // AAC
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
@@ -164,6 +167,9 @@ public class Fly extends Module {
                 MovementUtils.strafe();
                 break;
             case "verus":
+                if (verusFakeJump.get() && mc.thePlayer.onGround) {
+                    mc.thePlayer.jump();
+                }
                 if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.4, mc.thePlayer.posZ, false));
@@ -175,10 +181,24 @@ public class Fly extends Module {
                 } else if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
                         mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
+                    }
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit2")) {
+                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                        mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                        mc.thePlayer.motionY = -0.08;
+                    }
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("Test")) {
+                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.125, 0).expand(0, 0, 0)).isEmpty()) {
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.125, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 0.08, mc.thePlayer.posZ, false));
+                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                        mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                        mc.thePlayer.motionY = -0.08;
                     }
                 } else {
                     // set dmged = true since there's no damage method
@@ -293,9 +313,11 @@ public class Fly extends Module {
                 break;
             case "verus":
                 mc.thePlayer.capabilities.isFlying = false;
-                mc.thePlayer.motionX = mc.thePlayer.motionZ = mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                if (!verusLongjump.get()) mc.thePlayer.motionY = 0;
 
                 if (!verusDmged && mc.thePlayer.hurtTime > 0) {
+                    mc.thePlayer.motionY = verusLongJumpHeight.get();
                     verusDmged = true;
                     boostTicks = verusDmgTickValue.get();
                 }
@@ -444,7 +466,7 @@ public class Fly extends Module {
                 verusC03.add(packetPlayer);
                 event.cancelEvent();
 
-                if (verusC03.size() >= 8) {
+                if (verusC03.size() >= 3) {
                     for (C03PacketPlayer c03 : verusC03)
                         PacketUtils.sendPacketNoEvent(c03);
 

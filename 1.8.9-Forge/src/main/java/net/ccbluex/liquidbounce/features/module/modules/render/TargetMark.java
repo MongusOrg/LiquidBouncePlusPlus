@@ -38,6 +38,11 @@ public class TargetMark extends Module {
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
 	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
 	private final IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
+	private final FloatValue jelloAlphaValue = new FloatValue("JelloEndAlphaPercent", 0.4F, 0F, 1F);
+	private final FloatValue jelloWidthValue = new FloatValue("JelloCircleWidth", 3F, 0.01F, 5F);
+	private final FloatValue jelloGradientWidthValue = new FloatValue("JelloGradientWidth", 3F, 0.01F, 5F);
+	private final FloatValue jelloGradientHeightValue = new FloatValue("JelloGradientHeight", 3F, 1F, 8F);
+	private final FloatValue jelloPointSpaceValue = new FloatValue("JelloPointSpace", 0.1F, 0.05F, 0.5F);
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
@@ -65,7 +70,7 @@ public class TargetMark extends Module {
 	@EventTarget
 	public void onMotion(MotionEvent event) {
 		if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi"))
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.075F : -0.075F), 0F, .75F);
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.1F : -0.1F), 0F, colorAlphaValue.get() / 255.0F);
 	}
 	
 	@EventTarget
@@ -100,7 +105,7 @@ public class TargetMark extends Module {
 
 	        yPos = easeInOutQuart(progress) * height;
 
-	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * 3.5F;
+	        double deltaY = (direction > 0 ? yPos - lastY : lastY - yPos) * -direction * jelloGradientHeightValue.get();
     
 	        if (al <= 0 && entity != null) {
                 entity = null;
@@ -115,27 +120,27 @@ public class TargetMark extends Module {
 		    pre3D();
 			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		    //post circles
-		    GL11.glLineWidth(1F);
+		    GL11.glLineWidth(jelloGradientWidthValue.get());
 		    GL11.glShadeModel(7425);
 		    GL11.glBegin(GL11.GL_LINE_LOOP);
 
-		    for (float i = 0; i <= 360; i += 0.1F) {
+		    for (float i = 0; i <= 360; i += jelloPointSpaceValue.get()) {
 			    double posX2 = posX - Math.sin(i * Math.PI / 180) * radius;
 			    double posZ2 = posZ + Math.cos(i * Math.PI / 180) * radius;
 
 			    if (direction > 0) {
 				    GL11.glColor4f(r, g, b, 0);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * 0.4F);
+				    GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 				    GL11.glColor4f(r, g, b, 0);
     				GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 			    } else {
-				    GL11.glColor4f(r, g, b, al * 0.4F);
+				    GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
 				    GL11.glColor4f(r, g, b, 0);
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * 0.4F);
+				    GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
 				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
     			}
 		    }
@@ -143,7 +148,7 @@ public class TargetMark extends Module {
 		    GL11.glEnd();
 		    GL11.glShadeModel(7424);
 
-		    drawCircle(posX, posY + yPos, posZ, 2F, radius, r, g, b, al);
+		    drawCircle(posX, posY + yPos, posZ, jelloWidthValue.get(), radius, r, g, b, al, jelloPointSpaceValue.get());
 
 		    post3D();
         } else if (modeValue.get().equalsIgnoreCase("default")) {
@@ -217,12 +222,12 @@ public class TargetMark extends Module {
        GL11.glColor4f(1, 1, 1, 1);
    }
 	
-	private void drawCircle(double x, double y, double z, float width, double radius, float red, float green, float blue, float alp) {
+	private void drawCircle(double x, double y, double z, float width, double radius, float red, float green, float blue, float alp, double pSpace) {
 		GL11.glLineWidth(width);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 		GL11.glColor4f(red, green, blue, alp);
 
-		for (double i = 0; i <= 360; i += 0.1) {
+		for (double i = 0; i <= 360; i += pSpace) {
 			double posX = x - Math.sin(i * Math.PI / 180) * radius;
 			double posZ = z + Math.cos(i * Math.PI / 180) * radius;
 			GL11.glVertex3d(posX - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, posZ - mc.getRenderManager().viewerPosZ);
