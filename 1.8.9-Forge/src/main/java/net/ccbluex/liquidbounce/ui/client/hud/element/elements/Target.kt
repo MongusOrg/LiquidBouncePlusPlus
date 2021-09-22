@@ -28,6 +28,7 @@ import net.ccbluex.liquidbounce.value.ListValue
 import net.ccbluex.liquidbounce.value.FontValue
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.GuiChat
+import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
@@ -52,8 +53,9 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Simplistic", "Exhibition"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
+    private val tSlideAnim = BoolValue("TSlide-Animation", true)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
@@ -86,29 +88,59 @@ class Target : Element() {
 
     private var gotDamaged: Boolean = false
 
+    private var progress: Float = 0F
+
+    private var target: EntityPlayer? = null
+
     override fun drawElement(): Border {
-        val target = if ((mc.currentScreen is GuiChat && showUrselfWhenChatOpen.get()) || mc.currentScreen is GuiHudDesigner) mc.thePlayer else (LiquidBounce.moduleManager[KillAura::class.java] as KillAura).target
+        val kaTarget = (LiquidBounce.moduleManager[KillAura::class.java] as KillAura).target
+
+        val actualTarget = if ((mc.currentScreen is GuiChat && showUrselfWhenChatOpen.get()) || mc.currentScreen is GuiHudDesigner) mc.thePlayer 
+                            else if (kaTarget is EntityPlayer) kaTarget else null
+
         val barColor = when (colorModeValue.get()) {
             "Rainbow" -> Color(RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), 0))
             "Custom" -> Color(redValue.get(), greenValue.get(), blueValue.get())
             "Sky" -> RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get())
             "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), 0, 100)
-            "Health" -> if (target != null && target is EntityPlayer) BlendUtils.getHealthColor(target.health, target.maxHealth) else Color.green
+            "Health" -> if (actualTarget != null) BlendUtils.getHealthColor(actualTarget.health, actualTarget.maxHealth) else Color.green
             "Mixer" -> ColorMixer.getMixedColor(0, mixerSecondsValue.get())
             else -> ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get())!!
         }
         val bgColor = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), backgroundColorAlphaValue.get())
         val borderColor = Color(borderColorRedValue.get(), borderColorGreenValue.get(), borderColorBlueValue.get(), borderColorAlphaValue.get())
 
-        if (target is EntityPlayer) {
+        progress += 0.0085F * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F
+
+        if (actualTarget == null && tSlideAnim.get()) {
+            if (progress >= 1F && target != null) 
+                target = null
+        } else 
+            target = actualTarget
+
+        if (progress < 0F)
+            progress = 0F
+        else if (progress > 1F)
+            progress = 1F
+
+        val animProgress = EaseUtils.easeOutQuart(progress.toDouble())
+        val tHeight = getTBorder().y2 - getTBorder().y
+
+        if (tSlideAnim.get()) {
+            GL11.glPushMatrix()
+            GL11.glTranslated(0.0, (-renderY - tHeight.toDouble()) * animProgress, 0.0)
+        }
+
+        if (target != null) {
+            val convertedTarget = target!! as EntityPlayer
             when (styleValue.get()) {
                 "LiquidBounce" -> {
-                    if (target != lastTarget || easingHealth < 0 || easingHealth > target.maxHealth ||
-                        abs(easingHealth - target.health) < 0.01) {
-                        easingHealth = target.health
+                    if (convertedTarget != lastTarget || easingHealth < 0 || easingHealth > convertedTarget.maxHealth ||
+                        abs(easingHealth - convertedTarget.health) < 0.01) {
+                        easingHealth = convertedTarget.health
                     }
 
-                    val width = (38 + Fonts.font40.getStringWidth(target.name))
+                    val width = (38 + Fonts.font40.getStringWidth(convertedTarget.name))
                             .coerceAtLeast(118)
                             .toFloat()
 
@@ -116,26 +148,26 @@ class Target : Element() {
                     RenderUtils.drawBorderedRect(0F, 0F, width, 36F, 3F, borderColor.rgb, bgColor.rgb)
 
                     // Damage animation
-                    if (easingHealth > target.health)
-                        RenderUtils.drawRect(0F, 34F, (easingHealth / target.maxHealth) * width,
+                    if (easingHealth > convertedTarget.health)
+                        RenderUtils.drawRect(0F, 34F, (easingHealth / convertedTarget.maxHealth) * width,
                                 36F, Color(252, 185, 65).rgb)
 
                     // Health bar
-                    RenderUtils.drawRect(0F, 34F, (target.health / target.maxHealth) * width,
+                    RenderUtils.drawRect(0F, 34F, (convertedTarget.health / convertedTarget.maxHealth) * width,
                             36F, barColor.rgb)
 
                     // Heal animation
-                    if (easingHealth < target.health)
-                        RenderUtils.drawRect((easingHealth / target.maxHealth) * width, 34F,
-                                (target.health / target.maxHealth) * width, 36F, Color(44, 201, 144).rgb)
+                    if (easingHealth < convertedTarget.health)
+                        RenderUtils.drawRect((easingHealth / convertedTarget.maxHealth) * width, 34F,
+                                (convertedTarget.health / convertedTarget.maxHealth) * width, 36F, Color(44, 201, 144).rgb)
 
-                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
-                    Fonts.font40.drawString(target.name, 36, 3, 0xffffff)
-                    Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(target))}", 36, 15, 0xffffff)
+                    Fonts.font40.drawString(convertedTarget.name, 36, 3, 0xffffff)
+                    Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}", 36, 15, 0xffffff)
 
                     // Draw info
-                    val playerInfo = mc.netHandler.getPlayerInfo(target.uniqueID)
+                    val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
                     if (playerInfo != null) {
                         Fonts.font35.drawString("Ping: ${playerInfo.responseTime.coerceAtLeast(0)}",
                                 36, 24, 0xffffff)
@@ -147,35 +179,35 @@ class Target : Element() {
                 }
 
                 "Flux" -> {
-                    val width = (26F + Fonts.fontSFUI35.getStringWidth(target.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(target.health)}")).toFloat() + 10F
+                    val width = (26F + Fonts.fontSFUI35.getStringWidth(convertedTarget.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(convertedTarget.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
                     //RenderUtils.drawBorder(1F, 1F, 26F, 26F, 1F, Color(115, 255, 115).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 26, 26)
-                    Fonts.fontSFUI35.drawString(target.name, 30F, 4F, 0xFFFFFF) // Draw target name
-                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(target.health)}", 30F, 15F, 0xFFFFFF) // Draw target health   
+                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 26, 26)
+                    Fonts.fontSFUI35.drawString(convertedTarget.name, 30F, 4F, 0xFFFFFF) // Draw convertedTarget name
+                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(convertedTarget.health)}", 30F, 15F, 0xFFFFFF) // Draw convertedTarget health   
 
                     // bar icon
                     Fonts.fontSFUI35.drawString("❤", 2F, 29F, -1)
-                    drawArmorIcon(2, 38, 7, 7)
+                    drawArmorIcon(2, 38, 6, 6)
 
-                    easingHealth += ((target.health - easingHealth) / Math.pow(2.0, 10.0 - 3.0)).toFloat() * RenderUtils.deltaTime.toFloat()
+                    easingHealth += ((convertedTarget.health - easingHealth) / Math.pow(2.0, 10.0 - 3.0)).toFloat() * RenderUtils.deltaTime.toFloat()
 
                     // bar bg
                     RenderUtils.drawRect(12F, 30F, 12F + width - 15F, 33F, Color(20, 20, 20, 255).rgb)
                     RenderUtils.drawRect(12F, 40F, 12F + width - 15F, 43F, Color(20, 20, 20, 255).rgb)
 
                     // Health bar
-                    if (easingHealth < 0 || easingHealth > target.maxHealth) {
-                        easingHealth = target.health.toFloat()
+                    if (easingHealth < 0 || easingHealth > convertedTarget.maxHealth) {
+                        easingHealth = convertedTarget.health.toFloat()
                     }
-                    if (easingHealth > target.health) {
-                        RenderUtils.drawRect(12F, 30F, 12F + (easingHealth / target.maxHealth) * (width - 15F), 33F, Color(231, 182, 0, 255).rgb)
+                    if (easingHealth > convertedTarget.health) {
+                        RenderUtils.drawRect(12F, 30F, 12F + (easingHealth / convertedTarget.maxHealth) * (width - 15F), 33F, Color(231, 182, 0, 255).rgb)
                     } // Damage animation
 
-                    RenderUtils.drawRect(12F, 30F, 12F + (target.health / target.maxHealth) * (width - 15F), 33F, Color(0, 224, 84, 255).rgb)
+                    RenderUtils.drawRect(12F, 30F, 12F + (convertedTarget.health / convertedTarget.maxHealth) * (width - 15F), 33F, Color(0, 224, 84, 255).rgb)
 
-                    if (target.getTotalArmorValue() != 0) {
-                        RenderUtils.drawRect(12F, 40F, 12F + (target.getTotalArmorValue() / 20F) * (width - 15F), 43F, Color(77, 128, 255, 255).rgb) // Draw armor bar
+                    if (convertedTarget.getTotalArmorValue() != 0) {
+                        RenderUtils.drawRect(12F, 40F, 12F + (convertedTarget.getTotalArmorValue() / 20F) * (width - 15F), 43F, Color(77, 128, 255, 255).rgb) // Draw armor bar
                     }
                 }
 
@@ -183,21 +215,21 @@ class Target : Element() {
                     val font = Fonts.minecraftFont
                     val fontHeight = font.FONT_HEIGHT
                     val mainColor = barColor
-                    val percent = target.health.toFloat()/target.maxHealth.toFloat() * 100F
-                    val nameLength = (font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(percent)}%")).toFloat() + 10F
-                    val barWidth = (target.health / target.maxHealth).coerceIn(0F, target.maxHealth.toFloat()) * (nameLength - 2F)
+                    val percent = convertedTarget.health.toFloat()/convertedTarget.maxHealth.toFloat() * 100F
+                    val nameLength = (font.getStringWidth(convertedTarget.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(percent)}%")).toFloat() + 10F
+                    val barWidth = (convertedTarget.health / convertedTarget.maxHealth).coerceIn(0F, convertedTarget.maxHealth.toFloat()) * (nameLength - 2F)
 
                     RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
                     RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 0, 0, 36, 36)
-                    font.drawStringWithShadow(target.name, 2F + 36F + 2F, 2F, -1)
+                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 0, 0, 36, 36)
+                    font.drawStringWithShadow(convertedTarget.name, 2F + 36F + 2F, 2F, -1)
                     RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
 
-                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
-                    val animateThingy = (easingHealth.coerceIn(target.health, target.maxHealth) / target.maxHealth) * (nameLength - 2F)
+                    val animateThingy = (easingHealth.coerceIn(convertedTarget.health, convertedTarget.maxHealth) / convertedTarget.maxHealth) * (nameLength - 2F)
 
-                    if (easingHealth > target.health)
+                    if (easingHealth > convertedTarget.health)
                         RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + animateThingy, 25F, mainColor.darker().rgb)
                     
                     RenderUtils.drawRect(2F + 36F, 15F, 2F + 36F + barWidth, 25F, mainColor.rgb)
@@ -208,24 +240,24 @@ class Target : Element() {
                 "Slowly" -> {
                     val font = Fonts.minecraftFont
 
-                    val length = 60.coerceAtLeast(font.getStringWidth(target.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(target.health)} ❤")).toFloat() + 10F
+                    val length = 60.coerceAtLeast(font.getStringWidth(convertedTarget.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(convertedTarget.health)} ❤")).toFloat() + 10F
                     RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 1, 1, 30, 30)
-                    font.drawStringWithShadow(target.name, 33F, 2F, -1)
-                    font.drawStringWithShadow("${decimalFormat2.format(target.health)} ❤", length + 32F - 1F - font.getStringWidth("${decimalFormat2.format(target.health)} ❤").toFloat(), 22F, barColor.rgb)
+                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 30, 30)
+                    font.drawStringWithShadow(convertedTarget.name, 33F, 2F, -1)
+                    font.drawStringWithShadow("${decimalFormat2.format(convertedTarget.health)} ❤", length + 32F - 1F - font.getStringWidth("${decimalFormat2.format(convertedTarget.health)} ❤").toFloat(), 22F, barColor.rgb)
 
-                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
-                    RenderUtils.drawRect(0F, 32F, (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, target.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
+                    RenderUtils.drawRect(0F, 32F, (easingHealth / convertedTarget.maxHealth.toFloat()).coerceIn(0F, convertedTarget.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
                 }
 
-                // without the new rise update i would never think of recreating this targethud lol
+                // without the new rise update i would never think of recreating this convertedTargethud lol
                 "Rise" -> {
                     val font = Fonts.fontSFUI40
-                    val name = "Name ${target.name}"
-                    val info = "Distance ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(target))} Hurt ${target.hurtTime}"
+                    val name = "Name ${convertedTarget.name}"
+                    val info = "Distance ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))} Hurt ${convertedTarget.hurtTime}"
 
-                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     val healthName = decimalFormat2.format(easingHealth).toString()
 
@@ -234,7 +266,7 @@ class Target : Element() {
                     RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
 
                     if (riseParticle.get()) {
-                        if (target.hurtTime > target.maxHurtTime / 2) {
+                        if (convertedTarget.hurtTime > convertedTarget.maxHurtTime / 2) {
                             if (!gotDamaged) {
                                 for (j in 0..8) 
                                     particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.4F, 1.0F) else 0F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(0.5F, 2.5F)))
@@ -258,31 +290,31 @@ class Target : Element() {
                             particleList.remove(p)
                     }
 
-                    val scaleHT = (target.hurtTime.toFloat() / target.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
-                    if (mc.netHandler.getPlayerInfo(target.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(target.uniqueID).locationSkin, 
+                    val scaleHT = (convertedTarget.hurtTime.toFloat() / convertedTarget.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
+                    if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 
                             5F + 15F * (scaleHT * 0.2F), 
                             5F + 15F * (scaleHT * 0.2F), 
                             1F - scaleHT * 0.2F, 
                             30, 30, 
                             1F, 0.4F + (1F - scaleHT) * 0.6F, 0.4F + (1F - scaleHT) * 0.6F)
 
-                    val maxHealthLength = font.getStringWidth(decimalFormat2.format(target.maxHealth).toString()).toFloat()
+                    val maxHealthLength = font.getStringWidth(decimalFormat2.format(convertedTarget.maxHealth).toString()).toFloat()
 
                     GlStateManager.resetColor()
                     font.drawString(name, 9F + 30F, 11F, -1)
                     font.drawString(info, 9F + 30F, 23F, -1)
 
-                    val barWidth = (length - 5F - maxHealthLength) * (easingHealth / target.maxHealth.toFloat()).coerceIn(0F, 1F)
+                    val barWidth = (length - 5F - maxHealthLength) * (easingHealth / convertedTarget.maxHealth.toFloat()).coerceIn(0F, 1F)
 
                     // no gradient: RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
 
                     when (colorModeValue.get().toLowerCase()) {
                         "custom" -> RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
-                        "health" -> RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, BlendUtils.getHealthColor(easingHealth, target.maxHealth).rgb) // da animation
+                        "health" -> RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
                         else -> { //perform the for-loop gradient trick.
                             GL11.glPushMatrix()
                             GL11.glEnable(3089)
-                            RenderUtils.makeScissorBox(5F + renderX.toFloat(), 40F + renderY.toFloat(), 5F + renderX.toFloat() + barWidth, 50F + renderY.toFloat())
+                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 40F * scale + renderY.toFloat(), 5F * scale + renderX.toFloat() + barWidth * scale, 50F * scale + renderY.toFloat())
                             for (i in 0..(gradientAmountValue.get()-1)) {
                                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
@@ -314,29 +346,9 @@ class Target : Element() {
                     font.drawString(healthName, 10F + barWidth, 41F, -1)
                 }
 
-                "Simplistic" -> {
-                    val width = Fonts.fontSFUI40.getStringWidth(target.name)
-                    RenderUtils.customRounded(0F, 0F, 3F, 16F, 2.5F, 0F, 0F, 2.5F, barColor.rgb)
-                    RenderUtils.customRounded(3F, 0F, width + 130F, 16F, 0F, 2.5F, 2.5F, 0F, bgColor.rgb)
-
-                    easingHealth += ((target.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
-                    val healthColor = BlendUtils.blendColors(floatArrayOf(0F, 0.5F, 1F), arrayOf<Color>(Color.red, Color.yellow, Color.green), (easingHealth / target.maxHealth).coerceIn(0F, 1F))
-
-                    val barWidth = (easingHealth / target.maxHealth).coerceIn(0F, 1F) * 100F
-
-                    GlStateManager.resetColor()
-                    Fonts.fontSFUI40.drawString(target.name, 10F, 4F, -1)
-                    
-                    RenderUtils.drawGradientSideways(20F + width, 7F, 20F + width + 50F, 9F, Color.red.rgb, Color.yellow.rgb)
-                    RenderUtils.drawGradientSideways(20F + width + 50F, 7F, 20F + width + 100F, 9F, Color.yellow.rgb, Color.green.rgb)
-
-                    RenderUtils.drawFilledCircle(20F + width + barWidth, 8F, 6F, ColorUtils.reAlpha(healthColor, 50))
-                    RenderUtils.drawFilledCircle(20F + width + barWidth, 8F, 5F, healthColor)
-                }
-
                 "Exhibition" -> {
                     val font = exhiFontValue.get()
-                    val minWidth = 140F.coerceAtLeast(45F + font.getStringWidth(target.name))
+                    val minWidth = 140F.coerceAtLeast(45F + font.getStringWidth(convertedTarget.name))
 
                     RenderUtils.drawExhiRect(0F, 0F, minWidth, 45F)
 
@@ -344,13 +356,13 @@ class Target : Element() {
                     RenderUtils.drawRect(3F, 3F, 42F, 42F, Color(19, 19, 19).rgb)
 
                     GL11.glColor4f(1f, 1f, 1f, 1f)
-                    RenderUtils.drawEntityOnScreen(22, 40, 15, target)
+                    RenderUtils.drawEntityOnScreen(22, 40, 15, convertedTarget)
 
-                    font.drawString(target.name, 46, 4, -1)
+                    font.drawString(convertedTarget.name, 46, 4, -1)
 
-                    val barLength = 60F * (target.health / target.maxHealth).coerceIn(0F, 1F)
-                    RenderUtils.drawRect(45F, 15F, 45F + 60F, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).darker().darker().darker().rgb)
-                    RenderUtils.drawRect(45F, 15F, 45F + barLength, 18F, BlendUtils.getHealthColor(target.health, target.maxHealth).rgb)
+                    val barLength = 60F * (convertedTarget.health / convertedTarget.maxHealth).coerceIn(0F, 1F)
+                    RenderUtils.drawRect(45F, 15F, 45F + 60F, 18F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).darker().darker().darker().rgb)
+                    RenderUtils.drawRect(45F, 15F, 45F + barLength, 18F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).rgb)
 
                     for (i in 0..9) {
                         RenderUtils.drawBorder(45F + i * 6F, 15F, 45F + (i + 1F) * 6F, 18F, 0.25F, Color.black.rgb)
@@ -359,7 +371,7 @@ class Target : Element() {
                     GL11.glPushMatrix()
                     GL11.glTranslatef(46F, 20F, 0F)
                     GL11.glScalef(0.5f, 0.5f, 0.5f)
-                    Fonts.minecraftFont.drawString("HP: ${target.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(target).toInt()}", 0, 0, -1)
+                    Fonts.minecraftFont.drawString("HP: ${convertedTarget.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(convertedTarget).toInt()}", 0, 0, -1)
                     GL11.glPopMatrix()
 
                     GlStateManager.resetColor()
@@ -374,7 +386,7 @@ class Target : Element() {
                     var y = 26
 
                     for (index in 3 downTo 0) {
-                        val stack = target.inventory.armorInventory[index] ?: continue
+                        val stack = convertedTarget.inventory.armorInventory[index] ?: continue
 
                         if (stack.getItem() == null)
                             continue
@@ -385,7 +397,7 @@ class Target : Element() {
                         x += 18
                     }
 
-                    val mainStack = target.heldItem
+                    val mainStack = convertedTarget.heldItem
                     if (mainStack != null && mainStack.getItem() != null) {
                         renderItem.renderItemIntoGUI(mainStack, x, y)
                         renderItem.renderItemOverlays(mc.fontRendererObj, mainStack, x, y)
@@ -398,6 +410,52 @@ class Target : Element() {
                     GlStateManager.disableCull()
                     GL11.glPopMatrix()
                 }
+
+                "LiquidBounce+" -> {
+                    if (convertedTarget != lastTarget || easingHealth < 0 || easingHealth > convertedTarget.maxHealth ||
+                        abs(easingHealth - convertedTarget.health) < 0.01) {
+                        easingHealth = convertedTarget.health
+                    }
+
+                    val width = (40 + Fonts.font40.getStringWidth(convertedTarget.name))
+                            .coerceAtLeast(120)
+                            .toFloat()
+
+                    // Draw rect box
+                    RenderUtils.drawBorderedRect(0F, 0F, width, 38F, 3F, borderColor.rgb, bgColor.rgb)
+
+                    // Damage animation
+                    if (easingHealth > convertedTarget.health)
+                        RenderUtils.drawRect(0F, 34F, (easingHealth / convertedTarget.maxHealth) * width,
+                                36F, Color(252, 185, 65).rgb)
+
+                    // Health bar
+                    RenderUtils.drawRect(0F, 36F, (convertedTarget.health / convertedTarget.maxHealth) * width,
+                            38F, barColor.rgb)
+
+                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+
+                    Fonts.font40.drawString(convertedTarget.name, 36, 3, 0xffffff)
+                    Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}", 36, 15, 0xffffff)
+
+                    // Draw info
+                    val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
+                    if (playerInfo != null) {
+                        Fonts.font35.drawString("Ping: ${playerInfo.responseTime.coerceAtLeast(0)}",
+                                36, 25, 0xffffff)
+
+                        // Draw head
+                        val locationSkin = playerInfo.locationSkin
+
+                        val scaleHT = (convertedTarget.hurtTime.toFloat() / convertedTarget.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
+                        drawHead(locationSkin, 
+                            2F + 15F * (scaleHT * 0.2F), 
+                            2F + 15F * (scaleHT * 0.2F), 
+                            1F - scaleHT * 0.2F, 
+                            30, 30, 
+                            1F, 0.4F + (1F - scaleHT) * 0.6F, 0.4F + (1F - scaleHT) * 0.6F)
+                    }
+                }
             }
         } else if (target == null) {
             easingHealth = 0F
@@ -405,17 +463,24 @@ class Target : Element() {
             particleList.clear()
         }
 
+        if (tSlideAnim.get())
+            GL11.glPopMatrix()
+            
+        GlStateManager.resetColor()
+
         lastTarget = target
-        return when (styleValue.get()) {
+        return getTBorder()
+    }
+
+    private fun getTBorder(): Border = when (styleValue.get()) {
             "LiquidBounce" -> Border(0F, 0F, 90F, 36F)
-            "Flux" -> Border(0F, 0F, 90F, 46F)
-            "Novoline" -> Border(-1F, -1F, 90F, 30F)
+            "Flux" -> Border(0F, -1F, 90F, 47F)
+            "Novoline" -> Border(-1F, -2F, 90F, 38F)
             "Slowly" -> Border(0F, 0F, 90F, 36F)
             "Rise" -> Border(0F, 0F, 90F, 55F)
-            "Exhibition" -> Border(0F, 0F, 140F, 45F)
-            else -> Border(0F, 0F, 120F, 16F)
+            "Exhibition" -> Border(0F, 3F, 140F, 48F)
+            else -> Border(0F, 0F, 120F, 38F)
         }
-    }
     
     private class Particle(var color: Color, var distX: Float, var distY: Float, var radius: Float) {
         var alpha = 1F

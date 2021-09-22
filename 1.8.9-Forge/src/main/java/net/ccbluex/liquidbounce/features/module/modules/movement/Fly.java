@@ -82,7 +82,7 @@ public class Fly extends Module {
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit", "One-Hit2", "Test"}, "None");
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit", "One-Hit2", "Test", "Packet-Based"}, "None");
     private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
     private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
     private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
@@ -125,6 +125,11 @@ public class Fly extends Module {
     private boolean verusDmged = false;
 
     private float lastYaw, lastPitch;
+
+    private float[] dmgArray = new float[]{ 3.15F, 3.15F, 0.08F, 0F };
+    private boolean[] groundArray = new boolean[]{ false, false, false, true };
+
+    private int arrIndex = 0;
     
     @Override
     public void onEnable() {
@@ -132,6 +137,7 @@ public class Fly extends Module {
             return;
 
         noPacketModify = true;
+        arrIndex = 0;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -200,7 +206,7 @@ public class Fly extends Module {
                         mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
                         mc.thePlayer.motionY = -0.08;
                     }
-                } else {
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("None")) {
                     // set dmged = true since there's no damage method
                     verusDmged = true;
                 }
@@ -332,7 +338,7 @@ public class Fly extends Module {
                     MovementUtils.strafe(motion);
                 } else if (verusDmged) {
                     mc.timer.timerSpeed = 1F;
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.8F);
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.7F);
                 }
                 break;
             case "creative":
@@ -454,7 +460,7 @@ public class Fly extends Module {
         if(packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
 
-            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && verusSpoofGround.get()))
+            if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && verusSpoofGround.get() && verusDmged))
                 packetPlayer.onGround = true;
 
             if (mode.equalsIgnoreCase("Derp")) {
@@ -472,6 +478,12 @@ public class Fly extends Module {
 
                     verusC03.clear();
                 }
+            }
+
+            if (mode.equalsIgnoreCase("Verus") && verusDmgModeValue.get().equalsIgnoreCase("Packet-Based") && arrIndex < 4) {
+                packetPlayer.onGround = groundArray[arrIndex];
+                packetPlayer.y = startY + dmgArray[arrIndex];
+                arrIndex++;
             }
 
             if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
@@ -550,7 +562,7 @@ public class Fly extends Module {
         if (mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) 
             event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
 
-        if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("Verus")) 
+        if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && !verusLongjump.get())) 
             && event.getY() < mc.thePlayer.posY)
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY, event.getZ() + 1));
     }

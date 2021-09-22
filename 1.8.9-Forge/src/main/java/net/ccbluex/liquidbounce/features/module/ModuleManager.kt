@@ -150,7 +150,8 @@ class ModuleManager : Listenable {
                 AntiFireBall::class.java,
                 KeepSprint::class.java,
                 ItemTeleport::class.java,
-                Teleport::class.java
+                Teleport::class.java,
+                AsianHat::class.java
         )
 
         registerModule(Fucker)
