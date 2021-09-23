@@ -63,7 +63,7 @@ public class AsianHat extends Module {
         int realIndex = 0;
 
         pre3D();
-        GL11.glTranslated(-mc.getRenderManager().viewerPosX, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ)
+        GL11.glTranslated(-mc.getRenderManager().viewerPosX, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
 		GL11.glBegin(GL11.GL_POLYGON);
         
         GL11.glColor4f(r, g, b, al);
