@@ -110,7 +110,12 @@ class Target : Element() {
         val bgColor = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), backgroundColorAlphaValue.get())
         val borderColor = Color(borderColorRedValue.get(), borderColorGreenValue.get(), borderColorBlueValue.get(), borderColorAlphaValue.get())
 
-        progress += 0.0085F * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F
+        progress += 0.0025F * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F
+
+        if (progress < 0F)
+            progress = 0F
+        else if (progress > 1F)
+            progress = 1F
 
         if (actualTarget == null && tSlideAnim.get()) {
             if (progress >= 1F && target != null) 
@@ -118,12 +123,7 @@ class Target : Element() {
         } else 
             target = actualTarget
 
-        if (progress < 0F)
-            progress = 0F
-        else if (progress > 1F)
-            progress = 1F
-
-        val animProgress = EaseUtils.easeOutQuart(progress.toDouble())
+        val animProgress = EaseUtils.easeInQuart(progress.toDouble())
         val tHeight = getTBorder().y2 - getTBorder().y
 
         if (tSlideAnim.get()) {
@@ -183,12 +183,12 @@ class Target : Element() {
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
                     //RenderUtils.drawBorder(1F, 1F, 26F, 26F, 1F, Color(115, 255, 115).rgb)
                     drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 26, 26)
-                    Fonts.fontSFUI35.drawString(convertedTarget.name, 30F, 4F, 0xFFFFFF) // Draw convertedTarget name
-                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(convertedTarget.health)}", 30F, 15F, 0xFFFFFF) // Draw convertedTarget health   
+                    Fonts.fontSFUI35.drawString(convertedTarget.name, 30F, 6F, 0xFFFFFF) // Draw convertedTarget name
+                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(convertedTarget.health)}", 30F, 18F, 0xFFFFFF) // Draw convertedTarget health   
 
                     // bar icon
                     Fonts.fontSFUI35.drawString("❤", 2F, 29F, -1)
-                    drawArmorIcon(2, 38, 6, 6)
+                    drawArmorIcon(2, 38, 7, 7)
 
                     easingHealth += ((convertedTarget.health - easingHealth) / Math.pow(2.0, 10.0 - 3.0)).toFloat() * RenderUtils.deltaTime.toFloat()
 
@@ -222,7 +222,7 @@ class Target : Element() {
                     RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
                     RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
                     drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 0, 0, 36, 36)
-                    font.drawStringWithShadow(convertedTarget.name, 2F + 36F + 2F, 2F, -1)
+                    font.drawStringWithShadow(convertedTarget.name, 2F + 36F + 1F, 2F, -1)
                     RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
 
                     easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
@@ -313,8 +313,10 @@ class Target : Element() {
                         "health" -> RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
                         else -> { //perform the for-loop gradient trick.
                             GL11.glPushMatrix()
+                            GL11.glScalef(1F, 1F, 1F) //reset scale
                             GL11.glEnable(3089)
                             RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 40F * scale + renderY.toFloat(), 5F * scale + renderX.toFloat() + barWidth * scale, 50F * scale + renderY.toFloat())
+                            GL11.glScalef(scale, scale, scale)
                             for (i in 0..(gradientAmountValue.get()-1)) {
                                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
@@ -417,12 +419,12 @@ class Target : Element() {
                         easingHealth = convertedTarget.health
                     }
 
-                    val width = (40 + Fonts.font40.getStringWidth(convertedTarget.name))
+                    val width = (38 + Fonts.font40.getStringWidth(convertedTarget.name))
                             .coerceAtLeast(120)
                             .toFloat()
 
                     // Draw rect box
-                    RenderUtils.drawBorderedRect(0F, 0F, width, 38F, 3F, borderColor.rgb, bgColor.rgb)
+                    RenderUtils.drawBorderedRect(0F, 0F, width, 36F, 3F, borderColor.rgb, bgColor.rgb)
 
                     // Damage animation
                     if (easingHealth > convertedTarget.health)
@@ -430,8 +432,8 @@ class Target : Element() {
                                 36F, Color(252, 185, 65).rgb)
 
                     // Health bar
-                    RenderUtils.drawRect(0F, 36F, (convertedTarget.health / convertedTarget.maxHealth) * width,
-                            38F, barColor.rgb)
+                    RenderUtils.drawRect(0F, 34F, (convertedTarget.health / convertedTarget.maxHealth) * width,
+                            36F, barColor.rgb)
 
                     easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
@@ -442,7 +444,7 @@ class Target : Element() {
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
                     if (playerInfo != null) {
                         Fonts.font35.drawString("Ping: ${playerInfo.responseTime.coerceAtLeast(0)}",
-                                36, 25, 0xffffff)
+                                36, 24, 0xffffff)
 
                         // Draw head
                         val locationSkin = playerInfo.locationSkin
