@@ -151,7 +151,8 @@ class ModuleManager : Listenable {
                 KeepSprint::class.java,
                 ItemTeleport::class.java,
                 Teleport::class.java,
-                AsianHat::class.java
+                AsianHat::class.java,
+                BowJump::class.java
         )
 
         registerModule(Fucker)

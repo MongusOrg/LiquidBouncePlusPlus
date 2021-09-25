@@ -82,8 +82,7 @@ public class Fly extends Module {
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit", "One-Hit2", "Test", "Packet-Based"}, "None");
-    private final BoolValue packetBasedDebug = new BoolValue("Packet-Based-Debug", true);
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit", "One-Hit2", "Test"}, "None");
     private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
     private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
     private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
@@ -129,8 +128,6 @@ public class Fly extends Module {
 
     private float[] dmgArray = new float[]{ 4F, 3.25F, 3.05F, 0F, 0F };
     private boolean[] groundArray = new boolean[]{ false, false, false, false, true };
-
-    private int arrIndex = 0;
     
     @Override
     public void onEnable() {
@@ -138,7 +135,6 @@ public class Fly extends Module {
             return;
 
         noPacketModify = true;
-        arrIndex = 0;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -480,16 +476,6 @@ public class Fly extends Module {
 
                     verusC03.clear();
                 }
-            }
-
-            if (mode.equalsIgnoreCase("Verus") && verusDmgModeValue.get().equalsIgnoreCase("Packet-Based") && arrIndex < 5) {
-                packetPlayer.onGround = groundArray[arrIndex];
-                packetPlayer.y = startY + dmgArray[arrIndex];
-
-                if (packetBasedDebug.get())
-                    ClientUtils.displayChatMessage("["+arrIndex+"] y: "+packetPlayer.y+", onGround: "+packetPlayer.onGround);
-                    
-                arrIndex++;
             }
 
             if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
