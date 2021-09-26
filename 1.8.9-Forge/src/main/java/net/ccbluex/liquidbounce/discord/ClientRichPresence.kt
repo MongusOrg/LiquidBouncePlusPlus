@@ -91,8 +91,8 @@ class ClientRichPresence : MinecraftInstance() {
         builder.setStartTimestamp(timestamp)
 
         // Check assets contains logo and set logo
-        if (assets.containsKey("logo"))
-            builder.setLargeImage(assets["logo"], "build ${LiquidBounce.CLIENT_VERSION}")
+        if (assets.containsKey("new"))
+            builder.setLargeImage(assets["new"], "build ${LiquidBounce.CLIENT_VERSION}")
 
         val serverData = mc.currentServerData
 
@@ -101,9 +101,9 @@ class ClientRichPresence : MinecraftInstance() {
         builder.setState("IGN: ${mc.session.username}")
 
         if (mc.isIntegratedServerRunning || serverData != null) 
-            builder.setSmallImage(assets["trap"], "in ${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP} - ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size} enabled.")
+            builder.setSmallImage(assets["astolfo"], "in ${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP} - ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size} enabled.")
         else
-            builder.setSmallImage(assets["trap"], "${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size} enabled.")
+            builder.setSmallImage(assets["astolfo"], "${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size} enabled.")
 
         // Check ipc client is connected and send rpc
         if (ipcClient?.status == PipeStatus.CONNECTED)
@@ -148,9 +148,9 @@ class ClientRichPresence : MinecraftInstance() {
         */
 
         appID = 874149528486445106L
-        assets["logo"] = "logo"
+        assets["new"] = "new"
         //assets["active"] = "active"
         //assets["inactive"] = "inactive"
-        assets["trap"] = "trap"
+        assets["astolfo"] = "astolfo"
     }
 }
