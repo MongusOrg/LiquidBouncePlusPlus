@@ -82,7 +82,7 @@ public class Fly extends Module {
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "One-Hit", "One-Hit2", "Test"}, "None");
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant"}, "None");
     private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
     private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
     private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
@@ -90,10 +90,6 @@ public class Fly extends Module {
     private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F);
     private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
     private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false);
-    private final BoolValue verusBlink = new BoolValue("Verus-Blink", true);
-    private final BoolValue verusLongjump = new BoolValue("Verus-Longjump", false);
-    private final FloatValue verusLongJumpHeight = new FloatValue("Verus-LongjumpHeight", 1F, 0F, 5F);
-    private final BoolValue verusFakeJump = new BoolValue("Verus-FakeJumpPacket", true);
 
     // AAC
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
@@ -170,41 +166,14 @@ public class Fly extends Module {
                 MovementUtils.strafe();
                 break;
             case "verus":
-                if (verusFakeJump.get() && mc.thePlayer.onGround) {
-                    mc.thePlayer.jump();
-                }
                 if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
-                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.4, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 0.00125, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
-                        mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
-                    }
-                } else if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
                         mc.thePlayer.motionX = mc.thePlayer.motionY = mc.thePlayer.motionZ = 0;
                     }
-                } else if (verusDmgModeValue.get().equalsIgnoreCase("One-Hit2")) {
-                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
-                        mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-                        mc.thePlayer.motionY = -0.08;
-                    }
-                } else if (verusDmgModeValue.get().equalsIgnoreCase("Test")) {
-                    if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.125, 0).expand(0, 0, 0)).isEmpty()) {
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 3.125, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 0.08, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
-                        mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-                        mc.thePlayer.motionY = -0.08;
-                    }
-                } else if (verusDmgModeValue.get().equalsIgnoreCase("None")) {
+                } else {
                     // set dmged = true since there's no damage method
                     verusDmged = true;
                 }
@@ -317,11 +286,9 @@ public class Fly extends Module {
                 break;
             case "verus":
                 mc.thePlayer.capabilities.isFlying = false;
-                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-                if (!verusLongjump.get()) mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionX = mc.thePlayer.motionZ = mc.thePlayer.motionY = 0;
 
                 if (!verusDmged && mc.thePlayer.hurtTime > 0) {
-                    if (verusLongjump.get()) mc.thePlayer.motionY = verusLongJumpHeight.get();
                     verusDmged = true;
                     boostTicks = verusDmgTickValue.get();
                 }
@@ -445,8 +412,6 @@ public class Fly extends Module {
         }
     }
 
-    private final ArrayList<C03PacketPlayer> verusC03 = new ArrayList<>();
-
     @EventTarget
     public void onPacket(PacketEvent event) {
         final Packet<?> packet = event.getPacket();
@@ -464,18 +429,6 @@ public class Fly extends Module {
             if (mode.equalsIgnoreCase("Derp")) {
                 packetPlayer.yaw = RandomUtils.nextFloat(0F, 360F);
                 packetPlayer.pitch = RandomUtils.nextFloat(-90F, 90F);
-            }
-
-            if (mode.equalsIgnoreCase("Verus") && verusBlink.get() && boostTicks > 0) {
-                verusC03.add(packetPlayer);
-                event.cancelEvent();
-
-                if (verusC03.size() >= 3) {
-                    for (C03PacketPlayer c03 : verusC03)
-                        PacketUtils.sendPacketNoEvent(c03);
-
-                    verusC03.clear();
-                }
             }
 
             if (mode.equalsIgnoreCase("AAC5-Vanilla") && !mc.isIntegratedServerRunning()) {
@@ -554,7 +507,7 @@ public class Fly extends Module {
         if (mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) 
             event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
 
-        if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && !verusLongjump.get())) 
+        if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("Verus")))
             && event.getY() < mc.thePlayer.posY)
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY, event.getZ() + 1));
     }

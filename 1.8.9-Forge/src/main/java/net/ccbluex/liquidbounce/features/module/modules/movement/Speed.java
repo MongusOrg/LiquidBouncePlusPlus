@@ -43,6 +43,24 @@ public class Speed extends Module {
             new AAC4Hop(),
             new AAC4SlowHop(),
             new AACv4BHop(),
+            new AACBHop(),
+            new AAC2BHop(),
+            new AAC3BHop(),
+            new AAC4BHop(),
+            new AAC5BHop(),
+            new AAC6BHop(),
+            new AAC7BHop(),
+            new OldAACBHop(),
+            new AACPort(),
+            new AACLowHop(),
+            new AACLowHop2(),
+            new AACLowHop3(),
+            new AACGround(),
+            new AACGround2(),
+            new AACHop350(),
+            new AACHop3313(),
+            new AACYPort(),
+            new AACYPort2(),
 
             // Hypixel
             new HypixelBoost(),
@@ -97,7 +115,29 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue aacModeValue = new ListValue("AAC-Mode", new String[]{"4Hop", "4SlowHop", "v4BHop"}, "4Hop") {
+    public final ListValue aacModeValue = new ListValue("AAC-Mode", new String[]{
+        "4Hop", 
+        "4SlowHop", 
+        "v4BHop",
+        "BHop",
+        "2BHop",
+        "3BHop",
+        "4BHop",
+        "5BHop",
+        "6BHop",
+        "7BHop",
+        "OldBHop",
+        "Port",
+        "LowHop",
+        "LowHop2",
+        "LowHop3",
+        "Ground",
+        "Ground2",
+        "Hop350",
+        "Hop3313",
+        "YPort",
+        "YPort2"
+        }, "4Hop") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -270,7 +310,8 @@ public class Speed extends Module {
             else mode = "NCP" + ncpModeValue.get();
             break;
             case "AAC":
-            mode = "AAC" + aacModeValue.get();
+            if (aacModeValue.get().equalsIgnoreCase("oldbhop")) mode = "OldAACBHop";
+            else mode = "AAC" + aacModeValue.get();
             break;
             case "Spartan":
             mode = "SpartanYPort";

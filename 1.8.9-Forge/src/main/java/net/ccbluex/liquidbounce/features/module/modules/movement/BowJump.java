@@ -76,11 +76,14 @@ public class BowJump extends Module {
     @EventTarget
     public void onUpdate(UpdateEvent event) {
         mc.timer.timerSpeed = 1F;
+
+        boolean forceDisable = false;
         switch (bowState) {
         case 0:
             int slot = getBowSlot();
             if (slot < 0 || !mc.thePlayer.inventory.hasItem(Items.arrow)) {
                 LiquidBounce.hud.addNotification(new Notification("No arrows or bow found in your inventory!", Notification.Type.ERROR));
+                forceDisable = true;
                 bowState = 5;
                 break; // nothing to shoot
             } else if (lastPlayerTick == -1) {
@@ -122,7 +125,7 @@ public class BowJump extends Module {
             break;
         }
 
-        if (bowState == 5 && autoDisable.get()) 
+        if (bowState == 5 && (autoDisable.get() || forceDisable)) 
             this.setState(false);
     }
 
@@ -168,9 +171,8 @@ public class BowJump extends Module {
             case 2:
             return "Waiting for damage...";
             case 3:
-            return "Boost!";
             case 4:
-            return "Waiting for ground...";
+            return "Boost!";
             default:
             return "Task completed.";
         }
