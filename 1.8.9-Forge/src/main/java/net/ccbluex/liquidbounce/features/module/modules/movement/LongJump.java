@@ -64,6 +64,8 @@ public class LongJump extends Module {
         verusDmged = false;
         pearlState = 0;
 
+        double y = mc.thePlayer.posY;
+
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
             if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
                 mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));

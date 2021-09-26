@@ -191,9 +191,10 @@ public class Speed extends Module {
 
     public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false);
     public final BoolValue bypassWarning = new BoolValue("BypassWarning", true);
-/*
+
     public final FloatValue portMax = new FloatValue("AAC-PortLength", 1, 1, 20);
     public final FloatValue aacGroundTimerValue = new FloatValue("AACGround-Timer", 3F, 1.1F, 10F);
+/*
     public final FloatValue cubecraftPortLengthValue = new FloatValue("CubeCraft-PortLength", 1F, 0.1F, 2F);
     public final FloatValue mineplexGroundSpeedValue = new FloatValue("MineplexGround-Speed", 0.5F, 0.1F, 1F);
 */
