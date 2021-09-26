@@ -23,34 +23,21 @@ import net.minecraft.network.play.client.*;
 import org.apache.commons.lang3.tuple.*;
 import net.minecraft.init.*;
 
-@ModuleInfo(name = "Heal", description = "Auto Eating GApple (felt bad skidding this)", category = ModuleCategory.PLAYER)
+@ModuleInfo(name = "Heal", description = "Automatically eats Gapple. (only for some servers with a broken anticheat)", category = ModuleCategory.PLAYER)
 public class Heal extends Module
 {
-    private final FloatValue percent;
-    private final IntegerValue min;
-    private final IntegerValue max;
-    private final FloatValue regenSec;
-    private final BoolValue groundCheck;
-    private final BoolValue voidCheck;
-    private final BoolValue waitRegen;
-    private final BoolValue invCheck;
-    private final BoolValue absorpCheck;
-    final MSTimer timer;
+    private final FloatValue percent = new FloatValue("HealthPercent", 75.0f, 1.0f, 100.0f);
+    private final IntegerValue min = new IntegerValue("MinDelay", 75, 1, 5000);
+    private final IntegerValue max = new IntegerValue("MaxDelay", 125, 1, 5000);
+    private final FloatValue regenSec = new FloatValue("RegenSec", 4.6f, 0.0f, 10.0f);
+    private final BoolValue groundCheck = new BoolValue("GroundCheck", false);
+    private final BoolValue voidCheck = new BoolValue("VoidCheck", true);
+    private final BoolValue waitRegen = new BoolValue("WaitRegen", true);
+    private final BoolValue invCheck = new BoolValue("InvCheck", false);
+    private final BoolValue absorpCheck = new BoolValue("AbsorpCheck", true);
+    final MSTimer timer = new MSTimer();
     int delay;
     boolean isDisable;
-    
-    public Heal() {
-        this.percent = new FloatValue("HealthPercent", 75.0f, 1.0f, 100.0f);
-        this.min = new IntegerValue("MinDelay", 75, 1, 5000);
-        this.max = new IntegerValue("MaxDelay", 125, 1, 5000);
-        this.regenSec = new FloatValue("RegenSec", 4.6f, 0.0f, 10.0f);
-        this.groundCheck = new BoolValue("GroundCheck", false);
-        this.voidCheck = new BoolValue("VoidCheck", true);
-        this.waitRegen = new BoolValue("WaitRegen", true);
-        this.invCheck = new BoolValue("InvCheck", false);
-        this.absorpCheck = new BoolValue("AbsorpCheck", true);
-        this.timer = new MSTimer();
-    }
     
     @Override
     public void onEnable() {

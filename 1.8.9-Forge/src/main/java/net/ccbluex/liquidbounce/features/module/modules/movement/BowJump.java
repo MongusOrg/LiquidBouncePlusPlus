@@ -5,42 +5,55 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.movement;
 
+import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.event.UpdateEvent;
+import net.ccbluex.liquidbounce.event.PacketEvent;
+import net.ccbluex.liquidbounce.event.Render2DEvent;
 import net.ccbluex.liquidbounce.event.WorldEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
+import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.*;
 import net.minecraft.client.entity.EntityPlayerSP;
-
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.network.play.client.*;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockPos;
 
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.init.Items;
-
-import net.minecraft.network.play.client.*;
+import java.awt.Color;
 
 @ModuleInfo(name = "BowJump", spacedName = "Bow Jump", description = "Allows you to jump further with auto bow shoot.", category = ModuleCategory.MOVEMENT)
 public class BowJump extends Module {
 
     private final FloatValue boostValue = new FloatValue("Boost", 4.25F, 0F, 10F);
     private final FloatValue heightValue = new FloatValue("Height", 0.42F, 0F, 10F);
-    private final IntegerValue delayBeforeLaunch = new IntegerValue("DelayBeforeArrowLaunch", 2, 2, 20);
+    private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F);
+    private final IntegerValue delayBeforeLaunch = new IntegerValue("DelayBeforeArrowLaunch", 1, 1, 20);
+
+    private final BoolValue autoDisable = new BoolValue("AutoDisable", true);
+    private final BoolValue renderValue = new BoolValue("RenderStatus", true);
 
     private int bowState = 0;
     private long lastPlayerTick = 0;
+
+    private int lastSlot = -1;
 
     public void onEnable() {
         if (mc.thePlayer == null) return;
         bowState = 0;
         lastPlayerTick = -1;
+        lastSlot = mc.thePlayer.inventory.currentItem;
 
         MovementUtils.strafe(0);
     }
@@ -52,18 +65,28 @@ public class BowJump extends Module {
     }
 
     @EventTarget
+    public void onPacket(PacketEvent event) {
+        if (event.getPacket() instanceof C09PacketHeldItemChange) {
+            C09PacketHeldItemChange c09 = (C09PacketHeldItemChange) event.getPacket();
+            lastSlot = c09.getSlotId();
+            event.cancelEvent();
+        }
+    }
+
+    @EventTarget
     public void onUpdate(UpdateEvent event) {
+        mc.timer.timerSpeed = 1F;
         switch (bowState) {
         case 0:
             int slot = getBowSlot();
             if (slot < 0 || !mc.thePlayer.inventory.hasItem(Items.arrow)) {
-                bowState = 4;
+                LiquidBounce.hud.addNotification(new Notification("No arrows or bow found in your inventory!", Notification.Type.ERROR));
+                bowState = 5;
                 break; // nothing to shoot
             } else if (lastPlayerTick == -1) {
                 ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(slot + 36).getStack();
 
-                mc.thePlayer.inventory.currentItem = slot;
-                mc.playerController.updateController();
+                if (lastSlot != slot) mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(slot));
 
                 mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(mc.thePlayer.rotationYaw, -90, mc.thePlayer.onGround));
                 mc.thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(new BlockPos(-1, -1, -1), 255, mc.thePlayer.inventoryContainer.getSlot(slot + 36).getStack(), 0, 0, 0));
@@ -73,9 +96,12 @@ public class BowJump extends Module {
             }
             break;
         case 1:
+            int reSlot = getBowSlot();
             if (mc.thePlayer.ticksExisted - lastPlayerTick > delayBeforeLaunch.get()) {
                 mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(mc.thePlayer.rotationYaw, -90, mc.thePlayer.onGround));
                 mc.thePlayer.sendQueue.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN));
+
+                if (lastSlot != reSlot) mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(lastSlot));
                 bowState = 2;
             }
             break;
@@ -87,10 +113,16 @@ public class BowJump extends Module {
             MovementUtils.strafe(boostValue.get());
             mc.thePlayer.motionY = heightValue.get();
             bowState = 4;
+            lastPlayerTick = mc.thePlayer.ticksExisted;
+            break;
+        case 4:
+            mc.timer.timerSpeed = timerValue.get();
+            if (mc.thePlayer.onGround && mc.thePlayer.ticksExisted - lastPlayerTick >= 1)
+                bowState = 5;
             break;
         }
 
-        if (bowState == 4) 
+        if (bowState == 5 && autoDisable.get()) 
             this.setState(false);
     }
 
@@ -114,8 +146,20 @@ public class BowJump extends Module {
         return -1;
     }
 
-    @Override
-    public String getTag() {
+    @EventTarget
+    public void onRender2D(final Render2DEvent event) {
+        if (!renderValue.get()) return;
+        ScaledResolution scaledRes = new ScaledResolution(mc);
+            
+        float width = (float) bowState / 5F * 60F;
+
+        Fonts.font40.drawCenteredString(getBowStatus(), scaledRes.getScaledWidth() / 2F, scaledRes.getScaledHeight() / 2F + 14F, -1, true);
+        RenderUtils.drawRect(scaledRes.getScaledWidth() / 2F - 31F, scaledRes.getScaledHeight() / 2F + 25F, scaledRes.getScaledWidth() / 2F + 31F, scaledRes.getScaledHeight() / 2F + 29F, 0xA0000000);
+        RenderUtils.drawRect(scaledRes.getScaledWidth() / 2F - 30F, scaledRes.getScaledHeight() / 2F + 26F, scaledRes.getScaledWidth() / 2F - 30F + width, scaledRes.getScaledHeight() / 2F + 28F, getStatusColor());
+        
+    }
+
+    public String getBowStatus() {
         switch (bowState) {
             case 0:
             return "Idle...";
@@ -125,8 +169,26 @@ public class BowJump extends Module {
             return "Waiting for damage...";
             case 3:
             return "Boost!";
+            case 4:
+            return "Waiting for ground...";
             default:
             return "Task completed.";
+        }
+    }
+
+    public Color getStatusColor() {
+        switch (bowState) {
+            case 0:
+            return new Color(21, 21, 21);
+            case 1:
+            return new Color(48, 48, 48);
+            case 2:
+            return Color.yellow;
+            case 3:
+            case 4:
+            return Color.green;
+            default:
+            return new Color(0, 111, 255);
         }
     }
 }
