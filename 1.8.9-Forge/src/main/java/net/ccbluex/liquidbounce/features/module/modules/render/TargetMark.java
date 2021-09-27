@@ -40,9 +40,7 @@ public class TargetMark extends Module {
 	private final IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
 	private final FloatValue jelloAlphaValue = new FloatValue("JelloEndAlphaPercent", 0.4F, 0F, 1F);
 	private final FloatValue jelloWidthValue = new FloatValue("JelloCircleWidth", 3F, 0.01F, 5F);
-	private final FloatValue jelloGradientWidthValue = new FloatValue("JelloGradientWidth", 3F, 0.01F, 5F);
 	private final FloatValue jelloGradientHeightValue = new FloatValue("JelloGradientHeight", 3F, 1F, 8F);
-	private final FloatValue jelloPointSpaceValue = new FloatValue("JelloPointSpace", 0.1F, 0.05F, 0.5F);
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
@@ -118,37 +116,48 @@ public class TargetMark extends Module {
             float b = colour.getBlue() / 255.0F;
 
 		    pre3D();
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
 		    //post circles
-		    GL11.glLineWidth(jelloGradientWidthValue.get());
-		    GL11.glShadeModel(7425);
-		    GL11.glBegin(GL11.GL_LINE_LOOP);
+			GL11.glTranslated(-mc.getRenderManager().viewerPosX, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
+		    GL11.glBegin(GL11.GL_POLYGON);
 
-		    for (float i = 0; i <= 360; i += jelloPointSpaceValue.get()) {
-			    double posX2 = posX - Math.sin(i * Math.PI / 180) * radius;
-			    double posZ2 = posZ + Math.cos(i * Math.PI / 180) * radius;
+			double preX = posX - Math.sin(0 * Math.PI / 180) * radius;
+			double preZ = posZ + Math.cos(0 * Math.PI / 180) * radius;
 
-			    if (direction > 0) {
-				    GL11.glColor4f(r, g, b, 0);
-				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
-				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, 0);
-    				GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-			    } else {
-				    GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
-				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, 0);
-				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos + deltaY - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-				    GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
-				    GL11.glVertex3d(posX2 - mc.getRenderManager().viewerPosX, posY + yPos - mc.getRenderManager().viewerPosY, posZ2 - mc.getRenderManager().viewerPosZ);
-    			}
-		    }
+			if (direction > 0) {
+				GL11.glColor4f(r, g, b, 0F);
+				GL11.glVertex3d(preX, posY + yPos + deltaY, preZ);
+
+				GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
+				for (int i = 0; i <= 360; i++) {
+					double calc = i * Math.PI / 180;
+			    	double posX2 = posX - Math.sin(calc) * radius;
+			    	double posZ2 = posZ + Math.cos(calc) * radius;
+
+					GL11.glVertex3d(posX2, posY + yPos, posZ2);
+				}
+
+				GL11.glColor4f(r, g, b, 0F);
+				GL11.glVertex3d(preX, posY + yPos + deltaY, preZ);
+			} else {
+				GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
+				GL11.glVertex3d(preX, posY + yPos, preZ);
+
+				GL11.glColor4f(r, g, b, 0F);
+				for (int i = 0; i <= 360; i++) {
+					double calc = i * Math.PI / 180;
+			    	double posX2 = posX - Math.sin(calc) * radius;
+			    	double posZ2 = posZ + Math.cos(calc) * radius;
+
+					GL11.glVertex3d(posX2, posY + yPos + deltaY, posZ2);
+				}
+
+				GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
+				GL11.glVertex3d(preX, posY + yPos, preZ);
+			}
 
 		    GL11.glEnd();
-		    GL11.glShadeModel(7424);
 
-		    drawCircle(posX, posY + yPos, posZ, jelloWidthValue.get(), radius, r, g, b, al, jelloPointSpaceValue.get());
+		    drawCircle(posX, posY + yPos, posZ, jelloWidthValue.get(), radius, r, g, b, al);
 
 		    post3D();
         } else if (modeValue.get().equalsIgnoreCase("default")) {
@@ -210,6 +219,7 @@ public class TargetMark extends Module {
        GL11.glDisable(GL11.GL_LIGHTING);
        GL11.glDepthMask(false);
        GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+	   GL11.glDisable(2884);
    }
 
    public static void post3D() {
@@ -222,15 +232,15 @@ public class TargetMark extends Module {
        GL11.glColor4f(1, 1, 1, 1);
    }
 	
-	private void drawCircle(double x, double y, double z, float width, double radius, float red, float green, float blue, float alp, double pSpace) {
+	private void drawCircle(double x, double y, double z, float width, double radius, float red, float green, float blue, float alp) {
 		GL11.glLineWidth(width);
 		GL11.glBegin(GL11.GL_LINE_LOOP);
 		GL11.glColor4f(red, green, blue, alp);
 
-		for (double i = 0; i <= 360; i += pSpace) {
+		for (int i = 0; i <= 360; i += 1) {
 			double posX = x - Math.sin(i * Math.PI / 180) * radius;
 			double posZ = z + Math.cos(i * Math.PI / 180) * radius;
-			GL11.glVertex3d(posX - mc.getRenderManager().viewerPosX, y - mc.getRenderManager().viewerPosY, posZ - mc.getRenderManager().viewerPosZ);
+			GL11.glVertex3d(posX, y, posZ);
 		}
 
 		GL11.glEnd();

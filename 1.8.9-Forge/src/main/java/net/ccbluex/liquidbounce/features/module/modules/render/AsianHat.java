@@ -41,6 +41,9 @@ public class AsianHat extends Module {
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
     private final IntegerValue spaceValue = new IntegerValue("Color-Space", 0, 0, 200);
     private final BoolValue noFirstPerson = new BoolValue("NoFirstPerson", true);
+    private final BoolValue hatBorder = new BoolValue("HatBorder", true);
+    private final IntegerValue borderAlphaValue = new IntegerValue("BorderAlpha", 255, 0, 255);
+    private final FloatValue borderWidthValue = new FloatValue("BorderWidth", 1F, 0.1F, 4F);
 
     @EventTarget
     public void onRender3D(Render3DEvent event) {
@@ -60,8 +63,6 @@ public class AsianHat extends Module {
         float b = colour.getBlue() / 255.0F;
         float al = colorAlphaValue.get() / 255.0F;
 
-        int realIndex = 0;
-
         pre3D();
         GL11.glTranslated(-mc.getRenderManager().viewerPosX, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
 		GL11.glBegin(GL11.GL_POLYGON);
@@ -75,21 +76,47 @@ public class AsianHat extends Module {
 
 			GL11.glVertex3d(posX2, posY + height, posZ2);
 
-            if (spaceValue.get() > 0) {
-                Color colour2 = getColor(entity, realIndex * spaceValue.get());
+            if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
+                Color colour2 = getColor(entity, i * spaceValue.get());
                 float r2 = colour2.getRed() / 255.0F;
                 float g2 = colour2.getGreen() / 255.0F;
                 float b2 = colour2.getBlue() / 255.0F;
 
                 GL11.glColor4f(r2, g2, b2, al);
             }
-            
-            realIndex++;
 		}
 
         GL11.glVertex3d(posX, posY + height + 0.3F, posZ);
 
         GL11.glEnd();
+
+        if (hatBorder.get()) {
+            float lineAlp = borderAlphaValue.get() / 255.0F;
+
+            GL11.glLineWidth(borderWidthValue.get());
+            GL11.glBegin(GL11.GL_LINE_LOOP);
+
+            GL11.glColor4f(r, g, b, lineAlp);
+            
+            for (int j = 0; j <= 360; j += 1) {
+			    double posX2 = posX - Math.sin(j * Math.PI / 180) * radius;
+			    double posZ2 = posZ + Math.cos(j * Math.PI / 180) * radius;
+
+			    GL11.glVertex3d(posX2, posY + height, posZ2);
+
+                if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
+                    Color colour2 = getColor(entity, j * spaceValue.get());
+                    float r2 = colour2.getRed() / 255.0F;
+                    float g2 = colour2.getGreen() / 255.0F;
+                    float b2 = colour2.getBlue() / 255.0F;
+
+                    GL11.glColor4f(r2, g2, b2, lineAlp);
+                }
+		    }
+
+            GL11.glEnd();
+        }
+
         post3D();
     }
 
@@ -121,11 +148,10 @@ public class AsianHat extends Module {
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDepthMask(false);
         GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
-        GlStateManager.disableCull();
+        GL11.glDisable(2884);
     }
 
     public static void post3D() {
-        GlStateManager.enableCull();
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glDisable(GL11.GL_LINE_SMOOTH);

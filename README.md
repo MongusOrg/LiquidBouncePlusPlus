@@ -10,7 +10,7 @@ Twitter: https://twitter.com/CCBlueX
 ## Third-party plugins/mods also included in this build:
 - [FlorianMichael/ViaForge](https://github.com/FlorianMichael/ViaForge/)
 - [Guichaguri/BetterFPS](https://github.com/Guichaguri/BetterFps/)
-- [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) for AACv5 Packet fly.
+- [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) for AAC5 bypasses.
 
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/WYSI-Foundation/LiquidBouncePlus/issues).

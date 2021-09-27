@@ -7,7 +7,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import de.enzaxd.viaforge.ViaForge;
 //import de.enzaxd.viaforge.gui.GuiProtocolSelector;
-import de.enzaxd.viaforge.protocols.ProtocolCollection;
+import de.enzaxd.viaforge.protocol.ProtocolCollection;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof;
 import net.ccbluex.liquidbounce.ui.client.GuiAntiForge;
@@ -31,8 +31,6 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
     @Inject(method = "initGui", at = @At("RETURN"))
     private void initGui(CallbackInfo callbackInfo) {
         buttonList.add(new GuiButton(997, 5, 8, 98, 20, "AntiForge"));
-        /*buttonList.add(new GuiButton(1337, width - 104, 8, 98, 20,
-                "EvoPortal: " + ProtocolCollection.getProtocolById(ViaForge.getInstance().getVersion()).getName()));*/
         buttonList.add(evoPortalSlider = new GuiSlider(1337, width - 104, 8, 98, 20, "Version: ", "", 0, ProtocolCollection.values().length - 1, ProtocolCollection.values().length - 1 - getProtocolIndex(ViaForge.getInstance().getVersion()), false, true,
                         guiSlider -> {
                             ViaForge.getInstance().setVersion(ProtocolCollection.values()[ProtocolCollection.values().length - 1 - guiSlider.getValueInt()].getVersion().getVersion());
@@ -41,7 +39,6 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
 
         buttonList.add(bungeeCordSpoofButton = new GuiButton(998, 108, 8, 98, 20, (BungeeCordSpoof.enabled ? "§a" : "§c") + "BungeeCord Spoof"));
         this.updatePortalText();
-        //buttonList.add(new GuiButton(999, width - 104, 8, 98, 20, "Tools"));
     }
 
     private void updatePortalText() {
@@ -69,10 +66,6 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
                 bungeeCordSpoofButton.displayString = (BungeeCordSpoof.enabled ? "§a" : "§c") + "BungeeCord Spoof";
                 LiquidBounce.fileManager.saveConfig(LiquidBounce.fileManager.valuesConfig);
                 break;
-                /*
-            case 999:
-                mc.displayGuiScreen(new GuiTools((GuiScreen) (Object) this));
-                break;*/
         }
     }
 }

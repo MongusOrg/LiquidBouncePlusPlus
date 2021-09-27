@@ -38,6 +38,7 @@ public class Blink extends Module {
     private final LinkedList<double[]> positions = new LinkedList<>();
 
     private final BoolValue pulseValue = new BoolValue("Pulse", false);
+    private final BoolValue c0FValue = new BoolValue("C0FCancel", false);
     private final IntegerValue pulseDelayValue = new IntegerValue("PulseDelay", 1000, 500, 5000);
 
     private final MSTimer pulseTimer = new MSTimer();
@@ -88,7 +89,8 @@ public class Blink extends Module {
         if (packet instanceof C03PacketPlayer.C04PacketPlayerPosition || packet instanceof C03PacketPlayer.C06PacketPlayerPosLook ||
                 packet instanceof C08PacketPlayerBlockPlacement ||
                 packet instanceof C0APacketAnimation ||
-                packet instanceof C0BPacketEntityAction || packet instanceof C02PacketUseEntity) {
+                packet instanceof C0BPacketEntityAction || packet instanceof C02PacketUseEntity
+                || (c0FValue.get() && packet instanceof C0FPacketConfirmTransaction)) {
             event.cancelEvent();
 
             packets.add(packet);
