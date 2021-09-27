@@ -85,7 +85,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         double trueAnim = EaseUtils.easeOutQuart(progress);
 
         final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
-        if (animMod.getState()) {
+        if (animMod != null && animMod.getState()) {
             GL11.glPushMatrix();
             switch (animMod.guiAnimations.get()) {
                 case "Zoom":
@@ -109,7 +109,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             Minecraft mc = Minecraft.getMinecraft();
             GuiScreen guiScreen = mc.currentScreen;
 
-            stealButton.enabled = !chestStealer.getState();
+            if (stealButton != null) stealButton.enabled = !chestStealer.getState();
 
             if(chestStealer.getState() && chestStealer.getSilenceValue().get() && guiScreen instanceof GuiChest) {
                 //mouse focus
@@ -143,13 +143,14 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                 if (!chestStealer.getStillDisplayValue().get()) callbackInfo.cancel();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 
     @Inject(method = "drawScreen", at = @At("RETURN"), cancellable = true) 
     public void drawScreenReturn(CallbackInfo callbackInfo) {
-        if (LiquidBounce.moduleManager.getModule(Animations.class).getState())
+        final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
+        if (animMod != null && animMod.getState())
             GL11.glPopMatrix();
     }
 }
