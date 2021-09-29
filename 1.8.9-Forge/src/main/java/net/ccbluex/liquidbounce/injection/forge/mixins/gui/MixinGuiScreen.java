@@ -66,6 +66,11 @@ public abstract class MixinGuiScreen {
 
     @Inject(method = "drawWorldBackground", at = @At("HEAD"), cancellable = true)
     private void drawWorldBackground(final CallbackInfo callbackInfo) {
+        if (!shouldRenderBackground()) {
+            callbackInfo.cancel();
+            return;
+        }
+
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
         if(hud.getInventoryParticle().get() && mc.thePlayer != null) {
@@ -74,8 +79,6 @@ public abstract class MixinGuiScreen {
             final int height = scaledResolution.getScaledHeight();
             ParticleUtils.drawParticles(Mouse.getX() * width / mc.displayWidth, height - Mouse.getY() * height / mc.displayHeight - 1);
         }
-
-        if (!hud.getContainerBackground().get() && mc.currentScreen instanceof GuiContainer) callbackInfo.cancel();
     }
 
     /**
@@ -130,6 +133,10 @@ public abstract class MixinGuiScreen {
             LiquidBounce.commandManager.executeCommands(msg);
             callbackInfo.cancel();
         }
+    }
+
+    protected boolean shouldRenderBackground() {
+        return true;
     }
 /*
     @Inject(method = "handleComponentHover", at = @At("HEAD"))

@@ -79,12 +79,22 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
     @Inject(method = "drawScreen", at = @At("HEAD"), cancellable = true)
     private void drawScreenHead(CallbackInfo callbackInfo){
+        final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
+        ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
+        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+
         if (progress >= 1F) progress = 1F;
         else progress = (float)(System.currentTimeMillis() - lastMS) / 750F;
 
         double trueAnim = EaseUtils.easeOutQuart(progress);
 
-        final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
+        if (hud.getContainerBackground().get() 
+        && (!(mc.currentScreen instanceof GuiChest) 
+            || !chestStealer.getState() 
+            || !chestStealer.getSilenceValue().get() 
+            || !chestStealer.getStillDisplayValue().get())) 
+            this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
+
         if (animMod != null && animMod.getState()) {
             GL11.glPushMatrix();
             switch (animMod.guiAnimations.get()) {
@@ -104,7 +114,6 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             }
         }
         
-        ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
         try {
             Minecraft mc = Minecraft.getMinecraft();
             GuiScreen guiScreen = mc.currentScreen;
@@ -140,11 +149,17 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                         (height/2)+30,0xffffffff,false);
                 }
                 
-                if (!chestStealer.getStillDisplayValue().get()) callbackInfo.cancel();
+                if (!chestStealer.getStillDisplayValue().get()) 
+                    callbackInfo.cancel();
             }
         } catch (Exception e) {
             //e.printStackTrace();
         }
+    }
+
+    @Override
+    protected boolean shouldRenderBackground() {
+        return false;
     }
 
     @Inject(method = "drawScreen", at = @At("RETURN"), cancellable = true) 

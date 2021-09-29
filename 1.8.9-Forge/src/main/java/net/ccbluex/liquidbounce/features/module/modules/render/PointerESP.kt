@@ -3,7 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  *
- * This code was taken from UnlegitMC/FDPClient, modified. Please credit them when using this code in your repository.
+ * This code was taken from UnlegitMC/FDPClient, modified. Please credit them and us when using this code in your repository.
  */
 package net.ccbluex.liquidbounce.features.module.modules.render
 
@@ -14,6 +14,8 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils.drawTriAngle
+import net.ccbluex.liquidbounce.utils.render.RenderUtils.isInViewFrustrum
+import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.ListValue
@@ -34,6 +36,7 @@ class PointerESP : Module() {
     private val alphaValue = IntegerValue("Alpha", 255, 0, 255)
     private val sizeValue = IntegerValue("Size", 100, 50, 200)
     private val radiusValue = FloatValue("TriangleRadius", 2.2F, 1F, 10F)
+    private val noInViewValue = BoolValue("NoEntityInView", true)
 
     @EventTarget
     fun onRender2D(event : Render2DEvent) {
@@ -48,7 +51,7 @@ class PointerESP : Module() {
         val playerOffSetZ = mc.thePlayer.posZ
 
         for (entity in mc.theWorld.loadedEntityList) {
-            if (EntityUtils.isSelected(entity,true)) {
+            if (EntityUtils.isSelected(entity,true) && (!noInViewValue.get() || !isInViewFrustrum(entity))) {
                 val pos1 = (((entity.posX + (entity.posX - entity.lastTickPosX) * mc.timer.renderPartialTicks) - playerOffsetX) * 0.2)
                 val pos2 = (((entity.posZ + (entity.posZ - entity.lastTickPosZ) * mc.timer.renderPartialTicks) - playerOffSetZ) * 0.2)
                 val cos = cos(mc.thePlayer.rotationYaw * (Math.PI * 2 / 360))

@@ -67,13 +67,13 @@ public class TargetMark extends Module {
 
 	@EventTarget
 	public void onMotion(MotionEvent event) {
-		if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi"))
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.1F : -0.1F), 0F, colorAlphaValue.get() / 255.0F);
+		/*if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi"))
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.1F : -0.1F), 0F, colorAlphaValue.get() / 255.0F);*/
 	}
 	
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
-        if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
+        /*if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
 		    double lastY = yPos;
 
 			if (al > 0F) {
@@ -160,7 +160,7 @@ public class TargetMark extends Module {
 		    drawCircle(posX, posY + yPos, posZ, jelloWidthValue.get(), radius, r, g, b, al);
 
 		    post3D();
-        } else if (modeValue.get().equalsIgnoreCase("default")) {
+        } else */if (modeValue.get().equalsIgnoreCase("default")) {
             if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawPlatform(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()));
         } else {
             if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawEntityBox(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()), false);
