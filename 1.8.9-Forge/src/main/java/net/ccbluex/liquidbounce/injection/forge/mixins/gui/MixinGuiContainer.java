@@ -8,8 +8,10 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
+import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.features.module.modules.world.ChestStealer;
 import net.ccbluex.liquidbounce.utils.render.EaseUtils;
+import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiButton;
@@ -93,7 +95,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             || !chestStealer.getState() 
             || !chestStealer.getSilenceValue().get() 
             || !chestStealer.getStillDisplayValue().get())) 
-            this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
+            RenderUtils.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 
         if (animMod != null && animMod.getState()) {
             GL11.glPushMatrix();

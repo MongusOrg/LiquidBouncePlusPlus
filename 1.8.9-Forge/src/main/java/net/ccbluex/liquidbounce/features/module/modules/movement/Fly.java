@@ -121,6 +121,8 @@ public class Fly extends Module {
     private boolean verusDmged = false;
 
     private float lastYaw, lastPitch;
+
+    private boolean shouldStopSprinting = false;
     
     @Override
     public void onEnable() {
@@ -142,6 +144,7 @@ public class Fly extends Module {
         pearlState = 0;
 
         verusDmged = false;
+        shouldStopSprinting = mc.thePlayer.isSprinting();
 
         switch (mode.toLowerCase()) {
             case "ncp":
@@ -163,35 +166,40 @@ public class Fly extends Module {
                 MovementUtils.strafe();
                 break;
             case "verus":
+                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
                 if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
                         mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
                     }
                 } else if (verusDmgModeValue.get().equalsIgnoreCase("InstantC06")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
-                        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
                         mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
                     }
                 } else {
                     // set dmged = true since there's no damage method
                     verusDmged = true;
+                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 }
                 if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
                 break;
             case "bugspartan":
                 for(int i = 0; i < 65; ++i) {
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.049D, z, false));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                 }
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.1D, z, true));
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.1D, z, true));
                 mc.thePlayer.motionX *= 0.1D;
                 mc.thePlayer.motionZ *= 0.1D;
                 mc.thePlayer.swingItem();
+                break;
+            case "pearl":
+                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
                 break;
         }
 
@@ -295,6 +303,7 @@ public class Fly extends Module {
                 if (!verusDmged && mc.thePlayer.hurtTime > 0) {
                     verusDmged = true;
                     boostTicks = verusDmgTickValue.get();
+                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 }
 
                 if (boostTicks > 0) {
@@ -308,6 +317,9 @@ public class Fly extends Module {
                 } else if (verusDmged) {
                     mc.timer.timerSpeed = 1F;
                     MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.6F);
+                } else {
+                    mc.thePlayer.movementInput.moveForward = 0F;
+                    mc.thePlayer.movementInput.moveStrafe = 0F;
                 }
                 break;
             case "creative":
@@ -316,7 +328,7 @@ public class Fly extends Module {
                 handleVanillaKickBypass();
                 break;
             case "keepalive":
-                mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
+                PacketUtils.sendPacketNoEvent(new C00PacketKeepAlive());
 
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionY = 0;
@@ -340,8 +352,8 @@ public class Fly extends Module {
                 mc.thePlayer.motionY = 0;
                 spartanTimer.update();
                 if(spartanTimer.hasTimePassed(12)) {
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 8, mc.thePlayer.posZ, true));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8, mc.thePlayer.posZ, true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 8, mc.thePlayer.posZ, true));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8, mc.thePlayer.posZ, true));
                     spartanTimer.reset();
                 }
                 break;
@@ -358,6 +370,7 @@ public class Fly extends Module {
                 int enderPearlSlot = getPearlSlot();
                 if (pearlState == 0) {
                     if (enderPearlSlot == -1) {
+                        if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                         LiquidBounce.hud.addNotification(new Notification("You don't have any ender pearl!", Notification.Type.ERROR));
                         pearlState = -1;
                         this.setState(false);
@@ -376,7 +389,10 @@ public class Fly extends Module {
                     pearlState = 1;    
                 }
 
-                if (pearlState == 1 && mc.thePlayer.hurtTime > 0) pearlState = 2;
+                if (pearlState == 1 && mc.thePlayer.hurtTime > 0) {
+                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
+                    pearlState = 2;
+                }
 
                 if (pearlState == 2) {
                     if (mc.gameSettings.keyBindJump.isKeyDown())
@@ -538,21 +554,21 @@ public class Fly extends Module {
         final double ground = calculateGround();
 
         for(double posY = mc.thePlayer.posY; posY > ground; posY -= 8D) {
-            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true));
+            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true));
 
             if(posY - 8D < ground) break; // Prevent next step
         }
 
-        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, ground, mc.thePlayer.posZ, true));
+        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, ground, mc.thePlayer.posZ, true));
 
 
         for(double posY = ground; posY < mc.thePlayer.posY; posY += 8D) {
-            mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true));
+            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, posY, mc.thePlayer.posZ, true));
 
             if(posY + 8D > mc.thePlayer.posY) break; // Prevent next step
         }
 
-        mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
+        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
 
         groundTimer.reset();
     }

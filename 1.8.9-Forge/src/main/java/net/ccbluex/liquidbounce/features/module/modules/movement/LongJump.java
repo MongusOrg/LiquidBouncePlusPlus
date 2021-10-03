@@ -10,12 +10,15 @@ import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.JumpEvent;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.event.UpdateEvent;
+import net.ccbluex.liquidbounce.event.PacketEvent;
+import net.ccbluex.liquidbounce.event.Render3DEvent;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
+import net.ccbluex.liquidbounce.utils.PacketUtils;
 import net.ccbluex.liquidbounce.value.*;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemEnderPearl;
@@ -30,6 +33,7 @@ public class LongJump extends Module {
     private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
     private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F);
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
+    private final BoolValue keepYValue = new BoolValue("KeepRenderY", false);
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false);
     private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false);
     private final IntegerValue redeskyTickValue = new IntegerValue("Redesky-Ticks", 21, 1, 25);
@@ -55,7 +59,10 @@ public class LongJump extends Module {
     private boolean verusDmged = false;
     private int pearlState = 0;
 
+    private boolean shouldStopSprinting = false;
+
     public void onEnable() {
+        if (mc.thePlayer == null) return;
         if (modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get()) {
             currentTimer = redeskyTimerBoostStartValue.get();
         }
@@ -63,17 +70,22 @@ public class LongJump extends Module {
         ticks = 0;
         verusDmged = false;
         pearlState = 0;
+        shouldStopSprinting = mc.thePlayer.isSprinting();
 
         double y = mc.thePlayer.posY;
 
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
+            if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
             if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
                 mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
             }
         }
+
+        if (modeValue.get().equalsIgnoreCase("verusdmg") || modeValue.get().equalsIgnoreCase("pearl"))
+            if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
     }
 
     @EventTarget
@@ -81,11 +93,16 @@ public class LongJump extends Module {
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
             if (mc.thePlayer.hurtTime > 0 && !verusDmged) {
                 verusDmged = true;
+                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 MovementUtils.strafe(verusBoostValue.get());
                 mc.thePlayer.motionY = verusHeightValue.get();
             }
             if (verusDmged)
                 mc.timer.timerSpeed = verusTimerValue.get();
+            else {
+                mc.thePlayer.movementInput.moveForward = 0F;
+                mc.thePlayer.movementInput.moveStrafe = 0F;
+            }
 
             return;
         }
@@ -94,6 +111,7 @@ public class LongJump extends Module {
             int enderPearlSlot = getPearlSlot();
             if (pearlState == 0) {
                 if (enderPearlSlot == -1) {
+                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                     LiquidBounce.hud.addNotification(new Notification("You don't have any ender pearl!", Notification.Type.ERROR));
                     pearlState = -1;
                     this.setState(false);
@@ -112,6 +130,7 @@ public class LongJump extends Module {
 
             if (pearlState == 1 && mc.thePlayer.hurtTime > 0) {
                 pearlState = 2;
+                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 MovementUtils.strafe(pearlBoostValue.get());
                 mc.thePlayer.motionY = pearlHeightValue.get();
             }
@@ -256,6 +275,15 @@ public class LongJump extends Module {
 
         if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged) || (mode.equalsIgnoreCase("pearl") && pearlState != 2))
             event.cancelEvent();
+    }
+
+    @EventTarget
+    public void onPacket(PacketEvent event) {
+        final String mode = modeValue.get();
+        if (event.getPacket() instanceof C03PacketPlayer) {
+            C03PacketPlayer c03 = (C03PacketPlayer) event.getPacket();
+            if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged) || (mode.equalsIgnoreCase("pearl") && pearlState != 2)) c03.setMoving(false);
+        }
     }
 
     @EventTarget(ignoreCondition = true)

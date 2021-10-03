@@ -90,6 +90,8 @@ class KillAura : Module() {
 
     // Modes
     private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "NCP"), "BackTrack")
+    private val roundNCPValue = BoolValue("NCP-Rounded", false)
+
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
 
@@ -109,7 +111,7 @@ class KillAura : Module() {
 
     // Bypass
     private val aacValue = BoolValue("AAC", false)
-    private val aacPitchValue = IntegerValue("AAC-Pitch", 15, 0, 90)
+    private val aacPitchValue = IntegerValue("AAC-Pitch", 15, -90, 90)
 
     // Turn Speed
     private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f) {
@@ -129,6 +131,18 @@ class KillAura : Module() {
     private val silentRotationValue = BoolValue("SilentRotation", true)
     private val rotationStrafeValue = ListValue("Strafe", arrayOf("Off", "Strict", "Silent"), "Off")
     private val randomCenterValue = BoolValue("RandomCenter", true)
+    private val minRand: FloatValue = object : FloatValue("RandomMinMultiply", 0.8f, 0f, 2f) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = maxRand.get()
+            if (v < newValue) set(v)
+        }
+    }
+    private val maxRand: FloatValue = object : FloatValue("RandomMaxMultiply", 0.8f, 0f, 2f) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = minRand.get()
+            if (v > newValue) set(v)
+        }
+    }
     private val outborderValue = BoolValue("Outborder", false)
     private val fovValue = FloatValue("FOV", 180f, 0f, 180f)
 
@@ -157,7 +171,7 @@ class KillAura : Module() {
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50)
 
     // Visuals
-    val moveMarkValue = FloatValue("MoveMark", 0f, 0f, 2F)
+    val moveMarkValue = FloatValue("MoveMark", 0F, 0F, 2F)
     private val circleValue = BoolValue("Circle", true)
     private val accuracyValue = IntegerValue("Accuracy", 59, 0, 59)
     private val fakeSharpValue = BoolValue("FakeSharp", true)
@@ -673,14 +687,15 @@ class KillAura : Module() {
                     randomCenterValue.get(),
                     predictValue.get(),
                     mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),
-                    maxRange
+                    maxRange,
+                    RandomUtils.nextFloat(minRand.get(), maxRand.get())
             ) ?: return false
 
             val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
                     (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
 
             if (silentRotationValue.get())
-                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 90 - aacPitchValue.get() else 0)
+                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) aacPitchValue.get() else 0)
             else
                 limitedRotation.toPlayer(mc.thePlayer!!)
 
@@ -706,8 +721,10 @@ class KillAura : Module() {
                     maxRange
             ) ?: return false
 
-            val limitedRotation = rotation//RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
-                    //(Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
+            val limitedRotation = rotation
+
+            if (roundNCPValue.get())
+                rotation.yaw = RotationUtils.roundRotation(rotation.yaw)
 
             if (silentRotationValue.get())
                 RotationUtils.setTargetRotation(limitedRotation, 0)

@@ -18,6 +18,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
+import net.ccbluex.liquidbounce.utils.render.CoolUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FontValue
@@ -25,12 +26,15 @@ import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.client.gui.Gui
+import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.scoreboard.ScoreObjective
 import net.minecraft.scoreboard.ScorePlayerTeam
 import net.minecraft.scoreboard.Scoreboard
 import net.minecraft.util.EnumChatFormatting
 import java.awt.Color
+
+import org.lwjgl.opengl.GL11
 
 /**
  * CustomHUD scoreboard
@@ -47,6 +51,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 95, 0, 255)
 
     private val rectValue = BoolValue("Rect", false)
+    private val blurValue = BoolValue("Blur", false)
     private val rectColorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "LiquidSlowly", "Fade", "Sky", "Mixer"), "Custom")
     
     private val rectColorRedValue = IntegerValue("Red", 0, 0, 255)
@@ -134,6 +139,22 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
         var liquidSlowli : Int = LiquidSlowly!!
 
         val mixerColor = ColorMixer.getMixedColor(0, cRainbowSecValue.get()).rgb
+
+        if (blurValue.get()) {
+            GL11.glPushMatrix()
+            GL11.glScalef(1F, 1F, 1F)
+            GL11.glTranslated(-renderX, -renderY, 0.0)
+            if (side.horizontal == Side.Horizontal.LEFT) 
+                CoolUtils.blurArea((renderX.toFloat() + l1 + 2F) * scale, (renderY.toFloat() + -2F) * scale, 
+                    (renderX.toFloat() + -5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, 5F)
+            else
+                CoolUtils.blurArea((renderX.toFloat() + l1 - 2F) * scale, (renderY.toFloat() + -2F) * scale, 
+                    (renderX.toFloat() + 5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, 5F)
+
+            GL11.glTranslated(renderX, renderY, 0.0)
+            GL11.glScalef(scale, scale, scale)
+            GL11.glPopMatrix()
+        }
  
         if (side.horizontal == Side.Horizontal.LEFT) 
             Gui.drawRect(l1 + 2, -2, -5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)

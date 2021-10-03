@@ -95,6 +95,8 @@ public final class RenderUtils extends MinecraftInstance {
 
     private static final Frustum frustrum = new Frustum();
 
+    protected static float zLevel = 0F;
+
     public static boolean isInViewFrustrum(Entity entity) {
         return isInViewFrustrum(entity.getEntityBoundingBox()) || entity.ignoreFrustumCheck;
     }
@@ -379,6 +381,35 @@ public final class RenderUtils extends MinecraftInstance {
         glDisable(3042);
         glDisable(2848);
         glShadeModel(7424);
+    }
+    
+    public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
+    {
+        float f = (float)(startColor >> 24 & 255) / 255.0F;
+        float f1 = (float)(startColor >> 16 & 255) / 255.0F;
+        float f2 = (float)(startColor >> 8 & 255) / 255.0F;
+        float f3 = (float)(startColor & 255) / 255.0F;
+        float f4 = (float)(endColor >> 24 & 255) / 255.0F;
+        float f5 = (float)(endColor >> 16 & 255) / 255.0F;
+        float f6 = (float)(endColor >> 8 & 255) / 255.0F;
+        float f7 = (float)(endColor & 255) / 255.0F;
+        GlStateManager.disableTexture2D();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlpha();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.shadeModel(7425);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        worldrenderer.pos((double)right, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos((double)left, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos((double)left, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos((double)right, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
+        tessellator.draw();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
     }
 
     public static void drawGradientSideways(final float left, final float top, final float right, final float bottom, final int col1, final int col2) {

@@ -49,7 +49,7 @@ public abstract class MixinGuiInGame {
 
     @Inject(method = "renderScoreboard", at = @At("HEAD"), cancellable = true)
     private void renderScoreboard(ScoreObjective scoreObjective, ScaledResolution scaledResolution, CallbackInfo callbackInfo) {
-        AutoHypixel.gameMode = ColorUtils.stripColor(scoreObjective.getDisplayName());
+        if (scoreObjective != null) AutoHypixel.gameMode = ColorUtils.stripColor(scoreObjective.getDisplayName());
 
         final AntiBlind antiBlind = (AntiBlind) LiquidBounce.moduleManager.getModule(AntiBlind.class);
         if ((antiBlind.getState() && antiBlind.getScoreBoard().get()) || LiquidBounce.moduleManager.getModule(HUD.class).getState())

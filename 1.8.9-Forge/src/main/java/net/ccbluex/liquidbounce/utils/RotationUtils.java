@@ -198,6 +198,15 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
         return new Vec3(bb.minX + (bb.maxX - bb.minX) * 0.5, bb.minY + (bb.maxY - bb.minY) * 0.5, bb.minZ + (bb.maxZ - bb.minZ) * 0.5);
     }
 
+    public static VecRotation searchCenter(final AxisAlignedBB bb, final boolean outborder, final boolean random,
+                                           final boolean predict, final boolean throughWalls, final float distance) {
+        return searchCenter(bb, outborder, random, predict, throughWalls, distance, 0F);
+    }
+
+    public static float roundRotation(float yaw) {
+        return (int) Math.round(yaw / 45) * 45;
+    }
+
     /**
      * Search good center
      *
@@ -209,13 +218,13 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
      * @return center
      */
     public static VecRotation searchCenter(final AxisAlignedBB bb, final boolean outborder, final boolean random,
-                                           final boolean predict, final boolean throughWalls, final float distance) {
+                                           final boolean predict, final boolean throughWalls, final float distance, final float randomMultiply) {
         if(outborder) {
             final Vec3 vec3 = new Vec3(bb.minX + (bb.maxX - bb.minX) * (x * 0.3 + 1.0), bb.minY + (bb.maxY - bb.minY) * (y * 0.3 + 1.0), bb.minZ + (bb.maxZ - bb.minZ) * (z * 0.3 + 1.0));
             return new VecRotation(vec3, toRotation(vec3, predict));
         }
 
-        final Vec3 randomVec = new Vec3(bb.minX + (bb.maxX - bb.minX) * x * 0.8, bb.minY + (bb.maxY - bb.minY) * y * 0.8, bb.minZ + (bb.maxZ - bb.minZ) * z * 0.8);
+        final Vec3 randomVec = new Vec3(bb.minX + (bb.maxX - bb.minX) * x * randomMultiply, bb.minY + (bb.maxY - bb.minY) * y * randomMultiply, bb.minZ + (bb.maxZ - bb.minZ) * z * randomMultiply);
         final Rotation randomRotation = toRotation(randomVec, predict);
 
         final Vec3 eyes = mc.thePlayer.getPositionEyes(1F);

@@ -66,7 +66,7 @@ class TargetStrafe : Module() {
 
     override fun onEnable() {
         hasChangedThirdPerson = true
-        lastView = 0
+        lastView = mc.gameSettings.thirdPersonView
     }
 
     @EventTarget
@@ -108,7 +108,7 @@ class TargetStrafe : Module() {
             
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
 
-        val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw).toInt()
+        val targetReduced = MathHelper.wrapAngleTo180_float(target!!.rotationYaw - 180F).toInt()
         val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt()
 
         val prediction = if (currentReduced < targetReduced) 

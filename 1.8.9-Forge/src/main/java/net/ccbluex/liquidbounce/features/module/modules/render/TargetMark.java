@@ -67,13 +67,13 @@ public class TargetMark extends Module {
 
 	@EventTarget
 	public void onMotion(MotionEvent event) {
-		/*if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi"))
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.1F : -0.1F), 0F, colorAlphaValue.get() / 255.0F);*/
+		if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi"))
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.1F : -0.1F), 0F, colorAlphaValue.get() / 255.0F);
 	}
 	
 	@EventTarget
 	public void onRender3D(Render3DEvent event) {
-        /*if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
+        if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi")) {
 		    double lastY = yPos;
 
 			if (al > 0F) {
@@ -118,41 +118,19 @@ public class TargetMark extends Module {
 		    pre3D();
 		    //post circles
 			GL11.glTranslated(-mc.getRenderManager().viewerPosX, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
-		    GL11.glBegin(GL11.GL_POLYGON);
+			
+		    GL11.glBegin(GL11.GL_QUAD_STRIP);
 
-			double preX = posX - Math.sin(0 * Math.PI / 180) * radius;
-			double preZ = posZ + Math.cos(0 * Math.PI / 180) * radius;
-
-			if (direction > 0) {
-				GL11.glColor4f(r, g, b, 0F);
-				GL11.glVertex3d(preX, posY + yPos + deltaY, preZ);
-
-				GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
-				for (int i = 0; i <= 360; i++) {
-					double calc = i * Math.PI / 180;
-			    	double posX2 = posX - Math.sin(calc) * radius;
-			    	double posZ2 = posZ + Math.cos(calc) * radius;
-
-					GL11.glVertex3d(posX2, posY + yPos, posZ2);
-				}
+			for (int i = 0; i <= 360; i++) {
+				double calc = i * Math.PI / 180;
+			   	double posX2 = posX - Math.sin(calc) * radius;
+			   	double posZ2 = posZ + Math.cos(calc) * radius;
 
 				GL11.glColor4f(r, g, b, 0F);
-				GL11.glVertex3d(preX, posY + yPos + deltaY, preZ);
-			} else {
+				GL11.glVertex3d(posX2, posY + yPos + deltaY, posZ2);
+				
 				GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
-				GL11.glVertex3d(preX, posY + yPos, preZ);
-
-				GL11.glColor4f(r, g, b, 0F);
-				for (int i = 0; i <= 360; i++) {
-					double calc = i * Math.PI / 180;
-			    	double posX2 = posX - Math.sin(calc) * radius;
-			    	double posZ2 = posZ + Math.cos(calc) * radius;
-
-					GL11.glVertex3d(posX2, posY + yPos + deltaY, posZ2);
-				}
-
-				GL11.glColor4f(r, g, b, al * jelloAlphaValue.get());
-				GL11.glVertex3d(preX, posY + yPos, preZ);
+				GL11.glVertex3d(posX2, posY + yPos, posZ2);
 			}
 
 		    GL11.glEnd();
@@ -160,7 +138,7 @@ public class TargetMark extends Module {
 		    drawCircle(posX, posY + yPos, posZ, jelloWidthValue.get(), radius, r, g, b, al);
 
 		    post3D();
-        } else */if (modeValue.get().equalsIgnoreCase("default")) {
+        } else if (modeValue.get().equalsIgnoreCase("default")) {
             if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawPlatform(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()));
         } else {
             if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawEntityBox(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()), false);

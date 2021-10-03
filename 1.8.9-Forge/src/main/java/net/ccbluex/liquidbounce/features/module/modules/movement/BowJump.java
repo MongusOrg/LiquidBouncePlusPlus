@@ -49,11 +49,14 @@ public class BowJump extends Module {
 
     private int lastSlot = -1;
 
+    private boolean shouldStopSprinting = false;
+
     public void onEnable() {
         if (mc.thePlayer == null) return;
         bowState = 0;
         lastPlayerTick = -1;
         lastSlot = mc.thePlayer.inventory.currentItem;
+        shouldStopSprinting = mc.thePlayer.isSprinting();
 
         MovementUtils.strafe(0);
     }
@@ -71,6 +74,11 @@ public class BowJump extends Module {
             lastSlot = c09.getSlotId();
             event.cancelEvent();
         }
+
+        if (event.getPacket() instanceof C03PacketPlayer) {
+            C03PacketPlayer c03 = (C03PacketPlayer) event.getPacket();
+            if (bowState < 3) c03.setMoving(false);
+        }
     }
 
     @EventTarget
@@ -87,6 +95,7 @@ public class BowJump extends Module {
                 bowState = 5;
                 break; // nothing to shoot
             } else if (lastPlayerTick == -1) {
+                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
                 ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(slot + 36).getStack();
 
                 if (lastSlot != slot) PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(slot));
@@ -111,6 +120,7 @@ public class BowJump extends Module {
                 bowState = 3;
             break;
         case 3:
+            if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
             MovementUtils.strafe(boostValue.get());
             mc.thePlayer.motionY = heightValue.get();
             bowState = 4;
@@ -121,6 +131,11 @@ public class BowJump extends Module {
             if (mc.thePlayer.onGround && mc.thePlayer.ticksExisted - lastPlayerTick >= 1)
                 bowState = 5;
             break;
+        }
+
+        if (bowState < 3) {
+            mc.thePlayer.movementInput.moveForward = 0F;
+            mc.thePlayer.movementInput.moveStrafe = 0F;
         }
 
         if (bowState == 5 && (autoDisable.get() || forceDisable)) 

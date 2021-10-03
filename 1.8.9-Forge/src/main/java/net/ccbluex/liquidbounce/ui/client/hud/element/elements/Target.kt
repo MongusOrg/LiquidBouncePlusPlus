@@ -309,18 +309,18 @@ class Target : Element() {
                     // no gradient: RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
 
                     when (colorModeValue.get().toLowerCase()) {
-                        "custom" -> RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
-                        "health" -> RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
+                        "custom" -> RenderUtils.drawRect(5F, 41F, 5F + barWidth, 49F, barColor.rgb)
+                        "health" -> RenderUtils.drawRect(5F, 41F, 5F + barWidth, 49F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
                         else -> { //perform the for-loop gradient trick.
                             GL11.glPushMatrix()
                             GL11.glScalef(1F, 1F, 1F) //reset scale
                             GL11.glEnable(3089)
-                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 40F * scale + renderY.toFloat(), 5F * scale + renderX.toFloat() + barWidth * scale, 50F * scale + renderY.toFloat())
+                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 0F, 5F * scale + renderX.toFloat() + barWidth * scale, 49F * scale + renderY.toFloat())
                             GL11.glScalef(scale, scale, scale)
                             for (i in 0..(gradientAmountValue.get()-1)) {
                                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
-                                RenderUtils.drawGradientSideways(5.0 + barStart, 40.0, 5.0 + barEnd, 50.0, 
+                                RenderUtils.drawGradientSideways(5.0 + barStart, 41.0, 5.0 + barEnd, 49.0, 
                                 when (colorModeValue.get()) {
                                     "Rainbow" -> RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), i * distanceValue.get())
                                     "Sky" -> RenderUtils.SkyRainbow(i * distanceValue.get(), saturationValue.get(), brightnessValue.get())
