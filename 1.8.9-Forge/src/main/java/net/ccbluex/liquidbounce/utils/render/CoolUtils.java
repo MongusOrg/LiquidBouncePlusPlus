@@ -63,10 +63,12 @@ public class CoolUtils extends MinecraftInstance {
 
         setValues(blurStrength);
 
+        framebuffer.framebufferClear();
+
         framebuffer.bindFramebuffer(true);
         shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);
 
-        mc.getFramebuffer().bindFramebuffer(false);
+        mc.getFramebuffer().bindFramebuffer(true);
 
         RenderUtils.makeScissorBox(x, y, x2, y2);
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
@@ -78,7 +80,7 @@ public class CoolUtils extends MinecraftInstance {
         float f3 = (float)framebuffer.framebufferHeight / (float)framebuffer.framebufferTextureHeight;
 
         GL11.glColor4f(1, 1, 1, 1);
-        framebuffer.bindFramebufferTexture();
+        mc.getFramebuffer().bindFramebufferTexture();
         GL11.glBegin(GL11.GL_QUADS);
         GL11.glTexCoord2f(0, 0);
         GL11.glVertex2f(0, height);
@@ -89,11 +91,11 @@ public class CoolUtils extends MinecraftInstance {
         GL11.glTexCoord2f(0, 0);
         GL11.glVertex2f(0, height);
         GL11.glEnd();
-        framebuffer.unbindFramebufferTexture();
+        mc.getFramebuffer().unbindFramebufferTexture();
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
 
 
-        mc.getFramebuffer().bindFramebuffer(true);
+        mc.getFramebuffer().unbindFramebuffer();
 
         GlStateManager.enableAlpha();
     }

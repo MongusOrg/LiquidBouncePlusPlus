@@ -91,6 +91,7 @@ class KillAura : Module() {
     // Modes
     private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "NCP"), "BackTrack")
     private val roundNCPValue = BoolValue("NCP-Rounded", false)
+    private val roundStrength = IntegerValue("NCP-RoundStrength", 9, 1, 9)
 
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
@@ -724,7 +725,7 @@ class KillAura : Module() {
             val limitedRotation = rotation
 
             if (roundNCPValue.get())
-                rotation.yaw = RotationUtils.roundRotation(rotation.yaw)
+                rotation.yaw = RotationUtils.roundRotation(rotation.yaw, roundStrength.get() * 5)
 
             if (silentRotationValue.get())
                 RotationUtils.setTargetRotation(limitedRotation, 0)

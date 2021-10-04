@@ -203,8 +203,8 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
         return searchCenter(bb, outborder, random, predict, throughWalls, distance, 0F);
     }
 
-    public static float roundRotation(float yaw) {
-        return (int) Math.round(yaw / 45) * 45;
+    public static float roundRotation(float yaw, int strength) {
+        return (int) Math.round(yaw / strength) * strength;
     }
 
     /**
