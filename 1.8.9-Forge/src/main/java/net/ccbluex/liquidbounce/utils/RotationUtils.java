@@ -200,7 +200,7 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
 
     public static VecRotation searchCenter(final AxisAlignedBB bb, final boolean outborder, final boolean random,
                                            final boolean predict, final boolean throughWalls, final float distance) {
-        return searchCenter(bb, outborder, random, predict, throughWalls, distance, 0F);
+        return searchCenter(bb, outborder, random, predict, throughWalls, distance, 0F, false);
     }
 
     public static float roundRotation(float yaw, int strength) {
@@ -218,13 +218,13 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
      * @return center
      */
     public static VecRotation searchCenter(final AxisAlignedBB bb, final boolean outborder, final boolean random,
-                                           final boolean predict, final boolean throughWalls, final float distance, final float randomMultiply) {
+                                           final boolean predict, final boolean throughWalls, final float distance, final float randomMultiply, final boolean newRandom) {
         if(outborder) {
             final Vec3 vec3 = new Vec3(bb.minX + (bb.maxX - bb.minX) * (x * 0.3 + 1.0), bb.minY + (bb.maxY - bb.minY) * (y * 0.3 + 1.0), bb.minZ + (bb.maxZ - bb.minZ) * (z * 0.3 + 1.0));
             return new VecRotation(vec3, toRotation(vec3, predict));
         }
 
-        final Vec3 randomVec = new Vec3(bb.minX + (bb.maxX - bb.minX) * x * randomMultiply, bb.minY + (bb.maxY - bb.minY) * y * randomMultiply, bb.minZ + (bb.maxZ - bb.minZ) * z * randomMultiply);
+        final Vec3 randomVec = new Vec3(bb.minX + (bb.maxX - bb.minX) * x * randomMultiply * (newRandom ? Math.random() : 1), bb.minY + (bb.maxY - bb.minY) * y * randomMultiply * (newRandom ? Math.random() : 1), bb.minZ + (bb.maxZ - bb.minZ) * z * randomMultiply * (newRandom ? Math.random() : 1));
         final Rotation randomRotation = toRotation(randomVec, predict);
 
         final Vec3 eyes = mc.thePlayer.getPositionEyes(1F);
