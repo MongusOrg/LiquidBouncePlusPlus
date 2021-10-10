@@ -33,7 +33,6 @@ public class LongJump extends Module {
     private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
     private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F);
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
-    private final BoolValue keepYValue = new BoolValue("KeepRenderY", false);
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false);
     private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false);
     private final IntegerValue redeskyTickValue = new IntegerValue("Redesky-Ticks", 21, 1, 25);

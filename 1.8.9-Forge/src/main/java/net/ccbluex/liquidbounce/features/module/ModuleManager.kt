@@ -154,7 +154,8 @@ class ModuleManager : Listenable {
                 AsianHat::class.java,
                 BowJump::class.java,
                 ConsoleSpammer::class.java,
-                PointerESP::class.java
+                PointerESP::class.java,
+                SafeWalk::class.java
         )
 
         registerModule(Fucker)

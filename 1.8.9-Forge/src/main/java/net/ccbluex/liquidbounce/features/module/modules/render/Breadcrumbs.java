@@ -48,6 +48,7 @@ public class Breadcrumbs extends Module {
             glEnable(GL_BLEND);
             glDisable(GL_DEPTH_TEST);
             mc.entityRenderer.disableLightmap();
+            glLineWidth(1f);
             glBegin(GL_LINE_STRIP);
             
             final double renderPosX = mc.getRenderManager().viewerPosX;

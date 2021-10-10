@@ -21,6 +21,8 @@ public class CoolUtils extends MinecraftInstance {
     private static ShaderGroup shaderGroup;
     private static Framebuffer framebuffer;
 
+    private static Framebuffer frbuffer;
+
     private static int lastFactor;
     private static int lastWidth;
     private static int lastHeight;
@@ -31,7 +33,8 @@ public class CoolUtils extends MinecraftInstance {
 
     public static void init() {
         try {
-            shaderGroup = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), mc.getFramebuffer(), blurShader);
+            frbuffer = new Framebuffer(mc.displayWidth / 4F, mc.displayHeight / 4F, true);
+            shaderGroup = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), frbuffer, blurShader);
             shaderGroup.createBindFramebuffers(mc.displayWidth, mc.displayHeight);
             framebuffer = shaderGroup.mainFramebuffer;
         } catch (JsonSyntaxException | IOException e) {
@@ -63,38 +66,23 @@ public class CoolUtils extends MinecraftInstance {
 
         setValues(blurStrength);
 
+        frbuffer.bindFramebuffer(false);
+        mc.getFramebuffer().framebufferRenderExt(width, height, false);
+        frbuffer.unbindFramebuffer();
+
         framebuffer.framebufferClear();
 
         framebuffer.bindFramebuffer(true);
         shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);
 
-        mc.getFramebuffer().bindFramebuffer(true);
+        frbuffer.bindFramebuffer(true);
 
-        framebuffer.unbindFramebuffer();
-
-        RenderUtils.makeScissorBox(x, y, x2, y2);
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableLighting();
-        GlStateManager.disableAlpha();
-
-        float f2 = (float)framebuffer.framebufferWidth / (float)framebuffer.framebufferTextureWidth;
-        float f3 = (float)framebuffer.framebufferHeight / (float)framebuffer.framebufferTextureHeight;
-
+        /*Stencil.write(false);
+        RenderUtils.quickDrawRect(x, y, x2, y2);
+        Stencil.erase(true);
         GL11.glColor4f(1, 1, 1, 1);
-        framebuffer.bindFramebufferTexture();
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glTexCoord2f(0, 0);
-        GL11.glVertex2f(0, height);
-        GL11.glTexCoord2f(f2, 0);
-        GL11.glVertex2f(width, height);
-        GL11.glTexCoord2f(f2, f3);
-        GL11.glVertex2f(width, 0);
-        GL11.glTexCoord2f(0, 0);
-        GL11.glVertex2f(0, height);
-        GL11.glEnd();
-        framebuffer.unbindFramebufferTexture();
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
+        frbuffer.framebufferRenderExt(width, height, false);
+        Stencil.dispose();*/
 
         GlStateManager.enableAlpha();
     }

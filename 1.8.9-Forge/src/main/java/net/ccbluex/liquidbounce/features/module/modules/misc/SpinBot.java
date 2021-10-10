@@ -21,7 +21,6 @@ public class SpinBot extends Module
     private final IntegerValue YawJitterTimer = new IntegerValue("YawJitterTimer", 1, 1, 40);
     private final IntegerValue PitchJitterTimer = new IntegerValue("PitchJitterTimer", 1, 1, 40);
     private final IntegerValue YawSpin = new IntegerValue("YawSpin", 5, -50, 50);
-    private final BoolValue auraOnly = new BoolValue("Aura-Only", false);
 
     public static float pitch;
     public static float lastSpin;
