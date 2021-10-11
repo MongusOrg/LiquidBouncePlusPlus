@@ -17,6 +17,7 @@ import net.ccbluex.liquidbounce.utils.*;
 import net.ccbluex.liquidbounce.utils.block.BlockUtils;
 import net.ccbluex.liquidbounce.utils.block.PlaceInfo;
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils;
+import net.ccbluex.liquidbounce.utils.render.BlurUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.utils.timer.TickTimer;
 import net.ccbluex.liquidbounce.value.BoolValue;
@@ -103,6 +104,8 @@ public class Tower extends Module {
     // Render
     private final ListValue counterDisplayValue = new ListValue("Counter", new String[]{"Off", "Simple", "Advanced", "Sigma", "Novoline"}, "Simple");
 
+    private final BoolValue blurValue = new BoolValue("Blur-Advanced", false);
+    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 10F);
 
     /**
      * MODULE
@@ -444,6 +447,9 @@ public class Tower extends Module {
             Fonts.minecraftFont.drawString(getBlocksAmount()+"", scaledResolution.getScaledWidth() / 2 - (infoWidth2 / 2), scaledResolution.getScaledHeight() / 2 - 36, -1, false);
         }
         if (counterMode.equalsIgnoreCase("advanced")) {
+            if (blurValue.get())
+                BlurUtils.blurArea(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() / 2 - 39, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() / 2 - 26, blurStrength.get());
+
             RenderUtils.drawRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() / 2 - 40, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() / 2 - 39, (getBlocksAmount() > 1 ? 0xFFFFFFFF : 0xFFFF1010));
             RenderUtils.drawRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() / 2 - 39, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() / 2 - 26, 0xA0000000);
 

@@ -22,6 +22,7 @@ import net.ccbluex.liquidbounce.utils.CPSCounter
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.ServerUtils
 import net.ccbluex.liquidbounce.utils.PacketUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.UiUtils
@@ -73,6 +74,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     private val backgroundValue = BoolValue("Background", true)
     private val skeetRectValue = BoolValue("SkeetRect", false)
     private val lineValue = BoolValue("Line", true)
+    private val blurValue = BoolValue("Blur", true)
+    private val blurStrength = FloatValue("BlurStrength", 1F, 0F, 10F)
     private val redValue = IntegerValue("Red", 255, 0, 255)
     private val greenValue = IntegerValue("Green", 255, 0, 255)
     private val blueValue = IntegerValue("Blue", 255, 0, 255)
@@ -205,6 +208,17 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             Side.Horizontal.LEFT -> GL11.glTranslatef(0F, 0F, 0F)
             Side.Horizontal.MIDDLE -> GL11.glTranslatef(-fontRenderer.getStringWidth(displayText).toFloat() / 2F, 0F, -fontRenderer.getStringWidth(displayText).toFloat() / 2F)
             Side.Horizontal.RIGHT -> GL11.glTranslatef(-fontRenderer.getStringWidth(displayText).toFloat(), 0F, -fontRenderer.getStringWidth(displayText).toFloat())
+        }
+
+        val floatX = renderX.toFloat()
+        val floatY = renderY.toFloat()
+
+        if (blurValue.get()) {
+            GL11.glTranslated(-renderX, -renderY, 0.0)
+            GL11.glPushMatrix()
+            BlurUtils.blurArea(floatX - 2F, floatY - 2F, floatX + fontRenderer.getStringWidth(displayText) + 2F, floatY + fontRenderer.FONT_HEIGHT, blurStrength.get())
+            GL11.glPopMatrix()
+            GL11.glTranslated(renderX, renderY, 0.0)
         }
 
         if (backgroundValue.get()) {

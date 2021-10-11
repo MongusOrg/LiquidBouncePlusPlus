@@ -16,11 +16,12 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
-import net.ccbluex.liquidbounce.utils.render.ColorUtils
-import net.ccbluex.liquidbounce.utils.render.RenderUtils
-import net.ccbluex.liquidbounce.utils.render.EaseUtils
-import net.ccbluex.liquidbounce.utils.render.UiUtils
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
+import net.ccbluex.liquidbounce.utils.render.ColorUtils
+import net.ccbluex.liquidbounce.utils.render.EaseUtils
+import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.utils.render.UiUtils
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -55,6 +56,8 @@ class Target : Element() {
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
     private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
+    private val blurValue = BoolValue("Blur", false)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 10F)
     private val tSlideAnim = BoolValue("TSlide-Animation", true)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
@@ -126,7 +129,7 @@ class Target : Element() {
         val animProgress = EaseUtils.easeInQuart(progress.toDouble())
         val tHeight = getTBorder().y2 - getTBorder().y
 
-        if (tSlideAnim.get()) {
+        if (tSlideAnim.get() && !styleValue.get().equals("rise", true)) {
             GL11.glPushMatrix()
             GL11.glTranslated(0.0, (-renderY - tHeight.toDouble()) * animProgress, 0.0)
         }
@@ -251,7 +254,7 @@ class Target : Element() {
                     RenderUtils.drawRect(0F, 32F, (easingHealth / convertedTarget.maxHealth.toFloat()).coerceIn(0F, convertedTarget.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
                 }
 
-                // without the new rise update i would never think of recreating this convertedTargethud lol
+                // without the new rise update i would never think of recreating this converted Targethud lol
                 "Rise" -> {
                     val font = Fonts.fontSFUI40
                     val name = "Name ${convertedTarget.name}"
@@ -262,6 +265,17 @@ class Target : Element() {
                     val healthName = decimalFormat2.format(easingHealth).toString()
 
                     val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
+
+                    val floatX = renderX.toFloat()
+                    val floatY = renderY.toFloat()
+
+                    if (blurValue.get()) {
+                        GL11.glTranslated(-renderX, -renderY, 0.0)
+                        GL11.glPushMatrix()
+                        BlurUtils.blurAreaRounded(floatX, floatY, floatX + 10F + length, floatY + 55F, 2.5F, blurStrength.get())
+                        GL11.glPopMatrix()
+                        GL11.glTranslated(renderX, renderY, 0.0)
+                    }
 
                     RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
 
@@ -465,7 +479,7 @@ class Target : Element() {
             particleList.clear()
         }
 
-        if (tSlideAnim.get())
+        if (tSlideAnim.get() && !styleValue.get().equals("rise", true))
             GL11.glPopMatrix()
             
         GlStateManager.resetColor()

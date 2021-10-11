@@ -18,7 +18,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
-import net.ccbluex.liquidbounce.utils.render.CoolUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FontValue
@@ -52,6 +52,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
     private val rectValue = BoolValue("Rect", false)
     private val blurValue = BoolValue("Blur", false)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 10F)
+
     private val rectColorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "LiquidSlowly", "Fade", "Sky", "Mixer"), "Custom")
     
     private val rectColorRedValue = IntegerValue("Red", 0, 0, 255)
@@ -145,11 +147,11 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             GL11.glScalef(1F, 1F, 1F)
             GL11.glTranslated(-renderX, -renderY, 0.0)
             if (side.horizontal == Side.Horizontal.LEFT) 
-                CoolUtils.blurArea((renderX.toFloat() + l1 + 2F) * scale, (renderY.toFloat() + -2F) * scale, 
-                    (renderX.toFloat() + -5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, 5F)
+                BlurUtils.blurArea((renderX.toFloat() + l1 + 2F) * scale, (renderY.toFloat() + -2F) * scale, 
+                    (renderX.toFloat() + -5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
             else
-                CoolUtils.blurArea((renderX.toFloat() + l1 - 2F) * scale, (renderY.toFloat() + -2F) * scale, 
-                    (renderX.toFloat() + 5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, 5F)
+                BlurUtils.blurArea((renderX.toFloat() + l1 - 2F) * scale, (renderY.toFloat() + -2F) * scale, 
+                    (renderX.toFloat() + 5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
 
             GL11.glTranslated(renderX, renderY, 0.0)
             GL11.glScalef(scale, scale, scale)
