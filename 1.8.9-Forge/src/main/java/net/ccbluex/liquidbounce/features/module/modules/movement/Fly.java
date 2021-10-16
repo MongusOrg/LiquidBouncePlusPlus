@@ -82,7 +82,7 @@ public class Fly extends Module {
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06"}, "None");
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Test"}, "None");
     private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
     private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
     private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
@@ -181,6 +181,9 @@ public class Fly extends Module {
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
                         mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
                     }
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("Test")) {
+                    if (mc.thePlayer.onGround)
+                        mc.thePlayer.jump();
                 } else {
                     // set dmged = true since there's no damage method
                     verusDmged = true;
@@ -509,7 +512,11 @@ public class Fly extends Module {
                 break;
             case "verus": 
                 if (!verusDmged)
-                    event.cancelEvent();
+                    if (verusDmgModeValue.get().equalsIgnoreCase("test"))
+                        event.zeroXZ();
+                    else
+                        event.cancelEvent();
+
                 break;
         }
     }

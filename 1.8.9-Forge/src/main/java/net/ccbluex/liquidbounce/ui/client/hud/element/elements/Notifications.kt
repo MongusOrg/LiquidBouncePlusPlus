@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.LiquidBounce.hud
 import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
@@ -18,6 +19,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.utils.render.AnimationUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
 
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -36,6 +38,8 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
 
     private val smoothYTransition = BoolValue("Smooth-YTransition", true)
     private val barValue = BoolValue("Bar", true)
+    private val blurValue = BoolValue("Blur", false)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 10F)
     private val newValue = BoolValue("New", true)
     private val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgGreenValue = IntegerValue("Background-Red", 0, 0, 255)
@@ -60,9 +64,9 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         
         if (mc.currentScreen !is GuiHudDesigner || !notifications.isEmpty()) 
             for(i in notifications)
-                i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
+                i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
         else
-            exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get())
+            exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat())
         if (mc.currentScreen is GuiHudDesigner) {
             exampleNotification.fadeState = Notification.FadeState.STAY
             //exampleNotification.stayTimer.reset()
@@ -118,7 +122,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         IN,STAY,OUT,END
     }
 
-    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side, bar: Boolean, new: Boolean) {
+    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side, bar: Boolean, new: Boolean, blur: Boolean, strength: Float, originalX: Float, originalY: Float) {
         val delta = RenderUtils.deltaTime
         val width = textLength.toFloat() + 8.0f
         
@@ -135,6 +139,14 @@ class Notification(message : String,type : Type, displayLength: Long) {
 
         if (new) {
             GlStateManager.resetColor()
+            if (blur) {
+                GL11.glTranslatef(-originalX, -originalY, 0F)
+                GL11.glPushMatrix()
+                BlurUtils.blurAreaRounded(originalX + -x - 5F, originalY + -18F - y, originalX + -x + 8F + textLength, originalY + -y, 3F, strength)
+                GL11.glPopMatrix()
+                GL11.glTranslatef(originalX, originalY, 0F)
+            } 
+
             RenderUtils.customRounded(-x + 8F + textLength, -y, -x - 2F, -18F - y, 0F, 3F, 3F, 0F, backgroundColor.rgb)
             RenderUtils.customRounded(-x - 2F, -y, -x - 5F, -18F - y, 3F, 0F, 0F, 3F, when(type) {
                     Type.SUCCESS -> Color(80, 255, 80).rgb
@@ -148,6 +160,14 @@ class Notification(message : String,type : Type, displayLength: Long) {
         } else {
             //bg
             GlStateManager.resetColor()
+            if (blur) {
+                GL11.glTranslatef(-originalX, -originalY, 0F)
+                GL11.glPushMatrix()
+                BlurUtils.blurArea(originalX + -x - 1 - 26F, originalY + -28F - y, originalX + -x + 8 + textLength, originalY + -y, strength)
+                GL11.glPopMatrix()
+                GL11.glTranslatef(originalX, originalY, 0F)
+            } 
+
             RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
 
             GL11.glPushMatrix()

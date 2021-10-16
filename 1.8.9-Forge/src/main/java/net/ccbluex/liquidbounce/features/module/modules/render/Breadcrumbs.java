@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
+import net.ccbluex.liquidbounce.value.FloatValue;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -26,6 +27,7 @@ import static org.lwjgl.opengl.GL11.*;
 @ModuleInfo(name = "Breadcrumbs", description = "Leaves a trail behind you.", category = ModuleCategory.RENDER)
 public class Breadcrumbs extends Module {
     public final BoolValue unlimitedValue = new BoolValue("Unlimited", false);
+    public final FloatValue lineWidth = new FloatValue("LineWidth", 0F, 1F, 10F);
     public final IntegerValue colorRedValue = new IntegerValue("R", 255, 0, 255);
     public final IntegerValue colorGreenValue = new IntegerValue("G", 179, 0, 255);
     public final IntegerValue colorBlueValue = new IntegerValue("B", 72, 0, 255);
@@ -48,7 +50,7 @@ public class Breadcrumbs extends Module {
             glEnable(GL_BLEND);
             glDisable(GL_DEPTH_TEST);
             mc.entityRenderer.disableLightmap();
-            glLineWidth(1f);
+            glLineWidth(lineWidth.get());
             glBegin(GL_LINE_STRIP);
             
             final double renderPosX = mc.getRenderManager().viewerPosX;
