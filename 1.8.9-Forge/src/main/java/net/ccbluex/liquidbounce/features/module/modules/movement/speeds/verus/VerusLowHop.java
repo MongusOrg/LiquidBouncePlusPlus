@@ -34,11 +34,9 @@ public class VerusLowHop extends SpeedMode {
         if (targetStrafe == null) return;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
-                mc.timer.timerSpeed = 2F;
-                event.setY(mc.thePlayer.motionY = 0.266);
+                event.setY(mc.thePlayer.motionY = 0.366);
             } else if (event.getY() < 0) {
-                mc.timer.timerSpeed = 1F;
-                event.setY(event.getY() * 0.98);
+                event.setY(event.getY() * 0.991);
             }
 
             double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * 1.025, MovementUtils.getSpeed() * 0.95);

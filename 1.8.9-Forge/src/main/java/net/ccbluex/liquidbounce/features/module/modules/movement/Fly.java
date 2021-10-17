@@ -325,9 +325,8 @@ public class Fly extends Module {
                     MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.6F);
                 } else if (verusDmgModeValue.get().equalsIgnoreCase("test") 
                             && !testDmg 
-                            && mc.thePlayer.fallDistance < 2 
                             && !mc.thePlayer.onGround 
-                            && mc.thePlayer.motionY > -0.1 
+                            && mc.thePlayer.motionY > 0.01
                             && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
                     PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 3.4, mc.thePlayer.posZ, false));
                     testDmg = true;
