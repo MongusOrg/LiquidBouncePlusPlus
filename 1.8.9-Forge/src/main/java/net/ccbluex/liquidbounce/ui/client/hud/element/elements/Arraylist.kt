@@ -17,13 +17,16 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Side.Horizontal
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side.Vertical
 import net.ccbluex.liquidbounce.ui.font.AWTFontRenderer
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.AnimationUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
+import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.shader.shaders.RainbowShader
 import net.ccbluex.liquidbounce.value.*
 import net.minecraft.client.renderer.GlStateManager
 import java.awt.Color
+
+import org.lwjgl.opengl.GL11
 
 /**
  * CustomHUD Arraylist element
@@ -34,6 +37,8 @@ import java.awt.Color
 class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 side: Side = Side(Horizontal.RIGHT, Vertical.UP)) : Element(x, y, scale, side) {
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Random", "Sky", "CRainbow", "LiquidSlowly", "Fade", "Mixer"), "Custom")
+    private val blurValue = BoolValue("Blur", false)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 10F)
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
@@ -200,6 +205,26 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
         when (side.horizontal) {
             Horizontal.RIGHT, Horizontal.MIDDLE -> {
+                if (blurValue.get()) {
+                    GL11.glTranslated(-renderX, -renderY, 0.0)
+                    GL11.glPushMatrix()
+                    val floatX = renderX.toFloat()
+                    val floatY = renderY.toFloat()
+                    BlurUtils.preCustomBlur(blurStrength.get())
+                    modules.forEachIndexed { index, module ->
+                        val xPos = -module.slide - 2
+                        RenderUtils.quickDrawRect(
+                                floatX + xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
+                                floatY + module.arrayY,
+                                floatX + if (rectRightValue.get().equals("right", true)) -1F else 0F,
+                                floatY + module.arrayY + textHeight
+                        )
+                    }
+                    BlurUtils.postCustomBlur()
+                    GL11.glPopMatrix()
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                }
+
                 modules.forEachIndexed { index, module ->
                     var displayString = getModName(module)
 
@@ -291,6 +316,30 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
             }
 
             Horizontal.LEFT -> {
+                if (blurValue.get()) {
+                    GL11.glTranslated(-renderX, -renderY, 0.0)
+                    GL11.glPushMatrix()
+                    val floatX = renderX.toFloat()
+                    val floatY = renderY.toFloat()
+                    BlurUtils.preCustomBlur(blurStrength.get())
+                    modules.forEachIndexed { index, module ->
+                        var displayString = getModName(module)
+                        val width = fontRenderer.getStringWidth(displayString)
+                        val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
+
+                        RenderUtils.quickDrawRect(
+                                floatX,
+                                floatY + module.arrayY,
+                                floatX + xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
+                                floatY + module.arrayY + textHeight
+                        )
+                        
+                    }
+                    BlurUtils.postCustomBlur()
+                    GL11.glPopMatrix()
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                }
+
                 modules.forEachIndexed { index, module ->
                     var displayString = getModName(module)
 

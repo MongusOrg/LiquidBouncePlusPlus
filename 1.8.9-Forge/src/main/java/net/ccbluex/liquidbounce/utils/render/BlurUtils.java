@@ -99,8 +99,73 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
-        //Gui.drawRect(0, 0, 200, 200, -1);
-        //frbuffer.framebufferRenderExt(width, height, false);
+        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.disableDepth();
+        GlStateManager.depthMask(false);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableLighting();
+        GlStateManager.disableAlpha();
+        frbuffer.bindFramebufferTexture();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        float f = (float)width;
+        float f1 = (float)height;
+        float f2 = (float)frbuffer.framebufferWidth / (float)frbuffer.framebufferTextureWidth;
+        float f3 = (float)frbuffer.framebufferHeight / (float)frbuffer.framebufferTextureHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+        worldrenderer.pos(0.0D, (double)f1, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
+        worldrenderer.pos((double)f, (double)f1, 0.0D).tex((double)f2, 0.0D).color(255, 255, 255, 255).endVertex();
+        worldrenderer.pos((double)f, 0.0D, 0.0D).tex((double)f2, (double)f3).color(255, 255, 255, 255).endVertex();
+        worldrenderer.pos(0.0D, 0.0D, 0.0D).tex(0.0D, (double)f3).color(255, 255, 255, 255).endVertex();
+        tessellator.draw();
+        frbuffer.unbindFramebufferTexture();
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        GlStateManager.colorMask(true, true, true, true);
+        Stencil.dispose();
+
+        GlStateManager.enableAlpha();
+        GlStateManager.popMatrix();
+    }
+
+    public static void preCustomBlur(float blurStrength) {
+        if (!OpenGlHelper.isFramebufferEnabled()) return;
+
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        final int scaleFactor = scaledResolution.getScaleFactor();
+        final int width = scaledResolution.getScaledWidth();
+        final int height = scaledResolution.getScaledHeight();
+
+        if (sizeHasChanged(scaleFactor, width, height) || framebuffer == null || frbuffer == null || shaderGroup == null) {
+            init();
+        }
+
+        lastFactor = scaleFactor;
+        lastWidth = width;
+        lastHeight = height;
+
+        setValues(blurStrength);
+
+        framebuffer.bindFramebuffer(true);
+        shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);
+
+        mc.getFramebuffer().bindFramebuffer(true);
+
+        GlStateManager.pushMatrix();
+        Stencil.write(false);
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+    }
+
+    public static void postCustomBlur() {
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        final int width = scaledResolution.getScaledWidth();
+        final int height = scaledResolution.getScaledHeight();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        Stencil.erase(true);
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
@@ -175,8 +240,6 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
-        //Gui.drawRect(0, 0, 200, 200, -1);
-        //frbuffer.framebufferRenderExt(width, height, false);
         GlStateManager.colorMask(true, true, true, true);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);

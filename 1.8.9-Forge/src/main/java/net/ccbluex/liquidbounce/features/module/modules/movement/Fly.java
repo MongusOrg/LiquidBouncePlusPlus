@@ -118,7 +118,7 @@ public class Fly extends Module {
 
     private int boostTicks = 0;
 
-    private boolean verusDmged = false;
+    private boolean verusDmged, testDmg = false;
 
     private float lastYaw, lastPitch;
 
@@ -144,6 +144,7 @@ public class Fly extends Module {
         pearlState = 0;
 
         verusDmged = false;
+        testDmg = false;
         shouldStopSprinting = mc.thePlayer.isSprinting();
 
         switch (mode.toLowerCase()) {
@@ -301,7 +302,9 @@ public class Fly extends Module {
                 break;
             case "verus":
                 mc.thePlayer.capabilities.isFlying = false;
-                mc.thePlayer.motionX = mc.thePlayer.motionZ = mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                if (!verusDmgModeValue.get().equalsIgnoreCase("Test") || verusDmged)
+                    mc.thePlayer.motionY = 0;
 
                 if (!verusDmged && mc.thePlayer.hurtTime > 0) {
                     verusDmged = true;
@@ -320,6 +323,14 @@ public class Fly extends Module {
                 } else if (verusDmged) {
                     mc.timer.timerSpeed = 1F;
                     MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.6F);
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("test") 
+                            && !testDmg 
+                            && mc.thePlayer.fallDistance < 2 
+                            && !mc.thePlayer.onGround 
+                            && mc.thePlayer.motionY > -0.1 
+                            && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 3.4, mc.thePlayer.posZ, false));
+                    testDmg = true;
                 } else {
                     mc.thePlayer.movementInput.moveForward = 0F;
                     mc.thePlayer.movementInput.moveStrafe = 0F;

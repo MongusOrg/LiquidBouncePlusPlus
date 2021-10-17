@@ -7,8 +7,10 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
+import net.ccbluex.liquidbounce.features.module.modules.combat.AutoArmor;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
 import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
+import net.ccbluex.liquidbounce.features.module.modules.player.InvCleaner;
 import net.ccbluex.liquidbounce.features.module.modules.world.ChestStealer;
 import net.ccbluex.liquidbounce.utils.render.EaseUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
@@ -40,7 +42,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     @Shadow
     protected int guiTop;
 
-    private GuiButton stealButton;
+    private GuiButton stealButton, chestStealerButton, autoArmorButton, invCleanerButton, killAuraButton;
 
     private float progress = 0F;
 
@@ -49,17 +51,14 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     @Inject(method = "initGui", at = @At("RETURN"), cancellable = true)
     public void injectInitGui(CallbackInfo callbackInfo){
         GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
-        if (guiScreen instanceof GuiChest) {
-            if (this.guiTop < 50) { //prevent weird things
-                buttonList.add(new GuiButton(1024576, 10, 35, 99, 20, "Disable KillAura"));
-                buttonList.add(new GuiButton(727, 110, 35, 99, 20, "Disable Stealer"));
-                buttonList.add(stealButton = new GuiButton(1234123, 10, 10, 200, 20, "Steal this chest"));
-            } else {
-                buttonList.add(new GuiButton(1024576, this.width / 2 - 100, this.guiTop - 30, 99, 20, "Disable KillAura"));
-                buttonList.add(new GuiButton(727, this.width / 2 + 1, this.guiTop - 30, 99, 20, "Disable Stealer"));
-                buttonList.add(stealButton = new GuiButton(1234123, this.width / 2 - 100, this.guiTop - 55, 200, 20, "Steal this chest"));
-            }
-        }
+
+        buttonList.add(killAuraButton = new GuiButton(1024576, 5, 5, 140, 20, "Disable KillAura"));
+        buttonList.add(autoArmorButton = new GuiButton(123321, 5, 25, 140, 20, "Disable AutoArmor"));
+        buttonList.add(invCleanerButton = new GuiButton(321123, 5, 45, 140, 20, "Disable InvCleaner"));
+        buttonList.add(chestStealerButton = new GuiButton(727, 5, 65, 140, 20, "Disable Stealer"));
+        if (guiScreen instanceof GuiChest)
+            buttonList.add(stealButton = new GuiButton(1234123, 5, 85, 140, 20, "Steal this chest"));
+        
         lastMS = System.currentTimeMillis();
         progress = 0F;
     }
@@ -70,6 +69,10 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
         if (button.id == 1024576)
             LiquidBounce.moduleManager.getModule(KillAura.class).setState(false);
+        if (button.id == 123321)
+            LiquidBounce.moduleManager.getModule(AutoArmor.class).setState(false);
+        if (button.id == 321123)
+            LiquidBounce.moduleManager.getModule(InvCleaner.class).setState(false);
         if (button.id == 727)
             chestStealer.setState(false);
         if (button.id == 1234123 && !chestStealer.getState()) {
@@ -121,6 +124,10 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             GuiScreen guiScreen = mc.currentScreen;
 
             if (stealButton != null) stealButton.enabled = !chestStealer.getState();
+            killAuraButton.enabled = LiquidBounce.moduleManager.getModule(KillAura.class).getState();
+            chestStealerButton.enabled = chestStealer.getState();
+            autoArmorButton.enabled = LiquidBounce.moduleManager.getModule(AutoArmor.class).getState();
+            invCleanerButton.enabled = LiquidBounce.moduleManager.getModule(InvCleaner.class).getState();
 
             if(chestStealer.getState() && chestStealer.getSilenceValue().get() && guiScreen instanceof GuiChest) {
                 //mouse focus

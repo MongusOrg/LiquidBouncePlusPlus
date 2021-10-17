@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel.
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.ncp.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spartan.SpartanYPort;
+import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.verus.*;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
@@ -71,6 +72,9 @@ public class Speed extends Module {
             // Spartan
             new SpartanYPort(),
 
+            // Verus
+            new VerusLowHop(),
+
             // Other
             new SlowHop(),
             new CustomSpeed(),
@@ -85,7 +89,7 @@ public class Speed extends Module {
             new YPort2()
     };
 
-    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Other"}, "NCP") {
+    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Verus", "Other"}, "NCP") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -133,8 +137,8 @@ public class Speed extends Module {
         "LowHop3",
         "Ground",
         "Ground2",
-        "Hop350",
-        "Hop3313",
+        "Hop3.5.0",
+        "Hop3.3.13",
         "YPort",
         "YPort2"
         }, "4Hop") {
@@ -168,6 +172,21 @@ public class Speed extends Module {
     };
 
     public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine"}, "Boost") {
+
+        @Override
+        protected void onChange(final String oldValue, final String newValue) {
+            if(getState())
+                onDisable();
+        }
+
+        @Override
+        protected void onChanged(final String oldValue, final String newValue) {
+            if(getState())
+                onEnable();
+        }
+    };
+
+    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"LowHop"}, "LowHop") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -301,6 +320,9 @@ public class Speed extends Module {
             case "Hypixel":
             mode = hypixelModeValue.get();
             break;
+            case "Verus":
+            mode = verusModeValue.get();
+            break;
         }
         return mode;
     }
@@ -321,6 +343,9 @@ public class Speed extends Module {
             break;
             case "Hypixel":
             mode = "Hypixel" + hypixelModeValue.get();
+            break;
+            case "Verus":
+            mode = "Verus" + verusModeValue.get();
             break;
             case "Custom":
             mode = "Custom";

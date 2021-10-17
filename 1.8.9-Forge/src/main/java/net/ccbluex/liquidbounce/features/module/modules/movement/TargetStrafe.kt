@@ -51,7 +51,6 @@ class TargetStrafe : Module() {
     private val thicknessValue = FloatValue("Thickness", 1F, 0.1F, 5F)
     private val outLine = BoolValue("Outline", true)
     private val alwaysRender = BoolValue("Always-Render", true)
-    private val behindTarget = BoolValue("Behind-Test", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
 
@@ -108,27 +107,11 @@ class TargetStrafe : Module() {
             
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
 
-        val targetReduced = MathHelper.wrapAngleTo180_float(MathHelper.wrapAngleTo180_float(target!!.rotationYaw) - 180F).toInt()
-        val currentReduced = MathHelper.wrapAngleTo180_float(rotYaw).toInt()
-
-        val prediction = if (currentReduced < targetReduced) 
-                             -1.0
-                         else if (currentReduced > targetReduced)
-                             1.0
-                         else 0.0
+        if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
+            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
+        else
+            MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
         
-        // behind targetstrafe moment $$$
-        if (behindTarget.get()) {
-            if (mc.thePlayer.getDistanceToEntity(target) > radius.get())
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, prediction, 1.0)
-            else
-                MovementUtils.setSpeed(event,  moveSpeed, rotYaw, prediction, 0.0)
-        } else { // classic targetstrafe
-            if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 0.0)
-            else
-                MovementUtils.setSpeed(event, moveSpeed, rotYaw, direction.toDouble(), 1.0)
-        }
     }
 
     val keyMode: Boolean
