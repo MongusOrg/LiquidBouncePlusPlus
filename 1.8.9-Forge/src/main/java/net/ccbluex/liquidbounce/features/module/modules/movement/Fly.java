@@ -117,8 +117,9 @@ public class Fly extends Module {
     private boolean wasDead;
 
     private int boostTicks = 0;
+    private int verusJumpTimes = 0;
 
-    private boolean verusDmged, testDmg = false;
+    private boolean verusDmged = false;
 
     private float lastYaw, lastPitch;
 
@@ -143,8 +144,8 @@ public class Fly extends Module {
         boostTicks = 0;
         pearlState = 0;
 
+        verusJumpTimes = 0;
         verusDmged = false;
-        testDmg = false;
         shouldStopSprinting = mc.thePlayer.isSprinting();
 
         switch (mode.toLowerCase()) {
@@ -183,8 +184,10 @@ public class Fly extends Module {
                         mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
                     }
                 } else if (verusDmgModeValue.get().equalsIgnoreCase("Test")) {
-                    if (mc.thePlayer.onGround)
+                    if (mc.thePlayer.onGround) {
                         mc.thePlayer.jump();
+                        verusJumpTimes = 1;
+                    }
                 } else {
                     // set dmged = true since there's no damage method
                     verusDmged = true;
@@ -306,6 +309,14 @@ public class Fly extends Module {
                 if (!verusDmgModeValue.get().equalsIgnoreCase("Test") || verusDmged)
                     mc.thePlayer.motionY = 0;
 
+                if (verusDmgModeValue.get().equalsIgnoreCase("Test") && verusJumpTimes < 5) {
+                    if (mc.thePlayer.onGround) {
+                        mc.thePlayer.jump();
+                        verusJumpTimes += 1;
+                    }
+                    return;
+                }
+
                 if (!verusDmged && mc.thePlayer.hurtTime > 0) {
                     verusDmged = true;
                     boostTicks = verusDmgTickValue.get();
@@ -323,13 +334,6 @@ public class Fly extends Module {
                 } else if (verusDmged) {
                     mc.timer.timerSpeed = 1F;
                     MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 0.6F);
-                } else if (verusDmgModeValue.get().equalsIgnoreCase("test") 
-                            && !testDmg 
-                            && !mc.thePlayer.onGround 
-                            && mc.thePlayer.motionY > 0.01
-                            && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 3.4, 0).expand(0, 0, 0)).isEmpty()) {
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 3.4, mc.thePlayer.posZ, false));
-                    testDmg = true;
                 } else {
                     mc.thePlayer.movementInput.moveForward = 0F;
                     mc.thePlayer.movementInput.moveStrafe = 0F;
@@ -471,6 +475,10 @@ public class Fly extends Module {
                 if(aac5C03List.size()>aac5PursePacketsValue.get())
                     sendAAC5Packets();
             }
+
+            if (verusDmgModeValue.get().equalsIgnoreCase("Test") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
+                packetPlayer.onGround = false;
+            }
         }
     }
 
@@ -544,7 +552,8 @@ public class Fly extends Module {
         if (mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) 
             event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
 
-        if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("Verus"))
+        if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && 
+            (verusDmgModeValue.get().equalsIgnoreCase("none") || verusDmged)))
             && event.getY() < mc.thePlayer.posY)
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY, event.getZ() + 1));
     }
