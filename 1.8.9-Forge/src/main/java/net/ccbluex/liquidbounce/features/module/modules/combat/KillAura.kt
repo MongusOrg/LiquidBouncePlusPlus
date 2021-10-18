@@ -280,7 +280,7 @@ class KillAura : Module() {
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {
-            if (targetStrafe.state && targetStrafe.keyMode && !mc.thePlayer.isSneaking) {
+            if (targetStrafe.canStrafe) {
                 val (yaw) = RotationUtils.targetRotation ?: return
                 var strafe = event.strafe
                 var forward = event.forward
