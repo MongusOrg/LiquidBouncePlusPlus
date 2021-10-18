@@ -16,7 +16,6 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel.
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.ncp.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.spartan.SpartanYPort;
-import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.verus.*;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
@@ -72,9 +71,6 @@ public class Speed extends Module {
             // Spartan
             new SpartanYPort(),
 
-            // Verus
-            new VerusLowHop(),
-
             // Other
             new SlowHop(),
             new CustomSpeed(),
@@ -86,10 +82,11 @@ public class Speed extends Module {
             new MiJump(),
             new OnGround(),
             new YPort(),
-            new YPort2()
+            new YPort2(),
+            new Custom2()
     };
 
-    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Verus", "Other"}, "NCP") {
+    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Other"}, "NCP") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -156,7 +153,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "LowHop", "Safe", "Stable"}, "Stable") {
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "LowHop", "Safe", "Stable"}, "Stable") { // the worst hypixel bypass ever existed
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -171,22 +168,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine"}, "Boost") {
-
-        @Override
-        protected void onChange(final String oldValue, final String newValue) {
-            if(getState())
-                onDisable();
-        }
-
-        @Override
-        protected void onChanged(final String oldValue, final String newValue) {
-            if(getState())
-                onEnable();
-        }
-    };
-
-    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"LowHop"}, "LowHop") {
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "Custom2"}, "Boost") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -320,9 +302,6 @@ public class Speed extends Module {
             case "Hypixel":
             mode = hypixelModeValue.get();
             break;
-            case "Verus":
-            mode = verusModeValue.get();
-            break;
         }
         return mode;
     }
@@ -343,9 +322,6 @@ public class Speed extends Module {
             break;
             case "Hypixel":
             mode = "Hypixel" + hypixelModeValue.get();
-            break;
-            case "Verus":
-            mode = "Verus" + verusModeValue.get();
             break;
             case "Custom":
             mode = "Custom";

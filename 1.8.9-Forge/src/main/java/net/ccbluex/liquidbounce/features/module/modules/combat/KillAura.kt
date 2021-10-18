@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
 import net.ccbluex.liquidbounce.utils.EntityUtils
+import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.RaycastUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.utils.Rotation
@@ -105,6 +106,7 @@ class KillAura : Module() {
     // AutoBlock
     private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick", "NCP"), "None")
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true)
+    private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false)
     private val blockRate = IntegerValue("BlockRate", 100, 1, 100)
 
     // Raycast
@@ -208,6 +210,7 @@ class KillAura : Module() {
 
     // Fake block status
     var blockingStatus = false
+    var verusBlocking = false
 
     // I don't know
     //var focusEntityName = mutableListOf<String>()
@@ -220,7 +223,7 @@ class KillAura : Module() {
         mc.theWorld ?: return
 
         updateTarget()
-
+        verusBlocking = false
     }
 
     /**
@@ -235,6 +238,11 @@ class KillAura : Module() {
         clicks = 0
 
         stopBlocking()
+        if (verusBlocking && !blockingStatus && !mc.thePlayer.isBlocking()) {
+            verusBlocking = false
+            if (verusAutoBlockValue.get())
+                PacketUtils.sendPacketNoEvent(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+        }
     }
 
     /**
@@ -253,8 +261,6 @@ class KillAura : Module() {
             // AutoBlock
             if (autoBlockModeValue.get().equals("AfterTick", true) && canBlock)
                 startBlocking(currentTarget!!, hitable)
-
-
         }
 
         if (rotationStrafeValue.get().equals("Off", true))
@@ -274,7 +280,7 @@ class KillAura : Module() {
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {
-            if (targetStrafe.state && targetStrafe.checkSpeed() && targetStrafe.keyMode && !mc.thePlayer.isSneaking) {
+            if (targetStrafe.state && targetStrafe.keyMode && !mc.thePlayer.isSneaking) {
                 val (yaw) = RotationUtils.targetRotation ?: return
                 var strafe = event.strafe
                 var forward = event.forward
@@ -357,6 +363,20 @@ class KillAura : Module() {
             target = currentTarget
     }
 
+    @EventTarget
+    fun onPacket(event: PacketEvent) {
+        val packet = event.packet
+        if (verusBlocking 
+            && ((packet is C07PacketPlayerDigging 
+                    && packet.getStatus() == C07PacketPlayerDigging.Action.RELEASE_USE_ITEM) 
+                    || packet is C08PacketPlayerBlockPlacement)
+            && verusAutoBlockValue.get())
+            event.cancelEvent()
+
+        if (packet is C09PacketHeldItemChange)
+            verusBlocking = false
+    }
+
     /**
      * Update event
      */
@@ -384,6 +404,17 @@ class KillAura : Module() {
                 runAttack()
                 clicks--
             }
+        }
+    }
+
+    @EventTarget
+    fun onUpdateVerus(event: UpdateEvent) {
+        if (blockingStatus || mc.thePlayer.isBlocking())
+            verusBlocking = true
+        else if (verusBlocking) {
+            verusBlocking = false
+            if (verusAutoBlockValue.get()) 
+                PacketUtils.sendPacketNoEvent(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
         }
     }
 

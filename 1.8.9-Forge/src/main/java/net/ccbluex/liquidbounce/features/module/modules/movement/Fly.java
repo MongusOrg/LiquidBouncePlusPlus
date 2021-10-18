@@ -46,6 +46,7 @@ public class Fly extends Module {
 
     public final ListValue modeValue = new ListValue("Mode", new String[]{
             "Motion",
+            "Motion2",
             "Creative",
             "Damage",
             "Pearl",
@@ -266,7 +267,7 @@ public class Fly extends Module {
                 if (mc.gameSettings.keyBindSneak.isKeyDown())
                     mc.thePlayer.motionY -= vanillaSpeed;
                 MovementUtils.strafe(vanillaSpeed);
-
+            case "motion2":
                 handleVanillaKickBypass();
                 break;
             case "ncp":
@@ -522,6 +523,11 @@ public class Fly extends Module {
 
     @EventTarget
     public void onMove(final MoveEvent event) {
+        final float vanillaSpeed = vanillaSpeedValue.get();
+        final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
+        if (targetStrafe == null) 
+            return;
+        
         switch(modeValue.get().toLowerCase()) {
             case "pearl":
                 if (pearlState != 2 && pearlState != -1) {
@@ -534,7 +540,17 @@ public class Fly extends Module {
                         event.zeroXZ();
                     else
                         event.cancelEvent();
-
+                break;
+            case "motion2":
+                mc.thePlayer.capabilities.isFlying = false;
+                //event.zeroXZ();
+                mc.thePlayer.motionY = 0;
+                if (mc.gameSettings.keyBindJump.isKeyDown())
+                    mc.thePlayer.motionY += vanillaSpeed;
+                if (mc.gameSettings.keyBindSneak.isKeyDown())
+                    mc.thePlayer.motionY -= vanillaSpeed;
+                
+                if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, vanillaSpeed); else MovementUtils.setSpeed(event, (MovementUtils.isMoving() ? vanillaSpeed : 0));
                 break;
         }
     }

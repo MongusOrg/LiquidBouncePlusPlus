@@ -3,7 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  */
-package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.verus;
+package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed;
@@ -12,10 +12,10 @@ import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 
-public class VerusLowHop extends SpeedMode {
+public class Custom2 extends SpeedMode {
 
-    public VerusLowHop() {
-        super("VerusLowHop");
+    public Custom2() {
+        super("Custom2");
     }
 
     @Override
@@ -30,17 +30,41 @@ public class VerusLowHop extends SpeedMode {
 
     @Override
     public void onMove(MoveEvent event) {
-        final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
-        if (targetStrafe == null) return;
-        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
-            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
-                event.setY(mc.thePlayer.motionY = 0.366);
-            } else if (event.getY() < 0) {
-                event.setY(event.getY() * 0.991);
-            }
+        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
 
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * 1.025, MovementUtils.getSpeed() * 0.95);
+        if(speed == null)
+            return;
+
+        final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
+        if (targetStrafe == null) 
+            return;
+
+        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
+            mc.timer.timerSpeed = speed.customTimerValue.get();
+            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
+                event.setY(speed.customYValue.get());
+            }
+            
+            double moveSpeed = speed.customSpeedValue.get();
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
+    }
+
+    @Override
+    public void onEnable() {
+        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
+
+        if(speed == null)
+            return;
+
+        if(speed.resetXZValue.get()) mc.thePlayer.motionX = mc.thePlayer.motionZ = 0D;
+        if(speed.resetYValue.get()) mc.thePlayer.motionY = 0D;
+        super.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        mc.timer.timerSpeed = 1F;
+        super.onDisable();
     }
 }

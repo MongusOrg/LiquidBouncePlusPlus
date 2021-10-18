@@ -53,6 +53,7 @@ class TargetStrafe : Module() {
     private val alwaysRender = BoolValue("Always-Render", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
+    private lateinit var fly: Fly
 
     var direction: Int = 1
     var lastView: Int = 0
@@ -61,6 +62,7 @@ class TargetStrafe : Module() {
     override fun onInitialize() {
         killAura=LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
         speed=LiquidBounce.moduleManager.getModule(Speed::class.java) as Speed
+        fly=LiquidBounce.moduleManager.getModule(fly::class.java) as Fly
     }
 
     override fun onEnable() {
@@ -122,9 +124,7 @@ class TargetStrafe : Module() {
         }
 
     val canStrafe: Boolean
-        get() = (state && checkSpeed() && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
-
-    public fun checkSpeed(): Boolean = speed.state && speed.typeValue.get().equals("Hypixel", true)
+        get() = (state && (speed.state || fly.state) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
 
     private fun checkVoid(): Boolean {
         for (x in -1..0) {
