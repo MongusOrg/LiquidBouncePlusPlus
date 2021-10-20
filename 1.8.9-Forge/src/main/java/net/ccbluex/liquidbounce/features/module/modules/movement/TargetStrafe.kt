@@ -124,7 +124,7 @@ class TargetStrafe : Module() {
         }
 
     val canStrafe: Boolean
-        get() = (state && (speed.state || fly.state) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
+        get() = ((speed.state || fly.state) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
 
     private fun checkVoid(): Boolean {
         for (x in -1..0) {
