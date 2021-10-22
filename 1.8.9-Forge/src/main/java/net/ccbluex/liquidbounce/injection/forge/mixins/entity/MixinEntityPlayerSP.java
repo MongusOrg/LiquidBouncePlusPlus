@@ -149,7 +149,8 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
     @Overwrite
     public void onUpdateWalkingPlayer() {
         try {
-            LiquidBounce.eventManager.callEvent(new MotionEvent(EventState.PRE));
+            MotionEvent event = new MotionEvent(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround);
+            LiquidBounce.eventManager.callEvent(event);
 
             final GuiMove inventoryMove = (GuiMove) LiquidBounce.moduleManager.getModule(GuiMove.class);
             //final Sneak sneak = (Sneak) LiquidBounce.moduleManager.getModule(Sneak.class);
@@ -226,7 +227,8 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
                 }
             }
 
-            LiquidBounce.eventManager.callEvent(new MotionEvent(EventState.POST));
+            event.setEventState(EventState.POST);
+            LiquidBounce.eventManager.callEvent(event);
 
             if (this.isCurrentViewEntity())
                 lastOnGround = this.onGround;
