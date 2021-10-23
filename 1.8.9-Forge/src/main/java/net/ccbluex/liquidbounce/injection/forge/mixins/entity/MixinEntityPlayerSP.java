@@ -179,8 +179,8 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             }
 
             if (this.isCurrentViewEntity()) {
-                float yaw = rotationYaw;
-                float pitch = rotationPitch;
+                float yaw = event.getYaw();
+                float pitch = event.getPitch();
                 float lastReportedYaw = RotationUtils.serverRotation.getYaw();
                 float lastReportedPitch = RotationUtils.serverRotation.getPitch();
 
@@ -189,9 +189,9 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
                     pitch = RotationUtils.targetRotation.getPitch();
                 }
 
-                double xDiff = this.posX - this.lastReportedPosX;
-                double yDiff = this.getEntityBoundingBox().minY - this.lastReportedPosY;
-                double zDiff = this.posZ - this.lastReportedPosZ;
+                double xDiff = event.getX() - this.lastReportedPosX;
+                double yDiff = event.getY() - this.lastReportedPosY;
+                double zDiff = event.getZ() - this.lastReportedPosZ;
                 double yawDiff = (double) (yaw - lastReportedYaw);
                 double pitchDiff = (double) (pitch - lastReportedPitch);
                 boolean moved = xDiff * xDiff + yDiff * yDiff + zDiff * zDiff > 9.0E-4D || this.positionUpdateTicks >= 20;
@@ -199,31 +199,31 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
                 if (this.ridingEntity == null) {
                     if (moved && rotated) {
-                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.posX, this.getEntityBoundingBox().minY, this.posZ, yaw, pitch, this.onGround));
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(event.getX(), event.getY(), event.getZ(), yaw, pitch, event.getOnGround()));
                     } else if (moved) {
-                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.onGround));
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(event.getX(), event.getY(), event.getZ(), event.getOnGround()));
                     } else if (rotated) {
-                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(yaw, pitch, this.onGround));
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer.C05PacketPlayerLook(yaw, pitch, event.getOnGround()));
                     } else {
-                        this.sendQueue.addToSendQueue(new C03PacketPlayer(this.onGround));
+                        this.sendQueue.addToSendQueue(new C03PacketPlayer(event.getOnGround()));
                     }
                 } else {
-                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, yaw, pitch, this.onGround));
+                    this.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(this.motionX, -999.0D, this.motionZ, yaw, pitch, event.getOnGround()));
                     moved = false;
                 }
 
                 ++this.positionUpdateTicks;
 
                 if (moved) {
-                    this.lastReportedPosX = this.posX;
-                    this.lastReportedPosY = this.getEntityBoundingBox().minY;
-                    this.lastReportedPosZ = this.posZ;
+                    this.lastReportedPosX = event.getX();
+                    this.lastReportedPosY = event.getY();
+                    this.lastReportedPosZ = event.getZ();
                     this.positionUpdateTicks = 0;
                 }
 
                 if (rotated) {
-                    this.lastReportedYaw = this.rotationYaw;
-                    this.lastReportedPitch = this.rotationPitch;
+                    this.lastReportedYaw = event.getYaw();
+                    this.lastReportedPitch = event.getPitch();
                 }
             }
 
@@ -231,7 +231,7 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             LiquidBounce.eventManager.callEvent(event);
 
             if (this.isCurrentViewEntity())
-                lastOnGround = this.onGround;
+                lastOnGround = event.getOnGround();
         } catch (final Exception e) {
             e.printStackTrace();
         }

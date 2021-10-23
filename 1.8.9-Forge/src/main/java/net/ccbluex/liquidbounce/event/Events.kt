@@ -75,7 +75,7 @@ class KeyEvent(val key: Int) : Event()
  *
  * @param eventState PRE or POST
  */
-class MotionEvent(val x: Double, val y: Double, val z: Double, val yaw: Float, val pitch: Float, val onGround: Boolean) : Event() {
+class MotionEvent(var x: Double, var y: Double, var z: Double, var yaw: Float, var pitch: Float, var onGround: Boolean) : Event() {
     var eventState: EventState = EventState.PRE
 }
 
