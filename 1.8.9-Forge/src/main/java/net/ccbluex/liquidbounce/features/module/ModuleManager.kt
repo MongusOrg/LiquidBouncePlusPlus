@@ -160,7 +160,8 @@ class ModuleManager : Listenable {
                 ConsoleSpammer::class.java,
                 PointerESP::class.java,
                 SafeWalk::class.java,
-                NoAchievements::class.java
+                NoAchievements::class.java,
+                Patcher::class.java
         )
 
         registerModule(Fucker)

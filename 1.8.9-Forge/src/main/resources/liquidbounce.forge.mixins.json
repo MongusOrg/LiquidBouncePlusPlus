@@ -4,6 +4,8 @@
   "refmap": "liquidbounce.mixins.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "accessors.FontRendererAccessor",
+    "accessors.GlStateManagerAccessor",
     "block.MixinBlock",
     "block.MixinBlockAnvil",
     "block.MixinBlockLadder",

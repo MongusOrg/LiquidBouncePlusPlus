@@ -1,0 +1,45 @@
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
+package net.ccbluex.liquidbounce.patcher.asm.optifine;
+
+import net.ccbluex.liquidbounce.patcher.tweaker.transform.PatcherTransformer;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
+
+public class EntityCullingTransformer implements PatcherTransformer {
+    @Override
+    public String[] getClassName() {
+        return new String[]{"net.ccbluex.liquidbounce.patcher.util.world.render.culling.EntityCulling"};
+    }
+
+    @Override
+    public void transform(ClassNode classNode, String name) {
+        for (MethodNode method : classNode.methods) {
+            if (method.name.equals("shouldRenderEntity")) {
+                method.instructions.insert(this.smartEntityCulling());
+                break;
+            }
+        }
+    }
+
+    private InsnList smartEntityCulling() {
+        InsnList list = new InsnList();
+        list.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "Config", "isShaders", "()Z", false));
+        LabelNode ifeq = new LabelNode();
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(getPatcherSetting("smartEntityCulling", "Z"));
+        list.add(new JumpInsnNode(Opcodes.IFEQ, ifeq));
+        list.add(new InsnNode(Opcodes.RETURN));
+        list.add(ifeq);
+        return list;
+    }
+}

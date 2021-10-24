@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.features.module.modules.combat.AutoClicker;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AbortBreaking;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.MultiActions;
 import net.ccbluex.liquidbounce.features.module.modules.world.FastPlace;
+import net.ccbluex.liquidbounce.patcher.util.enhancement.ReloadListener;
 import net.ccbluex.liquidbounce.ui.client.GuiMainMenu;
 //import net.ccbluex.liquidbounce.ui.client.GuiWelcome;
 import net.ccbluex.liquidbounce.utils.CPSCounter;
@@ -28,6 +29,7 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Util;
@@ -85,6 +87,9 @@ public abstract class MixinMinecraft {
     @Shadow
     public GameSettings gameSettings;
 
+    @Shadow
+    public abstract IResourceManager getResourceManager();
+
     @Inject(method = "<init>", at = @At("RETURN"))
     public void injectConstructor(GameConfiguration p_i45547_1_, CallbackInfo ci) {
         try {
@@ -105,6 +110,7 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
     private void startGame(CallbackInfo callbackInfo) {
+        getResourceManager().registerReloadListener(new ReloadListener());
         LiquidBounce.INSTANCE.startClient();
     }
 
