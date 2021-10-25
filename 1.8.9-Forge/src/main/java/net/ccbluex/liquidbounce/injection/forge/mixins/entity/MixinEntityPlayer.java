@@ -6,7 +6,6 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
 import com.mojang.authlib.GameProfile;
-import net.ccbluex.liquidbounce.patcher.util.enhancement.EnhancementManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerCapabilities;
 import net.minecraft.item.ItemStack;
@@ -49,10 +48,5 @@ public abstract class MixinEntityPlayer extends MixinEntityLivingBase {
 
     @Shadow
     public abstract boolean isUsingItem();
-
-    @Inject(method = "onUpdate", at = @At("HEAD"))
-    public void injectPatcherOnUpdate(CallbackInfo callbackInfo) {
-        EnhancementManager.getInstance().tick(); // replacement for Forge PlayerTickEvent, couldn't find a better way.
-    }
 
 }

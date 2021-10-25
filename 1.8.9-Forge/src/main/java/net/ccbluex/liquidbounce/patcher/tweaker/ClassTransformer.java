@@ -8,10 +8,10 @@ package net.ccbluex.liquidbounce.patcher.tweaker;
 import net.ccbluex.liquidbounce.patcher.asm.forge.LightUtilTransformer;
 import net.ccbluex.liquidbounce.patcher.optifine.OptiFineGenerations;
 import net.ccbluex.liquidbounce.patcher.tweaker.transform.PatcherTransformer;
+import net.ccbluex.liquidbounce.utils.misc.MiscUtils;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
-import gg.essential.universal.UDesktop;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.LogManager;
@@ -159,7 +159,7 @@ public class ClassTransformer implements IClassTransformer {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    UDesktop.browse(new URI("https://optifine.net/downloads/"));
+                    MiscUtils.showURL("https://optifine.net/downloads/");
                 } catch (Exception ex) {
                     JLabel label = new JLabel();
                     label.setText("Failed to open OptiFine website.");

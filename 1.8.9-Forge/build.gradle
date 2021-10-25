@@ -54,7 +54,7 @@ idea {
     }
 }
 
-archivesBaseName = 'LiquidBounce+'
+archivesBaseName = 'LiquidBounce'
 
 minecraft {
     version = '1.8.9-11.15.1.2318-1.8.9'
@@ -77,6 +77,12 @@ dependencies {
         exclude module: 'launchwrapper'
     }
 
+    implementation('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
+        exclude module: 'asm-commons'
+        exclude module: 'asm-tree'
+        exclude module: 'asm'
+    }
+
     compile 'com.jagrosh:DiscordIPC:0.4'
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
 
@@ -84,6 +90,8 @@ dependencies {
     implementation 'com.github.TheAltening:TheAlteningAuth4j:-SNAPSHOT'
     compile 'com.github.TheAltening:TheAltening4j:api-2.0-SNAPSHOT'
     compile 'com.github.TheAltening:TheAlteningAuth4j:-SNAPSHOT'
+
+    implementation 'com.github.ben-manes.caffeine:caffeine:2.9.0'
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
 }

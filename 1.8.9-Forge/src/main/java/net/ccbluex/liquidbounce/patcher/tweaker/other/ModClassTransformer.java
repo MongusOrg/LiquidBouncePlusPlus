@@ -67,12 +67,11 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new ExtendedBlockStorageReflectionOptimizer());
         registerTransformer(new EntityRendererReflectionOptimizer());
 
-        registerTransformer(new LagometerTransformer());
         registerTransformer(new GuiIngameForgeTransformer());
         registerTransformer(new OptifineFontRendererTransformer());
         registerTransformer(new OptiFineHookTransformer());
         //registerTransformer(new FullbrightTickerTransformer());
-        registerTransformer(new EntityCullingTransformer());
+        //registerTransformer(new EntityCullingTransformer());
         registerTransformer(new WorldVertexBufferUploaderTransformer());
     }
 

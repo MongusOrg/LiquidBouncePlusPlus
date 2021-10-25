@@ -1,9 +1,9 @@
-version = "endless"
+version = "plus"
 group = "net.ccbluex"
 
 subprojects {
 
-    version = "endless"
+    version = "plus"
     group = "net.ccbluex"
 
 }

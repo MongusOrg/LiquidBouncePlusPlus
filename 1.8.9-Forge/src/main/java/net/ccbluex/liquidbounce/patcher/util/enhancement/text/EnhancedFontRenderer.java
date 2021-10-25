@@ -2,8 +2,8 @@ package net.ccbluex.liquidbounce.patcher.util.enhancement.text;
 
 import net.ccbluex.liquidbounce.patcher.util.enhancement.Enhancement;
 import net.ccbluex.liquidbounce.patcher.util.enhancement.hash.StringHash;
-import gg.essential.lib.caffeine.cache.Cache;
-import gg.essential.lib.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import net.minecraft.client.renderer.GLAllocation;
 
 import java.util.ArrayList;

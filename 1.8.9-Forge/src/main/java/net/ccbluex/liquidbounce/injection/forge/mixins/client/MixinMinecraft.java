@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.features.module.modules.combat.AutoClicker;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AbortBreaking;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.MultiActions;
 import net.ccbluex.liquidbounce.features.module.modules.world.FastPlace;
+import net.ccbluex.liquidbounce.patcher.util.enhancement.EnhancementManager;
 import net.ccbluex.liquidbounce.patcher.util.enhancement.ReloadListener;
 import net.ccbluex.liquidbounce.ui.client.GuiMainMenu;
 //import net.ccbluex.liquidbounce.ui.client.GuiWelcome;
@@ -29,6 +30,7 @@ import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -110,7 +112,7 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
     private void startGame(CallbackInfo callbackInfo) {
-        getResourceManager().registerReloadListener(new ReloadListener());
+        ((IReloadableResourceManager)getResourceManager()).registerReloadListener(new ReloadListener());
         LiquidBounce.INSTANCE.startClient();
     }
 
@@ -155,6 +157,11 @@ public abstract class MixinMinecraft {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
+    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V", ordinal = 0, shift = At.Shift.BEFORE))
+    private void injectEnhancement(CallbackInfo callbackInfo) {
+        EnhancementManager.getInstance().tick();
+    }
+    
     @Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
     private void onTick(final CallbackInfo callbackInfo) {
         LiquidBounce.eventManager.callEvent(new TickEvent());

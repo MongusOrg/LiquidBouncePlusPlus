@@ -18,7 +18,7 @@ public class Patcher extends Module {
     public final BoolValue betterFontRenderer = new BoolValue("BetterVanillaFontRenderer", false);
     public final BoolValue betterFontRendererStringCache = new BoolValue("BVFR-StringCache", false);
 
-    public static boolean getPatcherValue(String v) {
+    public static boolean getPatcherSetting(String v) {
         Patcher patcher = (Patcher) LiquidBounce.moduleManager.getModule(Patcher.class);
         if (patcher == null)
             return false;
@@ -27,9 +27,11 @@ public class Patcher extends Module {
             if (va instanceof BoolValue && va.getName() == v)
                 return ((BoolValue) va).get();
         }
+
+        return false;
     }
 
-    public static boolean getPatcherValue(int index) {
+    public static boolean getPatcherSetting(int index) {
         Patcher patcher = (Patcher) LiquidBounce.moduleManager.getModule(Patcher.class);
         if (patcher == null)
             return false;
