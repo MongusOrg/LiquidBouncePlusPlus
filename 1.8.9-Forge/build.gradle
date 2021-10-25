@@ -92,6 +92,7 @@ dependencies {
     compile 'com.github.TheAltening:TheAlteningAuth4j:-SNAPSHOT'
 
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.0'
+    compile 'com.github.ben-manes.caffeine:caffeine:2.9.0'
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
 }
@@ -145,6 +146,9 @@ shadowJar {
 
         include(dependency('com.github.TheAltening:TheAltening4j'))
         include(dependency('com.github.TheAltening:TheAlteningAuth4j'))
+        include(dependency('com.github.ben-manes.caffeine:caffeine'))
+
+        include(dependency('com.github.half-cambodian-hacker-man:Koffee'))
     }
 
     exclude 'dummyThing'

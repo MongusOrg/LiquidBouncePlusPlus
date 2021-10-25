@@ -72,7 +72,7 @@ public class ModClassTransformer implements IClassTransformer {
         registerTransformer(new OptiFineHookTransformer());
         //registerTransformer(new FullbrightTickerTransformer());
         //registerTransformer(new EntityCullingTransformer());
-        registerTransformer(new WorldVertexBufferUploaderTransformer());
+        //registerTransformer(new WorldVertexBufferUploaderTransformer());
     }
 
     public static boolean isDevelopment() {
