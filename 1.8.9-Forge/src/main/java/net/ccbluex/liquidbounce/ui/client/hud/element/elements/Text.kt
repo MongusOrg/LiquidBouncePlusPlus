@@ -75,7 +75,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     private val skeetRectValue = BoolValue("SkeetRect", false)
     private val lineValue = BoolValue("Line", true)
     private val blurValue = BoolValue("Blur", true)
-    private val blurStrength = FloatValue("BlurStrength", 1F, 0F, 10F)
+    private val blurStrength = FloatValue("BlurStrength", 1F, 0F, 30F)
     private val redValue = IntegerValue("Red", 255, 0, 255)
     private val greenValue = IntegerValue("Green", 255, 0, 255)
     private val blueValue = IntegerValue("Blue", 255, 0, 255)

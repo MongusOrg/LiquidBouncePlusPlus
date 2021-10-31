@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.patcher.tweaker;
 
 import net.ccbluex.liquidbounce.patcher.asm.forge.LightUtilTransformer;
+import net.ccbluex.liquidbounce.patcher.asm.minecraft.screen.GuiNewChatTransformer;
 import net.ccbluex.liquidbounce.patcher.optifine.OptiFineGenerations;
 import net.ccbluex.liquidbounce.patcher.tweaker.transform.PatcherTransformer;
 import net.ccbluex.liquidbounce.utils.misc.MiscUtils;
@@ -86,6 +87,7 @@ public class ClassTransformer implements IClassTransformer {
         }
 
         registerTransformer(new LightUtilTransformer());
+        registerTransformer(new GuiNewChatTransformer());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

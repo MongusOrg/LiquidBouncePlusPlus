@@ -128,7 +128,7 @@ public final class FontRendererHook {
 
     @SuppressWarnings({"unused"})
     public boolean renderStringAtPos(String text, boolean shadow) {
-        if (this.fontRendererAccessor.getRenderEngine() == null || !Patcher.getPatcherSetting(0)) {
+        if (this.fontRendererAccessor.getRenderEngine() == null || !Patcher.betterFontRenderer.get()) {
             this.deleteTextureId();
             return false;
         }
@@ -161,7 +161,7 @@ public final class FontRendererHook {
         final GlStateManager.TextureState textureState = textureStates[GlStateManagerAccessor.getActiveTextureUnit()];
 
         final StringHash hash = new StringHash(text, red, green, blue, alpha, shadow);
-        final CachedString cachedString = Patcher.getPatcherSetting(1) ? this.enhancedFontRenderer.get(hash) : null;
+        final CachedString cachedString = Patcher.betterFontRendererStringCache.get() ? this.enhancedFontRenderer.get(hash) : null;
 
         if (cachedString != null) {
             GlStateManager.color(red, green, blue, alpha);
@@ -189,7 +189,7 @@ public final class FontRendererHook {
         int list = 0;
         textureState.textureName = glTextureId;
         GlStateManager.resetColor();
-        if (Patcher.getPatcherSetting(1)) {
+        if (Patcher.betterFontRendererStringCache.get()) {
             list = enhancedFontRenderer.getGlList();
             GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE);
         }
@@ -353,7 +353,7 @@ public final class FontRendererHook {
             GlStateManager.enableTexture2D();
         }
 
-        if (Patcher.getPatcherSetting(1)) {
+        if (Patcher.betterFontRendererStringCache.get()) {
             GL11.glEndList();
             this.enhancedFontRenderer.cache(hash, value);
         }
@@ -499,7 +499,7 @@ public final class FontRendererHook {
         }
 
         final Map<String, Integer> stringWidthCache = enhancedFontRenderer.getStringWidthCache();
-        if (!Patcher.getPatcherSetting(0)) {
+        if (!Patcher.betterFontRenderer.get()) {
             if (stringWidthCache.size() != 0) {
                 stringWidthCache.clear();
             }

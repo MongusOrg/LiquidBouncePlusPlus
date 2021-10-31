@@ -49,14 +49,11 @@ public class BowJump extends Module {
 
     private int lastSlot = -1;
 
-    private boolean shouldStopSprinting = false;
-
     public void onEnable() {
         if (mc.thePlayer == null) return;
         bowState = 0;
         lastPlayerTick = -1;
         lastSlot = mc.thePlayer.inventory.currentItem;
-        shouldStopSprinting = mc.thePlayer.isSprinting();
 
         MovementUtils.strafe(0);
     }
@@ -95,7 +92,6 @@ public class BowJump extends Module {
                 bowState = 5;
                 break; // nothing to shoot
             } else if (lastPlayerTick == -1) {
-                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
                 ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(slot + 36).getStack();
 
                 if (lastSlot != slot) PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(slot));
@@ -120,7 +116,6 @@ public class BowJump extends Module {
                 bowState = 3;
             break;
         case 3:
-            if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
             MovementUtils.strafe(boostValue.get());
             mc.thePlayer.motionY = heightValue.get();
             bowState = 4;

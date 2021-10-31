@@ -124,7 +124,7 @@ class ModuleManager : Listenable {
                 ResourcePackSpoof::class.java,
                 NoSlowBreak::class.java,
                 PortalMenu::class.java,
-                Aesthetic::class.java,
+                Ambience::class.java,
                 EnchantEffect::class.java,
                 Cape::class.java,
                 NoRender::class.java,
@@ -161,6 +161,10 @@ class ModuleManager : Listenable {
                 PointerESP::class.java,
                 SafeWalk::class.java,
                 NoAchievements::class.java,
+                GhostHand::class.java,
+                AntiHunger::class.java,
+                AirJump::class.java,
+                Freeze::class.java,
                 Patcher::class.java
         )
 

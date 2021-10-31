@@ -12,34 +12,17 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 
 import net.ccbluex.liquidbounce.value.*;
 
+import java.util.HashMap;
+
 @ModuleInfo(name = "Patcher", description = "Bring many Patcher mod features into LiquidBounce+. (see settings for more info)", category = ModuleCategory.MISC, canEnable = false)
 public class Patcher extends Module {
 
-    public final BoolValue betterFontRenderer = new BoolValue("BetterVanillaFontRenderer", false);
-    public final BoolValue betterFontRendererStringCache = new BoolValue("BVFR-StringCache", false);
-
-    public static boolean getPatcherSetting(String v) {
-        Patcher patcher = (Patcher) LiquidBounce.moduleManager.getModule(Patcher.class);
-        if (patcher == null)
-            return false;
-
-        for (Value va : patcher.getValues()) {
-            if (va instanceof BoolValue && va.getName() == v)
-                return ((BoolValue) va).get();
-        }
-
-        return false;
-    }
-
-    public static boolean getPatcherSetting(int index) {
-        Patcher patcher = (Patcher) LiquidBounce.moduleManager.getModule(Patcher.class);
-        if (patcher == null)
-            return false;
-
-        if (index > patcher.getValues().size() - 1)
-            return false;
-
-        return ((BoolValue) patcher.getValues().get(index)).get();
-    }
+    public static final BoolValue betterFontRenderer = new BoolValue("BetterVanillaFontRenderer", false);
+    public static final BoolValue betterFontRendererStringCache = new BoolValue("BVFR-StringCache", false);
+    public static final BoolValue keepShadersOnPerspectiveChange = new BoolValue("KeepShadersOnPerspectiveChange", false);
+    public static final BoolValue optimizedWorldSwapping = new BoolValue("OptimizedWorldSnapping", true);
+    public static final BoolValue batchModelRendering = new BoolValue("BatchModelRendering", false);
+    public static final BoolValue labyModMoment = new BoolValue("LabyMod-Moment", false);
+    public static final BoolValue lowAnimationTick = new BoolValue("LowAnimationTick", false);
 
 }

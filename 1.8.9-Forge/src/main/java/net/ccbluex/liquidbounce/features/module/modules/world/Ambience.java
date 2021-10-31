@@ -5,6 +5,11 @@
  * 
  * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
 package net.ccbluex.liquidbounce.features.module.modules.world;
 
 import net.ccbluex.liquidbounce.event.*;
@@ -18,8 +23,8 @@ import net.ccbluex.liquidbounce.value.FloatValue;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S03PacketTimeUpdate;
 
-@ModuleInfo(name = "Aesthetic", description = "Change your world time and weather client-side.", category = ModuleCategory.WORLD)
-public class Aesthetic extends Module {
+@ModuleInfo(name = "Ambience", description = "Change your world time and weather client-side.", category = ModuleCategory.WORLD)
+public class Ambience extends Module {
 
     private final ListValue mode = new ListValue("Time-Mode", new String[] {"Static", "Cycle"}, "Static");
     private final ListValue weathermode = new ListValue("Weather-Mode", new String[] {"Clear", "Rain"}, "Clear");

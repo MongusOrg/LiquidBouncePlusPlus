@@ -9,10 +9,12 @@ Twitter: https://twitter.com/CCBlueX
 
 ## Third-party plugins/mods also included in this build:
 - [FlorianMichael/ViaForge](https://github.com/FlorianMichael/ViaForge/)
+- [Sk1erLLC/Patcher](https://github.com/Sk1erLLC/Patcher/)
 - [Guichaguri/BetterFPS](https://github.com/Guichaguri/BetterFps/)
 - [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) for AAC5 bypasses.
 
-# Honourable mention:
+## Honourable mention:
+- Dort#2397 for the old Verus (Latest) Movement Disabler. (around 4-5 months ago, luv u)
 - LX#2800 (don't remember exactly the tag tho) for a very sus disabler.
 
 ## Issues

@@ -156,8 +156,8 @@ public abstract class MixinGuiScreen {
      * @author CCBlueX (superblaubeere27)
      * @reason Making it possible for other mixins to receive actions
      */
-    @Overwrite
-    protected void actionPerformed(GuiButton button) throws IOException {
+    @Inject(method = "actionPerformed", at = @At("RETURN"))
+    protected void injectActionPerformed(GuiButton button, CallbackInfo callbackInfo) {
         this.injectedActionPerformed(button);
     }
 

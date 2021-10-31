@@ -5,6 +5,11 @@
  * 
  * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
 import net.ccbluex.liquidbounce.LiquidBounce
@@ -39,7 +44,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
     private val smoothYTransition = BoolValue("Smooth-YTransition", true)
     private val barValue = BoolValue("Bar", true)
     private val blurValue = BoolValue("Blur", false)
-    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 10F)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
     private val newValue = BoolValue("New", true)
     private val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgGreenValue = IntegerValue("Background-Red", 0, 0, 255)

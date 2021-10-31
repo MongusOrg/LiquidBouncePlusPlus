@@ -122,8 +122,6 @@ public class Fly extends Module {
     private boolean verusDmged = false;
 
     private float lastYaw, lastPitch;
-
-    private boolean shouldStopSprinting = false;
     
     @Override
     public void onEnable() {
@@ -146,7 +144,6 @@ public class Fly extends Module {
 
         verusJumpTimes = 0;
         verusDmged = false;
-        shouldStopSprinting = mc.thePlayer.isSprinting();
 
         switch (mode.toLowerCase()) {
             case "ncp":
@@ -168,7 +165,6 @@ public class Fly extends Module {
                 MovementUtils.strafe();
                 break;
             case "verus":
-                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
                 if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
@@ -191,7 +187,6 @@ public class Fly extends Module {
                 } else {
                     // set dmged = true since there's no damage method
                     verusDmged = true;
-                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 }
                 if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
                 break;
@@ -204,9 +199,6 @@ public class Fly extends Module {
                 mc.thePlayer.motionX *= 0.1D;
                 mc.thePlayer.motionZ *= 0.1D;
                 mc.thePlayer.swingItem();
-                break;
-            case "pearl":
-                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
                 break;
         }
 
@@ -319,7 +311,6 @@ public class Fly extends Module {
                 if (!verusDmged && mc.thePlayer.hurtTime > 0) {
                     verusDmged = true;
                     boostTicks = verusDmgTickValue.get();
-                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 }
 
                 if (boostTicks > 0) {
@@ -386,7 +377,6 @@ public class Fly extends Module {
                 int enderPearlSlot = getPearlSlot();
                 if (pearlState == 0) {
                     if (enderPearlSlot == -1) {
-                        if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                         LiquidBounce.hud.addNotification(new Notification("You don't have any ender pearl!", Notification.Type.ERROR));
                         pearlState = -1;
                         this.setState(false);
@@ -405,10 +395,8 @@ public class Fly extends Module {
                     pearlState = 1;    
                 }
 
-                if (pearlState == 1 && mc.thePlayer.hurtTime > 0) {
-                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
+                if (pearlState == 1 && mc.thePlayer.hurtTime > 0) 
                     pearlState = 2;
-                }
 
                 if (pearlState == 2) {
                     if (mc.gameSettings.keyBindJump.isKeyDown())

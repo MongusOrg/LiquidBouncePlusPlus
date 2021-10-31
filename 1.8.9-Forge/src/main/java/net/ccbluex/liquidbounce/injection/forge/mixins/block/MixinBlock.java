@@ -8,7 +8,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.block;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.BlockBBEvent;
 import net.ccbluex.liquidbounce.features.module.modules.combat.Criticals;
-//import net.ccbluex.liquidbounce.features.module.modules.exploit.GhostHand;
+import net.ccbluex.liquidbounce.features.module.modules.exploit.GhostHand;
 import net.ccbluex.liquidbounce.features.module.modules.player.NoFall;
 import net.ccbluex.liquidbounce.features.module.modules.render.XRay;
 import net.ccbluex.liquidbounce.features.module.modules.world.NoSlowBreak;
@@ -76,7 +76,7 @@ public abstract class MixinBlock {
         if(xray.getState())
             callbackInfoReturnable.setReturnValue(xray.getXrayBlocks().contains(this));
     }
-/*
+
     @Inject(method = "isCollidable", at = @At("HEAD"), cancellable = true)
     private void isCollidable(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         final GhostHand ghostHand = (GhostHand) LiquidBounce.moduleManager.getModule(GhostHand.class);
@@ -84,7 +84,7 @@ public abstract class MixinBlock {
         if (ghostHand.getState() && !(ghostHand.getBlockValue().get() == Block.getIdFromBlock((Block) (Object) this)))
             callbackInfoReturnable.setReturnValue(false);
     }
-*/
+
     @Inject(method = "getAmbientOcclusionLightValue", at = @At("HEAD"), cancellable = true)
     private void getAmbientOcclusionLightValue(final CallbackInfoReturnable<Float> floatCallbackInfoReturnable) {
         if (LiquidBounce.moduleManager.getModule(XRay.class).getState())

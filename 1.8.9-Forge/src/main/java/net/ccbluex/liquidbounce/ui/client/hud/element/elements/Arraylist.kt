@@ -38,7 +38,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 side: Side = Side(Horizontal.RIGHT, Vertical.UP)) : Element(x, y, scale, side) {
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Random", "Sky", "CRainbow", "LiquidSlowly", "Fade", "Mixer"), "Custom")
     private val blurValue = BoolValue("Blur", false)
-    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 10F)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
@@ -205,12 +205,13 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
         when (side.horizontal) {
             Horizontal.RIGHT, Horizontal.MIDDLE -> {
-                if (blurValue.get()) {
+                if (blurValue.get() && border != null) {
+                    val lastBorder = border!! //bro...
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
-                    BlurUtils.preCustomBlur(blurStrength.get())
+                    BlurUtils.preCustomBlur(blurStrength.get(), lastBorder.x, lastBorder.y, lastBorder.x2, lastBorder.y2)
                     modules.forEachIndexed { index, module ->
                         val xPos = -module.slide - 2
                         RenderUtils.quickDrawRect(
@@ -316,12 +317,13 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
             }
 
             Horizontal.LEFT -> {
-                if (blurValue.get()) {
+                if (blurValue.get() && border != null) {
+                    val lastBorder = border!!
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
-                    BlurUtils.preCustomBlur(blurStrength.get())
+                    BlurUtils.preCustomBlur(blurStrength.get(), lastBorder.x, lastBorder.y, lastBorder.x2, lastBorder.y2)
                     modules.forEachIndexed { index, module ->
                         var displayString = getModName(module)
                         val width = fontRenderer.getStringWidth(displayString)

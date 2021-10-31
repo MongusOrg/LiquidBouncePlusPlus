@@ -5,6 +5,11 @@
  * 
  * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
 package net.ccbluex.liquidbounce.utils.render;
 
 import com.google.gson.JsonSyntaxException;
@@ -32,9 +37,13 @@ public class BlurUtils {
     private static int lastWidth;
     private static int lastHeight;
 
+    private static float lastW;
+    private static float lastH;
+
     private static float lastStrength = 5F;
 
-    private static ResourceLocation blurShader = new ResourceLocation("liquidbounce+/mahiro.json");
+    //private static ResourceLocation blurShader = new ResourceLocation("liquidbounce+/mahiro.json");
+    private static ResourceLocation blurShader = new ResourceLocation("shaders/post/blurArea.json");
 
     public static void init() {
         try {
@@ -47,11 +56,24 @@ public class BlurUtils {
         }
     }
 
-    private static void setValues(float strength) {
+    /*private static void setValues(float strength) {
         if (strength == lastStrength) return;
         lastStrength = strength;
         for (int i = 0; i < 2; i++) {
             shaderGroup.listShaders.get(i).getShaderManager().getShaderUniform("Radius").set(strength);
+        }
+    }*/
+
+    private static void setValues(float strength, float x, float y, float w, float h, float width, float height) {
+        if (strength == lastStrength && lastW == w && lastH == h) return;
+        lastStrength = strength;
+        lastW = w;
+        lastH = h;
+
+        for (int i = 0; i < 2; i++) {
+            shaderGroup.listShaders.get(i).getShaderManager().getShaderUniform("Radius").set(strength);
+            shaderGroup.listShaders.get(i).getShaderManager().getShaderUniform("BlurXY").set(x, height - y - h);
+            shaderGroup.listShaders.get(i).getShaderManager().getShaderUniform("BlurCoord").set(w, h);
         }
     }
 
@@ -83,7 +105,11 @@ public class BlurUtils {
         lastWidth = width;
         lastHeight = height;
 
-        setValues(blurStrength);
+        float _w = x2 - x;
+        float _h = y2 - y;
+
+        //setValues(blurStrength);
+        setValues(blurStrength, x, y, _w, _h, width, height);
 
         framebuffer.bindFramebuffer(true);
         shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);
@@ -129,7 +155,7 @@ public class BlurUtils {
         GlStateManager.popMatrix();
     }
 
-    public static void preCustomBlur(float blurStrength) {
+    /*public static void preCustomBlur(float blurStrength) {
         if (!OpenGlHelper.isFramebufferEnabled()) return;
 
         ScaledResolution scaledResolution = new ScaledResolution(mc);
@@ -146,6 +172,52 @@ public class BlurUtils {
         lastHeight = height;
 
         setValues(blurStrength);
+
+        framebuffer.bindFramebuffer(true);
+        shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);
+
+        mc.getFramebuffer().bindFramebuffer(true);
+
+        GlStateManager.pushMatrix();
+        Stencil.write(false);
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+    }*/
+
+    public static void preCustomBlur(float blurStrength, float x, float y, float x2, float y2) {
+        if (!OpenGlHelper.isFramebufferEnabled()) return;
+        
+        if (x > x2) {
+            float z = x;
+            x = x2;
+            x2 = z;
+        }
+
+        if (y > y2) {
+            float z = y;
+            y = y2;
+            y2 = y;
+        }
+
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        final int scaleFactor = scaledResolution.getScaleFactor();
+        final int width = scaledResolution.getScaledWidth();
+        final int height = scaledResolution.getScaledHeight();
+        
+
+        if (sizeHasChanged(scaleFactor, width, height) || framebuffer == null || frbuffer == null || shaderGroup == null) {
+            init();
+        }
+
+        lastFactor = scaleFactor;
+        lastWidth = width;
+        lastHeight = height;
+
+        float _w = x2 - x;
+        float _h = y2 - y;
+
+        setValues(blurStrength, x, y, _w, _h, width, height);
 
         framebuffer.bindFramebuffer(true);
         shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);
@@ -224,7 +296,11 @@ public class BlurUtils {
         lastWidth = width;
         lastHeight = height;
 
-        setValues(blurStrength);
+        //setValues(blurStrength);
+        float _w = x2 - x;
+        float _h = y2 - y;
+
+        setValues(blurStrength, x, y, _w, _h, width, height);
 
         framebuffer.bindFramebuffer(true);
         shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);

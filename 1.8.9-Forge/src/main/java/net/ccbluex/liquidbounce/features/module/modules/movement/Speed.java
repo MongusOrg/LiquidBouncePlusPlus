@@ -82,8 +82,7 @@ public class Speed extends Module {
             new MiJump(),
             new OnGround(),
             new YPort(),
-            new YPort2(),
-            new Custom2()
+            new YPort2()
     };
 
     public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Other"}, "NCP") {
@@ -168,7 +167,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "Custom2"}, "Boost") {
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine"}, "Boost") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {

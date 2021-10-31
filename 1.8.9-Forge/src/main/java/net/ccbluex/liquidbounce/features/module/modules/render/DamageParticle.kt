@@ -5,6 +5,11 @@
  *
  * This code was taken from UnlegitMC/FDPClient. Please credit them when using this code in your repository.
  */
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
 package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.event.EventTarget
@@ -15,10 +20,12 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.EntityUtils
+import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.EntityLivingBase
 import org.lwjgl.opengl.GL11
+import java.awt.Color
 import java.math.BigDecimal
 import java.util.*
 import kotlin.math.abs
@@ -30,6 +37,10 @@ class DamageParticle : Module() {
 
     private val aliveTicks= IntegerValue("AliveTicks",20,10,50)
     private val sizeValue= IntegerValue("Size",3,1,7)
+    private val customColor = BoolValue("CustomColor", false)
+    private val red = IntegerValue("Red", 255, 0, 255)
+    private val green = IntegerValue("Green", 255, 0, 255)
+    private val blue = IntegerValue("Blue", 255, 0, 255)
 
     @EventTarget
     fun onUpdate(event: UpdateEvent){
@@ -40,7 +51,7 @@ class DamageParticle : Module() {
                     healthData[entity.entityId] = entity.health
                     if(lastHealth==entity.health) continue
 
-                    val prefix=if(lastHealth>entity.health){"§c"}else{"§a"}
+                    val prefix=if (!customColor.get()) (if(lastHealth>entity.health){"§c"}else{"§a"}) else (if(lastHealth>entity.health){"-"}else{"+"})
                     particles.add(SingleParticle(prefix+BigDecimal(abs(lastHealth-entity.health).toDouble()).setScale(1,BigDecimal.ROUND_HALF_UP).toDouble()
                         ,entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1
                         ,entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0
@@ -86,7 +97,7 @@ class DamageParticle : Module() {
                     particle.str,
                     (-(mc.fontRendererObj.getStringWidth(particle.str) / 2)).toFloat(),
                     (-(mc.fontRendererObj.FONT_HEIGHT - 1)).toFloat(),
-                    0
+                    if (customColor.get()) Color(red.get(), green.get(), blue.get()).rgb else 0
                 )
                 GL11.glColor4f(187.0f, 255.0f, 255.0f, 1.0f)
                 GL11.glDepthMask(true)

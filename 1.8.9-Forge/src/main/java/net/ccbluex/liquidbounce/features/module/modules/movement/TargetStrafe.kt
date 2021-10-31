@@ -5,6 +5,11 @@
  * 
  * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
 package net.ccbluex.liquidbounce.features.module.modules.movement
 
 import net.ccbluex.liquidbounce.LiquidBounce
@@ -53,7 +58,6 @@ class TargetStrafe : Module() {
     private val alwaysRender = BoolValue("Always-Render", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
-    private lateinit var fly: Fly
 
     var direction: Int = 1
     var lastView: Int = 0
@@ -62,7 +66,6 @@ class TargetStrafe : Module() {
     override fun onInitialize() {
         killAura=LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
         speed=LiquidBounce.moduleManager.getModule(Speed::class.java) as Speed
-        fly=LiquidBounce.moduleManager.getModule(fly::class.java) as Fly
     }
 
     override fun onEnable() {
@@ -102,11 +105,9 @@ class TargetStrafe : Module() {
     }
 
     fun strafe(event: MoveEvent, moveSpeed: Double) {
+        if (killAura.target == null) return
+
         val target = killAura.target
-        if (target == null) {
-            return
-        }
-            
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
 
         if (mc.thePlayer.getDistanceToEntity(target) <= radius.get())
@@ -124,7 +125,7 @@ class TargetStrafe : Module() {
         }
 
     val canStrafe: Boolean
-        get() = ((speed.state || fly.state) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
+        get() = ((speed.state && speed.typeValue.get().equals("hypixel", true)) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
 
     private fun checkVoid(): Boolean {
         for (x in -1..0) {
@@ -138,10 +139,6 @@ class TargetStrafe : Module() {
     }
 
     private fun isVoid(X: Int, Z: Int): Boolean {
-        val fly = LiquidBounce.moduleManager.getModule(Fly::class.java) as Fly
-        if (fly.state) {
-            return false
-        }
         if (mc.thePlayer.posY < 0.0) {
             return true
         }
@@ -161,7 +158,7 @@ class TargetStrafe : Module() {
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
         val target = killAura.target
-        if ((canStrafe || (alwaysRender.get() && target != null)) && render.get()) {
+        if ((canStrafe || alwaysRender.get()) && render.get()) {
             target?:return
             GL11.glPushMatrix()
             GL11.glTranslated(

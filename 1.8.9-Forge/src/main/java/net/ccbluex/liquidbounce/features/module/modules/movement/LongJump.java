@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.features.module.modules.movement;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.JumpEvent;
+import net.ccbluex.liquidbounce.event.MotionEvent;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.event.UpdateEvent;
 import net.ccbluex.liquidbounce.event.PacketEvent;
@@ -19,6 +20,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
+import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 import net.ccbluex.liquidbounce.value.*;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemEnderPearl;
@@ -30,7 +32,14 @@ import net.minecraft.util.EnumFacing;
 @ModuleInfo(name = "LongJump", spacedName = "Long Jump", description = "Allows you to jump further.", category = ModuleCategory.MOVEMENT)
 public class LongJump extends Module {
 
-    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
+    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "HypixelDamage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
+    private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan");
+    private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000);
+    private final BoolValue hypixelDmgBlinkComp = new BoolValue("HypixelDamage-BlinkCompatible", false);
+    private final BoolValue hypixelStrafe = new BoolValue("HypixelDamage-StrafeAfterTick", false);
+    private final IntegerValue hypixelDmgTick = new IntegerValue("HypixelDamage-Tick", 10, 1, 20);
+    private final FloatValue hypixelDmgMotionY = new FloatValue("HypixelDamage-MotionY", 1F, 0F, 2F);
+    private final FloatValue hypixelDmgXZBoost = new FloatValue("HypixelDamage-XZBoost", 1F, 0F, 2F);
     private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F);
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false);
@@ -55,10 +64,15 @@ public class LongJump extends Module {
     private int ticks = 0;
     private float currentTimer = 1F;
 
-    private boolean verusDmged = false;
+    private boolean verusDmged, hpxDamage = false;
     private int pearlState = 0;
 
-    private boolean shouldStopSprinting = false;
+    private MSTimer dmgTimer = new MSTimer();
+
+    private void sendPosPacket(double x, double y, double z, boolean gr) {
+        if (hypixelDmgBlinkComp.get()) mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, gr));
+        else PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, gr));
+    }
 
     public void onEnable() {
         if (mc.thePlayer == null) return;
@@ -68,13 +82,16 @@ public class LongJump extends Module {
 
         ticks = 0;
         verusDmged = false;
+        hpxDamage = false;
         pearlState = 0;
-        shouldStopSprinting = mc.thePlayer.isSprinting();
 
+        dmgTimer.reset();
+
+        double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
+        double z = mc.thePlayer.posZ;
 
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
-            if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
             if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
                 PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
                 PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
@@ -82,9 +99,65 @@ public class LongJump extends Module {
                 mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
             }
         }
+/*
+        if (modeValue.get().equalsIgnoreCase("hypixeldamage")) switch (hypixelDmgMode.get().toLowerCase()) {
+            case "spartan":
+                for(int i = 0; i < 65; ++i) {
+                    sendPosPacket(x, y + 0.049D, z, false);
+                    sendPosPacket(x, y, z, false));
+                }
+                sendPosPacket(x, y + 0.1D, z, true);
+                break;
+            case "test":
+                for(int i = 0; i < 32; ++i) {
+                    sendPosPacket(x, y + 0.1075D, z, false);
+                    sendPosPacket(x, y, z, false);
+                }
+                sendPosPacket(x, y + 0.0095D, z, true);
+                break;
+            case "mini": // only 10 packets??? might actually work LOL
+                for(int i = 0; i < 10; ++i) {
+                    sendPosPacket(x, y + 0.3175D, z, false);
+                    sendPosPacket(x, y, z, false);
+                }
+                sendPosPacket(x, y + 0.01025D, z, true);
+                break;
+        }*/
+    }
 
-        if (modeValue.get().equalsIgnoreCase("verusdmg") || modeValue.get().equalsIgnoreCase("pearl"))
-            if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SPRINTING));
+    @EventTarget
+    public void onMotion(final MotionEvent event) {
+        double x = mc.thePlayer.posX;
+        double y = mc.thePlayer.posY;
+        double z = mc.thePlayer.posZ;
+        
+        if (!hpxDamage && modeValue.get().equalsIgnoreCase("hypixeldamage") && (hypixelDmgDelay.get() <= 0 || dmgTimer.hasTimePassed(hypixelDmgDelay.get()))) {
+            switch (hypixelDmgMode.get().toLowerCase()) {
+            case "spartan":
+                for(int i = 0; i < 65; ++i) {
+                    sendPosPacket(x, y + 0.049D, z, false);
+                    sendPosPacket(x, y, z, false);
+                }
+                sendPosPacket(x, y + 0.1D, z, true);
+                break;
+            case "test":
+                for(int i = 0; i < 32; ++i) {
+                    sendPosPacket(x, y + 0.1075D, z, false);
+                    sendPosPacket(x, y, z, false);
+                }
+                sendPosPacket(x, y + 0.0095D, z, true);
+                break;
+            case "mini": // only 10 packets??? might actually work LOL
+                for(int i = 0; i < 10; ++i) {
+                    sendPosPacket(x, y + 0.3175D, z, false);
+                    sendPosPacket(x, y, z, false);
+                }
+                sendPosPacket(x, y + 0.01025D, z, true);
+                break;
+            }
+
+            hpxDamage = true;
+        }
     }
 
     @EventTarget
@@ -92,7 +165,6 @@ public class LongJump extends Module {
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
             if (mc.thePlayer.hurtTime > 0 && !verusDmged) {
                 verusDmged = true;
-                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 MovementUtils.strafe(verusBoostValue.get());
                 mc.thePlayer.motionY = verusHeightValue.get();
             }
@@ -110,7 +182,6 @@ public class LongJump extends Module {
             int enderPearlSlot = getPearlSlot();
             if (pearlState == 0) {
                 if (enderPearlSlot == -1) {
-                    if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                     LiquidBounce.hud.addNotification(new Notification("You don't have any ender pearl!", Notification.Type.ERROR));
                     pearlState = -1;
                     this.setState(false);
@@ -129,7 +200,6 @@ public class LongJump extends Module {
 
             if (pearlState == 1 && mc.thePlayer.hurtTime > 0) {
                 pearlState = 2;
-                if (shouldStopSprinting) PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SPRINTING));
                 MovementUtils.strafe(pearlBoostValue.get());
                 mc.thePlayer.motionY = pearlHeightValue.get();
             }
@@ -244,18 +314,29 @@ public class LongJump extends Module {
                     }
                     ticks++;
                     break;
+                // copied????
+                case "hypixeldamage":
+                    if (ticks < hypixelDmgTick.get()) {
+                        mc.thePlayer.jump();
+                        mc.thePlayer.motionY = hypixelDmgMotionY.get();
+                        MovementUtils.strafe(MovementUtils.getSpeed() * hypixelDmgXZBoost.get());
+                    } else {
+                        if (!mc.thePlayer.onGround && hypixelStrafe.get()) MovementUtils.strafe(hypixelDmgXZBoost.get());
+                    }
+                    ticks++;
+                    break;
                 case "infiniteredesky":
-                    if(mc.thePlayer.fallDistance > -0.6F) 
+                    if(mc.thePlayer.fallDistance > 0.6F) 
                         mc.thePlayer.motionY += 0.02F;
                 
                     MovementUtils.strafe((float) Math.min(0.85, Math.max(0.25, MovementUtils.getSpeed() * 1.05878)));
+                    break;
             }
         }
 
         if(autoJumpValue.get() && mc.thePlayer.onGround && MovementUtils.isMoving()) {
                 jumped = true;
                 mc.thePlayer.jump();
-
         }
     }
 

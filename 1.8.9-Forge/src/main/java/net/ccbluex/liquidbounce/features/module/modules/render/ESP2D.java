@@ -5,6 +5,11 @@
  * 
  * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
 package net.ccbluex.liquidbounce.features.module.modules.render;
 
 import java.awt.Color;

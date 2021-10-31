@@ -28,6 +28,9 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
     var sliderX : Float = 0F
 
+    var lastAnimTick: Long = 0L
+    var alrUpdate = false
+
     companion object {
         var useParallax = true
     }
@@ -36,11 +39,17 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         slideX = 0F
         fade = 0F
         sliderX = 0F
+        //lastAnimTick = System.currentTimeMillis()
+        alrUpdate = false
         super.initGui()
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        val creditInfo = "made by WYSI-Foundation."
+        if (!alrUpdate) {
+            lastAnimTick = System.currentTimeMillis()
+            alrUpdate = true
+        }
+        val creditInfo = "made by epic group of paster."
         drawBackground(0)
         GL11.glPushMatrix()
         renderSwitchButton()
@@ -53,10 +62,17 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         renderBar(mouseX, mouseY, partialTicks)
         GL11.glPopMatrix()
         super.drawScreen(mouseX, mouseY, partialTicks)
+        
+        if (!LiquidBounce.mainMenuPrep) {
+            val animProgress = ((System.currentTimeMillis() - lastAnimTick).toFloat() / 5000F).coerceIn(0F, 1F)
+            RenderUtils.drawRect(0F, 0F, width.toFloat(), height.toFloat(), Color(0F, 0F, 0F, 1F - animProgress))
+            if (animProgress >= 1F)
+                LiquidBounce.mainMenuPrep = true    
+        }
     }
 
     override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
-        if (mouseButton != 0) return
+        if (!LiquidBounce.mainMenuPrep || mouseButton != 0) return
 
         if (isMouseHover(2F, height - 22F, 28F, height - 12F, mouseX, mouseY))
             useParallax = !useParallax
@@ -121,7 +137,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
         else 
-            Fonts.font35.drawCenteredString("DM why dont#0425 for official Discord server.", width / 2F, staticY + 30F, -1)
+            Fonts.font35.drawCenteredString("Happy Halloween! Trick or treat?", width / 2F, staticY + 30F, Color(255, 154, 31).rgb)
 
         if (shouldAnimate) {
             if (fade == 0F)
