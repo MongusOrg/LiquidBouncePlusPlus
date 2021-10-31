@@ -29,7 +29,7 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
     @EventTarget
     public void onPacket(PacketEvent event) {
         if (event.getPacket().getClass().getSimpleName().startsWith("C")) outBound++;
-        else inBound++;
+        else if (event.getPacket().getClass().getSimpleName().startsWith("S")) inBound++;
     }
 
     @EventTarget

@@ -68,6 +68,9 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     protected abstract void updateAITick();
 
     @Shadow
+    public Map<Integer, PotionEffect> activePotionsMap;
+
+    @Shadow
     public int swingProgressInt;
     @Shadow
     public boolean isSwingInProgress;

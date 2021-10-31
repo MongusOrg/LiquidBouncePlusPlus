@@ -12,9 +12,4 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 
 @ModuleInfo(name = "NoAchievements", spacedName = "No Achievements", description = "Remove achievement notifications from your screen.", category = ModuleCategory.RENDER)
-class NoAchievements : Module() {
-    @EventTarget
-    fun onTick(e: TickEvent) {
-        mc.guiAchievement.clearAchievements()
-    }
-}
+class NoAchievements : Module()
