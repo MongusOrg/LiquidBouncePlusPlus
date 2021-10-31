@@ -1,13 +1,13 @@
 [
   {
-    "modid": "liquidbounce",
-    "name": "LiquidBounce",
+    "modid": "liquidbounceplus",
+    "name": "LiquidBounce+",
     "description": "",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "url": "https://liquidbounce.net",
     "updateUrl": "",
-    "authorList": ["CCBlueX"],
+    "authorList": ["CCBlueX", "WYSI-Foundation"],
     "credits": "",
     "logoFile": "",
     "screenshots": [],
