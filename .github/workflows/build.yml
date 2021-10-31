@@ -18,8 +18,10 @@ jobs:
           distribution: "adopt"
           java-version: 8
           cache: "gradle"
-      - name: Update permission
-        run: git update-index --chmod=+x ./gradlew
+      - name: Update permission 1
+        run: git update-index --chmod=+x ./gradlew setupCiWorkspace
+      - name: Update permission 2
+        run: git update-index --chmod=+x ./gradlew build
       - name: Build
         run: ./gradlew setupCiWorkspace && ./gradlew build
       - name: Rename build artifacts
