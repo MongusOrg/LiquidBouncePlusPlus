@@ -20,12 +20,10 @@ jobs:
         name: Build
         with:
           job-id: jdk8
-          arguments: build
+          arguments: setupCiWorkspace build
           gradle-version: wrapper
-      - name: Rename build artifacts
-        run: mv 1.8.9-Forge/build/libs/LiquidBounce-plus.jar 1.8.9-Forge/build/libs/lbplus-${{ github.event.head_commit.id }}.jar
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: LiquidBouncePlus
-          path: 1.8.9-Forge/build/libs/lbplus-${{ github.event.head_commit.id }}.jar
+          path: 1.8.9-Forge/build/libs/LiquidBounce-plus.jar
