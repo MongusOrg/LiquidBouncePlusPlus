@@ -7,6 +7,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.ccbluex.liquidbounce.LiquidBounce;
+import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
 import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
@@ -130,6 +131,11 @@ public abstract class MixinGuiNewChat {
         checkHud();
         boolean canFont=hud.getState() && hud.getFontChatValue().get();
 
+        if (Patcher.chatPosition) {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0, -12, 0);
+        }
+
         if (this.mc.gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
             int i = this.getLineCount();
             boolean flag = false;
@@ -227,6 +233,9 @@ public abstract class MixinGuiNewChat {
                 GlStateManager.popMatrix();
             }
         }
+
+        if (Patcher.chatPosition)
+            GlStateManager.popMatrix();
     }
 
     private String fixString(String str){
@@ -254,48 +263,47 @@ public abstract class MixinGuiNewChat {
         return original;
     }
 
-    @Inject(method = "getChatComponent", at = @At("HEAD"), cancellable = true)
-    private void getChatComponent(int p_getChatComponent_1_, int p_getChatComponent_2_, final CallbackInfoReturnable<IChatComponent> callbackInfo) {
+    @Overwrite
+    public IChatComponent getChatComponent(int p_146236_1_, int p_146236_2_) {
         checkHud();
-        if(hud.getState() && hud.getFontChatValue().get()) {
-            if(!this.getChatOpen()) {
-                callbackInfo.setReturnValue(null);
-            }else{
-                ScaledResolution lvt_3_1_ = new ScaledResolution(this.mc);
-                int lvt_4_1_ = lvt_3_1_.getScaleFactor();
-                float lvt_5_1_ = this.getChatScale();
-                int lvt_6_1_ = p_getChatComponent_1_ / lvt_4_1_ - 3;
-                int lvt_7_1_ = p_getChatComponent_2_ / lvt_4_1_ - 27;
-                lvt_6_1_ = MathHelper.floor_float((float) lvt_6_1_ / lvt_5_1_);
-                lvt_7_1_ = MathHelper.floor_float((float) lvt_7_1_ / lvt_5_1_);
-                if(lvt_6_1_ >= 0 && lvt_7_1_ >= 0) {
-                    int lvt_8_1_ = Math.min(this.getLineCount(), this.drawnChatLines.size());
-                    if(lvt_6_1_ <= MathHelper.floor_float((float) this.getChatWidth() / this.getChatScale()) && lvt_7_1_ < Fonts.font40.FONT_HEIGHT * lvt_8_1_ + lvt_8_1_) {
-                        int lvt_9_1_ = lvt_7_1_ / Fonts.font40.FONT_HEIGHT + this.scrollPos;
-                        if(lvt_9_1_ >= 0 && lvt_9_1_ < this.drawnChatLines.size()) {
-                            ChatLine lvt_10_1_ = (ChatLine) this.drawnChatLines.get(lvt_9_1_);
-                            int lvt_11_1_ = 0;
-                            Iterator lvt_12_1_ = lvt_10_1_.getChatComponent().iterator();
+        boolean flagFont = hud.getState() && hud.getFontChatValue().get();
 
-                            while(lvt_12_1_.hasNext()) {
-                                IChatComponent lvt_13_1_ = (IChatComponent) lvt_12_1_.next();
-                                if(lvt_13_1_ instanceof ChatComponentText) {
-                                    lvt_11_1_ += Fonts.font40.getStringWidth(GuiUtilRenderComponents.func_178909_a(((ChatComponentText) lvt_13_1_).getChatComponentText_TextValue(), false));
-                                    if(lvt_11_1_ > lvt_6_1_) {
-                                        callbackInfo.setReturnValue(lvt_13_1_);
-                                        return;
-                                    }
+        if (!this.getChatOpen()) {
+            return null;
+        } else {
+            ScaledResolution sc = new ScaledResolution(this.mc);
+            int scaleFactor = sc.getScaleFactor();
+            float chatScale = this.getChatScale();
+            int mX = p_146236_1_ / scaleFactor - 3;
+            int mY = p_146236_2_ / scaleFactor - 27 - (Patcher.chatPosition ? 12 : 0);
+            mX = MathHelper.floor_float((float) mX / chatScale);
+            mY = MathHelper.floor_float((float) mY / chatScale);
+            if (mX >= 0 && mY >= 0) {
+                int lineCount = Math.min(this.getLineCount(), this.drawnChatLines.size());
+                if (mX <= MathHelper.floor_float((float) this.getChatWidth() / this.getChatScale()) && mY < (flagFont?hud.getFontType().get():this.mc.fontRendererObj).FONT_HEIGHT * lineCount + lineCount) {
+                    int line = mY / (flagFont?hud.getFontType().get():this.mc.fontRendererObj).FONT_HEIGHT + this.scrollPos;
+                    if (line >= 0 && line < this.drawnChatLines.size()) {
+                        ChatLine chatLine = (ChatLine) this.drawnChatLines.get(line);
+                        int maxWidth = 0;
+                        Iterator iter = chatLine.getChatComponent().iterator();
+
+                        while (iter.hasNext()) {
+                            IChatComponent iterator = (IChatComponent) iter.next();
+                            if (iterator instanceof ChatComponentText) {
+                                maxWidth += (flagFont?hud.getFontType().get():this.mc.fontRendererObj).getStringWidth(GuiUtilRenderComponents.func_178909_a(((ChatComponentText) iterator).getChatComponentText_TextValue(), false));
+                                if (maxWidth > mX) {
+                                    return iterator;
                                 }
                             }
                         }
-
-                        callbackInfo.setReturnValue(null);
-                    }else{
-                        callbackInfo.setReturnValue(null);
                     }
-                }else{
-                    callbackInfo.setReturnValue(null);
+
+                    return null;
+                } else {
+                    return null;
                 }
+            } else {
+                return null;
             }
         }
     }

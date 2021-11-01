@@ -141,18 +141,12 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
     @Shadow
     private float lastReportedPitch;
 
-    @Shadow 
-    public float timeInPortal;
-
-    @Shadow 
-    public float prevTimeInPortal;
-
     @Unique
     private boolean lastOnGround;
 
     @Overwrite
     public void removePotionEffectClient(int potionId) {
-        if (Patcher.noNauseaPortal && potionId == Potion.confusion.id) {
+        if (Patcher.noNauseaPortal.get() && potionId == Potion.confusion.id) {
             this.timeInPortal = 0.0f;
             this.prevTimeInPortal = 0.0f;
         }
