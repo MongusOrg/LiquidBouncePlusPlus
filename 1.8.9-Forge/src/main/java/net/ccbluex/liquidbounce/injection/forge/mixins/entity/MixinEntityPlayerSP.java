@@ -143,6 +143,19 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
     @Unique
     private boolean lastOnGround;
 
+<<<<<<< HEAD
+=======
+    @Overwrite
+    public void removePotionEffectClient(int potionId) {
+        if (Patcher.noNauseaPortal.get() && potionId == Potion.confusion.id) {
+            this.timeInPortal = 0.0f;
+            this.prevTimeInPortal = 0.0f;
+        }
+
+        this.activePotionsMap.remove(Integer.valueOf(potionId));
+    }
+
+>>>>>>> edec2dcd4f16a476d89116f3445d2baf985d2b49
     /**
      * @author CCBlueX
      */
