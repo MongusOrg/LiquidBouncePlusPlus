@@ -105,7 +105,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         this.message = message
         this.type = type
         this.displayTime = displayLength
-        this.firstY = 1919F
+        this.firstY = 19190F
         this.stayTimer.reset()
         this.textLength = Fonts.font40.getStringWidth(message)
     }
@@ -132,7 +132,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         val width = textLength.toFloat() + 8.0f
         
         if (smooth) {
-            if (firstY == 1919.0F) {
+            if (firstY == 19190.0F) {
                 firstY = animationY
             }
             firstY += (animationY - firstY) * 0.25F

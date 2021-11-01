@@ -25,6 +25,7 @@ import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.EaseUtils
+import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.UiUtils
 import net.ccbluex.liquidbounce.value.FloatValue
@@ -65,6 +66,7 @@ class Target : Element() {
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
     private val tSlideAnim = BoolValue("TSlide-Animation", true)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
+    private val riseShadow = BoolValue("Rise-Shadow", true)
     private val riseParticle = BoolValue("Rise-Particle", true)
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
     private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
@@ -259,7 +261,7 @@ class Target : Element() {
                     RenderUtils.drawRect(0F, 32F, (easingHealth / convertedTarget.maxHealth.toFloat()).coerceIn(0F, convertedTarget.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
                 }
 
-                // without the new rise update i would never think of recreating this converted Targethud lol
+                // without the new rise update i would never think of recreating this Targethud lol
                 "Rise" -> {
                     val font = Fonts.fontSFUI40
                     val name = "Name ${convertedTarget.name}"
@@ -282,7 +284,10 @@ class Target : Element() {
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
 
-                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
+                    if (riseShadow.get()) 
+                        UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, 4, bgColor)
+                    else
+                        RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
 
                     if (riseParticle.get()) {
                         if (convertedTarget.hurtTime > convertedTarget.maxHurtTime / 2) {
@@ -332,10 +337,10 @@ class Target : Element() {
                         "health" -> RenderUtils.drawRect(5F, 41F, 5F + barWidth, 49F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
                         else -> { //perform the for-loop gradient trick.
                             GL11.glPushMatrix()
-                            GL11.glScalef(1F, 1F, 1F) //reset scale
-                            GL11.glEnable(3089)
-                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 0F, 5F * scale + renderX.toFloat() + barWidth * scale, 49F * scale + renderY.toFloat())
-                            GL11.glScalef(scale, scale, scale)
+                            Stencil.write(false)
+                            RenderUtils.quickDrawRect(5F, 40F, 5F + barWidth, 50F)
+                            Stencil.erase(true)
+                            //RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 0F, 5F * scale + renderX.toFloat() + barWidth * scale, 49F * scale + renderY.toFloat())
                             for (i in 0..(gradientAmountValue.get()-1)) {
                                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
@@ -357,7 +362,7 @@ class Target : Element() {
                                     else -> -1
                                 })
                             }
-                            GL11.glDisable(3089)
+                            Stencil.dispose()
                             GL11.glPopMatrix()
                         }
                     }
@@ -382,11 +387,11 @@ class Target : Element() {
                     font.drawString(convertedTarget.name, 46, 4, -1)
 
                     val barLength = 60F * (convertedTarget.health / convertedTarget.maxHealth).coerceIn(0F, 1F)
-                    RenderUtils.drawRect(45F, 15F, 45F + 60F, 18F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).darker().darker().darker().rgb)
-                    RenderUtils.drawRect(45F, 15F, 45F + barLength, 18F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).rgb)
+                    RenderUtils.drawRect(45F, 14F, 45F + 60F, 17F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).darker().darker().darker().rgb)
+                    RenderUtils.drawRect(45F, 14F, 45F + barLength, 17F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).rgb)
 
                     for (i in 0..9) {
-                        RenderUtils.drawBorder(45F + i * 6F, 15F, 45F + (i + 1F) * 6F, 18F, 0.25F, Color.black.rgb)
+                        RenderUtils.drawBorder(45F + i * 6F, 14F, 45F + (i + 1F) * 6F, 17F, 0.25F, Color.black.rgb)
                     }
 
                     GL11.glPushMatrix()

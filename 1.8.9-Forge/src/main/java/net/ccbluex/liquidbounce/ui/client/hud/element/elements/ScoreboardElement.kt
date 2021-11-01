@@ -147,11 +147,11 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             GL11.glScalef(1F, 1F, 1F)
             GL11.glTranslated(-renderX, -renderY, 0.0)
             if (side.horizontal == Side.Horizontal.LEFT) 
-                BlurUtils.blurArea((renderX.toFloat() + l1 + 2F) * scale, (renderY.toFloat() + -2F) * scale, 
-                    (renderX.toFloat() + -5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+                BlurUtils.blurArea(renderX.toFloat() + (l1 + 2F) * scale, renderY.toFloat() + -2F * scale, 
+                    renderX.toFloat() + -5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
             else
-                BlurUtils.blurArea((renderX.toFloat() + l1 - 2F) * scale, (renderY.toFloat() + -2F) * scale, 
-                    (renderX.toFloat() + 5F) * scale, (renderY.toFloat() + maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+                BlurUtils.blurArea(renderX.toFloat() + (l1 - 2F) * scale, renderY.toFloat() + -2F * scale, 
+                    renderX.toFloat() + 5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
 
             GL11.glTranslated(renderX, renderY, 0.0)
             GL11.glScalef(scale, scale, scale)
