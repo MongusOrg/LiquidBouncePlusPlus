@@ -24,11 +24,6 @@ public class Patcher extends Module {
     public static final BoolValue batchModelRendering = new BoolValue("BatchModelRendering", false);
     public static final BoolValue labyModMoment = new BoolValue("LabyMod-Moment", false);
     public static final BoolValue lowAnimationTick = new BoolValue("LowAnimationTick", false);
-    public static final BoolValue noNauseaPortal = new BoolValue("NoNauseaPortal", true);
-<<<<<<< HEAD
-    public static final BoolValue chatPosition = new BoolValue("ChatPosition", true);
-=======
     public static final BoolValue chatPosition = new BoolValue("ChatPosition1.12", true);
->>>>>>> edec2dcd4f16a476d89116f3445d2baf985d2b49
 
 }

@@ -26,8 +26,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: LiquidBouncePlus
-<<<<<<< HEAD
           path: 1.8.9-Forge/build/libs/LiquidBounce-plus.jar
-=======
-          path: 1.8.9-Forge/build/libs/LiquidBounce-plus.jar
->>>>>>> edec2dcd4f16a476d89116f3445d2baf985d2b49
