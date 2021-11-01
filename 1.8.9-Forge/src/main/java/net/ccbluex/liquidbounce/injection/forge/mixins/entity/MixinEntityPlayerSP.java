@@ -11,7 +11,6 @@ import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AntiHunger;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.PortalMenu;
-import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
 import net.ccbluex.liquidbounce.features.module.modules.movement.GuiMove;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
@@ -141,24 +140,8 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
     @Shadow
     private float lastReportedPitch;
 
-    @Shadow 
-    public float timeInPortal;
-
-    @Shadow 
-    public float prevTimeInPortal;
-
     @Unique
     private boolean lastOnGround;
-
-    @Overwrite
-    public void removePotionEffectClient(int potionId) {
-        if (Patcher.noNauseaPortal && potionId == Potion.confusion.id) {
-            this.timeInPortal = 0.0f;
-            this.prevTimeInPortal = 0.0f;
-        }
-
-        this.activePotionsMap.remove(Integer.valueOf(potionId));
-    }
 
     /**
      * @author CCBlueX

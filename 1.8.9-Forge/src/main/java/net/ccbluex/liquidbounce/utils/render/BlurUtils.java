@@ -37,6 +37,8 @@ public class BlurUtils {
     private static int lastWidth;
     private static int lastHeight;
 
+    private static float lastX;
+    private static float lastY;
     private static float lastW;
     private static float lastH;
 
@@ -65,8 +67,10 @@ public class BlurUtils {
     }*/
 
     private static void setValues(float strength, float x, float y, float w, float h, float width, float height) {
-        if (strength == lastStrength && lastW == w && lastH == h) return;
+        if (strength == lastStrength && lastX == x && lastY == y && lastW == w && lastH == h) return;
         lastStrength = strength;
+        lastX = x;
+        lastY = y;
         lastW = w;
         lastH = h;
 
