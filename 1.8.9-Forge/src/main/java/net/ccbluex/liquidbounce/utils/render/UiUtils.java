@@ -192,7 +192,7 @@ public class UiUtils
 		}
 	}
 
-	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, int width, Color color) {
+	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, Color color) {
 		shadowRoundedRect(x, y, x2, y2, rad, width, incre, color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
 	}
 
