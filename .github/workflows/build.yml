@@ -23,9 +23,9 @@ jobs:
           arguments: build
           gradle-version: wrapper
       - name: Rename build artifacts
-        run: mv build/libs/LiquidBounce-plus.jar build/libs/lbplus-${{ github.event.head_commit.id }}.jar
+        run: mv 1.8.9-Forge/build/libs/LiquidBounce-plus.jar 1.8.9-Forge/build/libs/lbplus-${{ github.event.head_commit.id }}.jar
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: LiquidBouncePlus
-          path: build/libs/lbplus-${{ github.event.head_commit.id }}.jar
+          path: 1.8.9-Forge/build/libs/lbplus-${{ github.event.head_commit.id }}.jar
