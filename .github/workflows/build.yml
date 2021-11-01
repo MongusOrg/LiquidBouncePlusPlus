@@ -20,7 +20,7 @@ jobs:
         name: Build
         with:
           job-id: jdk8
-          arguments: setupCiWorkspace build
+          arguments: build
           gradle-version: wrapper
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
