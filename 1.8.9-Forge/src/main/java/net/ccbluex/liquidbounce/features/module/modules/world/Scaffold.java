@@ -123,6 +123,7 @@ public class Scaffold extends Module {
     };
 
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
+    private final BoolValue noHitCheckValue = new BoolValue("NoHitCheck", false);
     public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Custom"}, "Normal");
 
     private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F);
@@ -470,7 +471,7 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 

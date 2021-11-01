@@ -213,9 +213,9 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     val floatY = renderY.toFloat()
                     var yP = 0F
                     var xP = 0F
-                    modules.forEachIndexed { index -> 
-                        val dString = getModName(it)
-                        val wid = fontRenderer.getStringWidth(dString) + 2
+                    modules.forEachIndexed { index, module -> 
+                        val dString = getModName(module)
+                        val wid = fontRenderer.getStringWidth(dString) + 2F
                         val yPos = if (side.vertical == Vertical.DOWN) -textSpacer else textSpacer * 
                                     if (side.vertical == Vertical.DOWN) index + 1 else index
                         yP += yPos
