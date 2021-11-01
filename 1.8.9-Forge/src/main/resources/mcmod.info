@@ -1,7 +1,7 @@
 [
   {
     "modid": "liquidbounce",
-    "name": "LiquidBounce+",
+    "name": "LiquidBounce",
     "description": "",
     "version": "${version}",
     "mcversion": "${mcversion}",
