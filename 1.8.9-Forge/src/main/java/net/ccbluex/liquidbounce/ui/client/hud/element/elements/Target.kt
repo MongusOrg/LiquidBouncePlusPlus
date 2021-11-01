@@ -285,7 +285,7 @@ class Target : Element() {
                     }
 
                     if (riseShadow.get()) 
-                        UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, 4, bgColor)
+                        UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, 3F, 0.5F, bgColor)
                     else
                         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
 
@@ -337,10 +337,10 @@ class Target : Element() {
                         "health" -> RenderUtils.drawRect(5F, 41F, 5F + barWidth, 49F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
                         else -> { //perform the for-loop gradient trick.
                             GL11.glPushMatrix()
-                            Stencil.write(false)
-                            RenderUtils.quickDrawRect(5F, 40F, 5F + barWidth, 50F)
-                            Stencil.erase(true)
-                            //RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 0F, 5F * scale + renderX.toFloat() + barWidth * scale, 49F * scale + renderY.toFloat())
+                            GL11.glScalef(1f, 1f, 1f)
+                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 0F, 5F * scale + renderX.toFloat() + barWidth * scale, 49F * scale + renderY.toFloat())
+                            GL11.glEnable(3089)
+                            GL11.glScalef(scale, scale, scale)
                             for (i in 0..(gradientAmountValue.get()-1)) {
                                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
@@ -362,7 +362,7 @@ class Target : Element() {
                                     else -> -1
                                 })
                             }
-                            Stencil.dispose()
+                            GL11.glDisable(3089)
                             GL11.glPopMatrix()
                         }
                     }

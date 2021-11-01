@@ -205,8 +205,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
         when (side.horizontal) {
             Horizontal.RIGHT, Horizontal.MIDDLE -> {
-                if (blurValue.get() && border != null) {
-                    val lastBorder = border!! //bro...
+                if (blurValue.get()) {
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
                     val floatX = renderX.toFloat()
@@ -219,7 +218,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         val yPos = if (side.vertical == Vertical.DOWN) -textSpacer else textSpacer * 
                                     if (side.vertical == Vertical.DOWN) index + 1 else index
                         yP += yPos
-                        xP = if (side.horizontal == Horizontal.LEFT) Math.max(xP, wid) else Math.min(xP, -wid)
+                        xP = Math.min(xP, -wid)
                     }
 
                     BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP)
@@ -328,13 +327,23 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
             }
 
             Horizontal.LEFT -> {
-                if (blurValue.get() && border != null) {
-                    val lastBorder = border!!
+                if (blurValue.get()) {
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
-                    BlurUtils.preCustomBlur(blurStrength.get(), lastBorder.x, lastBorder.y, lastBorder.x2, lastBorder.y2)
+                    var yP = 0F
+                    var xP = 0F
+                    modules.forEachIndexed { index, module -> 
+                        val dString = getModName(module)
+                        val wid = fontRenderer.getStringWidth(dString) + 2F
+                        val yPos = if (side.vertical == Vertical.DOWN) -textSpacer else textSpacer * 
+                                    if (side.vertical == Vertical.DOWN) index + 1 else index
+                        yP += yPos
+                        xP = Math.max(xP, wid)
+                    }
+
+                    BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP)
                     modules.forEachIndexed { index, module ->
                         var displayString = getModName(module)
                         val width = fontRenderer.getStringWidth(displayString)

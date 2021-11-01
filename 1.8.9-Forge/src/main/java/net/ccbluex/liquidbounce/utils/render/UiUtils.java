@@ -186,14 +186,14 @@ public class UiUtils
 		 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	  }
 
-	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, int width, float r, float g, float b, float al) {
-		for (int i = width; i >= 0; i--) {
+	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, float r, float g, float b, float al) {
+		for (float i = width; i >= 0; i -= incre) {
 			RenderUtils.drawRoundedRect(x - i, y - i, x2 + i, y2 + i, rad, new Color(r, g, b, ((float)(width - i) / (float)width) * al).getRGB());
 		}
 	}
 
-	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, int width, Color color) {
-		shadowRoundedRect(x, y, x2, y2, rad, width, color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
+	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, int width, Color color) {
+		shadowRoundedRect(x, y, x2, y2, rad, width, incre, color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
 	}
 
 	 public static void drawRect(double x, double y, double x2, double y2, int color) {
