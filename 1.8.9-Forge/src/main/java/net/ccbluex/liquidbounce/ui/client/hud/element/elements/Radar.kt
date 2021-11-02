@@ -98,11 +98,11 @@ class Radar(x: Double = 5.0, y: Double = 130.0) : Element(x, y) {
             val floatX = renderX.toFloat()
             val floatY = renderY.toFloat()
 
-            GL11.glTranslated(-renderX, -renderY, 0.0)
-            GL11.glPushMatrix()
+            glTranslated(-renderX, -renderY, 0.0)
+            glPushMatrix()
             BlurUtils.blurArea(floatX, floatY, floatX + size, floatY + size, blurStrength.get())
-            GL11.glPopMatrix()
-            GL11.glTranslated(renderX, renderY, 0.0)
+            glPopMatrix()
+            glTranslated(renderX, renderY, 0.0)
         }
 
         if (exhiValue.get()) 
