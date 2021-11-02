@@ -338,7 +338,7 @@ class Target : Element() {
                         else -> { //perform the for-loop gradient trick.
                             GL11.glPushMatrix()
                             GL11.glScalef(1f, 1f, 1f)
-                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat(), 0F, 5F * scale + renderX.toFloat() + barWidth * scale, 49F * scale + renderY.toFloat())
+                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat() * scale, 0F, 5F * scale + renderX.toFloat() * scale + barWidth * scale, 49F * scale + renderY.toFloat() * scale)
                             GL11.glEnable(3089)
                             GL11.glScalef(scale, scale, scale)
                             for (i in 0..(gradientAmountValue.get()-1)) {

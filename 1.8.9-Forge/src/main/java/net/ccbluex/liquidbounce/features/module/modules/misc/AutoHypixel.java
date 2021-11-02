@@ -5,11 +5,6 @@
  * 
  * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
  */
-/*
- * LiquidBounce+ Hacked Client
- * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
- */
 package net.ccbluex.liquidbounce.features.module.modules.misc;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
@@ -39,7 +34,7 @@ import java.awt.Color;
 import java.text.DecimalFormat;
 import java.util.List;
 
-@ModuleInfo(name = "AutoHypixel", spacedName = "AutoHypixel", description = "Automatically send you into random games on Hypixel after you die or win.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "AutoHypixel", spacedName = "Auto Hypixel", description = "Automatically send you into random games on Hypixel after you die or win.", category = ModuleCategory.MISC)
 public class AutoHypixel extends Module {
 
     private final IntegerValue delayValue = new IntegerValue("Delay", 0, 0, 5000);
