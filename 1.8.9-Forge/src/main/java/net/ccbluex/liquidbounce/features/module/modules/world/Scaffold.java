@@ -168,7 +168,7 @@ public class Scaffold extends Module {
     private final IntegerValue alphaValue = new IntegerValue("Alpha", 120, 0, 255);
 
     private final BoolValue blurValue = new BoolValue("Blur-Advanced", false);
-    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 10F);
+    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 30F);
 
     /**
      * MODULE

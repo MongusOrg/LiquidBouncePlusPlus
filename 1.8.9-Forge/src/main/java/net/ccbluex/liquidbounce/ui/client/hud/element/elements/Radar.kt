@@ -18,6 +18,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.utils.EntityUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -38,6 +39,9 @@ class Radar(x: Double = 5.0, y: Double = 130.0) : Element(x, y) {
     companion object {
         private val SQRT_OF_TWO = sqrt(2f)
     }
+
+    private val blurValue = BoolValue("Blur", false)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
 
     private val sizeValue = FloatValue("Size", 90f, 30f, 500f)
     private val viewDistanceValue = FloatValue("View Distance", 4F, 0.5F, 32F)
@@ -89,6 +93,17 @@ class Radar(x: Double = 5.0, y: Double = 130.0) : Element(x, y) {
         val rainbowType = rainbowList.get()
 
         val cColor = Color(redValue.get(), greenValue.get(), blueValue.get(), alphaValue.get()).rgb
+
+        if (blurValue.get()) {
+            val floatX = renderX.toFloat()
+            val floatY = renderY.toFloat()
+
+            GL11.glTranslated(-renderX, -renderY, 0.0)
+            GL11.glPushMatrix()
+            BlurUtils.blurArea(floatX, floatY, floatX + size, floatY + size, blurStrength.get())
+            GL11.glPopMatrix()
+            GL11.glTranslated(renderX, renderY, 0.0)
+        }
 
         if (exhiValue.get()) 
             RenderUtils.drawExhiRect(0F, if (lineValue.get()) -1F else 0F, size, size)

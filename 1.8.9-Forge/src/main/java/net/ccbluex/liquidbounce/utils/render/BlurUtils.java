@@ -151,7 +151,7 @@ public class BlurUtils {
         tessellator.draw();
         frbuffer.unbindFramebufferTexture();
         GlStateManager.enableDepth();
-        GlStateManager.depthMask(true);
+        //GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
         Stencil.dispose();
 
@@ -264,7 +264,7 @@ public class BlurUtils {
         tessellator.draw();
         frbuffer.unbindFramebufferTexture();
         GlStateManager.enableDepth();
-        GlStateManager.depthMask(true);
+        //GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
         Stencil.dispose();
 
@@ -342,7 +342,7 @@ public class BlurUtils {
         tessellator.draw();
         frbuffer.unbindFramebufferTexture();
         GlStateManager.enableDepth();
-        GlStateManager.depthMask(true);
+        //GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
         Stencil.dispose();
 

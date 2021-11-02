@@ -32,7 +32,7 @@ import net.minecraft.util.EnumFacing;
 @ModuleInfo(name = "LongJump", spacedName = "Long Jump", description = "Allows you to jump further.", category = ModuleCategory.MOVEMENT)
 public class LongJump extends Module {
 
-    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "HypixelDamage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
+    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "HypixelDamage", "HypixelDamage2", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
     private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan");
     private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000);
     private final BoolValue hypixelDmgBlinkComp = new BoolValue("HypixelDamage-BlinkCompatible", false);
@@ -40,6 +40,9 @@ public class LongJump extends Module {
     private final IntegerValue hypixelDmgTick = new IntegerValue("HypixelDamage-Tick", 10, 1, 20);
     private final FloatValue hypixelDmgMotionY = new FloatValue("HypixelDamage-MotionY", 1F, 0F, 2F);
     private final FloatValue hypixelDmgXZBoost = new FloatValue("HypixelDamage-XZBoost", 1F, 0F, 2F);
+    private final FloatValue hpxDamage2Value = new FloatValue("HypixelDamage2-Boost", 4.25F, 0F, 10F);
+    private final FloatValue hpxDamage2HeightValue = new FloatValue("HypixelDamage2-Height", 0.42F, 0F, 10F);
+    private final FloatValue hpxDamage2TimerValue = new FloatValue("HypixelDamage2-Timer", 1F, 0.1F, 10F);
     private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F);
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false);
@@ -99,8 +102,8 @@ public class LongJump extends Module {
                 mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
             }
         }
-/*
-        if (modeValue.get().equalsIgnoreCase("hypixeldamage")) switch (hypixelDmgMode.get().toLowerCase()) {
+
+        if (modeValue.get().equalsIgnoreCase("hypixeldamage2")) switch (hypixelDmgMode.get().toLowerCase()) {
             case "spartan":
                 for(int i = 0; i < 65; ++i) {
                     sendPosPacket(x, y + 0.049D, z, false);
@@ -122,7 +125,7 @@ public class LongJump extends Module {
                 }
                 sendPosPacket(x, y + 0.01025D, z, true);
                 break;
-        }*/
+        }
     }
 
     @EventTarget
@@ -170,6 +173,22 @@ public class LongJump extends Module {
             }
             if (verusDmged)
                 mc.timer.timerSpeed = verusTimerValue.get();
+            else {
+                mc.thePlayer.movementInput.moveForward = 0F;
+                mc.thePlayer.movementInput.moveStrafe = 0F;
+            }
+
+            return;
+        }
+
+        if (modeValue.get().equalsIgnoreCase("hypixeldamage2")) {
+            if (mc.thePlayer.hurtTime > 0 && !hpxDamage) {
+                hpxDamage = true;
+                MovementUtils.strafe(hpxDamage2Value.get());
+                mc.thePlayer.motionY = hpxDamage2HeightValue.get();
+            }
+            if (hpxDamage)
+                mc.timer.timerSpeed = hpxDamage2TimerValue.get();
             else {
                 mc.thePlayer.movementInput.moveForward = 0F;
                 mc.thePlayer.movementInput.moveStrafe = 0F;
@@ -353,7 +372,7 @@ public class LongJump extends Module {
             event.zeroXZ();
         }
 
-        if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged) || (mode.equalsIgnoreCase("pearl") && pearlState != 2))
+        if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged) || (mode.equalsIgnoreCase("hypixeldamage2") && !hpxDamage) || (mode.equalsIgnoreCase("pearl") && pearlState != 2))
             event.cancelEvent();
     }
 
@@ -362,7 +381,7 @@ public class LongJump extends Module {
         final String mode = modeValue.get();
         if (event.getPacket() instanceof C03PacketPlayer) {
             C03PacketPlayer c03 = (C03PacketPlayer) event.getPacket();
-            if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged) || (mode.equalsIgnoreCase("pearl") && pearlState != 2)) c03.setMoving(false);
+            if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged) || (mode.equalsIgnoreCase("hypixeldamage2") && !hpxDamage) || (mode.equalsIgnoreCase("pearl") && pearlState != 2)) c03.setMoving(false);
         }
     }
 

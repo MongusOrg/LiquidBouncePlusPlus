@@ -279,15 +279,15 @@ class Target : Element() {
                     if (blurValue.get()) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
-                        BlurUtils.blurAreaRounded(floatX, floatY, floatX + 10F + length, floatY + 55F, 2.5F, blurStrength.get())
+                        BlurUtils.blurAreaRounded(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, blurStrength.get())
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
 
                     if (riseShadow.get()) 
-                        UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, 3F, 0.5F, bgColor)
+                        UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, 4.5F, 0.75F, bgColor)
                     else
-                        RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 2.5F, bgColor.rgb)
+                        RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
 
                     if (riseParticle.get()) {
                         if (convertedTarget.hurtTime > convertedTarget.maxHurtTime / 2) {

@@ -137,7 +137,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
         else 
-            Fonts.font35.drawCenteredString("Happy Halloween! Trick or treat?", width / 2F, staticY + 30F, Color(255, 154, 31).rgb)
+            Fonts.font35.drawCenteredString("nice try dude", width / 2F, staticY + 30F, Color(255, 154, 31).rgb)
 
         if (shouldAnimate) {
             if (fade == 0F)

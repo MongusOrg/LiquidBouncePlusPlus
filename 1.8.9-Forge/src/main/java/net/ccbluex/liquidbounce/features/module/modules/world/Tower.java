@@ -105,7 +105,7 @@ public class Tower extends Module {
     private final ListValue counterDisplayValue = new ListValue("Counter", new String[]{"Off", "Simple", "Advanced", "Sigma", "Novoline"}, "Simple");
 
     private final BoolValue blurValue = new BoolValue("Blur-Advanced", false);
-    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 10F);
+    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 30F);
 
     /**
      * MODULE
