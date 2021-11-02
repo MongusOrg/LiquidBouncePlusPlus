@@ -107,7 +107,7 @@ public class LongJump extends Module {
             case "spartan":
                 for(int i = 0; i < 65; ++i) {
                     sendPosPacket(x, y + 0.049D, z, false);
-                    sendPosPacket(x, y, z, false));
+                    sendPosPacket(x, y, z, false);
                 }
                 sendPosPacket(x, y + 0.1D, z, true);
                 break;
