@@ -104,7 +104,8 @@ class KillAura : Module() {
     private val keepSprintValue = BoolValue("KeepSprint", true)
 
     // AutoBlock
-    private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick", "NCP"), "None")
+    private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick", "NCP", "Hypixel"), "None")
+    private val hypixelHvHValue = BoolValue("HypixelHvH", false)
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true)
     private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false)
     private val blockRate = IntegerValue("BlockRate", 100, 1, 100)
@@ -382,6 +383,18 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
+        updateKA()
+
+        if (blockingStatus || mc.thePlayer.isBlocking())
+            verusBlocking = true
+        else if (verusBlocking) {
+            verusBlocking = false
+            if (verusAutoBlockValue.get()) 
+                PacketUtils.sendPacketNoEvent(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+        }
+    }
+
+    private fun updateKA() {
         if (cancelRun) {
             target = null
             currentTarget = null
@@ -404,17 +417,6 @@ class KillAura : Module() {
                 runAttack()
                 clicks--
             }
-        }
-    }
-
-    @EventTarget
-    fun onUpdateVerus(event: UpdateEvent) {
-        if (blockingStatus || mc.thePlayer.isBlocking())
-            verusBlocking = true
-        else if (verusBlocking) {
-            verusBlocking = false
-            if (verusAutoBlockValue.get()) 
-                PacketUtils.sendPacketNoEvent(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
         }
     }
 
@@ -691,13 +693,8 @@ class KillAura : Module() {
         }
 
         // Start blocking after attack
-        if (autoBlockModeValue.get().equals("Packet", true) && (mc.thePlayer.isBlocking || canBlock)) {
+        if (mc.thePlayer.isBlocking || canBlock) 
             startBlocking(entity, interactAutoBlockValue.get())
-        }
-
-        if (autoBlockModeValue.get().equals("NCP", true) && (mc.thePlayer.isBlocking || canBlock)) {
-            ncpBlocking(entity)
-        }
     }
 
     /**
@@ -827,8 +824,20 @@ class KillAura : Module() {
 
 
     private fun startBlocking(interactEntity: Entity, interact: Boolean) {
-        if (!(blockRate.get() > 0 && Random().nextInt(100) <= blockRate.get()))
+        if (autoBlockModeValue.get().equals("none", true) || !(blockRate.get() > 0 && Random().nextInt(100) <= blockRate.get()))
             return
+
+        if (autoBlockModeValue.get().equals("ncp", true)) {
+            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
+            blockingStatus = true
+            return
+        }
+
+        if (autoBlockModeValue.get().equals("hypixel", true)) {
+            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0.0f, 0.0f, 0.0f))
+            blockingStatus = true
+            return
+        }
 
         if (interact) {
             //mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, interactEntity.positionVector))
@@ -860,21 +869,17 @@ class KillAura : Module() {
         blockingStatus = true
     }
 
-    private fun ncpBlocking(interactEntity: Entity) {
-        if (!(blockRate.get() > 0 && Random().nextInt(100) <= blockRate.get()))
-            return
-
-        mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
-        blockingStatus = true
-    }
-
-
     /**
      * Stop blocking
      */
     private fun stopBlocking() {
         if (blockingStatus) {
-            mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+            if (autoBlockModeValue.get().equals("hypixel", true)) {
+                var blockValue = 1.0
+                if (hypixelHvHValue.get()) blockValue = RandomUtils.nextDouble(Double.MIN_VALUE, Double.MAX_VALUE)
+                mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(blockValue, blockValue, blockValue), EnumFacing.DOWN))
+            } else
+                mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
             blockingStatus = false
         }
     }
