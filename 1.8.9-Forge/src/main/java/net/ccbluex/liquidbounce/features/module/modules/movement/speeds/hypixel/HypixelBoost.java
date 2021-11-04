@@ -41,8 +41,13 @@ public class HypixelBoost extends SpeedMode {
                 mc.thePlayer.jumpTicks = 10;
             }
 
-            if (!mc.thePlayer.onGround && mc.thePlayer.motionY < 0.20) {
-                mc.timer.timerSpeed = 1.40919551F;
+            if (!mc.thePlayer.onGround) {
+                if (mc.thePlayer.motionY < -0.12 && mc.thePlayer.motionY > -0.21)
+                    mc.timer.timerSpeed = 1.66666666667F;
+                else if (mc.thePlayer.motionY < -0.21) 
+                    mc.timer.timerSpeed = 3.13333333F;
+                else if (mc.thePlayer.motionY > 0) 
+                    mc.timer.timerSpeed = 3.66666667F;
             }
             
             double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
