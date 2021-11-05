@@ -22,8 +22,9 @@ jobs:
           job-id: jdk8
           arguments: build
           gradle-version: wrapper
+          save-local-build-cache: false
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: LiquidBouncePlus
+          name: LiquidBounce-plus
           path: 1.8.9-Forge/build/libs/LiquidBounce-plus.jar
