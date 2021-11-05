@@ -20,9 +20,8 @@ jobs:
         name: Build
         with:
           job-id: jdk8
-          arguments: build
+          arguments: clean build
           gradle-version: wrapper
-          save-local-build-cache: false
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
