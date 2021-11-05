@@ -7,7 +7,6 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
 import net.ccbluex.liquidbounce.LiquidBounce;
-import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
 import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
@@ -263,10 +262,28 @@ public abstract class MixinGuiNewChat {
         return original;
     }
 
-    @Overwrite
-    public IChatComponent getChatComponent(int p_146236_1_, int p_146236_2_) {
+    @Inject(method = "getChatComponent", at = @At("HEAD"), cancellable = true)
+    private void getChatComponent(int p_getChatComponent_1_, int p_getChatComponent_2_, final CallbackInfoReturnable<IChatComponent> callbackInfo) {
         checkHud();
-        boolean flagFont = hud.getState() && hud.getFontChatValue().get();
+        if(hud.getState() && hud.getFontChatValue().get()) {
+            if(!this.getChatOpen()) {
+                callbackInfo.setReturnValue(null);
+            }else{
+                ScaledResolution lvt_3_1_ = new ScaledResolution(this.mc);
+                int lvt_4_1_ = lvt_3_1_.getScaleFactor();
+                float lvt_5_1_ = this.getChatScale();
+                int lvt_6_1_ = p_getChatComponent_1_ / lvt_4_1_ - 3;
+                int lvt_7_1_ = p_getChatComponent_2_ / lvt_4_1_ - 27;
+                lvt_6_1_ = MathHelper.floor_float((float) lvt_6_1_ / lvt_5_1_);
+                lvt_7_1_ = MathHelper.floor_float((float) lvt_7_1_ / lvt_5_1_);
+                if(lvt_6_1_ >= 0 && lvt_7_1_ >= 0) {
+                    int lvt_8_1_ = Math.min(this.getLineCount(), this.drawnChatLines.size());
+                    if(lvt_6_1_ <= MathHelper.floor_float((float) this.getChatWidth() / this.getChatScale()) && lvt_7_1_ < Fonts.font40.FONT_HEIGHT * lvt_8_1_ + lvt_8_1_) {
+                        int lvt_9_1_ = lvt_7_1_ / Fonts.font40.FONT_HEIGHT + this.scrollPos;
+                        if(lvt_9_1_ >= 0 && lvt_9_1_ < this.drawnChatLines.size()) {
+                            ChatLine lvt_10_1_ = (ChatLine) this.drawnChatLines.get(lvt_9_1_);
+                            int lvt_11_1_ = 0;
+                            Iterator lvt_12_1_ = lvt_10_1_.getChatComponent().iterator();
 
         if (!this.getChatOpen()) {
             return null;
@@ -296,14 +313,14 @@ public abstract class MixinGuiNewChat {
                                 }
                             }
                         }
-                    }
 
-                    return null;
-                } else {
-                    return null;
+                        callbackInfo.setReturnValue(null);
+                    }else{
+                        callbackInfo.setReturnValue(null);
+                    }
+                }else{
+                    callbackInfo.setReturnValue(null);
                 }
-            } else {
-                return null;
             }
         }
     }
