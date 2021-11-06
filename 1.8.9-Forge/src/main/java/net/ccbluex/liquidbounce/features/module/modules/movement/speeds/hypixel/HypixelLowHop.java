@@ -38,7 +38,6 @@ public class HypixelLowHop extends SpeedMode {
                 event.setY(mc.thePlayer.motionY = 0.233333333333333);
                 mc.thePlayer.jumpTicks = 10;
             } else if (event.getY() < 0) {
-                mc.timer.timerSpeed = 1F;
                 mc.timer.timerSpeed = 1.2F;
             }
 

@@ -16,8 +16,8 @@ class Freeze : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         mc.thePlayer.isDead = true
-        mc.thePlayer.rotationYaw = mc.thePlayer.cameraYaw
-        mc.thePlayer.rotationPitch = mc.thePlayer.cameraPitch
+        mc.thePlayer.cameraYaw = mc.thePlayer.rotationYaw
+        mc.thePlayer.cameraPitch = mc.thePlayer.rotationPitch
     }
 
     override fun onDisable() {

@@ -31,7 +31,7 @@ import org.lwjgl.input.Keyboard;
 import java.awt.*;
 
 @ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT)
-public class ClickGUI extends Module {
+public class ClickGUI extends Module { // TODO fr fr new clickgui
     private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black"}, "Null") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
