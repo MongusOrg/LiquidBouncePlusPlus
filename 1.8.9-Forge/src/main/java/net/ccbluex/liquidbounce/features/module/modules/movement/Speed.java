@@ -64,6 +64,7 @@ public class Speed extends Module {
 
             // Hypixel
             new HypixelBoost(),
+            new HypixelBoost2(),
             new HypixelLowHop(),
             new HypixelStable(),
 
@@ -151,7 +152,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "LowHop", "Stable"}, "Stable") { // the worst hypixel bypass ever existed
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Boost2", "LowHop", "Stable"}, "Stable") { // the worst hypixel bypass ever existed
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -254,8 +255,8 @@ public class Speed extends Module {
             return;
 
         if (bypassWarning.get() && typeValue.get().equalsIgnoreCase("hypixel")) {
-            LiquidBounce.hud.addNotification(new Notification("Hypixel speeds are working in progress and may silent flag/ban!", Notification.Type.WARNING, 3000L));
             LiquidBounce.hud.addNotification(new Notification("If you have understood the risk, you can turn this notification off in settings.", Notification.Type.INFO, 3000L));
+            LiquidBounce.hud.addNotification(new Notification("Hypixel speeds are working in progress and may silent flag/ban!", Notification.Type.WARNING, 3000L));
         }
 
         mc.timer.timerSpeed = 1F;
