@@ -186,9 +186,9 @@ class Target : Element() {
                     val width = (26F + Fonts.fontSFUI35.getStringWidth(convertedTarget.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(convertedTarget.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
                     //RenderUtils.drawBorder(1F, 1F, 26F, 26F, 1F, Color(115, 255, 115).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 26, 26)
-                    Fonts.fontSFUI35.drawString(convertedTarget.name, 30F, 6F, 0xFFFFFF) // Draw convertedTarget name
-                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(convertedTarget.health)}", 30F, 18F, 0xFFFFFF) // Draw convertedTarget health   
+                    if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 26, 26)
+                    Fonts.fontSFUI40.drawString(convertedTarget.name, 30F, 5.5F, 0xFFFFFF) // Draw convertedTarget name
+                    Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(convertedTarget.health)}", 30F, 17.5F, 0xFFFFFF) // Draw convertedTarget health   
 
                     // bar icon
                     Fonts.fontSFUI35.drawString("❤", 2F, 29F, -1)
@@ -225,7 +225,7 @@ class Target : Element() {
 
                     RenderUtils.drawRect(-2F, -2F, 3F + nameLength + 36F, 2F + 36F, Color(24, 24, 24, 255).rgb)
                     RenderUtils.drawRect(-1F, -1F, 2F + nameLength + 36F, 1F + 36F, Color(31, 31, 31, 255).rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 0, 0, 36, 36)
+                    if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 0, 0, 36, 36)
                     font.drawStringWithShadow(convertedTarget.name, 2F + 36F + 1F, 2F, -1)
                     RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
 
@@ -246,7 +246,7 @@ class Target : Element() {
 
                     val length = 60.coerceAtLeast(font.getStringWidth(convertedTarget.name)).coerceAtLeast(font.getStringWidth("${decimalFormat2.format(convertedTarget.health)} ❤")).toFloat() + 10F
                     RenderUtils.drawRect(0F, 0F, 32F + length, 36F, bgColor.rgb)
-                    drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 30, 30)
+                    if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 30, 30)
                     font.drawStringWithShadow(convertedTarget.name, 33F, 2F, -1)
                     font.drawStringWithShadow("${decimalFormat2.format(convertedTarget.health)} ❤", length + 32F - 1F - font.getStringWidth("${decimalFormat2.format(convertedTarget.health)} ❤").toFloat(), 22F, barColor.rgb)
 
