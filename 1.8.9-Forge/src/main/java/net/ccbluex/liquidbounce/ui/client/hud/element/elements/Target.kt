@@ -21,7 +21,6 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
-import net.ccbluex.liquidbounce.utils.render.shader.shaders.GlowShader
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
@@ -68,7 +67,6 @@ class Target : Element() {
     private val tSlideAnim = BoolValue("TSlide-Animation", true)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseShadow = BoolValue("Rise-Shadow", true)
-    private val riseGlow = BoolValue("Rise-Glow", false)
     private val riseParticle = BoolValue("Rise-Particle", true)
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
     private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
@@ -282,17 +280,6 @@ class Target : Element() {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
                         BlurUtils.blurAreaRounded(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, blurStrength.get())
-                        GL11.glPopMatrix()
-                        GL11.glTranslated(renderX, renderY, 0.0)
-                    }
-
-                    if (riseGlow.get()) {
-                        val shader = GlowShader.GLOW_SHADER
-                        GL11.glTranslated(-renderX, -renderY, 0.0)
-                        GL11.glPushMatrix()
-                        shader.startDraw(mc.timer.renderPartialTicks)
-                        RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
-                        shader.stopDraw(bgColor, 4F, 0.5F)
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
