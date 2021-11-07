@@ -287,7 +287,7 @@ class Target : Element() {
                     }
 
                     if (riseGlow.get()) {
-                        val shader = GlowShader.GLOW_SHADER ?: return
+                        val shader = GlowShader.GLOW_SHADER
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
                         shader.startDraw(mc.timer.renderPartialTicks)
