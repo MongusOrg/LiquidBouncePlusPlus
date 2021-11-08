@@ -62,14 +62,13 @@ open class HUD : MinecraftInstance() {
      * Render all elements
      */
     fun render(designer: Boolean) {
+        GL11.glPushMatrix()
         elements.sortedBy { -it.info.priority }
                 .forEach {
-                    GL11.glPushMatrix()
+                    GL11.glTranslated(it.renderX, it.renderY, 0.0)
 
                     if (!it.info.disableScale)
                         GL11.glScalef(it.scale, it.scale, it.scale)
-
-                    GL11.glTranslated(it.renderX, it.renderY, 0.0)
 
                     try {
                         it.border = it.drawElement()
@@ -79,10 +78,11 @@ open class HUD : MinecraftInstance() {
                     } catch (ex: Exception) {
                         ClientUtils.getLogger()
                                 .error("Something went wrong while drawing ${it.name} element in HUD.", ex)
-            }
-
-            GL11.glPopMatrix()
-        }
+                    }
+                    GL11.glScalef(1f, 1f, 1f)
+                    GL11.glTranslated(-it.renderX, -it.renderY, 0.0)
+                }
+        GL11.glPopMatrix()
     }
 
     /**
