@@ -120,7 +120,7 @@ class TargetStrafe : Module() {
         }
 
     val canStrafe: Boolean
-        get() = ((speed.state && speed.typeValue.get().equals("hypixel", true)) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
+        get() = (state && (speed.state && speed.typeValue.get().equals("hypixel", true)) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
 
     private fun checkVoid(): Boolean {
         for (x in -1..0) {

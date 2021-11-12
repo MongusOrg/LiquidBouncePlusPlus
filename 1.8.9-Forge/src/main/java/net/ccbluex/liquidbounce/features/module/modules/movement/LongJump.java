@@ -36,6 +36,7 @@ public class LongJump extends Module {
     private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan");
     private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000);
     private final BoolValue hypixelDmgBlinkComp = new BoolValue("HypixelDamage-BlinkCompatible", false);
+    private final BoolValue hypixelDmgRider = new BoolValue("HypixelDamage2-FakeRideJump", false);
     private final BoolValue hypixelStrafe = new BoolValue("HypixelDamage-StrafeAfterTick", false);
     private final IntegerValue hypixelDmgTick = new IntegerValue("HypixelDamage-Tick", 10, 1, 20);
     private final FloatValue hypixelDmgMotionY = new FloatValue("HypixelDamage-MotionY", 1F, 0F, 2F);
@@ -103,28 +104,30 @@ public class LongJump extends Module {
             }
         }
 
-        if (modeValue.get().equalsIgnoreCase("hypixeldamage2")) switch (hypixelDmgMode.get().toLowerCase()) {
-            case "spartan":
-                for(int i = 0; i < 65; ++i) {
-                    sendPosPacket(x, y + 0.049D, z, false);
-                    sendPosPacket(x, y, z, false);
-                }
-                sendPosPacket(x, y + 0.1D, z, true);
-                break;
-            case "test":
-                for(int i = 0; i < 32; ++i) {
-                    sendPosPacket(x, y + 0.1075D, z, false);
-                    sendPosPacket(x, y, z, false);
-                }
-                sendPosPacket(x, y + 0.0095D, z, true);
-                break;
-            case "mini": // only 10 packets??? might actually work LOL
-                for(int i = 0; i < 10; ++i) {
-                    sendPosPacket(x, y + 0.3175D, z, false);
-                    sendPosPacket(x, y, z, false);
-                }
-                sendPosPacket(x, y + 0.01025D, z, true);
-                break;
+        if (modeValue.get().equalsIgnoreCase("hypixeldamage2")) {
+            switch (hypixelDmgMode.get().toLowerCase()) {
+                case "spartan":
+                    for(int i = 0; i < 65; ++i) {
+                        sendPosPacket(x, y + 0.049D, z, false);
+                        sendPosPacket(x, y, z, false);
+                    }
+                    sendPosPacket(x, y + 0.1D, z, true);
+                    break;
+                case "test":
+                    for(int i = 0; i < 32; ++i) {
+                        sendPosPacket(x, y + 0.1075D, z, false);
+                        sendPosPacket(x, y, z, false);
+                    }
+                    sendPosPacket(x, y + 0.0095D, z, true);
+                    break;
+                case "mini": // only 10 packets??? might actually work LOL
+                    for(int i = 0; i < 10; ++i) {
+                        sendPosPacket(x, y + 0.3175D, z, false);
+                        sendPosPacket(x, y, z, false);
+                    }
+                    sendPosPacket(x, y + 0.01025D, z, true);
+                    break;
+            }
         }
     }
 
@@ -183,6 +186,10 @@ public class LongJump extends Module {
 
         if (modeValue.get().equalsIgnoreCase("hypixeldamage2")) {
             if (mc.thePlayer.hurtTime > 0 && !hpxDamage) {
+                if (hypixelDmgRider.get()) {
+                    PacketUtils.sendPacketNoEvent(new C0CPacketInput());
+                    PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.RIDING_JUMP));
+                }
                 hpxDamage = true;
                 MovementUtils.strafe(hpxDamage2Value.get());
                 mc.thePlayer.motionY = hpxDamage2HeightValue.get();

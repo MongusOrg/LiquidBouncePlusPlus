@@ -40,7 +40,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         fade = 0F
         sliderX = 0F
         //lastAnimTick = System.currentTimeMillis()
-        alrUpdate = false
+        //alrUpdate = false
         super.initGui()
     }
 
@@ -64,7 +64,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         super.drawScreen(mouseX, mouseY, partialTicks)
         
         if (!LiquidBounce.mainMenuPrep) {
-            val animProgress = ((System.currentTimeMillis() - lastAnimTick).toFloat() / 5000F).coerceIn(0F, 1F)
+            val animProgress = ((System.currentTimeMillis() - lastAnimTick).toFloat() / 3000F).coerceIn(0F, 1F)
             RenderUtils.drawRect(0F, 0F, width.toFloat(), height.toFloat(), Color(0F, 0F, 0F, 1F - animProgress))
             if (animProgress >= 1F)
                 LiquidBounce.mainMenuPrep = true    
