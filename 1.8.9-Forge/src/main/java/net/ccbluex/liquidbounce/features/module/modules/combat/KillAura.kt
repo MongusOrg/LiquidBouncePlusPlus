@@ -105,7 +105,6 @@ class KillAura : Module() {
 
     // AutoBlock
     private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick", "NCP", "Hypixel"), "None")
-    private val hypixelHvHValue = BoolValue("HypixelHvH", false)
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true)
     private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false)
     private val blockRate = IntegerValue("BlockRate", 100, 1, 100)
@@ -876,7 +875,6 @@ class KillAura : Module() {
         if (blockingStatus) {
             if (autoBlockModeValue.get().equals("hypixel", true)) {
                 var blockValue = 1.0
-                if (hypixelHvHValue.get()) blockValue = RandomUtils.nextDouble(Double.MIN_VALUE, Double.MAX_VALUE)
                 mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(blockValue, blockValue, blockValue), EnumFacing.DOWN))
             } else
                 mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))

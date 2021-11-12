@@ -25,7 +25,7 @@ import java.util.zip.ZipInputStream;
 @SideOnly(Side.CLIENT)
 public class Fonts {
 
-    // infact these "roboto medium" is product sans lol
+    // in fact these "roboto medium" is product sans lol
     @FontDetails(fontName = "Roboto Medium", fontSize = 35)
     public static GameFontRenderer font35;
 
