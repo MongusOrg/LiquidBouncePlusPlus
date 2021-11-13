@@ -1,8 +1,4 @@
-# this project is (kinda) discontinued.
+# moved to backup branch, please do 
+`git checkout backup` or switch to backup branch on the browser for latest commits.
 
-tbh there are too many things that affect my schedule (including school stuffs) so I won't be able to update this project anymore. \
-the final release will be published tomorrow (11/13/2021) without some work-in-progress features. \
-more info in the backup branch.
-
-the only public way to contact me is through my discord (can be found on my profile page): why dont#0425.
-
+*this is temporary until i can find a better solution for the current workflow issue.*
