@@ -14,8 +14,8 @@ Twitter: https://twitter.com/CCBlueX
 - [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) for AAC5 bypasses.
 
 ## Honourable mention:
-- Dort#2397 for the old Verus (Latest) Movement Disabler. (around 4-5 months ago, luv u)
-- LX#2800 (don't remember exactly the tag tho) for a very sus disabler.
+- Dort#2397
+- LX#2800
 
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/WYSI-Foundation/LiquidBouncePlus/issues).

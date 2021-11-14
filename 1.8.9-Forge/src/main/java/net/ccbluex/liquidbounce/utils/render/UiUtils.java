@@ -46,6 +46,11 @@ public class UiUtils
 		}
 		return a;
 	}
+	private static float clamp(float t, float x, float y) {
+		if (t < x) return x;
+		if (t > y) return y;
+		return t;
+	}
 	public static void drawImage(ResourceLocation image, int x, int y, int width, int height) {
 		ScaledResolution scaledResolution = new ScaledResolution(Minecraft.getMinecraft());
 		GL11.glDisable((int)2929);
@@ -186,10 +191,26 @@ public class UiUtils
 		 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	  }
 
+	/*
+	 * shit algorthm
+	 */
 	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, float r, float g, float b, float al) {
-		for (float i = width; i >= 0; i -= incre) {
-			RenderUtils.drawRoundedRect(x - i, y - i, x2 + i, y2 + i, rad, new Color(r, g, b, ((float)(width - i) / (float)width) * al).getRGB());
+		width *= 2F;
+		Stencil.write(true);
+		RenderUtils.drawRoundedRect(x, y, x2, y2, rad, new Color(r, g, b, al).getRGB());
+		Stencil.erase(false); // only render the thing outside of the stencil mask.
+		for (float yOff = 0; yOff <= width; yOff += incre) {
+			float alp = 1F - clamp(Math.abs(width / 2F - yOff) / (width / 2F), 0F, 1F);	
+			float h = -width / 2F + yOff;
+			for (float xOff = 0; xOff <= width; xOff += incre) {
+				float alp2 = 1F - clamp(Math.abs(width / 2F - xOff) / (width / 2F), 0F, 1F);	
+				float alpha = alp * alp2;
+				float pos = -width / 2F + xOff;
+				final Color col = new Color(r, g, b, alpha);
+				RenderUtils.drawRoundedRect(x + pos, y + h, x2 + pos, y2 + h, rad, col.getRGB());
+			}
 		}
+		Stencil.dispose();
 	}
 
 	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, Color color) {

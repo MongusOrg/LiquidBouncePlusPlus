@@ -38,7 +38,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class AntiVoid extends Module {
 
     public final ListValue voidDetectionAlgorithm = new ListValue("Detect-Method", new String[]{"Collision", "Predict"}, "Collision");
-    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Position"}, "Teleport");
+    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Position", "Edit"}, "Teleport");
     public final IntegerValue maxFallDistSimulateValue = new IntegerValue("Simulate-CheckFallDistance", 255, 0, 255);
     public final IntegerValue maxFindRangeValue = new IntegerValue("Simulate-MaxFindRange", 60, 0, 255);
     public final IntegerValue illegalDupeValue = new IntegerValue("Illegal-Dupe", 1, 1, 5);
@@ -53,7 +53,7 @@ public class AntiVoid extends Module {
     private double lastY = 0; 
     private double lastZ = 0;
     private double lastFound = 0;
-    private boolean shouldRender, shouldStopMotion = false;
+    private boolean shouldRender, shouldStopMotion, shouldEdit = false;
 
     private final LinkedList<double[]> positions = new LinkedList<>();
 
@@ -74,6 +74,7 @@ public class AntiVoid extends Module {
             shouldRender = renderTraceValue.get() && !MovementUtils.isBlockUnder();
 
             shouldStopMotion = false;
+            shouldEdit = false;
             if (!MovementUtils.isBlockUnder()) {
                 if (mc.thePlayer.fallDistance >= setBackFallDistValue.get()) {
                     shouldStopMotion = true;
@@ -95,7 +96,10 @@ public class AntiVoid extends Module {
                         mc.thePlayer.fallDistance = oldFallDist;
                         break;
                     case "Position":
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextFloat(6F, 12F), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextDouble(6D, 10D), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        break;
+                    case "Edit":
+                        shouldEdit = true;
                         break;
                     }
                     if (resetFallDistanceValue.get() && !setBackModeValue.get().equalsIgnoreCase("StopMotion")) mc.thePlayer.fallDistance = 0;
@@ -113,6 +117,11 @@ public class AntiVoid extends Module {
                 lastY = mc.thePlayer.prevPosY;
                 lastZ = mc.thePlayer.prevPosZ;
             }
+
+            shouldRender = renderTraceValue.get() && detectedLocation == null;
+
+            shouldStopMotion = false;
+            shouldEdit = false;
 
             if (!mc.thePlayer.onGround && !mc.thePlayer.isOnLadder() && !mc.thePlayer.isInWater()) {
                 FallingPlayer fallingPlayer = new FallingPlayer(
@@ -134,9 +143,6 @@ public class AntiVoid extends Module {
                     lastFound = mc.thePlayer.fallDistance;
                 }
 
-                shouldRender = renderTraceValue.get() && detectedLocation == null;
-
-                shouldStopMotion = false;
                 if (mc.thePlayer.fallDistance - lastFound > setBackFallDistValue.get()) {
                     shouldStopMotion = true;
                     switch (setBackModeValue.get()) {
@@ -157,7 +163,10 @@ public class AntiVoid extends Module {
                         mc.thePlayer.fallDistance = oldFallDist;
                         break;
                     case "Position":
-                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextFloat(6F, 12F), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextDouble(6D, 10D), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                        break;
+                    case "Edit":
+                        shouldEdit = true;
                         break;
                     }
                     if (resetFallDistanceValue.get() && !setBackModeValue.get().equalsIgnoreCase("StopMotion")) mc.thePlayer.fallDistance = 0;
@@ -186,6 +195,12 @@ public class AntiVoid extends Module {
             
         if (setBackModeValue.get().equalsIgnoreCase("StopMotion") && event.getPacket() instanceof S08PacketPlayerPosLook)
             mc.thePlayer.fallDistance = 0;
+
+        if (setBackModeValue.get().equalsIgnoreCase("Edit") && shouldEdit && event.getPacket() instanceof C03PacketPlayer) {
+            final C03PacketPlayer packetPlayer = (C03PacketPlayer) event.getPacket();
+            packetPlayer.y += RandomUtils.nextDouble(6D, 10D);
+            shouldEdit = false;
+        }
     }
 
     @EventTarget

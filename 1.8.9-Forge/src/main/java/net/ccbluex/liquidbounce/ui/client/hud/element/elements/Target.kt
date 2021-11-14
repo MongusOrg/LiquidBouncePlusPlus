@@ -187,7 +187,7 @@ class Target : Element() {
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
                     //RenderUtils.drawBorder(1F, 1F, 26F, 26F, 1F, Color(115, 255, 115).rgb)
                     if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 26, 26)
-                    Fonts.fontSFUI40.drawString(convertedTarget.name, 30F, 5.5F, 0xFFFFFF) // Draw convertedTarget name
+                    Fonts.fontSFUI40.drawString(convertedTarget.name, 30F, 5F, 0xFFFFFF) // Draw convertedTarget name
                     Fonts.fontSFUI35.drawString("Health: ${decimalFormat2.format(convertedTarget.health)}", 30F, 17.5F, 0xFFFFFF) // Draw convertedTarget health   
 
                     // bar icon
@@ -279,7 +279,7 @@ class Target : Element() {
                     }
 
                     if (riseShadow.get()) 
-                        UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, 4.5F, 0.75F, bgColor)
+                        UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, 4F, 1F, bgColor)
                     else
                         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
 
