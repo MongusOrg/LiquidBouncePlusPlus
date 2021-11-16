@@ -53,15 +53,15 @@ public class ESP extends Module {
 
 	public static boolean renderNameTags = true;
 	public final ListValue modeValue = new ListValue("Mode", new String[]{"Box", "OtherBox", "WireFrame", "2D", "Real2D", "Outline", "ShaderOutline", "ShaderGlow"}, "Box");
-	public final BoolValue real2dcsgo = new BoolValue("2D-CSGOStyle", true);
-	public final BoolValue real2dShowHealth = new BoolValue("2D-ShowHealth", true);
-	public final BoolValue real2dShowHeldItem = new BoolValue("2D-ShowHeldItem", true);
-	public final BoolValue real2dShowName = new BoolValue("2D-ShowEntityName", true);
-	public final BoolValue real2dOutline = new BoolValue("2D-Outline", true);
-	public final FloatValue outlineWidth = new FloatValue("Outline-Width", 3F, 0.5F, 5F);
-	public final FloatValue wireframeWidth = new FloatValue("WireFrame-Width", 2F, 0.5F, 5F);
-	private final FloatValue shaderOutlineRadius = new FloatValue("ShaderOutline-Radius", 1.35F, 1F, 2F);
-	private final FloatValue shaderGlowRadius = new FloatValue("ShaderGlow-Radius", 2.3F, 2F, 3F);
+	public final BoolValue real2dcsgo = new BoolValue("2D-CSGOStyle", true, () -> { modeValue.get().equalsIgnoreCase("real2d"); });
+	public final BoolValue real2dShowHealth = new BoolValue("2D-ShowHealth", true, () -> { modeValue.get().equalsIgnoreCase("real2d"); });
+	public final BoolValue real2dShowHeldItem = new BoolValue("2D-ShowHeldItem", true, () -> { modeValue.get().equalsIgnoreCase("real2d"); });
+	public final BoolValue real2dShowName = new BoolValue("2D-ShowEntityName", true, () -> { modeValue.get().equalsIgnoreCase("real2d"); });
+	public final BoolValue real2dOutline = new BoolValue("2D-Outline", true, () -> { modeValue.get().equalsIgnoreCase("real2d"); });
+	public final FloatValue outlineWidth = new FloatValue("Outline-Width", 3F, 0.5F, 5F, () -> { modeValue.get().equalsIgnoreCase("outline"); });
+	public final FloatValue wireframeWidth = new FloatValue("WireFrame-Width", 2F, 0.5F, 5F, () -> { modeValue.get().equalsIgnoreCase("wireframe"); });
+	private final FloatValue shaderOutlineRadius = new FloatValue("ShaderOutline-Radius", 1.35F, 1F, 2F, () -> { modeValue.get().equalsIgnoreCase("shaderoutline"); });
+	private final FloatValue shaderGlowRadius = new FloatValue("ShaderGlow-Radius", 2.3F, 2F, 3F, () -> { modeValue.get().equalsIgnoreCase("shaderglow"); });
 	private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Health", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
 	private final IntegerValue colorRedValue = new IntegerValue("Red", 255, 0, 255);
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);

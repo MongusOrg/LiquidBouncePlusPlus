@@ -37,6 +37,7 @@ import kotlin.math.sin
 class TargetStrafe : Module() {
     public val radius = FloatValue("Radius", 2.0f, 0.1f, 4.0f)
     private val render = BoolValue("Render", true)
+    private val alwaysRender = BoolValue("Always-Render", true, { render.get() })
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "None")
     private val safewalk = BoolValue("SafeWalk", true)
     val thirdPerson = BoolValue("ThirdPerson", true)
@@ -50,7 +51,6 @@ class TargetStrafe : Module() {
     private val accuracyValue = IntegerValue("Accuracy", 0, 0, 59)
     private val thicknessValue = FloatValue("Thickness", 1F, 0.1F, 5F)
     private val outLine = BoolValue("Outline", true)
-    private val alwaysRender = BoolValue("Always-Render", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
 

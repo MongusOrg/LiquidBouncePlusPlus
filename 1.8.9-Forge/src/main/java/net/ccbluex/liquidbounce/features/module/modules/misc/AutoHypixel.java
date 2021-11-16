@@ -22,6 +22,7 @@ import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.ListValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
+import net.ccbluex.liquidbounce.value.TextValue;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -39,12 +40,13 @@ public class AutoHypixel extends Module {
 
     private final IntegerValue delayValue = new IntegerValue("Delay", 0, 0, 5000);
     private final BoolValue autoGGValue = new BoolValue("Auto-GG", true);
+    private final TextValue ggMessageValue = new TextValue("GG-Message", "gOoD GaMe", () -> { autoGGValue.get(); });
     private final BoolValue antiAtlasValue = new BoolValue("Anti-Atlas", true);
     private final BoolValue checkValue = new BoolValue("CheckGameMode", true);
     private final BoolValue renderValue = new BoolValue("Render", true);
     private final ListValue modeValue = new ListValue("Mode", new String[]{"Solo", "Teams", "Ranked", "Mega"}, "Solo");
-    private final ListValue soloTeamsValue = new ListValue("Solo/Teams-Mode", new String[]{"Normal", "Insane"}, "Insane");
-    private final ListValue megaValue = new ListValue("Mega-Mode", new String[]{"Normal", "Doubles"}, "Normal");
+    private final ListValue soloTeamsValue = new ListValue("Solo/Teams-Mode", new String[]{"Normal", "Insane"}, "Insane", () -> { modeValue.get().equalsIgnoreCase("solo") || modeValue.get().equalsIgnoreCase("teams"); });
+    private final ListValue megaValue = new ListValue("Mega-Mode", new String[]{"Normal", "Doubles"}, "Normal", () -> { modeValue.get().equalsIgnoreCase("mega") });
 
     private final MSTimer timer = new MSTimer();
     public static String gameMode = "NONE";

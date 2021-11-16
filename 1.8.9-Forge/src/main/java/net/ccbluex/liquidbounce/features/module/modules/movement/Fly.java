@@ -76,27 +76,29 @@ public class Fly extends Module {
             "Collide"
     }, "Motion");
 
-    private final FloatValue vanillaSpeedValue = new FloatValue("MotionSpeed", 2F, 0F, 5F);
-    private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false);
+    private final FloatValue vanillaSpeedValue = new FloatValue("MotionSpeed", 2F, 0F, 5F, () -> { 
+        modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("bugspartan") || modeValue.get().equalsIgnoreCase("keepalive") || modeValue.get().equalsIgnoreCase("derp");
+    });
+    private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false, () -> { modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
 
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Test"}, "None");
-    private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual");
-    private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false);
-    private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F);
-    private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F);
-    private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F);
-    private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300);
-    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false);
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Test"}, "None", () -> { modeValue.get().equalsIgnoreCase("verus"); });
+    private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual", () -> { modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
+    private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false, () -> { modeValue.get().equalsIgnoreCase("verus"); });
+    private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F, () -> { modeValue.get().equalsIgnoreCase("verus") && verusVisualValue.get(); });
+    private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F, () -> { modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
+    private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
+    private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300, () -> { modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
+    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false, () -> { modeValue.get().equalsIgnoreCase("verus"); });
 
     // AAC
-    private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true);
-    private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true);
-    private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true);
-    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise"}, "Original"); // Original is from UnlegitMC/FDPClient.
-    private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20);
+    private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true, () -> { modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
+    private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true, () -> { modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
+    private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true, () -> { modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
+    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise"}, "Original", () -> { modeValue.get().equalsIgnoreCase("aac5-vanilla"); }); // Original is from UnlegitMC/FDPClient.
+    private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20, () -> { modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
 
     // Visuals
     private final BoolValue markValue = new BoolValue("Mark", true);
