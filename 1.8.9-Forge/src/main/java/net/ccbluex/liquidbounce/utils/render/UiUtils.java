@@ -191,34 +191,69 @@ public class UiUtils
 		 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	  }
 
+	public static void fastShadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float r, float g, float b, float al) {
+		Stencil.write(true);
+		RenderUtils.drawRoundedRect(x, y, x2, y2, rad, new Color(r, g, b, al).getRGB());
+		Stencil.erase(false);
+		glPushMatrix();
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_LINE_SMOOTH);
+		glShadeModel(GL_SMOOTH);
+		glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+		glColor4f(r, g, b, al);
+		glBegin(GL_QUAD_STRIP);
+		glVertex2f(x + width / 2F, y + width / 2F);
+		glColor4f(r, g, b, 0F);
+		glVertex2f(x - width, y - width);
+		glColor4f(r, g, b, al);
+		glVertex2f(x2 - width / 2F, y + width / 2F);
+		glColor4f(r, g, b, 0F);
+		glVertex2f(x2 + width, y - width);
+		glColor4f(r, g, b, al);
+		glVertex2f(x2 - width / 2F, y2 - width / 2F);
+		glColor4f(r, g, b, 0F);
+		glVertex2f(x2 + width, y2 + width);
+		glColor4f(r, g, b, al);
+		glVertex2f(x + width / 2F, y2 - width / 2F);
+		glColor4f(r, g, b, 0F);
+		glVertex2f(x - width, y2 + width);
+		glColor4f(r, g, b, al);
+		glVertex2f(x + width / 2F, y + width / 2F);
+		glColor4f(r, g, b, 0F);
+		glVertex2f(x - width, y - width);
+		glColor4f(1f, 1f, 1f, 1f);
+
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glDisable(GL_LINE_SMOOTH);
+		glPopMatrix();
+		Stencil.dispose();
+	}
+
+	public static void fastShadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, Color color) {
+		fastShadowRoundedRect(x, y, x2, y2, rad, width, color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
+	}
+
 	/*
 	 * shit algorthm
 	 */
 	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, float r, float g, float b, float al) {
-		//width *= 2F;
+		width *= 2F;
 		Stencil.write(true);
 		RenderUtils.drawRoundedRect(x, y, x2, y2, rad, new Color(r, g, b, al).getRGB());
 		Stencil.erase(false); // only render the thing outside of the stencil mask.
-		/*for (float yOff = 0; yOff <= width; yOff += incre) {
-			float alp = 1F - clamp(Math.abs(width / 2F - yOff) / (width / 2F), 0F, 1F);	
+		for (float yOff = 0; yOff <= width; yOff += incre) {
+			float alp = getAlphaFading(yOff * 2F / width);
 			float h = -width / 2F + yOff;
 			for (float xOff = 0; xOff <= width; xOff += incre) {
-				float alp2 = 1F - clamp(Math.abs(width / 2F - xOff) / (width / 2F), 0F, 1F);	
+				float alp2 = getAlphaFading(xOff * 2F / width);
 				float alpha = alp * alp2;
 				float pos = -width / 2F + xOff;
 				final Color col = new Color(r, g, b, alpha);
 				RenderUtils.drawRoundedRect(x + pos, y + h, x2 + pos, y2 + h, rad, col.getRGB());
-			}
-		}*/
-		for (float y3 = 0F; y3 <= width * 2F; y3 += incre) {
-			float h = -width / 2F + y3;
-			float alp_1 = getAlphaFading(y3 / (width / 2F));
-			for (float x3 = 0F; x3 <= width * 2F; x3 += incre) {
-				float w = -width / 2F + x3;
-				float alp_2 = getAlphaFading(x3 / (width / 2F));
-				float alp_3 = clamp(alp_1 * alp_2, 0F, 1F);
-				final int col = new Color(r, g, b, alp_3).getRGB();
-				RenderUtils.drawRoundedRect(x + w, y + h, x2 + w, y2 + h, rad, col, true);
 			}
 		}
 		Stencil.dispose();
@@ -227,10 +262,8 @@ public class UiUtils
 	private static float getAlphaFading(float progress) { // best method wtf!
 		if (progress <= 1F)
 			return clamp(progress, 0F, 1F);
-		else if (progress <= 3F) 
-			return 1F;
-		else if (progress <= 4F) 
-			return clamp(4F - progress, 0F, 1F);
+		else if (progress <= 2F) 
+			return clamp(2F - progress, 0F, 1F);
 		else return 0F;
 	}
 

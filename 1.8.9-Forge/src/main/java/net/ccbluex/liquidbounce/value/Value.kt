@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
 
 @SideOnly(Side.CLIENT)
-abstract class Value<T>(val name: String, protected var value: T) {
+abstract class Value<T>(val name: String, protected var value: T, var canDisplay: () -> Boolean) {
 
     fun set(newValue: T) {
         if (newValue == value) return
@@ -51,7 +51,7 @@ abstract class Value<T>(val name: String, protected var value: T) {
 /**
  * Bool value represents a value with a boolean
  */
-open class BoolValue(name: String, value: Boolean) : Value<Boolean>(name, value) {
+open class BoolValue(name: String, value: Boolean, displayable: () -> Boolean = { true } ) : Value<Boolean>(name, value, displayable) {
 
     override fun toJson() = JsonPrimitive(value)
 
@@ -65,8 +65,8 @@ open class BoolValue(name: String, value: Boolean) : Value<Boolean>(name, value)
 /**
  * Integer value represents a value with a integer
  */
-open class IntegerValue(name: String, value: Int, val minimum: Int = 0, val maximum: Int = Integer.MAX_VALUE)
-    : Value<Int>(name, value) {
+open class IntegerValue(name: String, value: Int, val minimum: Int = 0, val maximum: Int = Integer.MAX_VALUE, displayable: () -> Boolean = { true } )
+    : Value<Int>(name, value, displayable) {
 
     fun set(newValue: Number) {
         set(newValue.toInt())
@@ -84,8 +84,8 @@ open class IntegerValue(name: String, value: Int, val minimum: Int = 0, val maxi
 /**
  * Float value represents a value with a float
  */
-open class FloatValue(name: String, value: Float, val minimum: Float = 0F, val maximum: Float = Float.MAX_VALUE)
-    : Value<Float>(name, value) {
+open class FloatValue(name: String, value: Float, val minimum: Float = 0F, val maximum: Float = Float.MAX_VALUE, displayable: () -> Boolean = { true } )
+    : Value<Float>(name, value, displayable) {
 
     fun set(newValue: Number) {
         set(newValue.toFloat())
@@ -103,7 +103,7 @@ open class FloatValue(name: String, value: Float, val minimum: Float = 0F, val m
 /**
  * Text value represents a value with a string
  */
-open class TextValue(name: String, value: String) : Value<String>(name, value) {
+open class TextValue(name: String, value: String, displayable: () -> Boolean = { true } ) : Value<String>(name, value, displayable) {
 
     override fun toJson() = JsonPrimitive(value)
 
@@ -116,7 +116,7 @@ open class TextValue(name: String, value: String) : Value<String>(name, value) {
 /**
  * Font value represents a value with a font
  */
-class FontValue(valueName: String, value: FontRenderer) : Value<FontRenderer>(valueName, value) {
+class FontValue(valueName: String, value: FontRenderer, displayable: () -> Boolean = { true } ) : Value<FontRenderer>(valueName, value, displayable) {
 
     override fun toJson(): JsonElement? {
         val fontDetails = Fonts.getFontDetails(value) ?: return null
@@ -136,12 +136,12 @@ class FontValue(valueName: String, value: FontRenderer) : Value<FontRenderer>(va
 /**
  * Block value represents a value with a block
  */
-class BlockValue(name: String, value: Int) : IntegerValue(name, value, 1, 197)
+class BlockValue(name: String, value: Int, displayable: () -> Boolean = { true } ) : IntegerValue(name, value, 1, 197, displayable)
 
 /**
  * List value represents a selectable list of values
  */
-open class ListValue(name: String, val values: Array<String>, value: String) : Value<String>(name, value) {
+open class ListValue(name: String, val values: Array<String>, value: String, displayable: () -> Boolean = { true } ) : Value<String>(name, value, displayable) {
 
     @JvmField
     var openList = false
