@@ -29,15 +29,15 @@ import net.minecraft.util.EnumFacing
 @ModuleInfo(name = "NoSlow", spacedName = "No Slow", category = ModuleCategory.MOVEMENT, description = "Prevent you from getting slowed down by items (swords, foods, etc.) and liquids.")
 class NoSlow : Module() {
     private val msTimer = MSTimer()
+    private val modeValue = ListValue("PacketMode", arrayOf("Custom","WatchDog","Watchdog2","NCP","AAC","AAC5","None"), "None")
     private val blockForwardMultiplier = FloatValue("BlockForwardMultiplier", 1.0F, 0.2F, 1.0F)
     private val blockStrafeMultiplier = FloatValue("BlockStrafeMultiplier", 1.0F, 0.2F, 1.0F)
     private val consumeForwardMultiplier = FloatValue("ConsumeForwardMultiplier", 1.0F, 0.2F, 1.0F)
     private val consumeStrafeMultiplier = FloatValue("ConsumeStrafeMultiplier", 1.0F, 0.2F, 1.0F)
     private val bowForwardMultiplier = FloatValue("BowForwardMultiplier", 1.0F, 0.2F, 1.0F)
     private val bowStrafeMultiplier = FloatValue("BowStrafeMultiplier", 1.0F, 0.2F, 1.0F)
-    private val customOnGround = BoolValue("CustomOnGround", false)
-    private val customDelayValue = IntegerValue("CustomDelay",60,10,200)
-    private val modeValue = ListValue("PacketMode", arrayOf("Custom","WatchDog","Watchdog2","NCP","AAC","AAC5","None"), "None")
+    private val customOnGround = BoolValue("CustomOnGround", false, { modeValue.get().equals("custom", true) })
+    private val customDelayValue = IntegerValue("CustomDelay",60,10,200, { modeValue.get().equals("custom", true) })
     // Soulsand
     val soulsandValue = BoolValue("Soulsand", true)
     val liquidPushValue = BoolValue("LiquidPush", true)
