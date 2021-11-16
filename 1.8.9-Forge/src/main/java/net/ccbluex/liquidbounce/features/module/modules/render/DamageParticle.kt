@@ -33,9 +33,9 @@ class DamageParticle : Module() {
     private val aliveTicks= IntegerValue("AliveTicks",20,10,50)
     private val sizeValue= IntegerValue("Size",3,1,7)
     private val customColor = BoolValue("CustomColor", false)
-    private val red = IntegerValue("Red", 255, 0, 255)
-    private val green = IntegerValue("Green", 255, 0, 255)
-    private val blue = IntegerValue("Blue", 255, 0, 255)
+    private val red = IntegerValue("Red", 255, 0, 255, { customColor.get() })
+    private val green = IntegerValue("Green", 255, 0, 255, { customColor.get() })
+    private val blue = IntegerValue("Blue", 255, 0, 255, { customColor.get() })
 
     @EventTarget
     fun onUpdate(event: UpdateEvent){

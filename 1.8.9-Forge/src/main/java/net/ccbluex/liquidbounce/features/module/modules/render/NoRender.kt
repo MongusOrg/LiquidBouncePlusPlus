@@ -22,12 +22,12 @@ import net.minecraft.entity.item.EntityArmorStand
 @ModuleInfo(name = "NoRender", spacedName = "No Render", description = "Increase FPS by decreasing or stop rendering visible entities.", category = ModuleCategory.RENDER)
 class NoRender : Module() {
 
-    private val itemsValue = BoolValue("Items", true)
-    private val playersValue = BoolValue("Players", true)
-    private val mobsValue = BoolValue("Mobs", true)
-    private val animalsValue = BoolValue("Animals", true)
-    val armorStandValue = BoolValue("ArmorStand", true) // going to redirect armor stand bounding box return instead, since the original method doesn't work
     val allValue = BoolValue("All", true)
+    private val itemsValue = BoolValue("Items", true, { !allValue.get() })
+    private val playersValue = BoolValue("Players", true, { !allValue.get() })
+    private val mobsValue = BoolValue("Mobs", true, { !allValue.get() })
+    private val animalsValue = BoolValue("Animals", true, { !allValue.get() })
+    val armorStandValue = BoolValue("ArmorStand", true, { !allValue.get() }) // going to redirect armor stand bounding box return instead, since the original method doesn't work
     private val autoResetValue = BoolValue("AutoReset", true)
     private val maxRenderRange = FloatValue("MaxRenderRange", 4F, 0F, 16F)
 

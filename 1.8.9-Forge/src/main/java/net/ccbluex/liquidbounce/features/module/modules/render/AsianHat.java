@@ -36,6 +36,7 @@ public class AsianHat extends Module {
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
 	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
 	private final IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
+    private final IntegerValue colorEndAlphaValue = new IntegerValue("EndAlpha", 255, 0, 255);
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
@@ -62,6 +63,7 @@ public class AsianHat extends Module {
         float g = colour.getGreen() / 255.0F;
         float b = colour.getBlue() / 255.0F;
         float al = colorAlphaValue.get() / 255.0F;
+        float Eal = colorEndAlphaValue.get() / 255.0F;
 
         pre3D();
         GL11.glTranslated(-mc.getRenderManager().viewerPosX, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
@@ -73,19 +75,20 @@ public class AsianHat extends Module {
         for (int i = 0; i <= 360; i += 1) {
 			double posX2 = posX - Math.sin(i * Math.PI / 180) * radius;
 			double posZ2 = posZ + Math.cos(i * Math.PI / 180) * radius;
-
-			GL11.glVertex3d(posX2, posY + height, posZ2);
-
+            
             if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
                 Color colour2 = getColor(entity, i * spaceValue.get());
                 float r2 = colour2.getRed() / 255.0F;
                 float g2 = colour2.getGreen() / 255.0F;
                 float b2 = colour2.getBlue() / 255.0F;
 
-                GL11.glColor4f(r2, g2, b2, al);
+                GL11.glColor4f(r2, g2, b2, Eal);
             }
+
+			GL11.glVertex3d(posX2, posY + height, posZ2);
 		}
 
+        GL11.glColor4f(r, g, b, al);
         GL11.glVertex3d(posX, posY + height + 0.3F, posZ);
 
         GL11.glEnd();

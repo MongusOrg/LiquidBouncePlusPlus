@@ -17,7 +17,7 @@ import java.net.URI
 import java.net.URISyntaxException
 
 @ModuleInfo(name = "PackSpoofer", spacedName = "Pack Spoofer", description = "Prevents servers from forcing you to download their resource pack.", category = ModuleCategory.MISC)
-class ResourcePackSpoof : Module() {
+class PackSpoofer : Module() {
 
     @EventTarget
     fun onPacket(event: PacketEvent) {

@@ -80,6 +80,8 @@ public class NullStyle extends Style {
             if(moduleElement.isShowSettings()) {
                 int yPos = moduleElement.getY() + 4;
                 for(final Value value : moduleValues) {
+                    if (!value.getCanDisplay())
+                        continue;
                     boolean isNumber = value.get() instanceof Number;
 
                     if (isNumber) {

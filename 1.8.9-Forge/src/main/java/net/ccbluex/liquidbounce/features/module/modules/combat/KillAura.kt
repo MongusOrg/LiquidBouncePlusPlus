@@ -86,18 +86,19 @@ class KillAura : Module() {
     val rangeValue = FloatValue("Range", 3.7f, 1f, 8f) //target hud thingy
     private val throughWallsRangeValue = FloatValue("ThroughWallsRange", 3f, 0f, 8f)
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
-    //reverted in old LB. idk why they removed it.
-    private val switchDelayValue = IntegerValue("SwitchDelay", 1000, 1, 2000)
 
     // Modes
     private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "NCP"), "BackTrack")
-    private val roundNCPValue = BoolValue("NCP-Rounded", false)
-    private val ncpCustomPitch = BoolValue("NCP-CustomPitch", false)
-    private val ncpPitch = FloatValue("NCP-Pitch", 45f, -90f, 90f)
-    private val roundStrength = IntegerValue("NCP-RoundStrength", 9, 1, 18)
+    private val roundNCPValue = BoolValue("NCP-Rounded", false, { rotations.get().equals("ncp", true) })
+    private val ncpCustomPitch = BoolValue("NCP-CustomPitch", false, { rotations.get().equals("ncp", true) })
+    private val ncpPitch = FloatValue("NCP-Pitch", 45f, -90f, 90f, { rotations.get().equals("ncp", true) && ncpCustomPitch.get() })
+    private val roundStrength = IntegerValue("NCP-RoundStrength", 9, 1, 18, { rotations.get().equals("ncp", true) && roundNCPValue.get() })
 
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
+
+    //reverted in old LB. idk why they removed it.
+    private val switchDelayValue = IntegerValue("SwitchDelay", 1000, 1, 2000, { targetModeValue.get().equals("switch", true) })
 
     // Bypass
     private val swingValue = BoolValue("Swing", true)
@@ -105,9 +106,9 @@ class KillAura : Module() {
 
     // AutoBlock
     private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("Packet", "None", "AfterTick", "NCP", "Hypixel"), "None")
-    private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true)
-    private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false)
-    private val blockRate = IntegerValue("BlockRate", 100, 1, 100)
+    private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true, { !autoBlockModeValue.get().equals("None", true) })
+    private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false, { !autoBlockModeValue.get().equals("None", true) })
+    private val blockRate = IntegerValue("BlockRate", 100, 1, 100, { !autoBlockModeValue.get().equals("None", true) })
 
     // Raycast
     private val raycastValue = BoolValue("RayCast", true)
@@ -136,14 +137,14 @@ class KillAura : Module() {
     private val silentRotationValue = BoolValue("SilentRotation", true)
     private val rotationStrafeValue = ListValue("Strafe", arrayOf("Off", "Strict", "Silent"), "Off")
     private val randomCenterValue = BoolValue("RandomCenter", true)
-    private val randomCenterNewValue = BoolValue("RandomCenter-New", true)
-    private val minRand: FloatValue = object : FloatValue("RandomMinMultiply", 0.8f, 0f, 2f) {
+    private val randomCenterNewValue = BoolValue("RandomCenter-New", true, { randomCenterValue.get() })
+    private val minRand: FloatValue = object : FloatValue("RandomMinMultiply", 0.8f, 0f, 2f, { randomCenterValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = maxRand.get()
             if (v < newValue) set(v)
         }
     }
-    private val maxRand: FloatValue = object : FloatValue("RandomMaxMultiply", 0.8f, 0f, 2f) {
+    private val maxRand: FloatValue = object : FloatValue("RandomMaxMultiply", 0.8f, 0f, 2f, { randomCenterValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = minRand.get()
             if (v > newValue) set(v)
@@ -155,14 +156,14 @@ class KillAura : Module() {
     // Predict
     private val predictValue = BoolValue("Predict", true)
 
-    private val maxPredictSize: FloatValue = object : FloatValue("MaxPredictSize", 1f, 0.1f, 5f) {
+    private val maxPredictSize: FloatValue = object : FloatValue("MaxPredictSize", 1f, 0.1f, 5f, { predictValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = minPredictSize.get()
             if (v > newValue) set(v)
         }
     }
 
-    private val minPredictSize: FloatValue = object : FloatValue("MinPredictSize", 1f, 0.1f, 5f) {
+    private val minPredictSize: FloatValue = object : FloatValue("MinPredictSize", 1f, 0.1f, 5f, { predictValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = maxPredictSize.get()
             if (v < newValue) set(v)
@@ -173,18 +174,18 @@ class KillAura : Module() {
     private val failRateValue = FloatValue("FailRate", 0f, 0f, 100f)
     private val fakeSwingValue = BoolValue("FakeSwing", true)
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
-    private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500)
-    private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50)
+    private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500, { noInventoryAttackValue.get() })
+    private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50, { targetModeValue.get().equals("multi", true) })
 
     // Visuals
     val moveMarkValue = FloatValue("MoveMark", 0F, 0F, 2F)
     private val circleValue = BoolValue("Circle", true)
-    private val accuracyValue = IntegerValue("Accuracy", 59, 0, 59)
+    private val accuracyValue = IntegerValue("Accuracy", 59, 0, 59, { circleValue.get() })
     private val fakeSharpValue = BoolValue("FakeSharp", true)
-    private val red = IntegerValue("Red", 0, 0, 255)
-    private val green = IntegerValue("Green", 0, 0, 255)
-    private val blue = IntegerValue("Blue", 0, 0, 255)
-    private val alpha = IntegerValue("Alpha", 0, 0, 255)
+    private val red = IntegerValue("Red", 0, 0, 255, { circleValue.get() })
+    private val green = IntegerValue("Green", 0, 0, 255, { circleValue.get() })
+    private val blue = IntegerValue("Blue", 0, 0, 255, { circleValue.get() })
+    private val alpha = IntegerValue("Alpha", 0, 0, 255, { circleValue.get() })
 
 
     /**

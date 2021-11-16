@@ -43,6 +43,7 @@ class CommandManager {
         registerCommand(HideCommand())
         registerCommand(AutoDisableCommand())
         registerCommand(TeleportCommand())
+        registerCommand(PathfindingTeleportCommand())
         registerCommand(ThemeCommand())
     }
 

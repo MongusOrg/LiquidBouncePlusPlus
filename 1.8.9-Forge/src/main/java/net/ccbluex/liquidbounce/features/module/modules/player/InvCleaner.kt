@@ -60,15 +60,15 @@ class InvCleaner : Module() {
     private val itemDelayValue = IntegerValue("ItemDelay", 0, 0, 5000)
 
     private val items = arrayOf("None", "Ignore", "Sword", "Bow", "Pickaxe", "Axe", "Food", "Block", "Water", "Gapple", "Pearl")
-    private val sortSlot1Value = ListValue("SortSlot-1", items, "Sword")
-    private val sortSlot2Value = ListValue("SortSlot-2", items, "Bow")
-    private val sortSlot3Value = ListValue("SortSlot-3", items, "Pickaxe")
-    private val sortSlot4Value = ListValue("SortSlot-4", items, "Axe")
-    private val sortSlot5Value = ListValue("SortSlot-5", items, "None")
-    private val sortSlot6Value = ListValue("SortSlot-6", items, "None")
-    private val sortSlot7Value = ListValue("SortSlot-7", items, "Food")
-    private val sortSlot8Value = ListValue("SortSlot-8", items, "Block")
-    private val sortSlot9Value = ListValue("SortSlot-9", items, "Block")
+    private val sortSlot1Value = ListValue("SortSlot-1", items, "Sword", { sortValue.get() })
+    private val sortSlot2Value = ListValue("SortSlot-2", items, "Bow", { sortValue.get() })
+    private val sortSlot3Value = ListValue("SortSlot-3", items, "Pickaxe", { sortValue.get() })
+    private val sortSlot4Value = ListValue("SortSlot-4", items, "Axe", { sortValue.get() })
+    private val sortSlot5Value = ListValue("SortSlot-5", items, "None", { sortValue.get() })
+    private val sortSlot6Value = ListValue("SortSlot-6", items, "None", { sortValue.get() })
+    private val sortSlot7Value = ListValue("SortSlot-7", items, "Food", { sortValue.get() })
+    private val sortSlot8Value = ListValue("SortSlot-8", items, "Block", { sortValue.get() })
+    private val sortSlot9Value = ListValue("SortSlot-9", items, "Block", { sortValue.get() })
 
     /**
      * VALUES

@@ -83,6 +83,8 @@ public class BlackStyle extends Style {
 
                 moduleElement.slowlySettingsYPos = moduleElement.getY() + 6;
                 for(final Value value : moduleValues) {
+                    if (!value.getCanDisplay())
+                        continue;
                     if(value instanceof BoolValue) {
                         final String text = value.getName();
                         final float textWidth = Fonts.font35.getStringWidth(text);

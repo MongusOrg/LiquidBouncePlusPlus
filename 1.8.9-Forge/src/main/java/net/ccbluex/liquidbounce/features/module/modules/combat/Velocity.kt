@@ -45,29 +45,29 @@ class Velocity : Module() {
     private val modeValue = ListValue("Mode", arrayOf("Cancel", "Simple", "AACv4", "AAC4Reduce", "AAC5Reduce", "AAC5.2.0", "AAC", "AACPush", "AACZero",
             "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit"), "Simple")
 
-    private val aac5KillAuraValue = BoolValue("AAC5.2.0-Attack-Only", true)
+    private val aac5KillAuraValue = BoolValue("AAC5.2.0-Attack-Only", true, { modeValue.get().equals("aac5.2.0", true) })
 
     // Affect chance
     private val reduceChance = FloatValue("Reduce-Chance", 100F, 0F, 100F)
     private var shouldAffect : Boolean = true
 
     // Reverse
-    private val reverseStrengthValue = FloatValue("ReverseStrength", 1F, 0.1F, 1F)
-    private val reverse2StrengthValue = FloatValue("SmoothReverseStrength", 0.05F, 0.02F, 0.1F)
+    private val reverseStrengthValue = FloatValue("ReverseStrength", 1F, 0.1F, 1F, { modeValue.get().equals("reverse", true) })
+    private val reverse2StrengthValue = FloatValue("SmoothReverseStrength", 0.05F, 0.02F, 0.1F, { modeValue.get().equals("smoothreverse", true) })
 
     // AAC Push
-    private val aacPushXZReducerValue = FloatValue("AACPushXZReducer", 2F, 1F, 3F)
-    private val aacPushYReducerValue = BoolValue("AACPushYReducer", true)
+    private val aacPushXZReducerValue = FloatValue("AACPushXZReducer", 2F, 1F, 3F, { modeValue.get().equals("aacpush", true) })
+    private val aacPushYReducerValue = BoolValue("AACPushYReducer", true, { modeValue.get().equals("aacpush", true) })
 
     // legit
-    private val legitStrafeValue = BoolValue("LegitStrafe",false)
-    private val legitFaceValue = BoolValue("LegitFace",true)
+    private val legitStrafeValue = BoolValue("LegitStrafe", false, { modeValue.get().equals("legit", true) })
+    private val legitFaceValue = BoolValue("LegitFace", true, { modeValue.get().equals("legit", true) })
 
     //add strafe in aac
-    private val aacStrafeValue = BoolValue("AACStrafeValue", false)
+    private val aacStrafeValue = BoolValue("AACStrafeValue", false, { modeValue.get().equals("aac", true) })
 
     //epic
-    private val phaseOffsetValue = FloatValue("Phase-Offset", 0.05F, -10F, 10F)
+    private val phaseOffsetValue = FloatValue("Phase-Offset", 0.05F, -10F, 10F, { modeValue.get().equals("phase", true) })
 
     /**
      * VALUES

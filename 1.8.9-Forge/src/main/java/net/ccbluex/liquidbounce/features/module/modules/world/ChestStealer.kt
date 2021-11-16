@@ -60,8 +60,8 @@ class ChestStealer : Module() {
     private val noCompassValue = BoolValue("NoCompass", false)
     private val autoCloseValue = BoolValue("AutoClose", true)
     public val silenceValue = BoolValue("SilentMode", true)
-    public val showStringValue = BoolValue("Silent-ShowString", false)
-    public val stillDisplayValue = BoolValue("Silent-StillDisplay", false)
+    public val showStringValue = BoolValue("Silent-ShowString", false, { silenceValue.get() })
+    public val stillDisplayValue = BoolValue("Silent-StillDisplay", false, { silenceValue.get() })
 
     private val autoCloseMaxDelayValue: IntegerValue = object : IntegerValue("AutoCloseMaxDelay", 0, 0, 400) {
         override fun onChanged(oldValue: Int, newValue: Int) {
