@@ -45,7 +45,7 @@ public class AutoHypixel extends Module {
     private final BoolValue checkValue = new BoolValue("CheckGameMode", true);
     private final BoolValue renderValue = new BoolValue("Render", true);
     private final ListValue modeValue = new ListValue("Mode", new String[]{"Solo", "Teams", "Ranked", "Mega"}, "Solo");
-    private final ListValue soloTeamsValue = new ListValue("Solo/Teams-Mode", new String[]{"Normal", "Insane"}, "Insane", () -> { modeValue.get().equalsIgnoreCase("solo") || modeValue.get().equalsIgnoreCase("teams"); });
+    private final ListValue soloTeamsValue = new ListValue("Solo/Teams-Mode", new String[]{"Normal", "Insane"}, "Insane", () -> { return modeValue.get().equalsIgnoreCase("solo") || modeValue.get().equalsIgnoreCase("teams"); });
     private final ListValue megaValue = new ListValue("Mega-Mode", new String[]{"Normal", "Doubles"}, "Normal", () -> { modeValue.get().equalsIgnoreCase("mega") });
 
     private final MSTimer timer = new MSTimer();
