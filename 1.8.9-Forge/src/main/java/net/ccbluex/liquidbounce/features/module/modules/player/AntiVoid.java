@@ -39,9 +39,9 @@ public class AntiVoid extends Module {
 
     public final ListValue voidDetectionAlgorithm = new ListValue("Detect-Method", new String[]{"Collision", "Predict"}, "Collision");
     public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Position", "Edit"}, "Teleport");
-    public final IntegerValue maxFallDistSimulateValue = new IntegerValue("Predict-CheckFallDistance", 255, 0, 255, () -> { voidDetectionAlgorithm.get().equalsIgnoreCase("predict"); });
-    public final IntegerValue maxFindRangeValue = new IntegerValue("Predict-MaxFindRange", 60, 0, 255, () -> { voidDetectionAlgorithm.get().equalsIgnoreCase("predict"); });
-    public final IntegerValue illegalDupeValue = new IntegerValue("Illegal-Dupe", 1, 1, 5, () -> { setBackModeValue.get().toLowerCase().contains("illegal"); });
+    public final IntegerValue maxFallDistSimulateValue = new IntegerValue("Predict-CheckFallDistance", 255, 0, 255, () -> { return voidDetectionAlgorithm.get().equalsIgnoreCase("predict"); });
+    public final IntegerValue maxFindRangeValue = new IntegerValue("Predict-MaxFindRange", 60, 0, 255, () -> { return voidDetectionAlgorithm.get().equalsIgnoreCase("predict"); });
+    public final IntegerValue illegalDupeValue = new IntegerValue("Illegal-Dupe", 1, 1, 5, () -> { return setBackModeValue.get().toLowerCase().contains("illegal"); });
     public final FloatValue setBackFallDistValue = new FloatValue("Max-FallDistance", 5F, 0F, 255F);
     public final BoolValue resetFallDistanceValue = new BoolValue("Reset-FallDistance", true);
     public final BoolValue renderTraceValue = new BoolValue("Render-Trace", true);

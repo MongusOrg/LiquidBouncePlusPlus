@@ -167,7 +167,7 @@ public class GuiAdd extends GuiScreen {
 
         final MinecraftAccount account = new MinecraftAccount(name, password);
 
-        new Thread(() -> {
+        new Thread(() -> { return
             if (!account.isCracked()) {
                 status = "§aChecking...";
 

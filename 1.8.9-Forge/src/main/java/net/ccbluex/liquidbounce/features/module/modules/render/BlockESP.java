@@ -52,7 +52,7 @@ public class BlockESP extends Module {
             if(selectedBlock == null || selectedBlock == Blocks.air)
                 return;
 
-            thread = new Thread(() -> {
+            thread = new Thread(() -> { return
                 final List<BlockPos> blockList = new ArrayList<>();
 
                 for(int x = -radius; x < radius; x++) {

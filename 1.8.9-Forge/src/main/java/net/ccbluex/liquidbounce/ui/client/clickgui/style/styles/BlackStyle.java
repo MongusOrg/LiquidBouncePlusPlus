@@ -83,7 +83,7 @@ public class BlackStyle extends Style {
 
                 moduleElement.slowlySettingsYPos = moduleElement.getY() + 6;
                 for(final Value value : moduleValues) {
-                    if (!value.getCanDisplay())
+                    if (!value.getCanDisplay().get())
                         continue;
                     if(value instanceof BoolValue) {
                         final String text = value.getName();

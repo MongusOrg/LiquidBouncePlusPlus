@@ -33,37 +33,37 @@ import net.minecraft.util.EnumFacing;
 public class LongJump extends Module {
 
     private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "HypixelDamage", "HypixelDamage2", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
-    private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> { modeValue.get().equalsIgnoreCase("ncp"); });
+    private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
     private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan", () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
     private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
     private final BoolValue hypixelDmgBlinkComp = new BoolValue("HypixelDamage-BlinkCompatible", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final BoolValue hypixelStrafe = new BoolValue("HypixelDamage-StrafeAfterTick", false, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage"); });
-    private final IntegerValue hypixelDmgTick = new IntegerValue("HypixelDamage-Tick", 10, 1, 20, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage"); });
-    private final FloatValue hypixelDmgMotionY = new FloatValue("HypixelDamage-MotionY", 1F, 0F, 2F, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage"); });
-    private final FloatValue hypixelDmgXZBoost = new FloatValue("HypixelDamage-XZBoost", 1F, 0F, 2F, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage"); });
+    private final BoolValue hypixelStrafe = new BoolValue("HypixelDamage-StrafeAfterTick", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
+    private final IntegerValue hypixelDmgTick = new IntegerValue("HypixelDamage-Tick", 10, 1, 20, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
+    private final FloatValue hypixelDmgMotionY = new FloatValue("HypixelDamage-MotionY", 1F, 0F, 2F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
+    private final FloatValue hypixelDmgXZBoost = new FloatValue("HypixelDamage-XZBoost", 1F, 0F, 2F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
 
-    private final BoolValue hypixelDmgRider = new BoolValue("HypixelDamage2-FakeRideJump", false, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final FloatValue hpxDamage2Value = new FloatValue("HypixelDamage2-Boost", 4.25F, 0F, 10F, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final FloatValue hpxDamage2HeightValue = new FloatValue("HypixelDamage2-Height", 0.42F, 0F, 10F, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final FloatValue hpxDamage2TimerValue = new FloatValue("HypixelDamage2-Timer", 1F, 0.1F, 10F, () -> { modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
+    private final BoolValue hypixelDmgRider = new BoolValue("HypixelDamage2-FakeRideJump", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
+    private final FloatValue hpxDamage2Value = new FloatValue("HypixelDamage2-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
+    private final FloatValue hpxDamage2HeightValue = new FloatValue("HypixelDamage2-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
+    private final FloatValue hpxDamage2TimerValue = new FloatValue("HypixelDamage2-Timer", 1F, 0.1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
 
-    private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> { modeValue.get().equalsIgnoreCase("redesky"); });
-    private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> { modeValue.get().equalsIgnoreCase("redesky"); });
-    private final IntegerValue redeskyTickValue = new IntegerValue("Redesky-Ticks", 21, 1, 25, () -> { modeValue.get().equalsIgnoreCase("redesky"); });
-    private final FloatValue redeskyYMultiplier = new FloatValue("Redesky-YMultiplier", 0.77F, 0.1F, 1F, () -> { modeValue.get().equalsIgnoreCase("redesky"); });
-    private final FloatValue redeskyXZMultiplier = new FloatValue("Redesky-XZMultiplier", 0.9F, 0.1F, 1F, () -> { modeValue.get().equalsIgnoreCase("redesky"); });
+    private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
+    private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
+    private final IntegerValue redeskyTickValue = new IntegerValue("Redesky-Ticks", 21, 1, 25, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
+    private final FloatValue redeskyYMultiplier = new FloatValue("Redesky-YMultiplier", 0.77F, 0.1F, 1F, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
+    private final FloatValue redeskyXZMultiplier = new FloatValue("Redesky-XZMultiplier", 0.9F, 0.1F, 1F, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
     private final FloatValue redeskyTimerBoostStartValue = new FloatValue("Redesky-TimerBoostStart", 1.85F, 0.1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
     private final FloatValue redeskyTimerBoostEndValue = new FloatValue("Redesky-TimerBoostEnd", 1.0F, 0.1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
     private final IntegerValue redeskyTimerBoostSlowDownSpeedValue = new IntegerValue("Redesky-TimerBoost-SlowDownSpeed", 2, 1, 10, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
 
-    private final FloatValue verusBoostValue = new FloatValue("VerusDmg-Boost", 4.25F, 0F, 10F, () -> { modeValue.get().equalsIgnoreCase("verusdmg"); });
-    private final FloatValue verusHeightValue = new FloatValue("VerusDmg-Height", 0.42F, 0F, 10F, () -> { modeValue.get().equalsIgnoreCase("verusdmg"); });
-    private final FloatValue verusTimerValue = new FloatValue("VerusDmg-Timer", 1F, 0.1F, 10F, () -> { modeValue.get().equalsIgnoreCase("verusdmg"); });
+    private final FloatValue verusBoostValue = new FloatValue("VerusDmg-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
+    private final FloatValue verusHeightValue = new FloatValue("VerusDmg-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
+    private final FloatValue verusTimerValue = new FloatValue("VerusDmg-Timer", 1F, 0.1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
 
-    private final FloatValue pearlBoostValue = new FloatValue("Pearl-Boost", 4.25F, 0F, 10F, () -> { modeValue.get().equalsIgnoreCase("pearl"); });
-    private final FloatValue pearlHeightValue = new FloatValue("Pearl-Height", 0.42F, 0F, 10F, () -> { modeValue.get().equalsIgnoreCase("pearl"); });
-    private final FloatValue pearlTimerValue = new FloatValue("Pearl-Timer", 1F, 0.1F, 10F, () -> { modeValue.get().equalsIgnoreCase("pearl"); });
+    private final FloatValue pearlBoostValue = new FloatValue("Pearl-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("pearl"); });
+    private final FloatValue pearlHeightValue = new FloatValue("Pearl-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("pearl"); });
+    private final FloatValue pearlTimerValue = new FloatValue("Pearl-Timer", 1F, 0.1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("pearl"); });
 
     private boolean jumped;
     private boolean canBoost;

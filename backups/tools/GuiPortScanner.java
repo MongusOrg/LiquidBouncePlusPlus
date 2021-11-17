@@ -150,7 +150,7 @@ public class GuiPortScanner extends GuiScreen {
                     checkedPort = minPort;
 
                     for(int i = 0; i < threads; i++) {
-                        new Thread(() -> {
+                        new Thread(() -> { return
                             try {
                                 while(running && currentPort < maxPort) {
                                     currentPort++;

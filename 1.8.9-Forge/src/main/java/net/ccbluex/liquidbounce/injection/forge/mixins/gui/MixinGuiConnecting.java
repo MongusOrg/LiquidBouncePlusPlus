@@ -78,7 +78,7 @@ public abstract class MixinGuiConnecting extends GuiScreen {
     private void connect(final String ip, final int port) {
         logger.info("Connecting to " + ip + ", " + port);
 
-        new Thread(() -> {
+        new Thread(() -> { return
             InetAddress inetaddress = null;
 
             try {

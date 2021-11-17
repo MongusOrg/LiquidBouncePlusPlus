@@ -85,7 +85,7 @@ public class GuiDirectLogin extends GuiScreen {
 
                 loginButton.enabled = clipboardLoginButton.enabled = false;
 
-                new Thread(() -> {
+                new Thread(() -> { return
                     status = "§aLogging in...";
 
                     if (password.getText().isEmpty())
@@ -108,7 +108,7 @@ public class GuiDirectLogin extends GuiScreen {
 
                     loginButton.enabled = clipboardLoginButton.enabled = false;
 
-                    new Thread(() -> {
+                    new Thread(() -> { return
                         status = "§aLogging in...";
 
                         status = GuiAltManager.login(new MinecraftAccount(args[0], args[1]));
