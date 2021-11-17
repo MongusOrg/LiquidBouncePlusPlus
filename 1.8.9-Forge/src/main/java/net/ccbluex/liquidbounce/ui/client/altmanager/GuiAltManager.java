@@ -198,7 +198,7 @@ public class GuiAltManager extends GuiScreen {
                 if (altsList.getSelectedSlot() != -1 && altsList.getSelectedSlot() < altsList.getSize()) {
                     loginButton.enabled = randomButton.enabled = false;
 
-                    final Thread thread = new Thread(() -> { return
+                    final Thread thread = new Thread(() -> {
                         final MinecraftAccount minecraftAccount = this.altsList.accounts.get(altsList.getSelectedSlot());
                         status = "§aLogging in...";
                         status = login(minecraftAccount);
@@ -222,7 +222,7 @@ public class GuiAltManager extends GuiScreen {
 
                 loginButton.enabled = randomButton.enabled = false;
 
-                final Thread thread = new Thread(() -> { return
+                final Thread thread = new Thread(() -> {
                     final MinecraftAccount minecraftAccount = this.altsList.accounts.get(randomInteger);
                     status = "§aLogging in...";
                     status = login(minecraftAccount);
@@ -231,7 +231,7 @@ public class GuiAltManager extends GuiScreen {
                 }, "AltLogin");
                 thread.start();*/
                 loginButton.enabled = randomButton.enabled = false;
-                new Thread(() -> { return
+                new Thread(() -> {
                     status = "§6Trying to generate an account...";
                     LoginUtils.loginCracked(RandomUtils.randomString(RandomUtils.nextInt(5, 16)));
                     status = "§aDone!";
@@ -447,7 +447,7 @@ public class GuiAltManager extends GuiScreen {
                 if (altsList.getSelectedSlot() != -1 && altsList.getSelectedSlot() < altsList.getSize() && loginButton.enabled) {
                     loginButton.enabled = randomButton.enabled = false;
 
-                    new Thread(() -> { return
+                    new Thread(() -> {
                         MinecraftAccount minecraftAccount = accounts.get(altsList.getSelectedSlot());
                         status = "§aLogging in...";
                         status = "§c" + login(minecraftAccount);

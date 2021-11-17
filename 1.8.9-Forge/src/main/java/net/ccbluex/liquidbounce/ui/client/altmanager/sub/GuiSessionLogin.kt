@@ -103,7 +103,7 @@ class GuiSessionLogin(private val prevGui: GuiAltManager) : GuiScreen() {
                                 }
                             }
 
-                            "§cYour name is now §f§l${mc.session.username}§c"
+                            "§cYour name is now §f§l${mc.session.username}§c."
                         }
                         LoginUtils.LoginResult.FAILED_PARSE_TOKEN -> "§cFailed to parse Session ID!"
                         LoginUtils.LoginResult.INVALID_ACCOUNT_DATA -> "§cInvalid Session ID!"
