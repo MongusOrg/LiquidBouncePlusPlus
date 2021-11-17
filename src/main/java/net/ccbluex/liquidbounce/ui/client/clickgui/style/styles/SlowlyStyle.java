@@ -115,7 +115,7 @@ public class SlowlyStyle extends Style {
 
                 moduleElement.slowlySettingsYPos = moduleElement.getY() + 6;
                 for (final Value value : moduleValues) {
-                    if (!((boolean)value.getCanDisplay().invoke()))
+                    if (!value.getCanDisplay().apply(null))
                         continue;
                     boolean isNumber = value.get() instanceof Number;
 
