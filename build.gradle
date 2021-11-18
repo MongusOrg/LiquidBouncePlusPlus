@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "idea"
     id "org.jetbrains.kotlin.jvm"
-    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "com.github.johnrengelman.shadow" version "4.0.4"
     id "net.minecraftforge.gradle.forge"
     id "org.spongepowered.mixin"
 }
@@ -75,7 +75,24 @@ dependencies {
 
 shadowJar {
     archiveClassifier.set("")
-    configurations = [project.configurations.include]
+    dependencies {
+        include(dependency('org.spongepowered:mixin'))
+        include(dependency('com.jagrosh:DiscordIPC'))
+        include(dependency('org.json:json'))
+        include(dependency('org.slf4j:slf4j-api'))
+        include(dependency('log4j:log4j:1.2.17'))
+        include(dependency('org.scijava:native-lib-loader'))
+        include(dependency('com.kohlschutter.junixsocket:junixsocket-common'))
+        include(dependency('com.kohlschutter.junixsocket:junixsocket-native-common'))
+
+        include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+
+        include(dependency('com.github.TheAltening:TheAltening4j'))
+        include(dependency('com.github.TheAltening:TheAlteningAuth4j'))
+        include(dependency('com.github.ben-manes.caffeine:caffeine'))
+
+        include(dependency('com.github.half-cambodian-hacker-man:Koffee'))
+    }
     duplicatesStrategy DuplicatesStrategy.EXCLUDE
 
     exclude "LICENSE.txt"
