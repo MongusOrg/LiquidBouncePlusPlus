@@ -159,4 +159,11 @@ reobf {
     }
 }
 
+tasks.reobfShadowJar.mustRunAfter shadowJar
+
+configurations {
+    external
+    compile.extendsFrom(external)
+}
+
 tasks.reobfJar.dependsOn(shadowJar)
