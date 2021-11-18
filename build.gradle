@@ -8,7 +8,6 @@ plugins {
 }
 
 repositories {
-    jcenter()
     mavenLocal()
     mavenCentral()
     maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
@@ -45,6 +44,8 @@ minecraft {
 configurations {
     include
     implementation.extendsFrom(include)
+
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
 }
 
 dependencies {
@@ -71,7 +72,6 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.0'
     compile 'com.github.ben-manes.caffeine:caffeine:2.9.0'
 
-
     include fileTree(include: ["*.jar"], dir: "libs")
 }
 
@@ -96,7 +96,7 @@ shadowJar {
         include(dependency('com.github.half-cambodian-hacker-man:Koffee'))
     }
 
-    //duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
 
     exclude "LICENSE.txt"
 
