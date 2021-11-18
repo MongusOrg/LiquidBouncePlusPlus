@@ -121,12 +121,6 @@ processResources {
     rename "(.+_at.cfg)", "META-INF/\$1"
 }
 
-
-configurations {
-    external
-    compile.extendsFrom(external)
-}
-
 task moveResources {
     doLast {
         ant.move file: "${buildDir}/resources/main",
@@ -161,6 +155,11 @@ reobf {
     shadowJar {
         mappingType = "SEARGE"
     }
+}
+
+configurations {
+    external
+    compile.extendsFrom(external)
 }
 
 tasks.reobfShadowJar.mustRunAfter shadowJar
