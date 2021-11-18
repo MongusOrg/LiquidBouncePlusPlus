@@ -1,4 +1,5 @@
 buildscript {
+    ext.kotlin_version = '1.3.61'
 
     repositories {
         jcenter()
@@ -13,7 +14,7 @@ buildscript {
     dependencies {
         classpath "com.github.asbyth:ForgeGradle:6f53277"
         classpath "com.github.xcfrg:MixinGradle:0.6-SNAPSHOT"
-        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: '1.3.61'
+        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
         //classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '2.1-ddb1eb0'
         //classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.6-SNAPSHOT'
         classpath group: 'com.github.jengelman.gradle.plugins', name: 'shadow', version: '4.0.4'
