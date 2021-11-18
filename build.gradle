@@ -43,8 +43,8 @@ minecraft {
 }
 
 configurations {
-    include
-    implementation.extendsFrom(include)
+    internal
+    implementation.extendsFrom(internal)
 }
 
 dependencies {
@@ -115,8 +115,14 @@ processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
 
-    filesMatching("mcmod.info") {
-        expand "version": project.version, "mcversion": project.minecraft.version
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
     }
 
     rename "(.+_at.cfg)", "META-INF/\$1"
@@ -135,8 +141,7 @@ classes.dependsOn(moveResources)
 jar {
     manifest.attributes(
             "FMLCorePlugin": "net.ccbluex.liquidbounce.injection.forge.TransformerLoader",
-            "FMLCorePluginContainsFMLMod": true,
-            "ForceLoadAsMod": true,
+            "FMLCorePluginContainsFMLMod": "net.ccbluex.liquidbounce.injection.forge.MixinLoader",
             "MixinConfigs": "liquidbounce.forge.mixins.json",
             "ModSide": "CLIENT",
             "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
