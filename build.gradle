@@ -8,6 +8,7 @@ plugins {
 }
 
 repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
     maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
@@ -16,7 +17,7 @@ repositories {
 
 version = "plus"
 group = "net.ccbluex"
-archivesBaseName = "LiquidBounce+"
+archivesBaseName = "LiquidBounce"
 
 sourceCompatibility = targetCompatibility = 1.8
 compileJava.options.encoding = "UTF-8"
@@ -27,12 +28,18 @@ compileKotlin {
     }
 }
 
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+}
+
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
     mappings = "stable_22"
-    makeObfSourceJar = false
-    clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader", "-Ddev-mode"]
+    makeObfSourceJar = true
+    //clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader", "-Ddev-mode"]
 }
 
 configurations {
@@ -93,7 +100,6 @@ shadowJar {
 
         include(dependency('com.github.half-cambodian-hacker-man:Koffee'))
     }
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE
 
     exclude "LICENSE.txt"
 
