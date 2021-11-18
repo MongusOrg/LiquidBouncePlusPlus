@@ -101,6 +101,8 @@ shadowJar {
         include(dependency('com.github.half-cambodian-hacker-man:Koffee'))
     }
 
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+
     exclude "LICENSE.txt"
 
     exclude "com/sun/jna/**"
