@@ -44,8 +44,6 @@ minecraft {
 configurations {
     include
     implementation.extendsFrom(include)
-
-    duplicatesStrategy DuplicatesStrategy.INCLUDE
 }
 
 dependencies {
@@ -123,6 +121,12 @@ processResources {
     rename "(.+_at.cfg)", "META-INF/\$1"
 }
 
+
+configurations {
+    external
+    compile.extendsFrom(external)
+}
+
 task moveResources {
     doLast {
         ant.move file: "${buildDir}/resources/main",
@@ -160,10 +164,5 @@ reobf {
 }
 
 tasks.reobfShadowJar.mustRunAfter shadowJar
-
-configurations {
-    external
-    compile.extendsFrom(external)
-}
 
 tasks.reobfJar.dependsOn(shadowJar)
