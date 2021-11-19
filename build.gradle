@@ -10,6 +10,7 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url = "https://maven.minecraftforge.net/" }
     maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
     maven { url = "https://jitpack.io/" }
 }
@@ -38,7 +39,7 @@ minecraft {
     runDir = "run"
     mappings = "stable_22"
     makeObfSourceJar = true
-    //clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader"]
+    clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader"]
 }
 
 configurations {
