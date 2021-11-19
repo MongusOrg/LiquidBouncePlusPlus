@@ -38,7 +38,7 @@ minecraft {
     runDir = "run"
     mappings = "stable_22"
     makeObfSourceJar = true
-    clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader", "-Ddev-mode"]
+    clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader"]
 }
 
 configurations {
