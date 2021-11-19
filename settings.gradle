@@ -5,12 +5,13 @@ pluginManagement {
 		maven { url = "https://maven.minecraftforge.net/" }
 		maven { url = "https://jitpack.io/" }
 		maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
+		maven { url = "https://repo.spongepowered.org/repository/forge-proxy/" }
 	}
 	resolutionStrategy {
 		eachPlugin {
 			switch (requested.id.id) {
 				case "net.minecraftforge.gradle.forge":
-					useModule("com.github.liulihaocai:ForgeGradle:${forgegradle_version}")
+					useModule("net.minecraftforge.gradle:ForgeGradle:${forgegradle_version}")
 					break
 				case "org.spongepowered.mixin":
 					useModule("com.github.xcfrg:mixingradle:${mixingradle_version}")
