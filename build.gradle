@@ -1,50 +1,29 @@
-buildscript {
-    repositories {
-        jcenter()
-        mavenLocal()
-        mavenCentral()
-
-        maven { url 'https://maven.minecraftforge.net/' }
-        maven { url 'https://plugins.gradle.org/m2' }
-        maven { url 'https://repo.spongepowered.org/maven' }
-        maven { url 'https://jitpack.io' }
-    }
-
-    dependencies {
-        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
-        classpath group: 'com.github.liulihaocai', name: 'ForgeGradle', version: forgegradle_version
-        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.6-SNAPSHOT'
-        classpath group: 'com.github.jengelman.gradle.plugins', name: 'shadow', version: '4.0.4'
-    }
+plugins {
+    id "java"
+    id "idea"
+    id "org.jetbrains.kotlin.jvm"
+    id "com.github.johnrengelman.shadow" version "4.0.4"
+    id "net.minecraftforge.gradle.forge"
+    id "org.spongepowered.mixin"
 }
 
-// Languages
-apply plugin: 'java'
-apply plugin: 'kotlin'
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
+    maven { url = "https://jitpack.io/" }
+}
 
-// IDE
-apply plugin: 'idea'
+version = "plus"
+group = "net.ccbluex"
+archivesBaseName = "LiquidBounce"
 
-// Minecraft
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'org.spongepowered.mixin'
-
-// Jar packaging
-apply plugin: 'com.github.johnrengelman.shadow'
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-compileJava.options.encoding = 'UTF-8'
+sourceCompatibility = targetCompatibility = 1.8
+compileJava.options.encoding = "UTF-8"
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = '1.8'
-    }
-}
-
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = "1.8"
     }
 }
 
@@ -54,29 +33,22 @@ idea {
     }
 }
 
-version = 'plus'
-group = 'net.ccbluex'
-archivesBaseName = 'LiquidBounce'
-
 minecraft {
-    version = '1.8.9-11.15.1.2318-1.8.9'
-    runDir = 'run'
-    mappings = 'stable_22'
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+    mappings = "stable_22"
     makeObfSourceJar = true
+    clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader", "-Ddev-mode"]
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://repo.spongepowered.org/maven/' }
+configurations {
+    include
+    implementation.extendsFrom(include)
 }
 
 dependencies {
-    compile('org.spongepowered:mixin:0.7.10-SNAPSHOT') {
-        exclude module: 'launchwrapper'
+    include("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
+        exclude module: "launchwrapper"
     }
 
     implementation('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
@@ -85,8 +57,10 @@ dependencies {
         exclude module: 'asm'
     }
 
+    annotationProcessor("org.spongepowered:mixin:0.7.11-SNAPSHOT")
+
     compile 'com.jagrosh:DiscordIPC:0.4'
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
+    include "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     implementation 'com.github.TheAltening:TheAltening4j:master-SNAPSHOT'
     implementation 'com.github.TheAltening:TheAlteningAuth4j:-SNAPSHOT'
@@ -96,44 +70,11 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:2.9.0'
     compile 'com.github.ben-manes.caffeine:caffeine:2.9.0'
 
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-}
-
-processResources {
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', project.minecraft.version
-    
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-
-    rename '(.+_at.cfg)', 'META-INF/$1'
-}
-
-mixin {
-    add sourceSets.main, 'liquidbounce.mixins.refmap.json'
-}
-
-jar {
-    manifest.attributes(
-            'MixinConfigs': 'liquidbounce.forge.mixins.json',
-            'tweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-            'TweakOrder': 0,
-            'FMLCorePluginContainsFMLMod': 'net.ccbluex.liquidbounce.injection.forge.MixinLoader',
-            'FMLCorePlugin': 'net.ccbluex.liquidbounce.injection.forge.TransformerLoader',
-            'FMLAT': 'liquidbounce_at.cfg',
-            'Manifest-Version': 1.0,
-            'Main-Class': 'net.ccbluex.liquidinstruction.LiquidInstructionKt'
-    )
+    include fileTree(include: ["*.jar"], dir: "libs")
 }
 
 shadowJar {
+    archiveClassifier.set("")
     dependencies {
         include(dependency('org.spongepowered:mixin'))
         include(dependency('com.jagrosh:DiscordIPC'))
@@ -153,18 +94,74 @@ shadowJar {
         include(dependency('com.github.half-cambodian-hacker-man:Koffee'))
     }
 
-    exclude 'dummyThing'
-    exclude 'LICENSE.txt'
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
 
-    classifier = ''
+    exclude "LICENSE.txt"
+
+    exclude "com/sun/jna/**"
+
+    exclude "META-INF/maven/**"
+    exclude "META-INF/versions/**"
 }
 
-reobf { shadowJar { mappingType = 'SEARGE' } }
-tasks.reobfShadowJar.mustRunAfter shadowJar
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+
+    rename "(.+_at.cfg)", "META-INF/\$1"
+}
+
+task moveResources {
+    doLast {
+        ant.move file: "${buildDir}/resources/main",
+                todir: "${buildDir}/classes/java"
+    }
+}
+
+moveResources.dependsOn(processResources)
+classes.dependsOn(moveResources)
+
+jar {
+    manifest.attributes(
+            "FMLCorePlugin": "net.ccbluex.liquidbounce.injection.forge.TransformerLoader",
+            "FMLCorePluginContainsFMLMod": "net.ccbluex.liquidbounce.injection.forge.MixinLoader",
+            "MixinConfigs": "liquidbounce.forge.mixins.json",
+            "ModSide": "CLIENT",
+            "TweakClass": "org.spongepowered.asm.launch.MixinTweaker",
+            "TweakOrder": "0",
+            "FMLAT": "liquidbounce_at.cfg",
+    )
+
+    enabled = false
+}
+
+mixin {
+    disableRefMapWarning = true
+    defaultObfuscationEnv searge
+    add sourceSets.main, "liquidbounce.mixins.refmap.json"
+}
+
+reobf {
+    shadowJar {
+        mappingType = "SEARGE"
+    }
+}
 
 configurations {
     external
-    compile.extendsFrom external
+    compile.extendsFrom(external)
 }
 
-build.dependsOn shadowJar
+tasks.reobfShadowJar.mustRunAfter shadowJar
+
+tasks.reobfJar.dependsOn(shadowJar)
