@@ -5,14 +5,14 @@ buildscript {
         mavenCentral()
 
         maven { url 'https://maven.minecraftforge.net/' }
-        maven { url 'https://repo.spongepowered.org/repository/forge-proxy/' }
         maven { url 'https://plugins.gradle.org/m2' }
         maven { url 'https://repo.spongepowered.org/maven' }
+        maven { url 'https://jitpack.io' }
     }
 
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forgegradle_version
+        classpath group: 'com.github.liulihaocai', name: 'ForgeGradle', version: forgegradle_version
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.6-SNAPSHOT'
         classpath group: 'com.github.jengelman.gradle.plugins', name: 'shadow', version: '4.0.4'
     }
