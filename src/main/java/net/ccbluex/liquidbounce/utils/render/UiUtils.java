@@ -195,13 +195,14 @@ public class UiUtils
 		Stencil.write(true);
 		RenderUtils.drawRoundedRect(x, y, x2, y2, rad, new Color(r, g, b, al).getRGB());
 		Stencil.erase(false);
+		
+		glPushMatrix();
 		glEnable(GL_BLEND);
 		glDisable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable(GL_LINE_SMOOTH);
 		glShadeModel(GL_SMOOTH);
 
-		glPushMatrix();
 		glColor4f(r, g, b, al);
 		glBegin(GL_QUAD_STRIP);
 		glVertex2f(x + width / 2F, y + width / 2F);
@@ -224,11 +225,14 @@ public class UiUtils
 		glColor4f(r, g, b, 0F);
 		glVertex2f(x - width, y - width);
 		glColor4f(1f, 1f, 1f, 1f);
-		glPopMatrix();
 
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
+		glShadeModel(7424);
+		glColor4f(1, 1, 1, 1);
+		glPopMatrix();
+
 		Stencil.dispose();
 	}
 

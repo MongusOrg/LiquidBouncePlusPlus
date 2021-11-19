@@ -166,7 +166,9 @@ class ModuleManager : Listenable {
                 AntiHunger::class.java,
                 AirJump::class.java,
                 Freeze::class.java,
-                Patcher::class.java
+                Patcher::class.java,
+                AntiCactus::class.java,
+                Eagle::class.java
         )
 
         registerModule(Fucker)
