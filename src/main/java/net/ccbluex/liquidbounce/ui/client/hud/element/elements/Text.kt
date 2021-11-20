@@ -160,6 +160,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "portalVersion" -> ProtocolCollection.getProtocolById(ViaForge.getInstance().version).getName()
             "watchdogLastMin" -> BanChecker.WATCHDOG_BAN_LAST_MIN.toString()
             "staffLastMin" -> BanChecker.STAFF_BAN_LAST_MIN.toString()
+            "wdStatus" -> return if (PacketUtils.isWatchdogActive()) "Active" else "Inactive"
             else -> null // Null = don't replace
         }
     }

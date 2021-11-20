@@ -225,6 +225,7 @@ public class UiUtils
 		glColor4f(r, g, b, 0F);
 		glVertex2f(x - width, y - width);
 		glColor4f(1f, 1f, 1f, 1f);
+		glEnd();
 
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_BLEND);

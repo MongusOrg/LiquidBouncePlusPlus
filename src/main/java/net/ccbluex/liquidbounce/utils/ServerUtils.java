@@ -35,4 +35,8 @@ public final class ServerUtils extends MinecraftInstance {
 
         return serverIp;
     }
+
+    public static boolean isOnHypixel() {
+        return getRemoteIp().toLowerCase().contains("hypixel.net");
+    }
 }

@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.event.TickEvent;
 
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayServer;
+import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
 
 import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 
@@ -24,12 +25,29 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
 
     private static ArrayList<Packet<INetHandlerPlayServer>> packets = new ArrayList<Packet<INetHandlerPlayServer>>();
 
-    private static MSTimer packetTimer = new MSTimer();
+    private static MSTimer packetTimer, wdTimer = new MSTimer();
+
+    private static int transCount = 0;
+    private static int wdVL = 0;
+
+    private static boolean isInventoryAction(short action) {
+        return action > 0 && action < 100;
+    }
+
+    public static boolean isWatchdogActive() {
+        return wdVL >= 8;
+    }
 
     @EventTarget
     public void onPacket(PacketEvent event) {
         if (event.getPacket().getClass().getSimpleName().startsWith("C")) outBound++;
         else if (event.getPacket().getClass().getSimpleName().startsWith("S")) inBound++;
+
+        if (event.getPacket() instanceof C0FPacketConfirmTransaction) 
+        {
+            if (!isInventoryAction(((C0FPacketConfirmTransaction) event.getPacket()).uid)) 
+                transCount++;
+        }
     }
 
     @EventTarget
@@ -38,6 +56,19 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
             avgInBound = inBound; avgOutBound = outBound;
             inBound = outBound = 0;
             packetTimer.reset();
+        }
+        if (!ServerUtils.isOnHypixel()) {
+            // reset all vl
+            wdVL = transCount = 0;
+            wdTimer.reset();
+        } else {
+            if (wdTimer.hasTimePassed(100L)) {
+                wdVL += (transCount > 1) ? 1 : -1;
+                transCount = 0;
+                if (wdVL > 10) wdVL = 10;
+                if (wdVL < 0) wdVL = 0;
+                wdTimer.reset();
+            }
         }
     }
 

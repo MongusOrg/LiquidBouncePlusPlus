@@ -62,9 +62,9 @@ open class HUD : MinecraftInstance() {
      * Render all elements
      */
     fun render(designer: Boolean) {
-        GL11.glPushMatrix()
         elements.sortedBy { -it.info.priority }
                 .forEach {
+                    GL11.glPushMatrix()
                     GL11.glTranslated(it.renderX, it.renderY, 0.0)
 
                     if (!it.info.disableScale)
@@ -80,9 +80,8 @@ open class HUD : MinecraftInstance() {
                                 .error("Something went wrong while drawing ${it.name} element in HUD.", ex)
                     }
                     GL11.glScalef(1f, 1f, 1f)
-                    GL11.glTranslated(-it.renderX, -it.renderY, 0.0)
+                    GL11.glPopMatrix()
                 }
-        GL11.glPopMatrix()
     }
 
     /**
