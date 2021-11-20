@@ -18,6 +18,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
+import net.ccbluex.liquidbounce.utils.render.Stencil;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.ccbluex.liquidbounce.value.ListValue;
@@ -89,12 +90,17 @@ public class AutoHypixel extends Module {
         float middleX = sc.getScaledWidth() / 2F;
         String detail = "Sending you to another game in " + dFormat.format((float)timer.hasTimeLeft(delayValue.get()) / 1000F) + "s...";
         float middleWidth = Fonts.font40.getStringWidth(detail) / 2F;
+        float wid = ((float) timer.hasTimeLeft(delayValue.get()) / delayValue.get()) * (5F + middleWidth) * 2F;
 
         posY = AnimationUtils.animate(shouldChangeGame ? 10F : -20F, posY, 0.25F);
         if (!renderValue.get() || posY < -15)
             return;
 
+        Stencil.write(true);
         RenderUtils.drawRoundedRect(middleX - 5F - middleWidth, posY, middleX + 5F + middleWidth, posY + 15F, 3F, 0xA0000000);
+        Stencil.erase(true);
+        RenderUtils.drawRect(middleX - 5F - middleWidth, posY, middleX - 5F - middleWidth + wid, posY + 15F, new Color(180, 10, 10, 70).getRGB());
+        Stencil.dispose();
 
         GlStateManager.resetColor();
         Fonts.fontSFUI40.drawString(detail, middleX - middleWidth - 1F, posY + 4F, -1);
