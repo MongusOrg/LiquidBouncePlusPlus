@@ -131,13 +131,13 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             }
                         }
                     }
-                    "Slide", "Rise" -> module.arrayY = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(yPos.toDouble(), module.arrayY.toDouble(), animationSpeed.get().toDouble()).toFloat()
+                    "Slide", "Rise" -> module.arrayY = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(yPos.toDouble(), module.arrayY.toDouble(), animationSpeed.get().toDouble() * 0.1 * delta.toDouble()).toFloat()
                     "Astolfo" -> {
                         if (module.arrayY < yPos) {
-                            module.arrayY += animationSpeed.get() / 2F * RenderUtils.deltaTime
+                            module.arrayY += animationSpeed.get() / 2F * delta
                             module.arrayY = Math.min(yPos, module.arrayY)
                         } else {
-                            module.arrayY -= animationSpeed.get() / 2F * RenderUtils.deltaTime
+                            module.arrayY -= animationSpeed.get() / 2F * delta
                             module.arrayY = Math.max(module.arrayY, yPos)
                         }
                     }
@@ -160,11 +160,11 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 "Astolfo" -> {
                     if (module.state) {
                         if (module.slide < width) {
-                            module.slide += animationSpeed.get() * RenderUtils.deltaTime
+                            module.slide += animationSpeed.get() * delta
                             module.slideStep = delta / 1F
                         }
                     } else if (module.slide > 0) {
-                        module.slide -= animationSpeed.get() * RenderUtils.deltaTime
+                        module.slide -= animationSpeed.get() * delta
                         module.slideStep = 0F
                     }
 
@@ -173,11 +173,11 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 "Slide" -> {
                     if (module.state) {
                         if (module.slide < width) {
-                            module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble()).toFloat()
+                            module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble() * 0.1 * delta.toDouble()).toFloat()
                             module.slideStep = delta / 1F
                         }
                     } else if (module.slide > 0) {
-                        module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(-width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble()).toFloat()
+                        module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(-width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble() * 0.1 * delta.toDouble()).toFloat()
                         module.slideStep = 0F
                     }
                 }
