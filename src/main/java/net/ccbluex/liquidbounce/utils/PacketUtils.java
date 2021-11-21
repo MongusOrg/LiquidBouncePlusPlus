@@ -57,18 +57,17 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
             inBound = outBound = 0;
             packetTimer.reset();
         }
-        if (!ServerUtils.isOnHypixel()) {
-            // reset all vl
-            wdVL = transCount = 0;
+        if (mc.thePlayer == null || mc.theWorld == null) {
+            //reset all checks
+            wdVL = 0;
+            transCount = 0;
             wdTimer.reset();
-        } else {
-            if (wdTimer.hasTimePassed(100L)) {
-                wdVL += (transCount > 1) ? 1 : -1;
-                transCount = 0;
-                if (wdVL > 10) wdVL = 10;
-                if (wdVL < 0) wdVL = 0;
-                wdTimer.reset();
-            }
+        } else if (wdTimer.hasTimePassed(100L)) {
+            wdVL += (transCount > 1) ? 1 : -1;
+            transCount = 0;
+            if (wdVL > 10) wdVL = 10;
+            if (wdVL < 0) wdVL = 0;
+            wdTimer.reset();
         }
     }
 
