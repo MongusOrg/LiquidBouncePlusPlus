@@ -83,7 +83,7 @@ public class AntiBot extends Module {
         if (removeFromWorld.get() && mc.thePlayer.ticksExisted % removeIntervalValue.get() == 0){ 
             List<EntityPlayer> ent = new ArrayList<>();
             for (EntityPlayer entity : mc.theWorld.playerEntities) {
-                if (isBot(entity))
+                if (entity != mc.thePlayer && isBot(entity))
                     ent.add(entity);
             }
             if (ent.isEmpty()) return;

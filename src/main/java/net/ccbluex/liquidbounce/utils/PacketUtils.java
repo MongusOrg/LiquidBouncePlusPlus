@@ -25,7 +25,8 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
 
     private static ArrayList<Packet<INetHandlerPlayServer>> packets = new ArrayList<Packet<INetHandlerPlayServer>>();
 
-    private static MSTimer packetTimer, wdTimer = new MSTimer();
+    private static MSTimer packetTimer = new MSTimer();
+    private static MSTimer wdTimer = new MSTimer();
 
     private static int transCount = 0;
     private static int wdVL = 0;
@@ -62,8 +63,8 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
             wdVL = 0;
             transCount = 0;
             wdTimer.reset();
-        } else if (wdTimer.hasTimePassed(100L)) {
-            wdVL += (transCount > 1) ? 1 : -1;
+        } else if (wdTimer.hasTimePassed(50L)) {
+            wdVL += (transCount > 0) ? 1 : -1;
             transCount = 0;
             if (wdVL > 10) wdVL = 10;
             if (wdVL < 0) wdVL = 0;
