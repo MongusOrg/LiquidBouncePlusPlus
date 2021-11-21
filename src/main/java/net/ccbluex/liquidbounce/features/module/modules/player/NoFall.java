@@ -76,10 +76,6 @@ public class NoFall extends Module {
                 if (mc.thePlayer.fallDistance > 2F)
                     PacketUtils.sendPacketNoEvent(new C03PacketPlayer(true));
                 break;
-            case "newpacket":
-                if (mc.thePlayer != null && mc.thePlayer.fallDistance > 2.5F && mc.thePlayer.ticksExisted % 2 == 0) 
-                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(playerPacket.x, playerPacket.y, playerPacket.z, true));
-                break;
             case "cubecraft":
                 if (mc.thePlayer.fallDistance > 2F) {
                     mc.thePlayer.onGround = true;
@@ -185,6 +181,9 @@ public class NoFall extends Module {
                 playerPacket.onGround = true;
                 shouldSpoof = false;
             }
+
+            if (mode.equalsIgnoreCase("NewPacket") && mc.thePlayer != null && mc.thePlayer.fallDistance > 2.5F && mc.thePlayer.ticksExisted % 2 == 0) 
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(playerPacket.x, playerPacket.y, playerPacket.z, true));
         }
     }
 
