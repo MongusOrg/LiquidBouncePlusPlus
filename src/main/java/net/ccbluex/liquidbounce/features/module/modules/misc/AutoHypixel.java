@@ -94,14 +94,14 @@ public class AutoHypixel extends Module {
         float strength = MathHelper.clamp_float((float) timer.hasTimeLeft(delayValue.get()) / delayValue.get(), 0F, 1F);
         float wid = strength * (5F + middleWidth) * 2F;
 
-        posY = AnimationUtils.animate(shouldChangeGame ? 10F : -20F, posY, 0.25F);
+        posY = AnimationUtils.animate(shouldChangeGame ? 10F : -20F, posY, 0.25F * 0.05F * RenderUtils.deltaTime);
         if (!renderValue.get() || posY < -15)
             return;
 
         Stencil.write(true);
         RenderUtils.drawRoundedRect(middleX - 5F - middleWidth, posY, middleX + 5F + middleWidth, posY + 15F, 3F, 0xA0000000);
         Stencil.erase(true);
-        RenderUtils.drawRect(middleX - 5F - middleWidth, posY, middleX - 5F - middleWidth + wid, posY + 15F, new Color(0.9F, 0.1F, 0.1F, 0.4F * strength).getRGB());
+        RenderUtils.drawRect(middleX - 5F - middleWidth, posY, middleX - 5F - middleWidth + wid, posY + 15F, new Color(0.9F, 0.12F, 0.12F).getRGB());
         Stencil.dispose();
 
         GlStateManager.resetColor();

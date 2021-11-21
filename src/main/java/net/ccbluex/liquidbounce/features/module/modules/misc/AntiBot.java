@@ -76,6 +76,7 @@ public class AntiBot extends Module {
         super.onDisable();
     }
 
+    @EventTarget
     public void onUpdate(final UpdateEvent event) {
         if(mc.thePlayer == null || mc.theWorld == null)
             return;
