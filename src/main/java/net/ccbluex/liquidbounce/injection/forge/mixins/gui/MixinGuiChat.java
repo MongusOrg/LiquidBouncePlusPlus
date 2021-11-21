@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
+import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
@@ -62,10 +63,10 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
     private void updateScreen(CallbackInfo callbackInfo) {
         final int delta = RenderUtils.deltaTime;
 
-        if (fade < 14) fade += 0.4F * delta;
+        if (fade < 14) fade = AnimationUtils.animate(14F, fade, 0.025F * delta);
         if (fade > 14) fade = 14;
 
-        if (yPosOfInputField > height - 12) yPosOfInputField -= 0.4F * delta;
+        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.025F * delta);
         if (yPosOfInputField < height - 12) yPosOfInputField = height - 12;
 
         inputField.yPosition = (int) yPosOfInputField;
