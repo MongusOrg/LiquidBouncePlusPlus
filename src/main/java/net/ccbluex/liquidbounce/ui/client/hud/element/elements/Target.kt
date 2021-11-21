@@ -61,9 +61,7 @@ class Target : Element() {
     private val tSlideAnim = BoolValue("TSlide-Animation", true)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseShadow = BoolValue("Rise-Shadow", true)
-    private val riseFastShadow = BoolValue("Rise-FastShadow", true)
     private val shadowStrengthValue = IntegerValue("Rise-Shadow-Strength", 4, 1, 40)
-    private val shadowQualityValue = FloatValue("Rise-Shadow-Quality", 1F, 0.1F, 10F)
     private val riseParticle = BoolValue("Rise-Particle", true)
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
     private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
@@ -282,10 +280,7 @@ class Target : Element() {
                     }
 
                     if (riseShadow.get()) 
-                        if (riseFastShadow.get())
-                            UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
-                        else
-                            UiUtils.shadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), shadowQualityValue.get(), bgColor)
+                        UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
                     else
                         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
 

@@ -241,42 +241,6 @@ public class UiUtils
 		fastShadowRoundedRect(x, y, x2, y2, rad, width, color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
 	}
 
-	/*
-	 * shit algorthm
-	 */
-	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, float r, float g, float b, float al) {
-		width *= 2F;
-		Stencil.write(true);
-		RenderUtils.drawRoundedRect(x, y, x2, y2, rad, new Color(r, g, b, al).getRGB());
-		Stencil.erase(false); // only render the thing outside of the stencil mask.
-		for (float yOff = 0; yOff <= width; yOff += incre) {
-			float alp = getAlphaFading(yOff * 4F / width);
-			float h = -width / 2F + yOff;
-			for (float xOff = 0; xOff <= width; xOff += incre) {
-				float alp2 = getAlphaFading(xOff * 4F / width);
-				float alpha = alp * alp2;
-				float pos = -width / 2F + xOff;
-				final Color col = new Color(r, g, b, alpha);
-				RenderUtils.drawRoundedRect(x + pos, y + h, x2 + pos, y2 + h, rad, col.getRGB());
-			}
-		}
-		Stencil.dispose();
-	}
-
-	private static float getAlphaFading(float progress) { // best method wtf!
-		if (progress <= 1F)
-			return clamp(progress, 0F, 1F);
-		else if (progress <= 2F) 
-			return clamp(2F - progress, 0F, 1F);
-		else if (progress >= 3F && progress <= 4F) 
-			return clamp(4F - progress, 0F, 1F);
-		else return 1F;
-	}
-
-	public static void shadowRoundedRect(float x, float y, float x2, float y2, float rad, float width, float incre, Color color) {
-		shadowRoundedRect(x, y, x2, y2, rad, width, incre, color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
-	}
-
 	 public static void drawRect(double x, double y, double x2, double y2, int color) {
 		 glEnable(GL_BLEND);
 		 glDisable(GL_TEXTURE_2D);

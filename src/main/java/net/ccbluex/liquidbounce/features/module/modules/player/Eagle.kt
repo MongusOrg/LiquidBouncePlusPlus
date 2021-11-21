@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.features.module.modules.player
 
 import net.ccbluex.liquidbounce.event.EventTarget
+import net.ccbluex.liquidbounce.event.UpdateEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
@@ -17,11 +18,10 @@ import net.minecraft.util.BlockPos
 class Eagle : Module() {
 
     @EventTarget
-    fun onUpdate() {
+    fun onUpdate(event: UpdateEvent) {
         val shouldEagle = mc.theWorld.getBlockState(
                 BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1.0, mc.thePlayer.posZ)).block === Blocks.air
         mc.gameSettings.keyBindSneak.pressed = shouldEagle
-
     }
 
     override fun onDisable() {
