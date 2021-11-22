@@ -68,7 +68,7 @@ public abstract class MixinGuiInGame {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F)
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
 
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState() && hud.getBlackHotbarValue().get()) {
             EntityPlayer entityPlayer = (EntityPlayer) Minecraft.getMinecraft().getRenderViewEntity();
