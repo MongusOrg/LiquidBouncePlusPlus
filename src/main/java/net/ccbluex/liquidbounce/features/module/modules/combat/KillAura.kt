@@ -94,6 +94,8 @@ class KillAura : Module() {
     private val ncpPitch = FloatValue("NCP-Pitch", 45f, -90f, 90f, { rotations.get().equals("ncp", true) && ncpCustomPitch.get() })
     private val roundStrength = IntegerValue("NCP-RoundStrength", 9, 1, 18, { rotations.get().equals("ncp", true) && roundNCPValue.get() })
 
+    private val noHitCheck = BoolValue("NoHitCheck", false)
+
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
 
@@ -796,7 +798,7 @@ class KillAura : Module() {
      */
     private fun updateHitable() {
         // Disable hitable check if turn speed is zero
-        if(maxTurnSpeed.get() <= 0F || rotations.get().equals("NCP", true)) {
+        if(maxTurnSpeed.get() <= 0F || noHitCheck.get()) {
             hitable = true
             return
         }

@@ -226,6 +226,7 @@ class GameFontRenderer(font: Font) : FontRenderer(Minecraft.getMinecraft().gameS
     }
 
     override fun getCharWidth(character: Char) = getStringWidth(character.toString())
+    override fun getCharWidthFloat(character: Char): Float = getStringWidth(character.toString()).toFloat() // when the text field is sus
 
     override fun onResourceManagerReload(resourceManager: IResourceManager) {}
 
