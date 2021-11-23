@@ -67,9 +67,6 @@ public abstract class MixinGuiInGame {
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
-
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState() && hud.getBlackHotbarValue().get()) {
             EntityPlayer entityPlayer = (EntityPlayer) Minecraft.getMinecraft().getRenderViewEntity();
 
@@ -104,44 +101,20 @@ public abstract class MixinGuiInGame {
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
-        GlStateManager.popMatrix();
-        
         if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();
         }
     }
 
-    @Inject(method = "renderPlayerStats", at = @At("HEAD"), cancellable = true) 
-    private void injectRenderStats(ScaledResolution sr, CallbackInfo callbackInfo) {
+    @Inject(method = "renderGameOverlay", at = @At("HEAD"), cancellable = true) 
+    private void injectChatOffset(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderPlayerStats", at = @At("RETURN")) 
-    private void injectRenderStatsEnd(ScaledResolution sr, CallbackInfo callbackInfo) {
-        GlStateManager.popMatrix();
-    }
-    
-    @Inject(method = "renderHorseJumpBar", at = @At("HEAD"), cancellable = true) 
-    private void injectHorseJumpBar(ScaledResolution sr, CallbackInfo callbackInfo) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
-    }
-
-    @Inject(method = "renderHorseJumpBar", at = @At("RETURN")) 
-    private void injectHorseJumpBarEnd(ScaledResolution sr, CallbackInfo callbackInfo) {
-        GlStateManager.popMatrix();
-    }
-
-    @Inject(method = "renderExpBar", at = @At("HEAD"), cancellable = true) 
-    private void injectRenderExpBar(ScaledResolution sr, int level, CallbackInfo callbackInfo) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
-    }
-
-    @Inject(method = "renderExpBar", at = @At("RETURN")) 
-    private void injectRenderExpBarEnd(ScaledResolution sr, int level, CallbackInfo callbackInfo) {
+    @Inject(method = "renderGameOverlay", at = @At("RETURN")) 
+    private void injectChatOffsetEnd(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.popMatrix();
     }
 
