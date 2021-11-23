@@ -17,6 +17,7 @@ import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
+import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -39,6 +40,8 @@ public abstract class MixinGuiInGame {
 
     @Shadow
     protected abstract void renderHotbarItem(int index, int xPos, int yPos, float partialTicks, EntityPlayer player);
+
+    @Shadow private GuiPlayerTabOverlay overlayPlayerList;
 
     @Inject(method = "showCrosshair", at = @At("HEAD"), cancellable = true) 
     private void injectCrosshair(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
