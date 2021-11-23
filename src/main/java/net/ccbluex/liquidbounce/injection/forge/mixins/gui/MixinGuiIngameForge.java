@@ -145,7 +145,7 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
         GlStateManager.popMatrix();
     }
 
-    @Overwrite
+    @Overwrite(remap = false)
     protected void renderPlayerList(int width, int height) {
         final Minecraft mc = Minecraft.getMinecraft();
         ScoreObjective scoreobjective = mc.theWorld.getScoreboard().getObjectiveInDisplaySlot(0);
