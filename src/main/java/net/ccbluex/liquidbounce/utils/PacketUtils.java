@@ -12,7 +12,7 @@ import net.ccbluex.liquidbounce.event.TickEvent;
 
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayServer;
-import net.minecraft.network.play.client.C0FPacketConfirmTransaction;
+import net.minecraft.network.play.server.S32PacketConfirmTransaction;
 
 import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 
@@ -44,9 +44,9 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
         if (event.getPacket().getClass().getSimpleName().startsWith("C")) outBound++;
         else if (event.getPacket().getClass().getSimpleName().startsWith("S")) inBound++;
 
-        if (event.getPacket() instanceof C0FPacketConfirmTransaction) 
+        if (event.getPacket() instanceof S32PacketConfirmTransaction) 
         {
-            if (!isInventoryAction(((C0FPacketConfirmTransaction) event.getPacket()).uid)) 
+            if (!isInventoryAction(((S32PacketConfirmTransaction) event.getPacket()).getActionNumber())) 
                 transCount++;
         }
     }
