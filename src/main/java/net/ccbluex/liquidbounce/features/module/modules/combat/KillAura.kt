@@ -627,6 +627,7 @@ class KillAura : Module() {
             spinYaw = MathHelper.wrapAngleTo180_float(spinYaw)
             val rot = Rotation(spinYaw, 90F)
             RotationUtils.setTargetRotation(rot, 0)
+            return
         }
 
         if (searchTarget != null) {
