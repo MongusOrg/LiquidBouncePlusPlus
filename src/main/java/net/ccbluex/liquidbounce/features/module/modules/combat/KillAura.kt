@@ -88,11 +88,22 @@ class KillAura : Module() {
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
 
     // Modes
-    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "NCP"), "BackTrack")
-    private val roundNCPValue = BoolValue("NCP-Rounded", false, { rotations.get().equals("ncp", true) })
-    private val ncpCustomPitch = BoolValue("NCP-CustomPitch", false, { rotations.get().equals("ncp", true) })
-    private val ncpPitch = FloatValue("NCP-Pitch", 45f, -90f, 90f, { rotations.get().equals("ncp", true) && ncpCustomPitch.get() })
-    private val roundStrength = IntegerValue("NCP-RoundStrength", 9, 1, 18, { rotations.get().equals("ncp", true) && roundNCPValue.get() })
+    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin"), "BackTrack")
+
+    // Spin Speed
+    private val maxSpinSpeed: FloatValue = object : FloatValue("MaxSpinSpeed", 180f, 0f, 180f, { rotations.get().equals("spin", true) }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = minSpinSpeed.get()
+            if (v > newValue) set(v)
+        }
+    }
+
+    private val minSpinSpeed: FloatValue = object : FloatValue("MinSpinSpeed", 180f, 0f, 180f, { rotations.get().equals("spin", true) }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = maxSpinSpeed.get()
+            if (v < newValue) set(v)
+        }
+    }
 
     private val noHitCheck = BoolValue("NoHitCheck", false)
 
@@ -214,6 +225,8 @@ class KillAura : Module() {
     // Fake block status
     var blockingStatus = false
     var verusBlocking = false
+
+    var spinYaw = 0F
 
     // I don't know
     //var focusEntityName = mutableListOf<String>()
@@ -596,6 +609,8 @@ class KillAura : Module() {
             "livingtime" -> targets.sortBy { -it.ticksExisted } // Sort by existence
         }
 
+        var found = false
+
         // Find best target
         for (entity in targets) {
             // Update rotations to current target
@@ -604,7 +619,14 @@ class KillAura : Module() {
 
             // Set target to current entity
             target = entity
-            return
+            found = true
+            break
+        }
+
+        if (rotations.get().equals("spin", true) && found) {
+            spinYaw += RandomUtils.nextFloat(minSpinSpeed.get(), maxSpinSpeed.get())
+            spinYaw = MathHelper.wrapAngleTo180_float(spinYaw)
+            RotationUtils.setTargetRotation(spinYaw, 90F)
         }
 
         if (searchTarget != null) {
@@ -652,6 +674,9 @@ class KillAura : Module() {
      * Attack [entity]
      */
     private fun attackEntity(entity: EntityLivingBase) {
+        if (rotations.get().equals("spin", true) && !updateRotations(entity))
+            return
+        
         // Stop blocking
         if (mc.thePlayer.isBlocking || blockingStatus) {
             stopBlocking()
@@ -736,7 +761,7 @@ class KillAura : Module() {
 
             return true
         }
-        if (rotations.get().equals("NCP", ignoreCase = true)){
+        if (rotations.get().equals("Spin", ignoreCase = true)){
             if (maxTurnSpeed.get() <= 0F)
                 return true
 
@@ -756,18 +781,10 @@ class KillAura : Module() {
                     maxRange
             ) ?: return false
 
-            val limitedRotation = rotation
-
-            if (roundNCPValue.get())
-                rotation.yaw = RotationUtils.roundRotation(rotation.yaw, roundStrength.get() * 5)
-
-            if (ncpCustomPitch.get())
-                rotation.pitch = ncpPitch.get()
-
             if (silentRotationValue.get())
-                RotationUtils.setTargetRotation(limitedRotation, 0)
+                RotationUtils.setTargetRotation(rotation, 0)
             else
-                limitedRotation.toPlayer(mc.thePlayer!!)
+                rotation.toPlayer(mc.thePlayer!!)
 
             return true
         }
