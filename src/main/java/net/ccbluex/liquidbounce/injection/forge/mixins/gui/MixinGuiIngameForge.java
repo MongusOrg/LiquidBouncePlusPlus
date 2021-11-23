@@ -20,13 +20,13 @@ import org.lwjgl.opengl.GL11;
 @Mixin(GuiIngameForge.class)
 public class MixinGuiIngameForge {
 
-    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderBossHealth()V", shift = At.Shift.AFTER, remap = false))
+    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderBossHealth()V", shift = At.Shift.AFTER, remap = false), remap = false)
     private void renderOverlayBegin(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderTitle(Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Float;)V", shift = At.Shift.AFTER))
+    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderTitle(Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Float;)V", shift = At.Shift.AFTER), remap = false)
     private void renderOverlayEnd(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.popMatrix();
     }
