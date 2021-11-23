@@ -29,7 +29,7 @@ public abstract class MixinGuiIngameForge {
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderSleepFade(I;I;)V", shift = At.Shift.BEFORE))
+    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderSleepFade(I;)V", shift = At.Shift.BEFORE))
     private void restoreYOffset(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.popMatrix();
     }

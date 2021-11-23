@@ -136,6 +136,7 @@
     "gui.MixinGuiDownloadTerrain",
     "gui.MixinGuiEditSign",
     "gui.MixinGuiInGame",
+    "gui.MixinGuiIngameForge",
     "gui.MixinGuiIngameMenu",
     "gui.MixinGuiKeyBindingList",
     "gui.MixinGuiMultiplayer",
