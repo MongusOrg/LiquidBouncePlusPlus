@@ -94,7 +94,7 @@ class GuiTheAltening(private val prevGui: GuiAltManager) : GuiScreen() {
         // Draw text
         drawCenteredString(Fonts.font40, "§7Token:", width / 2 - 84, 40, 0xffffff)
         drawCenteredString(Fonts.font40, "§7API-Key:", width / 2 - 78, 105, 0xffffff)
-        drawCenteredString(Fonts.font40, "§7Use coupon code 'liquidbounce' for 20% off!", width / 2, height - 65, 0xffffff)
+        //drawCenteredString(Fonts.font40, "§7Use coupon code 'liquidbounce' for 20% off!", width / 2, height - 65, 0xffffff)
         super.drawScreen(mouseX, mouseY, partialTicks)
     }
 

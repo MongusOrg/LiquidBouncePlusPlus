@@ -107,13 +107,13 @@ public abstract class MixinGuiInGame {
         }
     }
 
-    @Inject(method = "renderGameOverlay", at = @At("HEAD"), cancellable = true) 
+    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;isSpectator()Ljava/lang/Boolean;", ordinal = 0, shift = At.Shift.BEFORE)) 
     private void injectChatOffset(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderGameOverlay", at = @At("RETURN")) 
+    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;isDemo()Ljava/lang/Boolean;", shift = At.Shift.BEFORE)) 
     private void injectChatOffsetEnd(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.popMatrix();
     }
