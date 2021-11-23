@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.*;
 import net.minecraft.client.Minecraft;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
+import net.ccbluex.liquidbounce.utils.render.EaseUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -155,6 +156,7 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
         if (!mc.isIntegratedServerRunning() || handler.getPlayerInfoMap().size() > 1 || scoreobjective != null)
         {
             xScale = AnimationUtils.animate((mc.gameSettings.keyBindPlayerList.isKeyDown() ? 1F : 0F), xScale, 0.0025F * RenderUtils.deltaTime);
+            float rescaled = (float) EaseUtils.easeInQuart(xScale);
             boolean displayable = xScale > 0F;
             this.overlayPlayerList.updatePlayerList(displayable);
             if (!displayable || pre(PLAYER_LIST)) return;

@@ -63,7 +63,7 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
             wdVL = 0;
             transCount = 0;
             wdTimer.reset();
-        } else if (wdTimer.hasTimePassed(120L)) { // watchdog active when the transaction poll rate reaches about 100ms/packet.
+        } else if (wdTimer.hasTimePassed(100L)) { // watchdog active when the transaction poll rate reaches about 100ms/packet.
             wdVL += (transCount > 0) ? 1 : -1;
             transCount = 0;
             if (wdVL > 10) wdVL = 10;

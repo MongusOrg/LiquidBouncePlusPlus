@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
+import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.GlStateManager
@@ -31,6 +32,7 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
     override fun drawElement(): Border {
         if (mc.playerController.isNotCreative) {
             GL11.glPushMatrix()
+            GL11.glTranslatef(0F, -RenderUtils.yPosOffset, 0F)
 
             val renderItem = mc.renderItem
             val isInsideWater = mc.thePlayer.isInsideOfMaterial(Material.water)
