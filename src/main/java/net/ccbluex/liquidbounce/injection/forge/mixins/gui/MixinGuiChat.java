@@ -71,7 +71,7 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
 
         inputField.yPosition = (int) yPosOfInputField;
 
-        RenderUtils.yPosOffset = fade * 2.92F;
+        RenderUtils.yPosOffset = fade * (16F / 14F);
     }
 
     @Inject(method = "autocompletePlayerNames", at = @At("HEAD"))
