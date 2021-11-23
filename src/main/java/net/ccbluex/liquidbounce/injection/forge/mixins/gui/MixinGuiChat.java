@@ -63,15 +63,15 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
     private void updateScreen(CallbackInfo callbackInfo) {
         final int delta = RenderUtils.deltaTime;
 
-        if (fade < 14) fade = AnimationUtils.animate(14F, fade, 0.0195F * delta);
+        if (fade < 14) fade = AnimationUtils.animate(14F, fade, 0.015F * delta);
         if (fade > 14) fade = 14;
 
-        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.0195F * delta);
+        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.015F * delta);
         if (yPosOfInputField < height - 12) yPosOfInputField = height - 12;
 
         inputField.yPosition = (int) yPosOfInputField;
 
-        RenderUtils.yPosOffset = fade * 1.14F;
+        RenderUtils.yPosOffset = fade * 2.92F;
     }
 
     @Inject(method = "autocompletePlayerNames", at = @At("HEAD"))
