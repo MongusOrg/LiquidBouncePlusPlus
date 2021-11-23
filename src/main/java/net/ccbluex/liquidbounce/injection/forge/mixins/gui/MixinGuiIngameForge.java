@@ -23,14 +23,80 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public abstract class MixinGuiIngameForge {
 
-    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiIngame;renderBossHealth()V", shift = At.Shift.AFTER))
-    private void injectYOffset(float partialTicks, CallbackInfo callbackInfo) {
+    @Inject(method = "renderHealth", at = @At("HEAD"))
+    public void renderHealthBegin(int width, int height, CallbackInfo callbackInfo) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderSleepFade(Ljava/lang/Integer;Ljava/lang/Integer;)V", shift = At.Shift.BEFORE))
-    private void restoreYOffset(float partialTicks, CallbackInfo callbackInfo) {
+    @Inject(method = "renderHealth", at = @At("RETURN"))
+    public void renderHealthEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
+    @Inject(method = "renderFood", at = @At("HEAD"))
+    public void renderFoodBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderFood", at = @At("RETURN"))
+    public void renderFoodEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
+    @Inject(method = "renderExperience", at = @At("HEAD"))
+    protected void renderExpBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderExperience", at = @At("RETURN"))
+    protected void renderExpEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
+    @Inject(method = "renderArmor", at = @At("HEAD"))
+    protected void renderArmorBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderArmor", at = @At("RETURN"))
+    protected void renderArmorEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
+    @Inject(method = "renderHealthMount", at = @At("HEAD"))
+    protected void renderHealthMountBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderHealthMount", at = @At("RETURN"))
+    protected void renderHealthMountEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
+    @Inject(method = "renderAir", at = @At("HEAD"))
+    protected void renderAirBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderAir", at = @At("RETURN"))
+    protected void renderAirEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
+    @Inject(method = "renderJumpBar", at = @At("HEAD"))
+    protected void renderJumpBarBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderJumpBar", at = @At("RETURN"))
+    protected void renderJumpBarEnd(int width, int height, CallbackInfo callbackInfo) {
         GlStateManager.popMatrix();
     }
 
