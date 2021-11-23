@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -160,7 +161,7 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
             GlStateManager.pushMatrix();
             GlStateManager.translate(width / 2F * (1F - xScale), 0F, 0F);
             GlStateManager.scale(xScale, xScale, xScale);
-            this.overlayPlayerList.renderPlayerlist(width, this.mc.theWorld.getScoreboard(), scoreobjective);
+            this.overlayPlayerList.renderPlayerlist(width, mc.theWorld.getScoreboard(), scoreobjective);
             GlStateManager.popMatrix();
             post(PLAYER_LIST);
         }
