@@ -130,7 +130,6 @@ class KillAura : Module() {
 
     // Bypass
     private val aacValue = BoolValue("AAC", false)
-    private val aacPitchValue = IntegerValue("AAC-Pitch", 15, -90, 90)
 
     // Turn Speed
     private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f) {
@@ -626,7 +625,8 @@ class KillAura : Module() {
         if (rotations.get().equals("spin", true) && found) {
             spinYaw += RandomUtils.nextFloat(minSpinSpeed.get(), maxSpinSpeed.get())
             spinYaw = MathHelper.wrapAngleTo180_float(spinYaw)
-            RotationUtils.setTargetRotation(spinYaw, 90F)
+            val rot = Rotation(spinYaw, 90F)
+            RotationUtils.setTargetRotation(rot, 0)
         }
 
         if (searchTarget != null) {
@@ -755,7 +755,7 @@ class KillAura : Module() {
                     (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
 
             if (silentRotationValue.get())
-                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) aacPitchValue.get() else 0)
+                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 15 else 0)
             else
                 limitedRotation.toPlayer(mc.thePlayer!!)
 
@@ -782,7 +782,7 @@ class KillAura : Module() {
             ) ?: return false
 
             if (silentRotationValue.get())
-                RotationUtils.setTargetRotation(rotation, 0)
+                RotationUtils.setTargetRotation(rotation, 1)
             else
                 rotation.toPlayer(mc.thePlayer!!)
 
@@ -801,7 +801,7 @@ class KillAura : Module() {
                             mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),maxRange), (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
 
             if (silentRotationValue.get()) {
-                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) aacPitchValue.get() else 0)
+                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 15 else 0)
             }else {
                 limitedRotation.toPlayer(mc.thePlayer!!)
                 return true
