@@ -41,7 +41,7 @@ public abstract class MixinGuiInGame {
     @Shadow
     protected abstract void renderHotbarItem(int index, int xPos, int yPos, float partialTicks, EntityPlayer player);
 
-    @Shadow private GuiPlayerTabOverlay overlayPlayerList;
+    @Shadow public GuiPlayerTabOverlay overlayPlayerList;
 
     @Inject(method = "showCrosshair", at = @At("HEAD"), cancellable = true) 
     private void injectCrosshair(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {

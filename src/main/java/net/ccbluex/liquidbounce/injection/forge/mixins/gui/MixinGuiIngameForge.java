@@ -6,8 +6,8 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import static net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType.*;
+import net.minecraft.client.Minecraft;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
-import net.ccbluex.liquidbounce.utils.MinecraftInstance;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -17,6 +17,7 @@ import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,13 +25,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.lwjgl.opengl.GL11;
 
 @Mixin(GuiIngameForge.class)
-public abstract class MixinGuiIngameForge extends MixinGuiInGame implements MinecraftInstance {
+public abstract class MixinGuiIngameForge extends MixinGuiInGame {
 
     @Shadow(remap = false)
-    private abstract boolean pre(ElementType type);
+    public abstract boolean pre(ElementType type);
 
     @Shadow(remap = false)
-    private abstract void post(ElementType type);
+    public abstract void post(ElementType type);
 
     public float xScale = 0F;
 
@@ -146,7 +147,8 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame implements Mine
 
     @Overwrite
     protected void renderPlayerList(int width, int height) {
-        ScoreObjective scoreobjective = this.mc.theWorld.getScoreboard().getObjectiveInDisplaySlot(0);
+        final Minecraft mc = Minecraft.getMinecraft();
+        ScoreObjective scoreobjective = mc.theWorld.getScoreboard().getObjectiveInDisplaySlot(0);
         NetHandlerPlayClient handler = mc.thePlayer.sendQueue;
 
         if (!mc.isIntegratedServerRunning() || handler.getPlayerInfoMap().size() > 1 || scoreobjective != null)
