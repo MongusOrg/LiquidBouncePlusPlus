@@ -115,11 +115,33 @@ public abstract class MixinGuiInGame {
     @Inject(method = "renderPlayerStats", at = @At("HEAD"), cancellable = true) 
     private void injectRenderStats(ScaledResolution sr, CallbackInfo callbackInfo) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, -RenderUtils.yPosOffset, 0);
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
     @Inject(method = "renderPlayerStats", at = @At("RETURN")) 
     private void injectRenderStatsEnd(ScaledResolution sr, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+    
+    @Inject(method = "renderHorseJumpBar", at = @At("HEAD"), cancellable = true) 
+    private void injectHorseJumpBar(ScaledResolution sr, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderHorseJumpBar", at = @At("RETURN")) 
+    private void injectHorseJumpBarEnd(ScaledResolution sr, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
+    @Inject(method = "renderExpBar", at = @At("HEAD"), cancellable = true) 
+    private void injectRenderExpBar(ScaledResolution sr, int level, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderExpBar", at = @At("RETURN")) 
+    private void injectRenderExpBarEnd(ScaledResolution sr, int level, CallbackInfo callbackInfo) {
         GlStateManager.popMatrix();
     }
 
