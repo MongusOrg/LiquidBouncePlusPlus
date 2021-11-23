@@ -112,6 +112,17 @@ public abstract class MixinGuiInGame {
         }
     }
 
+    @Inject(method = "renderPlayerStats", at = @At("HEAD"), cancellable = true) 
+    private void injectRenderStats(ScaledResolution sr, CallbackInfo callbackInfo) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, -RenderUtils.yPosOffset, 0);
+    }
+
+    @Inject(method = "renderPlayerStats", at = @At("RETURN")) 
+    private void injectRenderStatsEnd(ScaledResolution sr, CallbackInfo callbackInfo) {
+        GlStateManager.popMatrix();
+    }
+
     @Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)
     private void renderPumpkinOverlay(final CallbackInfo callbackInfo) {
         final AntiBlind antiBlind = (AntiBlind) LiquidBounce.moduleManager.getModule(AntiBlind.class);

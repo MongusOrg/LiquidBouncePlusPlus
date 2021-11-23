@@ -136,4 +136,9 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
         if (ichatcomponent != null)
             this.handleComponentHover(ichatcomponent, mouseX, mouseY);
     }
+
+    @Inject(method = "onGuiClosed", at = @At("RETURN"), cancellable = true) 
+    public void injectGuiClosed(CallbackInfo callbackInfo) {
+        RenderUtils.yPosOffset = 0F;
+    }
 }
