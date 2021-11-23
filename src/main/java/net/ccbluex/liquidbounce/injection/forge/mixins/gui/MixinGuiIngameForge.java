@@ -28,10 +28,10 @@ import org.lwjgl.opengl.GL11;
 public abstract class MixinGuiIngameForge extends MixinGuiInGame {
 
     @Shadow(remap = false)
-    public abstract boolean pre(ElementType type);
+    abstract boolean pre(ElementType type);
 
     @Shadow(remap = false)
-    public abstract void post(ElementType type);
+    abstract void post(ElementType type);
 
     public float xScale = 0F;
 
