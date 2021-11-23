@@ -677,9 +677,6 @@ class KillAura : Module() {
      * Attack [entity]
      */
     private fun attackEntity(entity: EntityLivingBase) {
-        if (rotations.get().equals("spin", true) && !updateRotations(entity))
-            return
-        
         // Stop blocking
         if (mc.thePlayer.isBlocking || blockingStatus) {
             stopBlocking()
@@ -690,6 +687,9 @@ class KillAura : Module() {
 
         markEntity = entity
 
+        if (rotations.get().equals("spin", true) && !updateRotations(entity))
+            return
+            
         // Attack target
         if (swingValue.get())
             mc.thePlayer.swingItem()

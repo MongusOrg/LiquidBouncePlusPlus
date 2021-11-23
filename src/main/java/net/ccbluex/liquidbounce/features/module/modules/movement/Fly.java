@@ -76,7 +76,7 @@ public class Fly extends Module {
             "Collide"
     }, "Motion");
 
-    private final FloatValue vanillaSpeedValue = new FloatValue("MotionSpeed", 2F, 0F, 5F, () -> { 
+    private final FloatValue vanillaSpeedValue = new FloatValue("Speed", 2F, 0F, 5F, () -> { 
         return (modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("damage") || modeValue.get().equalsIgnoreCase("pearl") || modeValue.get().equalsIgnoreCase("aac5-vanilla") || modeValue.get().equalsIgnoreCase("bugspartan") || modeValue.get().equalsIgnoreCase("keepalive") || modeValue.get().equalsIgnoreCase("derp"));
     });
     private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
