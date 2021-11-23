@@ -622,11 +622,13 @@ class KillAura : Module() {
             break
         }
 
-        if (rotations.get().equals("spin", true) && found) {
-            spinYaw += RandomUtils.nextFloat(minSpinSpeed.get(), maxSpinSpeed.get())
-            spinYaw = MathHelper.wrapAngleTo180_float(spinYaw)
-            val rot = Rotation(spinYaw, 90F)
-            RotationUtils.setTargetRotation(rot, 0)
+        if (found) {
+            if (rotations.get().equals("spin", true)) {
+                spinYaw += RandomUtils.nextFloat(minSpinSpeed.get(), maxSpinSpeed.get())
+                spinYaw = MathHelper.wrapAngleTo180_float(spinYaw)
+                val rot = Rotation(spinYaw, 90F)
+                RotationUtils.setTargetRotation(rot, 0)
+            }
             return
         }
 

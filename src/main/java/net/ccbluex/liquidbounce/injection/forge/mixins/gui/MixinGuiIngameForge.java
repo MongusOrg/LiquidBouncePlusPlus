@@ -157,7 +157,7 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
         {
             xScale = AnimationUtils.animate((mc.gameSettings.keyBindPlayerList.isKeyDown() ? 100F : 0F), xScale, 0.02F * RenderUtils.deltaTime);
             float rescaled = xScale / 100F;
-            boolean displayable = xScale > 0F;
+            boolean displayable = rescaled > 0F;
             this.overlayPlayerList.updatePlayerList(displayable);
             if (!displayable || pre(PLAYER_LIST)) return;
             GlStateManager.pushMatrix();
