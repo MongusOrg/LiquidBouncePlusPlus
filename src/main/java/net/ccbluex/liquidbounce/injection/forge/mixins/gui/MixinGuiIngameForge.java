@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 @SideOnly(Side.CLIENT)
 public abstract class MixinGuiIngameForge {
 
-    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderBossHealth()V", shift = At.Shift.AFTER))
+    @Inject(method = "renderGameOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiIngame;renderBossHealth()V", shift = At.Shift.AFTER))
     private void injectYOffset(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
