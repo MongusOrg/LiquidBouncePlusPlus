@@ -132,12 +132,8 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             invCleanerButton.enabled = LiquidBounce.moduleManager.getModule(InvCleaner.class).getState();
 
             if(chestStealer.getState() && chestStealer.getSilenceValue().get() && guiScreen instanceof GuiChest) {
-                //mouse focus
-                if (!mc.inGameHasFocus) {
-                    mc.inGameHasFocus = true;
-                    mc.mouseHelper.grabMouseCursor();
-                    mc.leftClickCounter = 10000;
-                }
+                mc.mouseHelper.grabMouseCursor();
+                mc.leftClickCounter = 10000;
                 
                 //hide GUI
                 if (chestStealer.getShowStringValue().get() && !chestStealer.getStillDisplayValue().get()) {
@@ -173,7 +169,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         return false;
     }
 
-    @Inject(method = "drawScreen", at = @At("RETURN"), cancellable = true) 
+    @Inject(method = "drawScreen", at = @At("RETURN")) 
     public void drawScreenReturn(CallbackInfo callbackInfo) {
         final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
         if (animMod != null && animMod.getState())
