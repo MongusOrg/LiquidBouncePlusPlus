@@ -31,6 +31,8 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
     var lastAnimTick: Long = 0L
     var alrUpdate = false
 
+    var lastXPos = 0F
+
     companion object {
         var useParallax = true
     }
@@ -64,7 +66,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         super.drawScreen(mouseX, mouseY, partialTicks)
         
         if (!LiquidBounce.mainMenuPrep) {
-            val animProgress = ((System.currentTimeMillis() - lastAnimTick).toFloat() / 3000F).coerceIn(0F, 1F)
+            val animProgress = ((System.currentTimeMillis() - lastAnimTick).toFloat() / 2000F).coerceIn(0F, 1F)
             RenderUtils.drawRect(0F, 0F, width.toFloat(), height.toFloat(), Color(0F, 0F, 0F, 1F - animProgress))
             if (animProgress >= 1F)
                 LiquidBounce.mainMenuPrep = true    
@@ -145,13 +147,15 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
             else
                 slideX = AnimationUtils.animate(moveX, slideX, 0.5F * (1F - partialTicks))
 
+            lastXPos = moveX
+
             fade += 10F
             if (fade >= 100F) fade = 100F
         } else {
             fade -= 10F
             if (fade <= 0F) fade = 0F
 
-            slideX = AnimationUtils.animate(staticX, slideX, 0.5F * (1F - partialTicks))
+            slideX = AnimationUtils.animate(lastXPos, slideX, 0.5F * (1F - partialTicks))
         }
 
         if (fade != 0F)

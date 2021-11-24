@@ -32,25 +32,15 @@ public class HypixelBoost extends SpeedMode {
     public void onMove(MoveEvent event) {
         final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) return;
+        mc.timer.timerSpeed = 1F;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
-            mc.timer.timerSpeed = 1F;
-            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.jumpTicks == 0) {
-                mc.timer.timerSpeed = 1F;
-                mc.thePlayer.jump();
+            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
                 event.setY(mc.thePlayer.motionY = 0.42);
-                mc.thePlayer.jumpTicks = 10;
-            }
-
-            if (!mc.thePlayer.onGround) {
-                if (mc.thePlayer.motionY < -0.12 && mc.thePlayer.motionY > -0.21)
-                    mc.timer.timerSpeed = 1.66666666667F;
-                else if (mc.thePlayer.motionY < -0.21) 
-                    mc.timer.timerSpeed = 3.13333333F;
-                else if (mc.thePlayer.motionY > 0) 
-                    mc.timer.timerSpeed = 2.66666667F;
             }
             
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
+            mc.timer.timerSpeed = Math.max(1F + (float)mc.thePlayer.motionY * 1.4F, 1F);
+            
+            double moveSpeed = Math.max(MovementUtils.getSpeed(), MovementUtils.getBaseMoveSpeed() * 1.05);
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }

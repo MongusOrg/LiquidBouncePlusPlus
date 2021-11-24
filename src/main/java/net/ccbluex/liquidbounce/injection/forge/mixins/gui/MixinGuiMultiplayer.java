@@ -26,12 +26,12 @@ import java.util.Arrays;
 public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
 
     private GuiButton bungeeCordSpoofButton;
-    private GuiSlider evoPortalSlider;
+    private GuiSlider viaSlider;
 
     @Inject(method = "initGui", at = @At("RETURN"))
     private void initGui(CallbackInfo callbackInfo) {
         buttonList.add(new GuiButton(997, 5, 8, 98, 20, "AntiForge"));
-        buttonList.add(evoPortalSlider = new GuiSlider(1337, width - 104, 8, 98, 20, "Version: ", "", 0, ProtocolCollection.values().length - 1, ProtocolCollection.values().length - 1 - getProtocolIndex(ViaForge.getInstance().getVersion()), false, true,
+        buttonList.add(viaSlider = new GuiSlider(1337, width - 104, 8, 98, 20, "Version: ", "", 0, ProtocolCollection.values().length - 1, ProtocolCollection.values().length - 1 - getProtocolIndex(ViaForge.getInstance().getVersion()), false, true,
                         guiSlider -> {
                             ViaForge.getInstance().setVersion(ProtocolCollection.values()[ProtocolCollection.values().length - 1 - guiSlider.getValueInt()].getVersion().getVersion());
                             this.updatePortalText();
@@ -42,10 +42,10 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
     }
 
     private void updatePortalText() {
-        if (this.evoPortalSlider == null)
+        if (this.viaSlider == null)
             return;
 
-        this.evoPortalSlider.displayString = "Version: " + ProtocolCollection.getProtocolById(ViaForge.getInstance().getVersion()).getName();
+        this.viaSlider.displayString = "Version: " + ProtocolCollection.getProtocolById(ViaForge.getInstance().getVersion()).getName();
     }
 
     private int getProtocolIndex(int id) {

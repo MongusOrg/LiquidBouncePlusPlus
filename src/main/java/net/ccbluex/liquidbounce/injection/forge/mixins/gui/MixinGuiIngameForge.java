@@ -155,7 +155,7 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
 
         if (!mc.isIntegratedServerRunning() || handler.getPlayerInfoMap().size() > 1 || scoreobjective != null)
         {
-            xScale = AnimationUtils.animate((mc.gameSettings.keyBindPlayerList.isKeyDown() ? 100F : 0F), xScale, 0.02F * RenderUtils.deltaTime);
+            xScale = AnimationUtils.animate((mc.gameSettings.keyBindPlayerList.isKeyDown() ? 100F : 0F), xScale, 0.0125F * RenderUtils.deltaTime);
             float rescaled = xScale / 100F;
             boolean displayable = rescaled > 0F;
             this.overlayPlayerList.updatePlayerList(displayable);
@@ -163,6 +163,7 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
             GlStateManager.pushMatrix();
             GlStateManager.translate(width / 2F * (1F - rescaled), 0F, 0F);
             GlStateManager.scale(rescaled, rescaled, rescaled);
+            GlStateManager.color(1F, 1F, 1F, rescaled);
             this.overlayPlayerList.renderPlayerlist(width, mc.theWorld.getScoreboard(), scoreobjective);
             GlStateManager.popMatrix();
             post(PLAYER_LIST);
