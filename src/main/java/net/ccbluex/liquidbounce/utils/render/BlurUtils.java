@@ -184,7 +184,7 @@ public class BlurUtils {
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
     }*/
 
-    public static void preCustomBlur(float blurStrength, float x, float y, float x2, float y2) {
+    public static void preCustomBlur(float blurStrength, float x, float y, float x2, float y2, boolean renderClipLayer) {
         if (!OpenGlHelper.isFramebufferEnabled()) return;
         
         if (x > x2) {
@@ -224,7 +224,7 @@ public class BlurUtils {
         mc.getFramebuffer().bindFramebuffer(true);
 
         GlStateManager.pushMatrix();
-        Stencil.write(false);
+        Stencil.write(renderClipLayer);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);

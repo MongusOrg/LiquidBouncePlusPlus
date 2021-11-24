@@ -220,7 +220,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         xP = Math.min(xP, -wid)
                     }
 
-                    BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP)
+                    BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP, false)
                     modules.forEachIndexed { index, module ->
                         val xPos = -module.slide - 2
                         RenderUtils.quickDrawRect(
@@ -342,7 +342,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         xP = Math.max(xP, wid)
                     }
 
-                    BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP)
+                    BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP, false)
                     modules.forEachIndexed { index, module ->
                         var displayString = getModName(module)
                         val width = fontRenderer.getStringWidth(displayString)
