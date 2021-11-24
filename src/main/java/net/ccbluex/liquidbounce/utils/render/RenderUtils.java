@@ -322,14 +322,12 @@ public final class RenderUtils extends MinecraftInstance {
         r *= 2.0;
         double x = r;
         double y = 0.0;
-        glDisable(2929);
         glEnable(3042);
         glDisable(3553);
         glBlendFunc(770, 771);
-        glDepthMask(true);
         glEnable(2848);
-        glHint(3154, 4354);
-        glHint(3155, 4354);
+        /*glHint(3154, 4354);
+        glHint(3155, 4354);*/
         glScalef(0.5f, 0.5f, 0.5f);
         GlStateManager.color(0,0,0);
         GlStateManager.resetColor();
@@ -347,10 +345,9 @@ public final class RenderUtils extends MinecraftInstance {
         glScalef(2f, 2f, 2f);
         glEnable(3553);
         glDisable(3042);
-        glEnable(2929);
         glDisable(2848);
-        glHint(3154, 4352);
-        glHint(3155, 4352);
+        /*glHint(3154, 4352);
+        glHint(3155, 4352);*/
         GlStateManager.color(1, 1, 1, 1);
         glPopMatrix();
     }
@@ -395,6 +392,7 @@ public final class RenderUtils extends MinecraftInstance {
         float f5 = (float)(endColor >> 16 & 255) / 255.0F;
         float f6 = (float)(endColor >> 8 & 255) / 255.0F;
         float f7 = (float)(endColor & 255) / 255.0F;
+        GlStateManager.pushMatrix();
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
         GlStateManager.disableAlpha();
@@ -412,6 +410,7 @@ public final class RenderUtils extends MinecraftInstance {
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
+        GlStateManager.popMatrix();
     }
 
     public static void drawGradientSideways(final float left, final float top, final float right, final float bottom, final int col1, final int col2) {

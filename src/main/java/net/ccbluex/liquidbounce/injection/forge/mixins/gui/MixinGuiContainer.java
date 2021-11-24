@@ -19,6 +19,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
@@ -102,7 +103,9 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             || !chestStealer.getStillDisplayValue().get())) 
             RenderUtils.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 
-        if (animMod != null && animMod.getState()) {
+        boolean checkFullSilence = chestStealer.getState() && chestStealer.getSilenceValue().get() && !chestStealer.getStillDisplayValue().get();
+
+        if (animMod != null && animMod.getState() && !checkFullSilence) {
             GL11.glPushMatrix();
             switch (animMod.guiAnimations.get()) {
                 case "Zoom":
@@ -132,14 +135,14 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             invCleanerButton.enabled = LiquidBounce.moduleManager.getModule(InvCleaner.class).getState();
 
             if(chestStealer.getState() && chestStealer.getSilenceValue().get() && guiScreen instanceof GuiChest) {
-                mc.mouseHelper.grabMouseCursor();
-                mc.leftClickCounter = 10000;
+                mc.setIngameFocus();
+                mc.displayGuiScreen(guiScreen);
                 
                 //hide GUI
                 if (chestStealer.getShowStringValue().get() && !chestStealer.getStillDisplayValue().get()) {
                     String tipString = "Stealing... Press Esc to stop.";
                     
-                    mc.fontRendererObj.drawString(tipString,
+                    /*mc.fontRendererObj.drawString(tipString,
                         (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2)-1,
                         (height/2)+30,0,false);
                     mc.fontRendererObj.drawString(tipString,
@@ -150,10 +153,10 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                         (height/2)+30-1,0,false);
                     mc.fontRendererObj.drawString(tipString,
                         (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30+1,0,false);
+                        (height/2)+30+1,0,false);*/
                     mc.fontRendererObj.drawString(tipString,
                         (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30,0xffffffff,false);
+                        (height/2)+30,0xffffffff,true);
                 }
                 
                 if (!chestStealer.getStillDisplayValue().get()) 
@@ -172,7 +175,9 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     @Inject(method = "drawScreen", at = @At("RETURN")) 
     public void drawScreenReturn(CallbackInfo callbackInfo) {
         final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
-        if (animMod != null && animMod.getState())
+        ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
+        boolean checkFullSilence = chestStealer.getState() && chestStealer.getSilenceValue().get() && !chestStealer.getStillDisplayValue().get();
+        if (animMod != null && animMod.getState() && !checkFullSilence)
             GL11.glPopMatrix();
     }
 }
