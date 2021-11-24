@@ -34,12 +34,12 @@ public class HypixelYPort extends SpeedMode {
         if (targetStrafe == null) return;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
-                event.setY(0.095);
+                event.setY(0.08);
             } else if (event.getY() < 0) {
                 mc.timer.timerSpeed = 1.095F;
             }
 
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * 1.0175, MovementUtils.getSpeed());
+            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * 1.01975, MovementUtils.getSpeed());
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }
