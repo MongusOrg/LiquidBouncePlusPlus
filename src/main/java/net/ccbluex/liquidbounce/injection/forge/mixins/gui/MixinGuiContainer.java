@@ -136,7 +136,8 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
             if(chestStealer.getState() && chestStealer.getSilenceValue().get() && guiScreen instanceof GuiChest) {
                 mc.setIngameFocus();
-                mc.displayGuiScreen(guiScreen);
+                //mc.mouseHelper.grabMouseCursor();
+                mc.currentScreen = guiScreen;
                 
                 //hide GUI
                 if (chestStealer.getShowStringValue().get() && !chestStealer.getStillDisplayValue().get()) {
