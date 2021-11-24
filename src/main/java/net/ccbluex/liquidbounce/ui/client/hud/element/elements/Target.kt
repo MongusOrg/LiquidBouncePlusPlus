@@ -184,7 +184,7 @@ class Target : Element() {
                 }
 
                 "Flux" -> {
-                    val width = (26F + Fonts.fontSFUI35.getStringWidth(convertedTarget.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(convertedTarget.health)}")).toFloat() + 10F
+                    val width = (26F + Fonts.fontSFUI40.getStringWidth(convertedTarget.name)).coerceAtLeast(26F + Fonts.fontSFUI35.getStringWidth("Health: ${decimalFormat2.format(convertedTarget.health)}")).toFloat() + 10F
                     RenderUtils.drawRoundedRect(-1F, -1F, 1F + width, 47F, 1F, Color(35, 35, 40, 230).rgb)
                     //RenderUtils.drawBorder(1F, 1F, 26F, 26F, 1F, Color(115, 255, 115).rgb)
                     if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 1, 1, 26, 26)

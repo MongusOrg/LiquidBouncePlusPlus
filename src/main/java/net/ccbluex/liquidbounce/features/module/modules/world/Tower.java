@@ -433,7 +433,8 @@ public class Tower extends Module {
         progress = (float) (System.currentTimeMillis() - lastMS) / 100F;
         if (progress >= 1) progress = 1;
 
-        if (LiquidBounce.moduleManager.getModule(Scaffold.class).getState()) return;
+        final Scaffold scaffold = (Scaffold) LiquidBounce.moduleManager.getModule(Scaffold.class);
+        if (scaffold.getState() && !scaffold.counterDisplayValue.get().equalsIgnoreCase("off")) return;
         String counterMode = counterDisplayValue.get();
         final ScaledResolution scaledResolution = new ScaledResolution(mc);
         final String info = getBlocksAmount() + " blocks";
@@ -454,6 +455,8 @@ public class Tower extends Module {
             RenderUtils.drawRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() / 2 - 39, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() / 2 - 26, 0xA0000000);
 
             if (slot >= 0 && slot < 9 && mc.thePlayer.inventory.mainInventory[slot] != null && mc.thePlayer.inventory.mainInventory[slot].getItem() != null && mc.thePlayer.inventory.mainInventory[slot].getItem() instanceof ItemBlock) {
+                if (blurValue.get())
+                    BlurUtils.blurArea(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() / 2 - 26, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() / 2 - 5, blurStrength.get());
                 RenderUtils.drawRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() / 2 - 26, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() / 2 - 5, 0xA0000000);
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(scaledResolution.getScaledWidth() / 2 - 8, scaledResolution.getScaledHeight() / 2 - 25, scaledResolution.getScaledWidth() / 2 - 8);

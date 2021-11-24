@@ -143,7 +143,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                 if (chestStealer.getShowStringValue().get() && !chestStealer.getStillDisplayValue().get()) {
                     String tipString = "Stealing... Press Esc to stop.";
                     
-                    /*mc.fontRendererObj.drawString(tipString,
+                    mc.fontRendererObj.drawString(tipString,
                         (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2)-1,
                         (height/2)+30,0,false);
                     mc.fontRendererObj.drawString(tipString,
@@ -154,10 +154,10 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                         (height/2)+30-1,0,false);
                     mc.fontRendererObj.drawString(tipString,
                         (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30+1,0,false);*/
+                        (height/2)+30+1,0,false);
                     mc.fontRendererObj.drawString(tipString,
                         (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30,0xffffffff,true);
+                        (height/2)+30,0xffffffff,false);
                 }
                 
                 if (!chestStealer.getStillDisplayValue().get()) 

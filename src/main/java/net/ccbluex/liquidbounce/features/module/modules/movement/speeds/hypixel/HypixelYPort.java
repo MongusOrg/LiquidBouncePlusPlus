@@ -34,7 +34,7 @@ public class HypixelYPort extends SpeedMode {
         if (targetStrafe == null) return;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
-                event.setY(0.195);
+                event.setY(0.095);
             } else if (event.getY() < 0) {
                 mc.timer.timerSpeed = 1.095F;
             }

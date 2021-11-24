@@ -163,7 +163,6 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
             GlStateManager.pushMatrix();
             GlStateManager.translate(width / 2F * (1F - rescaled), 0F, 0F);
             GlStateManager.scale(rescaled, rescaled, rescaled);
-            GlStateManager.color(1F, 1F, 1F, rescaled);
             this.overlayPlayerList.renderPlayerlist(width, mc.theWorld.getScoreboard(), scoreobjective);
             GlStateManager.popMatrix();
             post(PLAYER_LIST);
