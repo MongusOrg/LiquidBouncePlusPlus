@@ -473,7 +473,7 @@ public class Tower extends Module {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glColor4f(0.25F, 0.25F, 0.25F, progress);
+            GL11.glColor4f(0.15F, 0.15F, 0.15F, progress);
             GL11.glBegin(GL11.GL_TRIANGLE_FAN);
             GL11.glVertex2d(scaledResolution.getScaledWidth() / 2 - 3, scaledResolution.getScaledHeight() - 60);
             GL11.glVertex2d(scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() - 57);
@@ -483,7 +483,7 @@ public class Tower extends Module {
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
             //GL11.glPopMatrix();
-            RenderUtils.drawRoundedRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() - 60, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() - 74, 2.5F, new Color(0.25F, 0.25F, 0.25F, progress).getRGB());
+            RenderUtils.drawRoundedRect(scaledResolution.getScaledWidth() / 2 - (infoWidth / 2) - 4, scaledResolution.getScaledHeight() - 60, scaledResolution.getScaledWidth() / 2 + (infoWidth / 2) + 4, scaledResolution.getScaledHeight() - 74, 2F, new Color(0.15F, 0.15F, 0.15F, progress).getRGB());
             GlStateManager.resetColor();
             Fonts.fontSFUI35.drawCenteredString(info, scaledResolution.getScaledWidth() / 2 + 0.1F, scaledResolution.getScaledHeight() - 70, new Color(1F, 1F, 1F, 0.8F * progress).getRGB(), false);
             GlStateManager.translate(0, 14F + (progress * 4F), 0);

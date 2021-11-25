@@ -38,9 +38,9 @@ public class HypixelBoost extends SpeedMode {
                 event.setY(mc.thePlayer.motionY = 0.42);
             }
             
-            mc.timer.timerSpeed = Math.max(1F + (float)mc.thePlayer.motionY * 2F, 1F);
+            mc.timer.timerSpeed = Math.max(1F + (float)mc.thePlayer.motionY * 2.5F, 1F);
             
-            double moveSpeed = Math.max(MovementUtils.getSpeed(), MovementUtils.getBaseMoveSpeed() * 1.025);
+            double moveSpeed = Math.max(MovementUtils.getSpeed(), MovementUtils.getBaseMoveSpeed() * 1.0815);
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }

@@ -683,7 +683,7 @@ public class Scaffold extends Module {
             GL11.glDisable(GL11.GL_TEXTURE_2D);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glColor4f(0.25F, 0.25F, 0.25F, progress);
+            GL11.glColor4f(0.15F, 0.15F, 0.15F, progress);
             GL11.glBegin(GL11.GL_TRIANGLE_FAN);
             GL11.glVertex2d(scaledResolution.getScaledWidth() / 2 - 3, scaledResolution.getScaledHeight() - 60);
             GL11.glVertex2d(scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() - 57);

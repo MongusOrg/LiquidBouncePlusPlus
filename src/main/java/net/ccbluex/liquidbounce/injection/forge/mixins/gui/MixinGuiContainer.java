@@ -44,7 +44,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     @Shadow
     protected int guiTop;
 
-    @Unique
+    //@Unique
     private GuiButton stealButton, chestStealerButton, autoArmorButton, invCleanerButton, killAuraButton;
 
     private float progress = 0F;
@@ -55,12 +55,13 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     public void injectInitGui(CallbackInfo callbackInfo){
         GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
 
-        buttonList.add(killAuraButton = new GuiButton(1024576, 5, 5, 140, 20, "Disable KillAura"));
-        buttonList.add(autoArmorButton = new GuiButton(123321, 5, 25, 140, 20, "Disable AutoArmor"));
-        buttonList.add(invCleanerButton = new GuiButton(321123, 5, 45, 140, 20, "Disable InvCleaner"));
-        buttonList.add(chestStealerButton = new GuiButton(727, 5, 65, 140, 20, "Disable Stealer"));
-        if (guiScreen instanceof GuiChest)
+        if (guiScreen instanceof GuiChest) {
+            buttonList.add(killAuraButton = new GuiButton(1024576, 5, 5, 140, 20, "Disable KillAura"));
+            buttonList.add(autoArmorButton = new GuiButton(123321, 5, 25, 140, 20, "Disable AutoArmor"));
+            buttonList.add(invCleanerButton = new GuiButton(321123, 5, 45, 140, 20, "Disable InvCleaner"));
+            buttonList.add(chestStealerButton = new GuiButton(727, 5, 65, 140, 20, "Disable Stealer"));
             buttonList.add(stealButton = new GuiButton(1234123, 5, 85, 140, 20, "Steal this chest"));
+        }
         
         lastMS = System.currentTimeMillis();
         progress = 0F;
@@ -129,10 +130,10 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
             GuiScreen guiScreen = mc.currentScreen;
 
             if (stealButton != null) stealButton.enabled = !chestStealer.getState();
-            killAuraButton.enabled = LiquidBounce.moduleManager.getModule(KillAura.class).getState();
-            chestStealerButton.enabled = chestStealer.getState();
-            autoArmorButton.enabled = LiquidBounce.moduleManager.getModule(AutoArmor.class).getState();
-            invCleanerButton.enabled = LiquidBounce.moduleManager.getModule(InvCleaner.class).getState();
+            if (killAuraButton != null) killAuraButton.enabled = LiquidBounce.moduleManager.getModule(KillAura.class).getState();
+            if (chestStealerButton != null) chestStealerButton.enabled = chestStealer.getState();
+            if (autoArmorButton != null) autoArmorButton.enabled = LiquidBounce.moduleManager.getModule(AutoArmor.class).getState();
+            if (invCleanerButton != null) invCleanerButton.enabled = LiquidBounce.moduleManager.getModule(InvCleaner.class).getState();
 
             if(chestStealer.getState() && chestStealer.getSilenceValue().get() && guiScreen instanceof GuiChest) {
                 mc.setIngameFocus();
