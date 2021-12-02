@@ -1,3 +1,5 @@
+**Due to some private reasons, this project will be postponed until May next year. Thank you.**
+
 # LiquidBounce+
 A free mixin-based injection hacked-client for Minecraft using Minecraft Forge. 
 
