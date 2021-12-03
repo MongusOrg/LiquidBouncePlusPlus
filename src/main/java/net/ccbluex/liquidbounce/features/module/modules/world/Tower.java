@@ -498,7 +498,7 @@ public class Tower extends Module {
             }
             GlStateManager.resetColor();
 
-            Fonts.fontSFUI40.drawString(getBlocksAmount()+"", scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() / 2 + 20, -1, true);
+            Fonts.minecraftFont.drawString(getBlocksAmount()+" blocks", scaledResolution.getScaledWidth() / 2, scaledResolution.getScaledHeight() / 2 + 20, -1, true);
         }
     }
 

@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
+import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
@@ -80,7 +81,7 @@ public class AntiBot extends Module {
     public void onUpdate(final UpdateEvent event) {
         if(mc.thePlayer == null || mc.theWorld == null)
             return;
-        if (removeFromWorld.get() && mc.thePlayer.ticksExisted % removeIntervalValue.get() == 0){ 
+        if (removeFromWorld.get() && mc.thePlayer.ticksExisted > 0 && mc.thePlayer.ticksExisted % removeIntervalValue.get() == 0){ 
             List<EntityPlayer> ent = new ArrayList<>();
             for (EntityPlayer entity : mc.theWorld.playerEntities) {
                 if (entity != mc.thePlayer && isBot(entity))
@@ -89,7 +90,7 @@ public class AntiBot extends Module {
             if (ent.isEmpty()) return;
             for (EntityPlayer e : ent) {
                 mc.theWorld.removeEntity(e);
-                if (debugValue.get()) LiquidBounce.hud.addNotification(new Notification("Removed "+e.getName()+" due to it being a bot.", Notification.Type.WARNING));
+                if (debugValue.get()) ClientUtils.displayChatMessage("§7[§a§lAnti Bot§87] §fRemoved §r"+e.getName()+" §fdue to it being a bot.")
             }
         }
     }
