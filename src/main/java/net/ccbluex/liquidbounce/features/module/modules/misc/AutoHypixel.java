@@ -101,7 +101,7 @@ public class AutoHypixel extends Module {
         Stencil.write(true);
         RenderUtils.drawRoundedRect(middleX - 5F - middleWidth, posY, middleX + 5F + middleWidth, posY + 15F, 3F, 0xA0000000);
         Stencil.erase(true);
-        RenderUtils.drawRect(middleX - 5F - middleWidth, posY, middleX - 5F - middleWidth + wid, posY + 15F, new Color(0.2F, 0.5F, 0.2F, 0.35F).getRGB());
+        RenderUtils.drawRect(middleX - 5F - middleWidth, posY, middleX - 5F - middleWidth + wid, posY + 15F, new Color(0.4F, 0.8F, 0.4F, 0.35F).getRGB());
         Stencil.dispose();
 
         GlStateManager.resetColor();
