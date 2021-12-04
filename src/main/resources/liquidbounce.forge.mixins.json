@@ -92,7 +92,6 @@
     "performance.EntityOtherPlayerMPMixin_UselessAnimations",
     "performance.EntityPlayerMixin_DisplayNames",
     "performance.GameRulesValueMixin_Optimization",
-    "performance.LoadingScreenRendererMixin_SkipProgress",
     "performance.MinecraftMixin_MemoryIssues",
     "performance.MinecraftMixin_OptimizedWorldSwapping",
     "performance.MinecraftMixin_SkipTwitchStuff",
