@@ -34,11 +34,9 @@ public class HypixelYPort extends SpeedMode {
         if (targetStrafe == null) return;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && !mc.gameSettings.keyBindJump.isKeyDown()) {
             if (mc.thePlayer.onGround)
-                event.setY(0.0625);
-            else
-                event.setY(-0.025);
+                event.setY(0.08);
 
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed() * 0.96);
+            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }
