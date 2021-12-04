@@ -192,7 +192,7 @@ public class LongJump extends Module {
             if (mc.thePlayer.hurtTime > 0 && !hpxDamage) {
                 if (hypixelDmgRider.get()) {
                     PacketUtils.sendPacketNoEvent(new C0CPacketInput());
-                    PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.RIDING_JUMP));
+                    PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.RIDING_JUMP, 100));
                 }
                 hpxDamage = true;
                 MovementUtils.strafe(hpxDamage2Value.get());
