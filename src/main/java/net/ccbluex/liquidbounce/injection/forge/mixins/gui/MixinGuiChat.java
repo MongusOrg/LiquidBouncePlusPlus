@@ -66,7 +66,7 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
         if (fade < 14) fade = AnimationUtils.animate(14F, fade, 0.02F * delta);
         if (fade > 14) fade = 14;
 
-        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.02F * delta);
+        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.0175F * delta);
         if (yPosOfInputField < height - 12) yPosOfInputField = height - 12;
 
         inputField.yPosition = (int) yPosOfInputField;
