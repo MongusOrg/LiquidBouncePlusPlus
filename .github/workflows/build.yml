@@ -2,7 +2,7 @@ name: build
 
 on:
   push:
-    branches: [ backup ]
+    branches: [ master ]
 
 jobs:
   build:
