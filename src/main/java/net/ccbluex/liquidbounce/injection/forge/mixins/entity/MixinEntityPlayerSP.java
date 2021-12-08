@@ -140,12 +140,6 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
     @Shadow
     private float lastReportedPitch;
 
-    @Shadow 
-    public float timeInPortal;
-
-    @Shadow 
-    public float prevTimeInPortal;
-
     @Unique
     private boolean lastOnGround;
 
