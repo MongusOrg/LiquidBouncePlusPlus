@@ -41,7 +41,7 @@ public class MCLeaks {
     }
 
     public static void redeem(final String token, final Callback<Object> callback) {
-        EXECUTOR_SERVICE.execute(() -> {
+        EXECUTOR_SERVICE.execute(() -> { return
             final URLConnection connection = preparePostRequest("{\"token\":\"" + token + "\"}");
 
             if(connection == null) {

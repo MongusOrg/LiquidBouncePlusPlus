@@ -1,5 +1,7 @@
+**Due to some private reasons, this project will be postponed until summer next year (I Think). Thank you.**
+
 # LiquidBounce+
-A free mixin-based injection hacked-client for Minecraft using Minecraft Forge.
+A free mixin-based injection hacked-client for Minecraft using Minecraft Forge. 
 
 ## LiquidBounce contact infos.
 Website: https://liquidbounce.net \
@@ -14,8 +16,8 @@ Twitter: https://twitter.com/CCBlueX
 - [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) for AAC5 bypasses.
 
 ## Honourable mention:
-- Dort#2397 for the old Verus (Latest) Movement Disabler. (around 4-5 months ago, luv u)
-- LX#2800 (don't remember exactly the tag tho) for a very sus disabler.
+- Dort#2397
+- LX#2800
 
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/WYSI-Foundation/LiquidBouncePlus/issues).
