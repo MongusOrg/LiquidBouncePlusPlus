@@ -147,6 +147,11 @@ public final class ESP2D extends Module {
       return LiquidBounce.moduleManager.getModule(ESP2D.class) != null && LiquidBounce.moduleManager.getModule(ESP2D.class).getState() && ((ESP2D)LiquidBounce.moduleManager.getModule(ESP2D.class)).tagsValue.get() && collectedEntities.contains(entity);
    }
 
+   @Override
+   public void onDisable() {
+      collectedEntities.clear();
+   }
+
    @EventTarget
    public void onRender2D(Render2DEvent event) {
       GL11.glPushMatrix();
