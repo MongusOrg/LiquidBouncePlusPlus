@@ -75,7 +75,12 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
 
     @Inject(method = "canRenderName", at = @At("HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void canRenderName(T entity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        if (!ESP.renderNameTags || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && EntityUtils.isSelected(entity, false)) || ESP2D.shouldCancelNameTag(entity));
+        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
+
+        if (!ESP.renderNameTags 
+            || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && EntityUtils.isSelected(entity, false)) 
+            || ESP2D.shouldCancelNameTag(entity)
+            || (noRender.getState() && noRender.getNameTagsValue().get()));
             callbackInfoReturnable.setReturnValue(false);
     }
 

@@ -23,6 +23,7 @@ import net.minecraft.entity.item.EntityArmorStand
 class NoRender : Module() {
 
     val allValue = BoolValue("All", true)
+	val nameTagsValue = BoolValue("NameTags", true)
     private val itemsValue = BoolValue("Items", true, { !allValue.get() })
     private val playersValue = BoolValue("Players", true, { !allValue.get() })
     private val mobsValue = BoolValue("Mobs", true, { !allValue.get() })

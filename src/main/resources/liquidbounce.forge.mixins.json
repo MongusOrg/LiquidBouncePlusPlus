@@ -116,6 +116,7 @@
     "block.MixinBlockLiquid",
     "block.MixinBlockModelRenderer",
     "block.MixinBlockSoulSand",
+    "client.MixinIChatComponentSerializer",
     "client.MixinMinecraft",
     "client.MixinProfiler",
     "client.MixinResourcePackRepository",

@@ -32,6 +32,7 @@ class Criticals : Module() {
     private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.1F, 0.42F)
     private val downYValue = FloatValue("DownY", 0f, 0f, 0.1F)
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
+    private val onlyAuraValue = BoolValue("OnlyAura", false)
 
     val msTimer = MSTimer()
     private var readyCrits: Boolean = false
@@ -45,6 +46,8 @@ class Criticals : Module() {
 
     @EventTarget
     fun onAttack(event: AttackEvent) {
+        if (onlyAuraValue.get() && !LiquidBounce.moduleManager[KillAura::class.java]!!.state) return
+
         if (event.targetEntity is EntityLivingBase) {
             val entity = event.targetEntity
 
@@ -146,6 +149,8 @@ class Criticals : Module() {
 
     @EventTarget
     fun onPacket(event: PacketEvent) {
+        if (onlyAuraValue.get() && !LiquidBounce.moduleManager[KillAura::class.java]!!.state) return
+        
         val packet = event.packet
 
         when (modeValue.get().toLowerCase()) {
