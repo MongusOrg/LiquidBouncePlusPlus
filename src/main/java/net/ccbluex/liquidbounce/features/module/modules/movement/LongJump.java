@@ -35,8 +35,9 @@ public class LongJump extends Module {
     private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP"/*, "HypixelDamage", "HypixelDamage2"*/, "Damage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
     private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
-    private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan", () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    /*private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
+
+    /*private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan", () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
+    private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
     private final BoolValue hypixelDmgBlinkComp = new BoolValue("HypixelDamage-BlinkCompatible", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
     private final BoolValue hypixelStrafe = new BoolValue("HypixelDamage-StrafeAfterTick", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
     private final IntegerValue hypixelDmgTick = new IntegerValue("HypixelDamage-Tick", 10, 1, 20, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
@@ -83,10 +84,10 @@ public class LongJump extends Module {
 
     private MSTimer dmgTimer = new MSTimer();
 
-    private void sendPosPacket(double x, double y, double z, boolean gr) {
+    /*private void sendPosPacket(double x, double y, double z, boolean gr) {
         if (hypixelDmgBlinkComp.get()) mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, gr));
         else PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, gr));
-    }
+    }*/
 
     public void onEnable() {
         if (mc.thePlayer == null) return;
