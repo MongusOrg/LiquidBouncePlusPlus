@@ -59,10 +59,4 @@ class Rotations : Module() {
                 getState(BowAimbot::class.java) || getState(Fucker::class.java) ||
                 getState(ChestAura::class.java) || getState(Fly::class.java)
     }
-
-    /**
-     * HUD Tag
-     */
-    override val tag: String?
-        get() = if (bodyValue.get()) "Body" else "Head"
 }

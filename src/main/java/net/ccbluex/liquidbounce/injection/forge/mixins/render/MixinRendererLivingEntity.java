@@ -80,7 +80,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         if (!ESP.renderNameTags 
             || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && EntityUtils.isSelected(entity, false)) 
             || ESP2D.shouldCancelNameTag(entity)
-            || (noRender.getState() && noRender.getNameTagsValue().get()));
+            || (noRender.getState() && noRender.getNameTagsValue().get()))
             callbackInfoReturnable.setReturnValue(false);
     }
 
