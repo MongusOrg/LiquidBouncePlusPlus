@@ -54,6 +54,9 @@ public class Fly extends Module {
             "NCP",
             "OldNCP",
 
+            // Hypixel
+            "Hypixel",
+
             // Rewinside
             "Rewinside",
 
@@ -124,6 +127,23 @@ public class Fly extends Module {
     private boolean verusDmged = false;
 
     private float lastYaw, lastPitch;
+
+    private void doMove(double h, double v) {
+        if (mc.thePlayer == null)  return;
+
+        double x = mc.thePlayer.posX;
+        double y = mc.thePlayer.posY;
+        double z = mc.thePlayer.posZ;
+
+        final double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
+
+        double expectedX = x + (-Math.sin(yaw) * h);
+        double expectedY = y + v;
+        double expectedZ = z + (Math.cos(yaw) * h);
+
+        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(expectedX, expectedY, expectedZ, mc.thePlayer.onGround));
+        mc.thePlayer.setPosition(expectedX, expectedY, expectedZ);
+    }
     
     @Override
     public void onEnable() {
@@ -279,6 +299,11 @@ public class Fly extends Module {
                 if(mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.posY < (startY - 0.1D))
                     mc.thePlayer.motionY = 0.2D;
                 MovementUtils.strafe();
+                break;
+            case "hypixel":
+                mc.thePlayer.motionY = 0;
+                if (mc.thePlayer.ticksExisted % 25 == 0) 
+                    doMove(7.9, -1.75);
                 break;
             case "damage":
                 mc.thePlayer.capabilities.isFlying = false;
