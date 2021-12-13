@@ -55,7 +55,7 @@ public class Fly extends Module {
             "OldNCP",
 
             // Hypixel
-            "Hypixel",
+            "HypixelGlide",
 
             // Rewinside
             "Rewinside",
@@ -102,6 +102,12 @@ public class Fly extends Module {
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
     private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise"}, "Original", () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); }); // Original is from UnlegitMC/FDPClient.
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
+
+    // Hypixel glide (but it actually works. novoline speedrun flashback)
+    private final BoolValue hypixelGlideCustom = new BoolValue("HypixelGlide-Custom", false, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide"); });
+    private final IntegerValue hypixelGlideDelay = new IntegerValue("HypixelGlide-DelayTick", 25, 1, 50, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
+    private final FloatValue hypixelGlideForward = new FloatValue("HypixelGlide-Forward", 7.9F, 0, 10, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
+    private final FloatValue hypixelGlideDown = new FloatValue("HypixelGlide-Down", 1.75F, 0, 5, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
 
     // Visuals
     private final BoolValue markValue = new BoolValue("Mark", true);
@@ -300,10 +306,10 @@ public class Fly extends Module {
                     mc.thePlayer.motionY = 0.2D;
                 MovementUtils.strafe();
                 break;
-            case "hypixel":
+            case "hypixelglide":
                 mc.thePlayer.motionY = 0;
-                if (mc.thePlayer.ticksExisted % 25 == 0) 
-                    doMove(7.9, -1.75);
+                if (mc.thePlayer.ticksExisted % (hypixelGlideCustom.get() ? hypixelGlideDelay.get() : 25) == 0) 
+                    doMove((hypixelGlideCustom.get() ? (double)hypixelGlideForward.get() : 7.9), (hypixelGlideCustom.get() ? (double)-hypixelGlideDown.get() : -1.75));
                 break;
             case "damage":
                 mc.thePlayer.capabilities.isFlying = false;
@@ -536,10 +542,10 @@ public class Fly extends Module {
 
     @EventTarget
     public void onMove(final MoveEvent event) {
-        final float vanillaSpeed = vanillaSpeedValue.get();
+        /*final float vanillaSpeed = vanillaSpeedValue.get();
         final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) 
-            return;
+            return;*/
         
         switch(modeValue.get().toLowerCase()) {
             case "pearl":
@@ -553,6 +559,9 @@ public class Fly extends Module {
                         event.zeroXZ();
                     else
                         event.cancelEvent();
+                break;
+            case "hypixelglide":
+                event.zeroXZ();
                 break;
         }
     }

@@ -36,7 +36,7 @@ class HUD : Module() {
     private val toggleSoundValue = ListValue("ToggleSound", arrayOf("None", "Default", "Custom"), "Default")
     val containerBackground = BoolValue("Container-Background", false)
     val invEffectOffset = BoolValue("InvEffect-Offset", false)
-    val domainValue = TextValue("Scoreboard-Domain", "anti-strike system")
+    val domainValue = TextValue("Scoreboard-Domain", ".hud scoreboard-domain <your domain here>")
 
     @EventTarget
     fun onRender2D(event: Render2DEvent) {
