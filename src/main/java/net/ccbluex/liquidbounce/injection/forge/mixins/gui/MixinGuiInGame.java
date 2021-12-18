@@ -80,6 +80,7 @@ public abstract class MixinGuiInGame extends MixinGui {
 
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer) {
             EntityPlayer entityPlayer = (EntityPlayer) Minecraft.getMinecraft().getRenderViewEntity();
+            Minecraft mc = Minecraft.getMinecraft();
 
             boolean blackHB = hud.getState() && hud.getBlackHotbarValue().get();
             int middleScreen = sr.getScaledWidth() / 2;
