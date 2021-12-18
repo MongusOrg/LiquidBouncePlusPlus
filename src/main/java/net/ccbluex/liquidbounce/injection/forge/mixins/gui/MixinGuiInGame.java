@@ -96,7 +96,7 @@ public abstract class MixinGuiInGame extends MixinGui {
                 mc.getTextureManager().bindTexture(widgetsTexPath);
                 this.drawTexturedModalRect(middleScreen - 91F, sr.getScaledHeight() - 22, 0, 0, 182, 22);
                 this.drawTexturedModalRect(middleScreen - 91F + posInv - 1, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
-                mc.getTextureManager().bindTexture(null);
+                //mc.getTextureManager().bindTexture(null);
             }
 
             this.zLevel = f;
