@@ -126,6 +126,7 @@
     "entity.MixinEntityPlayer",
     "entity.MixinEntityPlayerSP",
     "entity.MixinPlayerControllerMP",
+    "gui.MixinGui",
     "gui.MixinGuiAchievement",
     "gui.MixinGuiButton",
     "gui.MixinGuiButtonExt",

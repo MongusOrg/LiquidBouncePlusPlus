@@ -25,6 +25,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,10 +37,13 @@ import org.lwjgl.opengl.GL11;
 
 @Mixin(GuiIngame.class)
 @SideOnly(Side.CLIENT)
-public abstract class MixinGuiInGame {
+public abstract class MixinGuiInGame extends MixinGui {
 
     @Shadow
     protected abstract void renderHotbarItem(int index, int xPos, int yPos, float partialTicks, EntityPlayer player);
+
+    @Shadow @Final
+    protected static ResourceLocation widgetsTexPath;
 
     @Shadow public GuiPlayerTabOverlay overlayPlayerList;
 
@@ -73,13 +77,27 @@ public abstract class MixinGuiInGame {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
 
-        if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState() && hud.getBlackHotbarValue().get()) {
+        if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer) {
             EntityPlayer entityPlayer = (EntityPlayer) Minecraft.getMinecraft().getRenderViewEntity();
 
+            boolean blackHB = hud.getState() && hud.getBlackHotbarValue().get();
             int middleScreen = sr.getScaledWidth() / 2;
+            float posInv = hud.getAnimPos(entityPlayer.inventory.currentItem * 20F);
 
-            GuiIngame.drawRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, Integer.MIN_VALUE);
-            GuiIngame.drawRect(middleScreen - 91 - 1 + entityPlayer.inventory.currentItem * 20 + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + entityPlayer.inventory.currentItem * 20 + 22, sr.getScaledHeight() - 22, Integer.MAX_VALUE);
+            float f = this.zLevel;
+            this.zLevel = -90F;
+
+            if (blackHB) {
+                RenderUtils.drawRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE);
+                RenderUtils.drawRoundedRect(middleScreen - 91 - 1 + posInv + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + posInv + 22, sr.getScaledHeight() - 22, 3F, Integer.MAX_VALUE);
+            } else {
+                mc.getTextureManager().bindTexture(widgetsTexPath);
+                this.drawTexturedModalRect(middleScreen - 91F, sr.getScaledHeight() - 22, 0, 0, 182, 22);
+                this.drawTexturedModalRect(middleScreen - 91F + posInv - 1, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
+                mc.getTextureManager().bindTexture(null);
+            }
+
+            this.zLevel = f;
             //GlStateManager.popMatrix();
 
             GlStateManager.resetColor();
@@ -92,7 +110,7 @@ public abstract class MixinGuiInGame {
             for(int j = 0; j < 9; ++j) {
                 int k = sr.getScaledWidth() / 2 - 90 + j * 20 + 2;
                 int l = sr.getScaledHeight() - 16 - 3;
-                this.renderHotbarItem(j, k, l - 1, partialTicks, entityPlayer);
+                this.renderHotbarItem(j, k, (blackHB ? l - 1 : l), partialTicks, entityPlayer);
             }
 
             RenderHelper.disableStandardItemLighting();
