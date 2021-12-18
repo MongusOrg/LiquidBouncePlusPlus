@@ -86,8 +86,8 @@ public abstract class MixinGuiInGame extends MixinGui {
             int middleScreen = sr.getScaledWidth() / 2;
             float posInv = hud.getAnimPos(entityPlayer.inventory.currentItem * 20F);
 
-            float f = this.zLevel;
-            this.zLevel = -90F;
+            /*float f = this.zLevel;
+            this.zLevel = -90F;*/
 
             if (blackHB) {
                 RenderUtils.drawRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE);
@@ -99,7 +99,7 @@ public abstract class MixinGuiInGame extends MixinGui {
                 //mc.getTextureManager().bindTexture(null);
             }
 
-            this.zLevel = f;
+            //this.zLevel = f;
             //GlStateManager.popMatrix();
 
             GlStateManager.resetColor();
