@@ -26,6 +26,8 @@ import net.minecraft.util.AxisAlignedBB;
 
 import org.lwjgl.opengl.GL11;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 @ModuleInfo(name = "AsianHat", spacedName = "Asian Hat", description = "Yep. China Hat.", category = ModuleCategory.RENDER)
 public class AsianHat extends Module {
@@ -44,6 +46,19 @@ public class AsianHat extends Module {
     private final BoolValue hatBorder = new BoolValue("HatBorder", true);
     private final IntegerValue borderAlphaValue = new IntegerValue("BorderAlpha", 255, 0, 255);
     private final FloatValue borderWidthValue = new FloatValue("BorderWidth", 1F, 0.1F, 4F);
+
+    private final ArrayList<Array<Double>> positions = new ArrayList<>();
+    private double lastRadius = 0;
+
+    private void checkPosition(double radius) {
+        if (radius != lastRadius) {
+            // generate new positions
+            positions.clear();
+            for (int i = 0; i <= 360; i += 1)
+                positions.add(new double[] {-Math.sin(i * Math.PI / 180) * radius, Math.cos(i * Math.PI / 180) * radius});
+        }
+        lastRadius = radius;
+    }
 
     @EventTarget
     public void onRender3D(Render3DEvent event) {
@@ -64,8 +79,73 @@ public class AsianHat extends Module {
         float al = colorAlphaValue.get() / 255.0F;
         float Eal = colorEndAlphaValue.get() / 255.0F;
 
+        double viewX = -mc.getRenderManager().viewerPosX;
+        double viewY = -mc.getRenderManager().viewerPosY;
+        double viewZ = -mc.getRenderManager().viewerPosZ;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+
+        checkPosition(radius);
         pre3D();
-        GL11.glTranslated(-mc.getRenderManager().viewerPosX, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
+        worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
+
+        // main section
+        worldrenderer.pos(viewX + posX, viewY + posY + height + 0.3, viewZ + posZ).color(r, g, b, al).endVertex();
+
+        int i = 0;
+        for (double[] smolPos : positions) {
+			double posX2 = posX + smolPos[0];
+			double posZ2 = posZ + smolPos[1];
+            
+            if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
+                Color colour2 = getColor(entity, i * spaceValue.get());
+                float r2 = colour2.getRed() / 255.0F;
+                float g2 = colour2.getGreen() / 255.0F;
+                float b2 = colour2.getBlue() / 255.0F;
+
+                worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r2, g2, b2, Eal).endVertex();
+            } else {
+                worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r, g, b, Eal).endVertex();
+            }
+
+            i++;
+		}
+
+        worldrenderer.pos(viewX + posX, viewY + posY + height + 0.3, viewZ + posZ).color(r, g, b, al).endVertex();
+        tessellator.draw();
+
+        // border section
+        if (hatBorder.get()) {
+            float lineAlp = borderAlphaValue.get() / 255.0F;
+
+            GL11.glLineWidth(borderWidthValue.get());
+
+            worldrenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+            
+            i = 0;
+            for (double[] smolPos : positions) {
+			    double posX2 = posX + smolPos[0];
+			    double posZ2 = posZ + smolPos[1];
+
+                if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
+                    Color colour2 = getColor(entity, i * spaceValue.get());
+                    float r2 = colour2.getRed() / 255.0F;
+                    float g2 = colour2.getGreen() / 255.0F;
+                    float b2 = colour2.getBlue() / 255.0F;
+
+                    worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r2, g2, b2, lineAlp).endVertex();
+                } else {
+                    worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r, g, b, lineAlp).endVertex();
+                }
+
+                i++;
+		    }
+
+            tessellator.draw();
+        }
+
+        /*GL11.glTranslated(-, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
 		GL11.glBegin(GL11.GL_POLYGON);
         
         GL11.glColor4f(r, g, b, al);
@@ -117,7 +197,7 @@ public class AsianHat extends Module {
 		    }
 
             GL11.glEnd();
-        }
+        }*/
 
         post3D();
     }

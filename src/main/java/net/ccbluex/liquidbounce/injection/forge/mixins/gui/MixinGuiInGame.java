@@ -111,7 +111,7 @@ public abstract class MixinGuiInGame extends MixinGui {
 
             for (int j = 0; j < 9; ++j) {
                 int k = sr.getScaledWidth() / 2 - 90 + j * 20 + 2;
-                int l = sr.getScaledHeight() - 16 - 3;
+                int l = sr.getScaledHeight() - 16 - (blackHB ? 4 : 3);
                 this.renderHotbarItem(j, k, l, partialTicks, entityPlayer);
             }
 
