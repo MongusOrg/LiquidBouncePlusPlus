@@ -196,7 +196,7 @@ public final class RenderUtils extends MinecraftInstance {
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.color(red, green, blue, alpha);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
+        worldrenderer.begin(GL_POLYGON, DefaultVertexFormats.POSITION);
 
         double degree = Math.PI / 180;
         for (double i = 0; i <= 90; i += 0.5)
