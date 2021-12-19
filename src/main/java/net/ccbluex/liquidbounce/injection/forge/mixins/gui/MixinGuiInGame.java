@@ -96,7 +96,7 @@ public abstract class MixinGuiInGame extends MixinGui {
 
             if (blackHB) {
                 RenderUtils.originalRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 91, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE);
-                RenderUtils.originalRoundedRect(middleScreen - 91 + posInv, sr.getScaledHeight() - 2, middleScreen - 91 + posInv + 21, sr.getScaledHeight() - 22, 3F, Integer.MAX_VALUE);
+                RenderUtils.originalRoundedRect(middleScreen - 91 + posInv, sr.getScaledHeight() - 2, middleScreen - 91 + posInv + 22, sr.getScaledHeight() - 22, 3F, Integer.MAX_VALUE);
             } else {
                 this.drawTexturedModalRect(middleScreen - 91F, sr.getScaledHeight() - 22, 0, 0, 182, 22);
                 this.drawTexturedModalRect(middleScreen - 91F + posInv - 1, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
@@ -109,18 +109,10 @@ public abstract class MixinGuiInGame extends MixinGui {
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             RenderHelper.enableGUIStandardItemLighting();
 
-            if (blackHB) {
-                for (int j = 0; j < 9; ++j) {
-                    int k = sr.getScaledWidth() / 2 - 91 + j * 20 + 2;
-                    int l = sr.getScaledHeight() - 16 - 3;
-                    this.renderHotbarItem(j, k, l - 1, partialTicks, entityPlayer);
-                }
-            } else {
-                for (int j = 0; j < 9; ++j) {
-                    int k = sr.getScaledWidth() / 2 - 90 + j * 20 + 2;
-                    int l = sr.getScaledHeight() - 16 - 3;
-                    this.renderHotbarItem(j, k, l, partialTicks, entityPlayer);
-                }
+            for (int j = 0; j < 9; ++j) {
+                int k = sr.getScaledWidth() / 2 - 90 + j * 20 + 2;
+                int l = sr.getScaledHeight() - 16 - 3;
+                this.renderHotbarItem(j, k, l, partialTicks, entityPlayer);
             }
 
             RenderHelper.disableStandardItemLighting();
