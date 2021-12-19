@@ -95,8 +95,8 @@ public abstract class MixinGuiInGame extends MixinGui {
             GlStateManager.resetColor();
 
             if (blackHB) {
-                RenderUtils.drawRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE, true, true);
-                RenderUtils.drawRoundedRect(middleScreen - 91 - 1 + posInv + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + posInv + 22, sr.getScaledHeight() - 22, 3F, Integer.MAX_VALUE, true, true);
+                RenderUtils.originalRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE);
+                RenderUtils.originalRoundedRect(middleScreen - 91 - 1 + posInv + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + posInv + 22, sr.getScaledHeight() - 22, 3F, Integer.MAX_VALUE);
             } else {
                 this.drawTexturedModalRect(middleScreen - 91F, sr.getScaledHeight() - 22, 0, 0, 182, 22);
                 this.drawTexturedModalRect(middleScreen - 91F + posInv - 1, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
