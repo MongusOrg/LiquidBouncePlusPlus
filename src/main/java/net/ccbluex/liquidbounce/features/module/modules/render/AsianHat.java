@@ -48,7 +48,7 @@ public class AsianHat extends Module {
     private final IntegerValue borderAlphaValue = new IntegerValue("BorderAlpha", 255, 0, 255);
     private final FloatValue borderWidthValue = new FloatValue("BorderWidth", 1F, 0.1F, 4F);
 
-    private final ArrayList<List<Double>> positions = new ArrayList<>();
+    private final List<double[]> positions = new ArrayList<>();
     private double lastRadius = 0;
 
     private void checkPosition(double radius) {
@@ -56,7 +56,7 @@ public class AsianHat extends Module {
             // generate new positions
             positions.clear();
             for (int i = 0; i <= 360; i += 1)
-                positions.add(Arrays.asList(new double[] {-Math.sin(i * Math.PI / 180) * radius, Math.cos(i * Math.PI / 180) * radius}));
+                positions.add(new double[] {-Math.sin(i * Math.PI / 180) * radius, Math.cos(i * Math.PI / 180) * radius});
         }
         lastRadius = radius;
     }
@@ -95,9 +95,9 @@ public class AsianHat extends Module {
         worldrenderer.pos(viewX + posX, viewY + posY + height + 0.3, viewZ + posZ).color(r, g, b, al).endVertex();
 
         int i = 0;
-        for (List<Double> smolPos : positions) {
-			double posX2 = posX + smolPos.get(0);
-			double posZ2 = posZ + smolPos.get(1);
+        for (double[] smolPos : positions) {
+			double posX2 = posX + smolPos[0];
+			double posZ2 = posZ + smolPos[1];
             
             if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
                 Color colour2 = getColor(entity, i * spaceValue.get());
@@ -125,9 +125,9 @@ public class AsianHat extends Module {
             worldrenderer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
             
             i = 0;
-            for (List<Double> smolPos : positions) {
-			    double posX2 = posX + smolPos.get(0);
-			    double posZ2 = posZ + smolPos.get(1);
+            for (double[] smolPos : positions) {
+			    double posX2 = posX + smolPos[0];
+			    double posZ2 = posZ + smolPos[1];
 
                 if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
                     Color colour2 = getColor(entity, i * spaceValue.get());
