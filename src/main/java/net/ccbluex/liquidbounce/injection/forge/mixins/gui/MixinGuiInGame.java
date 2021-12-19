@@ -75,39 +75,36 @@ public abstract class MixinGuiInGame extends MixinGui {
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
+        //GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
 
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
-            EntityPlayer entityPlayer = (EntityPlayer) Minecraft.getMinecraft().getRenderViewEntity();
-            Minecraft mc = Minecraft.getMinecraft();
+            final Minecraft mc = Minecraft.getMinecraft();
+            EntityPlayer entityPlayer = (EntityPlayer) mc.getRenderViewEntity();
 
             boolean blackHB = hud.getState() && hud.getBlackHotbarValue().get();
             int middleScreen = sr.getScaledWidth() / 2;
             float posInv = hud.getAnimPos(entityPlayer.inventory.currentItem * 20F);
 
-            /*float f = this.zLevel;
-            this.zLevel = -90F;*/
             GlStateManager.resetColor();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.enableRescaleNormal();
+            mc.getTextureManager().bindTexture(widgetsTexPath);
+
+            float f = this.zLevel;
+            this.zLevel = -90.0F;
+            GlStateManager.resetColor();
 
             if (blackHB) {
-                RenderUtils.drawRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE);
-                RenderUtils.drawRoundedRect(middleScreen - 91 - 1 + posInv + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + posInv + 22, sr.getScaledHeight() - 22, 3F, Integer.MAX_VALUE);
+                RenderUtils.drawRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE, true, true);
+                RenderUtils.drawRoundedRect(middleScreen - 91 - 1 + posInv + 1, sr.getScaledHeight() - 2, middleScreen - 91 - 1 + posInv + 22, sr.getScaledHeight() - 22, 3F, Integer.MAX_VALUE, true, true);
             } else {
-                mc.getTextureManager().bindTexture(widgetsTexPath);
                 this.drawTexturedModalRect(middleScreen - 91F, sr.getScaledHeight() - 22, 0, 0, 182, 22);
                 this.drawTexturedModalRect(middleScreen - 91F + posInv - 1, sr.getScaledHeight() - 22 - 1, 0, 22, 24, 22);
-                //mc.getTextureManager().bindTexture(null);
             }
 
-            //this.zLevel = f;
-            //GlStateManager.popMatrix();
-
-            GlStateManager.resetColor();
+            this.zLevel = f;
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             RenderHelper.enableGUIStandardItemLighting();
@@ -122,6 +119,7 @@ public abstract class MixinGuiInGame extends MixinGui {
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
 
+            GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();
             callbackInfo.cancel();
@@ -130,8 +128,7 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
+        //GlStateManager.popMatrix();
 
         if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));

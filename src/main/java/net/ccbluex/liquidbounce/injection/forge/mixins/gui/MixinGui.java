@@ -17,4 +17,5 @@ public abstract class MixinGui {
     @Shadow public abstract void drawTexturedModalRect(float xCoord, float yCoord, int minU, int minV, int maxU, int maxV);
 
     @Shadow protected float zLevel;
+    
 }
