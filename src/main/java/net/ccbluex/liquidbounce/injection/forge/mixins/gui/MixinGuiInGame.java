@@ -76,9 +76,10 @@ public abstract class MixinGuiInGame extends MixinGui {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
         GlStateManager.pushMatrix();
+        GlStateManager.pushAttrib();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
 
-        if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer) {
+        if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
             EntityPlayer entityPlayer = (EntityPlayer) Minecraft.getMinecraft().getRenderViewEntity();
             Minecraft mc = Minecraft.getMinecraft();
 
@@ -88,6 +89,9 @@ public abstract class MixinGuiInGame extends MixinGui {
 
             /*float f = this.zLevel;
             this.zLevel = -90F;*/
+            GlStateManager.resetColor();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.enableRescaleNormal();
 
             if (blackHB) {
                 RenderUtils.drawRoundedRect(middleScreen - 91, sr.getScaledHeight() - 2, middleScreen + 90, sr.getScaledHeight() - 22, 3F, Integer.MIN_VALUE);
@@ -104,7 +108,6 @@ public abstract class MixinGuiInGame extends MixinGui {
 
             GlStateManager.resetColor();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-            GlStateManager.enableRescaleNormal();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             RenderHelper.enableGUIStandardItemLighting();
@@ -127,6 +130,7 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
+        GlStateManager.popAttrib();
         GlStateManager.popMatrix();
 
         if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
