@@ -7,18 +7,26 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.network;
 
 import io.netty.buffer.Unpooled;
 import java.util.UUID;
+import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EntityMovementEvent;
+import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
 import net.ccbluex.liquidbounce.features.special.AntiForge;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketThreadUtil;
@@ -35,9 +43,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 @Mixin(NetHandlerPlayClient.class)
 public abstract class MixinNetHandlerPlayClient {
@@ -60,9 +65,40 @@ public abstract class MixinNetHandlerPlayClient {
 
     @Inject(method = "handleSpawnPlayer", at = @At("HEAD"), cancellable = true)
     private void handleSpawnPlayer(S0CPacketSpawnPlayer packetIn, CallbackInfo callbackInfo) {
-        // check null to prevent npe spam
-        if (getPlayerInfo(packetIn.getPlayer()) == null) {
-            ClientUtils.getLogger().info("(Expected Error)", "Could not find player's info.");
+        if (Patcher.silentNPESP.get()) {
+            try {
+                PacketThreadUtil.checkThreadAndEnqueue(packetIn, (NetHandlerPlayClient) (Object) this, gameController);
+                double d0 = (double)packetIn.getX() / 32.0D;
+                double d1 = (double)packetIn.getY() / 32.0D;
+                double d2 = (double)packetIn.getZ() / 32.0D;
+                float f = (float)(packetIn.getYaw() * 360) / 256.0F;
+                float f1 = (float)(packetIn.getPitch() * 360) / 256.0F;
+                EntityOtherPlayerMP entityotherplayermp = new EntityOtherPlayerMP(gameController.theWorld, getPlayerInfo(packetIn.getPlayer()).getGameProfile());
+                entityotherplayermp.prevPosX = entityotherplayermp.lastTickPosX = (double)(entityotherplayermp.serverPosX = packetIn.getX());
+                entityotherplayermp.prevPosY = entityotherplayermp.lastTickPosY = (double)(entityotherplayermp.serverPosY = packetIn.getY());
+                entityotherplayermp.prevPosZ = entityotherplayermp.lastTickPosZ = (double)(entityotherplayermp.serverPosZ = packetIn.getZ());
+                int i = packetIn.getCurrentItemID();
+
+                if (i == 0)
+                {
+                    entityotherplayermp.inventory.mainInventory[entityotherplayermp.inventory.currentItem] = null;
+                }
+                else
+                {
+                    entityotherplayermp.inventory.mainInventory[entityotherplayermp.inventory.currentItem] = new ItemStack(Item.getItemById(i), 1, 0);
+                }
+
+                entityotherplayermp.setPositionAndRotation(d0, d1, d2, f, f1);
+                clientWorldController.addEntityToWorld(packetIn.getEntityID(), entityotherplayermp);
+                List<DataWatcher.WatchableObject> list = packetIn.func_148944_c();
+
+                if (list != null)
+                {
+                    entityotherplayermp.getDataWatcher().updateWatchedObjectsFromList(list);
+                }
+            } catch (Exception e) {
+                // ignore
+            }
             callbackInfo.cancel();
         }
     }
