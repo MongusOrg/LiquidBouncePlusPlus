@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.network;
 
 import io.netty.buffer.Unpooled;
+import java.util.UUID;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EntityMovementEvent;
 import net.ccbluex.liquidbounce.features.special.AntiForge;
@@ -16,12 +17,14 @@ import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.client.C19PacketResourcePackStatus;
+import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S14PacketEntity;
 import net.minecraft.network.play.server.S48PacketResourcePackSend;
@@ -51,6 +54,18 @@ public abstract class MixinNetHandlerPlayClient {
 
     @Shadow
     public int currentServerMaxPlayers;
+
+    @Shadow
+    public abstract NetworkPlayerInfo getPlayerInfo(UUID p_175102_1_);
+
+    @Inject(method = "handleSpawnPlayer", at = @At("HEAD"), cancellable = true)
+    private void handleSpawnPlayer(S0CPacketSpawnPlayer packetIn, CallbackInfo callbackInfo) {
+        // check null to prevent npe spam
+        if (getPlayerInfo(packetIn.getPlayer()) == null) {
+            ClientUtils.getLogger().info("(Expected Error)", "Could not find player's info.");
+            callbackInfo.cancel();
+        }
+    }
 
     @Inject(method = "handleResourcePack", at = @At("HEAD"), cancellable = true)
     private void handleResourcePack(final S48PacketResourcePackSend p_handleResourcePack_1_, final CallbackInfo callbackInfo) {
