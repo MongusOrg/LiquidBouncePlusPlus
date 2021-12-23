@@ -57,6 +57,9 @@ public class Fly extends Module {
             // Hypixel
             "HypixelGlide",
 
+            // FunCraft
+            "FunCraft",
+
             // Rewinside
             "Rewinside",
 
@@ -134,8 +137,10 @@ public class Fly extends Module {
 
     private float lastYaw, lastPitch;
 
+    private double moveSpeed = 0.0;
+
     private void doMove(double h, double v) {
-        if (mc.thePlayer == null)  return;
+        if (mc.thePlayer == null) return;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -172,6 +177,8 @@ public class Fly extends Module {
 
         verusJumpTimes = 0;
         verusDmged = false;
+
+        moveSpeed = 0;
 
         switch (mode.toLowerCase()) {
             case "ncp":
@@ -227,6 +234,11 @@ public class Fly extends Module {
                 mc.thePlayer.motionX *= 0.1D;
                 mc.thePlayer.motionZ *= 0.1D;
                 mc.thePlayer.swingItem();
+                break;
+            case "funcraft":
+                if (mc.thePlayer.onGround)
+                    mc.thePlayer.jump();
+                moveSpeed = 1.7;
                 break;
         }
 
@@ -446,6 +458,23 @@ public class Fly extends Module {
         }
     }
 
+    @EventTarget // drew i love you
+    public void onMotion(final MotionEvent event) {
+        if (!modeValue.get().equalsIgnoreCase("FunCraft") || mc.thePlayer == null) return;
+        event.setOnGround(true);
+        if (!MovementUtils.isMoving())
+            moveSpeed = 0.25;
+        if (moveSpeed > 0.25) {
+            moveSpeed -= moveSpeed / 159.0;
+        }
+        if (event.getEventState() == EventState.PRE) {
+            MovementUtils.strafe((float)moveSpeed);
+
+            mc.thePlayer.motionY = 0;
+            mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8e-6, mc.thePlayer.posZ);
+        }
+    }
+
     @EventTarget
     public void onRender3D(final Render3DEvent event) {
         final String mode = modeValue.get();
@@ -589,7 +618,7 @@ public class Fly extends Module {
     public void onJump(final JumpEvent e) {
         final String mode = modeValue.get();
 
-        if (mode.equalsIgnoreCase("Rewinside"))
+        if (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("FunCraft") && moveSpeed > 0))
             e.cancelEvent();
     }
 
@@ -597,7 +626,7 @@ public class Fly extends Module {
     public void onStep(final StepEvent e) {
         final String mode = modeValue.get();
 
-        if (mode.equalsIgnoreCase("Rewinside"))
+        if (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("FunCraft"))
             e.setStepHeight(0F);
     }
 

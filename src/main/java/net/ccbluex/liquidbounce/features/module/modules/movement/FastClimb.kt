@@ -23,7 +23,7 @@ import net.minecraft.block.BlockVine
 import net.minecraft.util.BlockPos
 import net.minecraft.util.EnumFacing
 
-@ModuleInfo(name = "FastClimb", description = "Allows you to climb up ladders and vines faster.", category = ModuleCategory.MOVEMENT)
+@ModuleInfo(name = "FastClimb", spacedName = "Fast Climb", description = "Allows you to climb up ladders and vines faster.", category = ModuleCategory.MOVEMENT)
 class FastClimb : Module() {
 
     //dev ccbluex should add down fastladder.

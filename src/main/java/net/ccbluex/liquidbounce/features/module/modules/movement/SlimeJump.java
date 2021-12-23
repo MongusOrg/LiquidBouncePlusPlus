@@ -15,7 +15,7 @@ import net.ccbluex.liquidbounce.value.FloatValue;
 import net.ccbluex.liquidbounce.value.ListValue;
 import net.minecraft.block.BlockSlime;
 
-@ModuleInfo(name = "SlimeJump", description = "Allows you to to jump higher on slime blocks.", category = ModuleCategory.MOVEMENT)
+@ModuleInfo(name = "SlimeJump", spacedName = "Slime Jump", description = "Allows you to to jump higher on slime blocks.", category = ModuleCategory.MOVEMENT)
 public class SlimeJump extends Module {
 
     private final FloatValue motionValue = new FloatValue("Motion", 0.42F, 0.2F, 1F);

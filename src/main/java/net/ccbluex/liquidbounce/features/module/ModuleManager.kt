@@ -168,7 +168,10 @@ class ModuleManager : Listenable {
                 Freeze::class.java,
                 Patcher::class.java,
                 AntiCactus::class.java,
-                Eagle::class.java
+                Eagle::class.java,
+                FastClimb::class.java,
+                FastStairs::class.java,
+                SlimeJump::class.java
         )
 
         registerModule(Fucker)
