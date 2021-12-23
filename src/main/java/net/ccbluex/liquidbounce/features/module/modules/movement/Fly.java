@@ -458,9 +458,10 @@ public class Fly extends Module {
         }
     }
 
-    @EventTarget // drew i love you
+    @EventTarget // drew
     public void onMotion(final MotionEvent event) {
         if (!modeValue.get().equalsIgnoreCase("FunCraft") || mc.thePlayer == null) return;
+        
         event.setOnGround(true);
         if (!MovementUtils.isMoving())
             moveSpeed = 0.25;
@@ -468,9 +469,12 @@ public class Fly extends Module {
             moveSpeed -= moveSpeed / 159.0;
         }
         if (event.getEventState() == EventState.PRE) {
-            MovementUtils.strafe((float)moveSpeed);
-
+            mc.thePlayer.capabilities.isFlying = false;
             mc.thePlayer.motionY = 0;
+            mc.thePlayer.motionX = 0;
+            mc.thePlayer.motionZ = 0;
+
+            MovementUtils.strafe((float)moveSpeed);
             mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8e-6, mc.thePlayer.posZ);
         }
     }
