@@ -90,7 +90,7 @@ public class Speed extends Module {
             new VerusLowHop()
     };
 
-    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Custom", "Other", "Verus"}, "NCP") {
+    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Verus", "Custom", "Other"}, "NCP") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {

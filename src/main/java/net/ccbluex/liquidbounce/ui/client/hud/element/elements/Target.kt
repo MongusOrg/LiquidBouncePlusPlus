@@ -279,17 +279,18 @@ class Target : Element() {
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
 
-                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                     if (riseShadow.get()) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
                         GlStateManager.pushAttrib()
                         BlurUtils.downscale(true, shadowStrengthValue.get())
-                        RenderUtils.newDrawRect(floatX, floatY, floatX + 10F + length, floatY + 55F, bgColor.rgb)
+                        RenderUtils.originalRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, bgColor.rgb)
                         BlurUtils.downscale(false, shadowStrengthValue.get())
                         GlStateManager.popAttrib()
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
+                    } else {
+                        RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                     }
 
                     if (riseParticle.get()) {
