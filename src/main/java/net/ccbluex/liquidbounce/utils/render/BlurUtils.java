@@ -100,8 +100,8 @@ public class BlurUtils {
             frameBuffer.unbindFramebuffer();
             mc.getFramebuffer().bindFramebuffer(true);
             //frameBuffer.bindFramebuffer(true);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(770, 771);
+            /*GlStateManager.enableBlend();
+            GlStateManager.blendFunc(770, 771);*/
             GlStateManager.pushMatrix();
             GlStateManager.pushAttrib();
             if (OpenGlHelper.isFramebufferEnabled())
@@ -135,7 +135,7 @@ public class BlurUtils {
             }
             GlStateManager.popAttrib();
             GlStateManager.popMatrix();
-            GlStateManager.disableBlend();
+            //GlStateManager.disableBlend();
         }
     }
 
@@ -178,8 +178,6 @@ public class BlurUtils {
 
         mc.getFramebuffer().bindFramebuffer(true);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
         Stencil.write(false);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -188,6 +186,9 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+        GlStateManager.pushMatrix();
         GlStateManager.colorMask(true, true, true, false);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
@@ -212,11 +213,11 @@ public class BlurUtils {
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.popMatrix();
+        GlStateManager.disableBlend();
         Stencil.dispose();
 
         GlStateManager.enableAlpha();
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
     }
 
     /*public static void preCustomBlur(float blurStrength) {
@@ -288,8 +289,6 @@ public class BlurUtils {
 
         mc.getFramebuffer().bindFramebuffer(true);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
         Stencil.write(renderClipLayer);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -303,6 +302,9 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+        GlStateManager.pushMatrix();
         GlStateManager.colorMask(true, true, true, false);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
@@ -327,10 +329,10 @@ public class BlurUtils {
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.popMatrix();
+        GlStateManager.disableBlend();
         Stencil.dispose();
         GlStateManager.enableAlpha();
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
     }
 
     public static void blurAreaRounded(float x, float y, float x2, float y2, float rad, float blurStrength) {
@@ -372,8 +374,6 @@ public class BlurUtils {
 
         mc.getFramebuffer().bindFramebuffer(true);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
         Stencil.write(false);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -382,6 +382,9 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(770, 771);
+        GlStateManager.pushMatrix();
         GlStateManager.colorMask(true, true, true, false);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
@@ -406,11 +409,11 @@ public class BlurUtils {
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.popMatrix();
+        GlStateManager.disableBlend();
         Stencil.dispose();
 
         GlStateManager.enableAlpha();
-        GlStateManager.popAttrib();
-        GlStateManager.popMatrix();
     }
 
     private static boolean sizeHasChanged(int scaleFactor, int width, int height) {
