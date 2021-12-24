@@ -279,9 +279,15 @@ class Target : Element() {
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
 
-                    if (riseShadow.get()) 
-                        UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
-                    else
+                    if (riseShadow.get()) {
+                        GL11.glTranslated(-renderX, -renderY, 0.0)
+                        GL11.glPushMatrix()
+                        BlurUtils.downscale(true, shadowStrengthValue.get())
+                        RenderUtils.newDrawRect(0F, 0F, 10F + length, 55F, bgColor.rgb)
+                        BlurUtils.downscale(false, shadowStrengthValue.get())
+                        GL11.glPopMatrix()
+                        GL11.glTranslated(renderX, renderY, 0.0)
+                    } else
                         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
 
                     if (riseParticle.get()) {

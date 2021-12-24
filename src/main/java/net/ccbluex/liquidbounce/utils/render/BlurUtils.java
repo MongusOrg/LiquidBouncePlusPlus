@@ -18,6 +18,7 @@ import net.minecraft.client.shader.ShaderGroup;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
+import org.lwjgl.opengl.GL11;
 
 public class BlurUtils {
     
@@ -26,7 +27,7 @@ public class BlurUtils {
     private static ShaderGroup shaderGroup;
     private static Framebuffer frbuffer;
 
-    private static Framebuffer framebuffer;
+    private static Framebuffer framebuffer, frameBuffer;
 
     private static int lastFactor;
     private static int lastWidth;
@@ -76,6 +77,68 @@ public class BlurUtils {
         }
     }
 
+    public static void downscale(boolean start, int strength) {
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        final int scaleFactor = scaledResolution.getScaleFactor();
+        final int width = scaledResolution.getScaledWidth();
+        final int height = scaledResolution.getScaledHeight();
+
+        if (sizeHasChanged(scaleFactor, width, height) || frameBuffer == null) {
+            frameBuffer = new Framebuffer(mc.displayWidth / strength, mc.displayHeight / strength, true);
+            frameBuffer.setFramebufferColor(0, 0, 0, 0);
+            frameBuffer.setFramebufferFilter(GL11.GL_LINEAR);
+        }
+
+        lastFactor = scaleFactor;
+        lastWidth = width;
+        lastHeight = height;
+
+        if (start) {
+            frameBuffer.framebufferClear();
+            frameBuffer.bindFramebuffer(false);
+        } else {
+            frameBuffer.unbindFramebuffer();
+            mc.getFramebuffer().bindFramebuffer(true);
+            //frameBuffer.bindFramebuffer(true);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(770, 771);
+            GlStateManager.pushMatrix();
+            GlStateManager.pushAttrib();
+            if (OpenGlHelper.isFramebufferEnabled())
+            {
+                GlStateManager.disableDepth();
+                GlStateManager.depthMask(false);
+                GlStateManager.colorMask(true, true, true, false);
+                GlStateManager.enableTexture2D();
+                GlStateManager.disableLighting();
+                GlStateManager.disableAlpha();
+
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+                frameBuffer.bindFramebufferTexture();
+                float f = (float)width;
+                float f1 = (float)height;
+                float f2 = (float)frameBuffer.framebufferWidth / (float)frameBuffer.framebufferTextureWidth;
+                float f3 = (float)frameBuffer.framebufferHeight / (float)frameBuffer.framebufferTextureHeight;
+                Tessellator tessellator = Tessellator.getInstance();
+                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+                worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+                worldrenderer.pos(0.0D, (double)f1, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
+                worldrenderer.pos((double)f, (double)f1, 0.0D).tex((double)f2, 0.0D).color(255, 255, 255, 255).endVertex();
+                worldrenderer.pos((double)f, 0.0D, 0.0D).tex((double)f2, (double)f3).color(255, 255, 255, 255).endVertex();
+                worldrenderer.pos(0.0D, 0.0D, 0.0D).tex(0.0D, (double)f3).color(255, 255, 255, 255).endVertex();
+                tessellator.draw();
+                frameBuffer.unbindFramebufferTexture();
+                GlStateManager.enableDepth();
+                GlStateManager.depthMask(true);
+                GlStateManager.colorMask(true, true, true, true);
+                GlStateManager.enableAlpha();
+            }
+            GlStateManager.popAttrib();
+            GlStateManager.popMatrix();
+            GlStateManager.disableBlend();
+        }
+    }
+
     public static void blurArea(float x, float y, float x2, float y2, float blurStrength) {
         if (!OpenGlHelper.isFramebufferEnabled()) return;
 
@@ -116,6 +179,7 @@ public class BlurUtils {
         mc.getFramebuffer().bindFramebuffer(true);
 
         GlStateManager.pushMatrix();
+        GlStateManager.pushAttrib();
         Stencil.write(false);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -124,7 +188,7 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
-        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.colorMask(true, true, true, false);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
         GlStateManager.enableTexture2D();
@@ -146,11 +210,12 @@ public class BlurUtils {
         tessellator.draw();
         frbuffer.unbindFramebufferTexture();
         GlStateManager.enableDepth();
-        //GlStateManager.depthMask(true);
+        GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
         Stencil.dispose();
 
         GlStateManager.enableAlpha();
+        GlStateManager.popAttrib();
         GlStateManager.popMatrix();
     }
 
@@ -224,6 +289,7 @@ public class BlurUtils {
         mc.getFramebuffer().bindFramebuffer(true);
 
         GlStateManager.pushMatrix();
+        GlStateManager.pushAttrib();
         Stencil.write(renderClipLayer);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -237,7 +303,7 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
-        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.colorMask(true, true, true, false);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
         GlStateManager.enableTexture2D();
@@ -259,11 +325,11 @@ public class BlurUtils {
         tessellator.draw();
         frbuffer.unbindFramebufferTexture();
         GlStateManager.enableDepth();
-        //GlStateManager.depthMask(true);
+        GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
         Stencil.dispose();
-
         GlStateManager.enableAlpha();
+        GlStateManager.popAttrib();
         GlStateManager.popMatrix();
     }
 
@@ -307,6 +373,7 @@ public class BlurUtils {
         mc.getFramebuffer().bindFramebuffer(true);
 
         GlStateManager.pushMatrix();
+        GlStateManager.pushAttrib();
         Stencil.write(false);
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -315,7 +382,7 @@ public class BlurUtils {
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
         Stencil.erase(true);
-        GlStateManager.colorMask(true, true, true, true);
+        GlStateManager.colorMask(true, true, true, false);
         GlStateManager.disableDepth();
         GlStateManager.depthMask(false);
         GlStateManager.enableTexture2D();
@@ -337,11 +404,12 @@ public class BlurUtils {
         tessellator.draw();
         frbuffer.unbindFramebufferTexture();
         GlStateManager.enableDepth();
-        //GlStateManager.depthMask(true);
+        GlStateManager.depthMask(true);
         GlStateManager.colorMask(true, true, true, true);
         Stencil.dispose();
 
         GlStateManager.enableAlpha();
+        GlStateManager.popAttrib();
         GlStateManager.popMatrix();
     }
 
