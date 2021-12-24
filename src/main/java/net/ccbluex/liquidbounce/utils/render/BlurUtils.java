@@ -32,6 +32,7 @@ public class BlurUtils {
     private static int lastFactor;
     private static int lastWidth;
     private static int lastHeight;
+    private static int lastWeight;
 
     private static float lastX;
     private static float lastY;
@@ -83,7 +84,7 @@ public class BlurUtils {
         final int width = scaledResolution.getScaledWidth();
         final int height = scaledResolution.getScaledHeight();
 
-        if (sizeHasChanged(scaleFactor, width, height) || frameBuffer == null) {
+        if (sizeHasChanged(scaleFactor, width, height) || strength != lastWeight || frameBuffer == null) {
             frameBuffer = new Framebuffer(mc.displayWidth / strength, mc.displayHeight / strength, true);
             frameBuffer.setFramebufferColor(0, 0, 0, 0);
             frameBuffer.setFramebufferFilter(GL11.GL_LINEAR);
@@ -92,6 +93,7 @@ public class BlurUtils {
         lastFactor = scaleFactor;
         lastWidth = width;
         lastHeight = height;
+        lastWeight = strength;
 
         if (start) {
             frameBuffer.framebufferClear();

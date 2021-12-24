@@ -279,6 +279,7 @@ class Target : Element() {
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
 
+                    RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                     if (riseShadow.get()) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
@@ -289,8 +290,7 @@ class Target : Element() {
                         GlStateManager.popAttrib()
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
-                    } else
-                        RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
+                    }
 
                     if (riseParticle.get()) {
                         if (convertedTarget.hurtTime > convertedTarget.maxHurtTime / 2) {
