@@ -100,8 +100,8 @@ public class BlurUtils {
             frameBuffer.unbindFramebuffer();
             mc.getFramebuffer().bindFramebuffer(true);
             //frameBuffer.bindFramebuffer(true);
-            /*GlStateManager.enableBlend();
-            GlStateManager.blendFunc(770, 771);*/
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(770, 771);
             GlStateManager.pushMatrix();
             GlStateManager.pushAttrib();
             if (OpenGlHelper.isFramebufferEnabled())
@@ -135,7 +135,7 @@ public class BlurUtils {
             }
             GlStateManager.popAttrib();
             GlStateManager.popMatrix();
-            //GlStateManager.disableBlend();
+            GlStateManager.disableBlend();
         }
     }
 

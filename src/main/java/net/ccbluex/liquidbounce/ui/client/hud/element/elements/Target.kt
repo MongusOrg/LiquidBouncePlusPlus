@@ -282,9 +282,11 @@ class Target : Element() {
                     if (riseShadow.get()) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
+                        GlStateManager.pushAttrib()
                         BlurUtils.downscale(true, shadowStrengthValue.get())
                         RenderUtils.newDrawRect(0F, 0F, 10F + length, 55F, bgColor.rgb)
                         BlurUtils.downscale(false, shadowStrengthValue.get())
+                        GlStateManager.popAttrib()
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                     } else
