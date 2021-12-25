@@ -284,7 +284,7 @@ class Target : Element() {
                         GL11.glPushMatrix()
                         GlStateManager.pushAttrib()
                         BlurUtils.downscale(true, shadowStrengthValue.get())
-                        RenderUtils.originalRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, bgColor.rgb)
+                        RenderUtils.originalRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
                         BlurUtils.downscale(false, shadowStrengthValue.get())
                         GlStateManager.popAttrib()
                         GL11.glPopMatrix()
