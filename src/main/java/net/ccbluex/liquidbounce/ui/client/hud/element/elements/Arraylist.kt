@@ -398,7 +398,10 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     GlStateManager.pushAttrib()
                     BlurUtils.downscale(true, shadowStrength.get())
                     modules.forEachIndexed { index, module ->
-                        val xPos = -module.slide - 2
+                        var displayString = getModName(module)
+                        val width = fontRenderer.getStringWidth(displayString)
+                        val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
+                        
                         RenderUtils.newDrawRect(
                                 floatX,
                                 floatY + module.arrayY,
