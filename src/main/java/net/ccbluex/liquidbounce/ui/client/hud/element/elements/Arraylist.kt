@@ -38,6 +38,8 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Random", "Sky", "CRainbow", "LiquidSlowly", "Fade", "Mixer"), "Custom")
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
+    private val shadowValue = BoolValue("Shadow", false)
+    private val shadowStrength = IntegerValue("Shadow-Strength", 1, 1, 30)
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
@@ -235,6 +237,31 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
 
+                if (shadowValue.get()) {
+                    val floatX = renderX.toFloat()
+                    val floatY = renderY.toFloat()
+                    val shadowColor = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(),
+                            backgroundColorBlueValue.get(), backgroundColorAlphaValue.get() / 2).rgb
+                    GL11.glTranslated(-renderX, -renderY, 0.0)
+                    GL11.glPushMatrix()
+                    GlStateManager.pushAttrib()
+                    BlurUtils.downscale(true, shadowStrength.get())
+                    modules.forEachIndexed { index, module ->
+                        val xPos = -module.slide - 2
+                        RenderUtils.newDrawRect(
+                                floatX + xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
+                                floatY + module.arrayY,
+                                floatX + if (rectRightValue.get().equals("right", true)) -1F else 0F,
+                                floatY + module.arrayY + textHeight,
+                                shadowColor
+                        )
+                    }
+                    BlurUtils.downscale(false, shadowStrength.get())
+                    GlStateManager.popAttrib()
+                    GL11.glPopMatrix()
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                }
+
                 modules.forEachIndexed { index, module ->
                     var displayString = getModName(module)
 
@@ -357,6 +384,31 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         
                     }
                     BlurUtils.postCustomBlur()
+                    GL11.glPopMatrix()
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                }
+
+                if (shadowValue.get()) {
+                    val floatX = renderX.toFloat()
+                    val floatY = renderY.toFloat()
+                    val shadowColor = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(),
+                            backgroundColorBlueValue.get(), backgroundColorAlphaValue.get() / 2).rgb
+                    GL11.glTranslated(-renderX, -renderY, 0.0)
+                    GL11.glPushMatrix()
+                    GlStateManager.pushAttrib()
+                    BlurUtils.downscale(true, shadowStrength.get())
+                    modules.forEachIndexed { index, module ->
+                        val xPos = -module.slide - 2
+                        RenderUtils.newDrawRect(
+                                floatX,
+                                floatY + module.arrayY,
+                                floatX + xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
+                                floatY + module.arrayY + textHeight,
+                                shadowColor
+                        )
+                    }
+                    BlurUtils.downscale(false, shadowStrength.get())
+                    GlStateManager.popAttrib()
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
