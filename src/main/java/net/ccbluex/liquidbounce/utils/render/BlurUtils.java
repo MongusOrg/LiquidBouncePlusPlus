@@ -419,7 +419,7 @@ public class BlurUtils {
     }
 
     private static boolean sizeHasChanged(int scaleFactor, int width, int height) {
-        return (lastFactor != scaleFactor || lastWidth != width || lastHeight != height);
+        return lastFactor != scaleFactor || lastWidth != width || lastHeight != height;
     }
 }
 
