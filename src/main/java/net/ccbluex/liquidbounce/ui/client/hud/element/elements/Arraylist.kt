@@ -238,6 +238,8 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 }
 
                 if (shadowValue.get()) {
+                    val boostedColor = Color(backgroundColorRedValue.get().toFloat() / 255.0F, backgroundColorGreenValue.get().toFloat() / 255.0F,
+                            backgroundColorBlueValue.get().toFloat() / 255.0F, (backgroundColorAlphaValue.get().toFloat() / 255.0F * 1.85F).coerceIn(0F, 1F)).rgb
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
                     GL11.glTranslated(-renderX, -renderY, 0.0)
@@ -251,7 +253,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                 floatY + module.arrayY,
                                 floatX + if (rectRightValue.get().equals("right", true)) -1F else 0F,
                                 floatY + module.arrayY + textHeight,
-                                backgroundCustomColor
+                                boostedColor
                         )
                     }
                     BlurUtils.downscale(false, shadowStrength.get())
@@ -387,6 +389,8 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 }
 
                 if (shadowValue.get()) {
+                    val boostedColor = Color(backgroundColorRedValue.get().toFloat() / 255.0F, backgroundColorGreenValue.get().toFloat() / 255.0F,
+                            backgroundColorBlueValue.get().toFloat() / 255.0F, (backgroundColorAlphaValue.get().toFloat() / 255.0F * 1.85F).coerceIn(0F, 1F)).rgb
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
                     GL11.glTranslated(-renderX, -renderY, 0.0)
@@ -403,7 +407,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                 floatY + module.arrayY,
                                 floatX + xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
                                 floatY + module.arrayY + textHeight,
-                                backgroundCustomColor
+                                boostedColor
                         )
                     }
                     BlurUtils.downscale(false, shadowStrength.get())

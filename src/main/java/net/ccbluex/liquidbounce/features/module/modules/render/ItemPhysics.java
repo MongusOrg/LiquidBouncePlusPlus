@@ -8,7 +8,7 @@ package net.ccbluex.liquidbounce.features.module.modules.render;
 import net.ccbluex.liquidbounce.features.module.*;
 import net.ccbluex.liquidbounce.value.FloatValue;
 
-@ModuleInfo(name = "ItemPhysics", spacedName = "Item Physics", description = "its the physics", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "ItemPhysics", spacedName = "Item Physics", description = "newton", category = ModuleCategory.RENDER)
 public class ItemPhysics extends Module
 {
     public final FloatValue itemWeight = new FloatValue("Weight", 0.5F, 0F, 1F);

@@ -76,7 +76,7 @@ public abstract class MixinGuiInGame extends MixinGui {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
         //GlStateManager.pushMatrix();
-        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+        if (hud.getState()) GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
 
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
             final Minecraft mc = Minecraft.getMinecraft();

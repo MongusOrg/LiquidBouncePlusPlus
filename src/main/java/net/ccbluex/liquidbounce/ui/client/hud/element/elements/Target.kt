@@ -61,6 +61,7 @@ class Target : Element() {
     private val tSlideAnim = BoolValue("TSlide-Animation", true)
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseShadow = BoolValue("Rise-Shadow", true)
+    private val riseShadowLegacy = BoolValue("Rise-Shadow-Legacy", true)
     private val shadowStrengthValue = IntegerValue("Rise-Shadow-Strength", 4, 1, 40)
     private val riseParticle = BoolValue("Rise-Particle", true)
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
@@ -280,16 +281,21 @@ class Target : Element() {
                     }
 
                     if (riseShadow.get()) {
-                        GL11.glTranslated(-renderX, -renderY, 0.0)
-                        GL11.glPushMatrix()
-                        GlStateManager.pushAttrib()
-                        BlurUtils.downscale(true, shadowStrengthValue.get())
-                        RenderUtils.newDrawRect(floatX + 3F, floatY + 3F, floatX + 10F + length - 3F, floatY + 55F - 3F, bgColor.rgb)
-                        BlurUtils.downscale(false, shadowStrengthValue.get())
-                        RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb, false)
-                        GlStateManager.popAttrib()
-                        GL11.glPopMatrix()
-                        GL11.glTranslated(renderX, renderY, 0.0)
+                        if (riseShadowLegacy.get()) {
+                            UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
+                        } else {
+                            val opColor = Color(backgroundColorRedValue.get().toFloat() / 255F, backgroundColorGreenValue.get().toFloat() / 255F, backgroundColorBlueValue.get().toFloat() / 255F, (backgroundColorAlphaValue.get().toFloat() / 255F * 1.85F).coerceIn(0F, 1F))
+                            GL11.glTranslated(-renderX, -renderY, 0.0)
+                            GL11.glPushMatrix()
+                            GlStateManager.pushAttrib()
+                            BlurUtils.downscale(true, shadowStrengthValue.get())
+                            RenderUtils.newDrawRect(floatX + 3F, floatY + 3F, floatX + 10F + length - 3F, floatY + 55F - 3F, opColor.rgb)
+                            BlurUtils.downscale(false, shadowStrengthValue.get())
+                            RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb, false)
+                            GlStateManager.popAttrib()
+                            GL11.glPopMatrix()
+                            GL11.glTranslated(renderX, renderY, 0.0)
+                        }
                     } else {
                         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                     }
