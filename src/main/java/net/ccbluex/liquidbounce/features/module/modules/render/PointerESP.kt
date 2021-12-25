@@ -49,6 +49,7 @@ class PointerESP : Module() {
         val color = Color(redValue.get(),greenValue.get(),blueValue.get(),alphaValue.get())
 
         GlStateManager.pushMatrix()
+        GlStateManager.pushAttrib()
         val size = 50 + sizeValue.get()
         val xOffset = sr.scaledWidth / 2 - 24.5 - sizeValue.get() / 2.0
         val yOffset = sr.scaledHeight / 2 - 25.2 - sizeValue.get() / 2.0
@@ -78,7 +79,7 @@ class PointerESP : Module() {
                 }
             }
         }
-
+        GlStateManager.popAttrib()
         GlStateManager.popMatrix()
     }
 }

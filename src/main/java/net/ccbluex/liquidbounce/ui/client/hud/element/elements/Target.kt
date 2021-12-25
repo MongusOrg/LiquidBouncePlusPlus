@@ -280,12 +280,11 @@ class Target : Element() {
                     }
 
                     if (riseShadow.get()) {
-                        val shadowColor = Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), backgroundColorAlphaValue.get() / 2)
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
                         GlStateManager.pushAttrib()
                         BlurUtils.downscale(true, shadowStrengthValue.get())
-                        RenderUtils.newDrawRect(floatX + 3F, floatY + 3F, floatX + 10F + length - 3F, floatY + 55F - 3F, shadowColor.rgb)
+                        RenderUtils.newDrawRect(floatX + 3F, floatY + 3F, floatX + 10F + length - 3F, floatY + 55F - 3F, bgColor.rgb)
                         BlurUtils.downscale(false, shadowStrengthValue.get())
                         RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb, false)
                         GlStateManager.popAttrib()
