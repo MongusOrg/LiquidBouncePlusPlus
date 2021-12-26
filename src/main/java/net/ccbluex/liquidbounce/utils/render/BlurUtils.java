@@ -90,8 +90,11 @@ public class BlurUtils {
             frameBuffer.setFramebufferFilter(GL11.GL_LINEAR);
         }
 
-        if (sizeHasChanged(scaleFactor, width, height) || strength != lastWeight)
+        if (sizeHasChanged(scaleFactor, width, height) || strength != lastWeight) {
             frameBuffer.createBindFramebuffer(mc.displayWidth / strength, mc.displayHeight / strength);
+            frameBuffer.setFramebufferColor(0, 0, 0, 0);
+            frameBuffer.setFramebufferFilter(GL11.GL_LINEAR);
+        }
         
         lastFactor = scaleFactor;
         lastWidth = width;
