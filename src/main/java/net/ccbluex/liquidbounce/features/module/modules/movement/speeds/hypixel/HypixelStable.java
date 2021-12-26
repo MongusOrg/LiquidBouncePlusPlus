@@ -34,11 +34,14 @@ public class HypixelStable extends SpeedMode {
         final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) return;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
+            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
+
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
+                mc.thePlayer.jump();
                 event.setY(mc.thePlayer.motionY = 0.42);
+                moveSpeed *= 1.95;
             }
             
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * 1.085, MovementUtils.getSpeed());
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }

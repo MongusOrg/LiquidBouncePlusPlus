@@ -33,10 +33,14 @@ public class HypixelYPort extends SpeedMode {
         final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) return;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && !mc.gameSettings.keyBindJump.isKeyDown()) {
-            if (mc.thePlayer.onGround)
-                event.setY(0.08);
-
             double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
+
+            if (mc.thePlayer.onGround) {
+                mc.thePlayer.jump();
+                event.setY(0.08);
+                moveSpeed *= 1.015;
+            }
+
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }

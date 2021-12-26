@@ -34,13 +34,16 @@ public class HypixelBoost extends SpeedMode {
         if (targetStrafe == null) return;
         mc.timer.timerSpeed = 1F;
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
+            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
+
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
+                mc.thePlayer.jump();
                 event.setY(mc.thePlayer.motionY = 0.4199999999);
+                moveSpeed *= 1.45;
             }
             
             mc.timer.timerSpeed = Math.max(1F + Math.abs((float)mc.thePlayer.motionY) * 3F, 1F);
             
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * 1.045, MovementUtils.getSpeed());
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
     }
