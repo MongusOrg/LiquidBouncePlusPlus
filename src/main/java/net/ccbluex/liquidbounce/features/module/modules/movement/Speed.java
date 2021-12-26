@@ -345,14 +345,14 @@ public class Speed extends Module {
             case "Hypixel":
             mode = "Hypixel" + hypixelModeValue.get();
             break;
+            case "Verus":
+            mode = "Verus" + verusModeValue.get();
+            break;
             case "Custom":
             mode = "Custom";
             break;
             case "Other":
             mode = otherModeValue.get();
-            break;
-            case "Verus":
-            mode = verusModeValue.get();
             break;
         }
         return mode;
