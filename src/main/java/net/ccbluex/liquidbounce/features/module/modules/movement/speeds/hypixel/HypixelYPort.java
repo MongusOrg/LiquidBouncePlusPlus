@@ -36,8 +36,7 @@ public class HypixelYPort extends SpeedMode {
             double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
 
             if (mc.thePlayer.onGround) {
-                event.setY(0.08);
-                moveSpeed *= 1.015;
+                event.setY(0.18);
             }
 
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);

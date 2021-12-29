@@ -90,10 +90,10 @@ public class Fly extends Module {
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F);
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Test"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verus"); });
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Jump"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verus"); });
     private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual", () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
-    private final BoolValue verusReDamageValue = new ListValue("Verus-ReDMG", true, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
-    private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-ReDMG-Ticks", 20, 0, 300, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); && verusReDamageValue.get(); });
+    private final BoolValue verusReDamageValue = new BoolValue("Verus-ReDamage", true, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none") && !verusDmgModeValue.get().equalsIgnoreCase("jump"); });
+    private final IntegerValue verusReDmgTickValue = new IntegerValue("Verus-ReDamage-Ticks", 20, 0, 300, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none") && !verusDmgModeValue.get().equalsIgnoreCase("jump") && verusReDamageValue.get(); });
     private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false, () -> { return modeValue.get().equalsIgnoreCase("verus"); });
     private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("verus") && verusVisualValue.get(); });
     private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
@@ -108,7 +108,7 @@ public class Fly extends Module {
     private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise"}, "Original", () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); }); // Original is from UnlegitMC/FDPClient.
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
 
-    // Hypixel glide (but it actually works. novoline speedrun flashback)
+    // Hypixel glide
     private final BoolValue hypixelGlideCustom = new BoolValue("HypixelGlide-Custom", false, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide"); });
     private final IntegerValue hypixelGlideDelay = new IntegerValue("HypixelGlide-DelayTick", 25, 1, 50, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
     private final FloatValue hypixelGlideForward = new FloatValue("HypixelGlide-Forward", 7.9F, 0, 10, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
@@ -132,10 +132,10 @@ public class Fly extends Module {
 
     private boolean wasDead;
 
-    private int boostTicks = 0;
+    private int boostTicks, dmgCooldown = 0;
     private int verusJumpTimes = 0;
 
-    private boolean verusDmged = false;
+    private boolean verusDmged, shouldActiveDmg = false;
 
     private float lastYaw, lastPitch;
 
@@ -175,6 +175,7 @@ public class Fly extends Module {
         final String mode = modeValue.get();
 
         boostTicks = 0;
+        dmgCooldown = 0;
         pearlState = 0;
 
         verusJumpTimes = 0;
@@ -208,6 +209,7 @@ public class Fly extends Module {
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
                         mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                        if (verusReDamageValue.get()) dmgCooldown = verusReDmgTickValue.get();
                     }
                 } else if (verusDmgModeValue.get().equalsIgnoreCase("InstantC06")) {
                     if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
@@ -215,8 +217,9 @@ public class Fly extends Module {
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
                         mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                        if (verusReDamageValue.get()) dmgCooldown = verusReDmgTickValue.get();
                     }
-                } else if (verusDmgModeValue.get().equalsIgnoreCase("Test")) {
+                } else if (verusDmgModeValue.get().equalsIgnoreCase("Jump")) {
                     if (mc.thePlayer.onGround) {
                         mc.thePlayer.jump();
                         verusJumpTimes = 1;
@@ -226,6 +229,7 @@ public class Fly extends Module {
                     verusDmged = true;
                 }
                 if (verusVisualValue.get()) mc.thePlayer.setPosition(mc.thePlayer.posX, y + verusVisualHeightValue.get(), mc.thePlayer.posZ);
+                shouldActiveDmg = dmgCooldown > 0;
                 break;
             case "bugspartan":
                 for(int i = 0; i < 65; ++i) {
@@ -344,15 +348,39 @@ public class Fly extends Module {
             case "verus":
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
-                if (!verusDmgModeValue.get().equalsIgnoreCase("Test") || verusDmged)
+                if (!verusDmgModeValue.get().equalsIgnoreCase("Jump") || shouldActiveDmg || verusDmged)
                     mc.thePlayer.motionY = 0;
 
-                if (verusDmgModeValue.get().equalsIgnoreCase("Test") && verusJumpTimes < 5) {
+                if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5) {
                     if (mc.thePlayer.onGround) {
                         mc.thePlayer.jump();
                         verusJumpTimes += 1;
                     }
                     return;
+                }
+
+                if (shouldActiveDmg) {
+                    if (dmgCooldown > 0) 
+                        dmgCooldown--;
+                    else if (verusDmged) {
+                        verusDmged = false;
+                        if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
+                            if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                            }
+                        } else if (verusDmgModeValue.get().equalsIgnoreCase("InstantC06")) {
+                            if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                            }
+                        }
+                        dmgCooldown = verusReDmgTickValue.get();
+                    }
                 }
 
                 if (!verusDmged && mc.thePlayer.hurtTime > 0) {
@@ -531,7 +559,7 @@ public class Fly extends Module {
                     sendAAC5Packets();
             }
 
-            if (verusDmgModeValue.get().equalsIgnoreCase("Test") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
+            if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
                 packetPlayer.onGround = false;
             }
         }
@@ -590,7 +618,7 @@ public class Fly extends Module {
                 break;
             case "verus": 
                 if (!verusDmged)
-                    if (verusDmgModeValue.get().equalsIgnoreCase("test"))
+                    if (verusDmgModeValue.get().equalsIgnoreCase("Jump"))
                         event.zeroXZ();
                     else
                         event.cancelEvent();
