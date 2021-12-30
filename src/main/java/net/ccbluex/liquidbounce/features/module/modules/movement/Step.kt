@@ -168,9 +168,10 @@ class Step : Module() {
     @EventTarget
     fun onStep(event: StepEvent) {
         mc.thePlayer ?: return
+        val phaseMod = LiquidBounce.moduleManager[Phase::class.java]!!
 
-        // Phase should disable step
-        if (LiquidBounce.moduleManager[Phase::class.java]!!.state) {
+        // Phase should disable step (except hypixel one)
+        if (phaseMod.state && !phaseMod.modeValue.get().equals("hypixel")) {
             event.stepHeight = 0F
             return
         }
