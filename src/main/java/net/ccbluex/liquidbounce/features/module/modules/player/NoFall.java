@@ -37,7 +37,7 @@ import net.minecraft.util.*;
 
 @ModuleInfo(name = "NoFall", spacedName = "No Fall", description = "Prevents you from taking fall damage.", category = ModuleCategory.PLAYER)
 public class NoFall extends Module {
-    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "NewPacket", "MLG" , "AAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "Spartan", "CubeCraft" , "Hypixel", "Damage", "Edit", "Verus"}, "SpoofGround");
+    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "NewPacket", "MLG" , "AAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "Spartan", "CubeCraft" , "Hypixel", "NewHypixel", "Damage", "Edit", "Verus"}, "SpoofGround");
     private final FloatValue minFallDistance = new FloatValue("MinMLGHeight", 5F, 2F, 50F);
     private final BoolValue voidCheck = new BoolValue("Void-Check", true);
 
@@ -170,6 +170,15 @@ public class NoFall extends Module {
             if (mode.equalsIgnoreCase("Hypixel")
                     && mc.thePlayer != null && mc.thePlayer.fallDistance > 1.5)
                 playerPacket.onGround = mc.thePlayer.ticksExisted % 2 == 0;
+
+            if (mode.equalsIgnoreCase("Hypixel")
+                    && mc.thePlayer != null && mc.thePlayer.fallDistance > 2) {
+                if (mc.thePlayer.ticksExisted % 2 == 0) {
+                    playerPacket.onGround = true;
+                    playerPacket.setMoving(false);
+                    playerPacket.rotating = false;
+                }
+            }
 
             if (mode.equalsIgnoreCase("Edit") && mc.thePlayer != null && mc.thePlayer.fallDistance > 2) 
                 playerPacket.onGround = true;
