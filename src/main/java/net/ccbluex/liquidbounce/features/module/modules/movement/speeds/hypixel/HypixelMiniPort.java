@@ -37,7 +37,6 @@ public class HypixelMiniPort extends SpeedMode {
 
             if (mc.thePlayer.onGround) {
                 event.setY(0.05);
-                moveSpeed *= 1.095;
             }
 
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
