@@ -20,7 +20,7 @@ jobs:
         name: Build
         with:
           job-id: jdk8
-          arguments: build
+          arguments: build --build-cache compileJava
           gradle-version: wrapper
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
