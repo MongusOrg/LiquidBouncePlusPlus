@@ -132,7 +132,7 @@ public class Blink extends Module {
             for(final double[] pos : positions)
                 glVertex3d(pos[0] - renderPosX, pos[1] - renderPosY, pos[2] - renderPosZ);
 
-            glColor4d(1, 1, 1, 1);
+            glColor4d(1D, 1D, 1D, 1D);
             glEnd();
             glEnable(GL_DEPTH_TEST);
             glDisable(GL_LINE_SMOOTH);
