@@ -62,6 +62,10 @@ public final class MovementUtils extends MinecraftInstance {
         return getDirectionRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
     }
 
+    public static float getRawDirection() {
+        return getRawDirectionRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
+    }
+
     public static double getDirectionRotation(float yaw, float pStrafe, float pForward) {
         float rotationYaw = yaw;
 
@@ -81,6 +85,27 @@ public final class MovementUtils extends MinecraftInstance {
             rotationYaw += 90F * forward;
 
         return Math.toRadians(rotationYaw);
+    }
+
+    public static float getRawDirectionRotation(float yaw, float pStrafe, float pForward) {
+        float rotationYaw = yaw;
+
+        if(pForward < 0F)
+            rotationYaw += 180F;
+
+        float forward = 1F;
+        if(pForward < 0F)
+            forward = -0.5F;
+        else if(pForward > 0F)
+            forward = 0.5F;
+
+        if(pStrafe > 0F)
+            rotationYaw -= 90F * forward;
+
+        if(pStrafe < 0F)
+            rotationYaw += 90F * forward;
+
+        return rotationYaw;
     }
 
     public static float getScaffoldRotation(float yaw, float strafe) {

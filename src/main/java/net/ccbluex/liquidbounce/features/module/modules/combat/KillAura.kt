@@ -10,6 +10,7 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
+import net.ccbluex.liquidbounce.features.module.modules.exploit.Disabler
 import net.ccbluex.liquidbounce.features.module.modules.misc.AntiBot
 import net.ccbluex.liquidbounce.features.module.modules.misc.Teams
 import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe
@@ -731,6 +732,10 @@ class KillAura : Module() {
      * Update killaura rotations to enemy
      */
     private fun updateRotations(entity: Entity): Boolean {
+        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
+        if (disabler.canCancelRot)
+            return true
+            
         var boundingBox = entity.entityBoundingBox
         if (rotations.get().equals("Vanilla", ignoreCase = true)){
             if (maxTurnSpeed.get() <= 0F)
@@ -817,8 +822,9 @@ class KillAura : Module() {
      * Check if enemy is hitable with current rotations
      */
     private fun updateHitable() {
+        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
         // Disable hitable check if turn speed is zero
-        if(maxTurnSpeed.get() <= 0F || noHitCheck.get()) {
+        if(maxTurnSpeed.get() <= 0F || noHitCheck.get() || disabler.canCancelRot) {
             hitable = true
             return
         }
