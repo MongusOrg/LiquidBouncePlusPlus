@@ -130,6 +130,8 @@ public class WDLChunkLoader extends AnvilChunkLoader {
 		rootTag.setTag("Level", levelTag);
 
 		addChunkToPending(chunk.getChunkCoordIntPair(), rootTag);
+
+		WDL.unloadChunk(chunk.getChunkCoordIntPair());
 	}
 
 	/**

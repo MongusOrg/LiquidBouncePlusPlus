@@ -456,6 +456,14 @@ public class WDL {
 		if (wasDownloading) {
 			minecraft.getSaveLoader().flushCache();
 			saveHandler.flush();
+
+			newTileEntities.values().forEach((m) -> {
+				m.clear();
+			});
+			newTileEntities.clear();
+			newEntities.clear();
+			newMapDatas.clear();
+
 			startOnChange = false;
 			saving = false;
 			downloading = false;
@@ -1368,6 +1376,15 @@ public class WDL {
 			newTileEntities.put(chunkPos, new HashMap<BlockPos, TileEntity>());
 		}
 		newTileEntities.get(chunkPos).put(pos, te);
+	}
+
+	public static void unloadChunk(ChunkCoordIntPair pos) {
+		Map m = newTileEntities.get(pos);
+		if(m != null) {
+			m.clear();
+		}
+		newTileEntities.remove(pos);
+		newEntities.removeAll(pos);
 	}
 	
 	/**
