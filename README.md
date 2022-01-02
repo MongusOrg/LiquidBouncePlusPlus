@@ -12,6 +12,7 @@ Twitter: https://twitter.com/CCBlueX
 - [Sk1erLLC/Patcher](https://github.com/Sk1erLLC/Patcher/)
 - [Guichaguri/BetterFPS](https://github.com/Guichaguri/BetterFps/)
 - [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) for AAC5 bypasses.
+- [Pokechu22/WorldDownloader](https://github.com/Pokechu22/WorldDownloader/) (contact me on Discord: why dont#0425 for legal actions.)
 
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/WYSI-Foundation/LiquidBouncePlus/issues).

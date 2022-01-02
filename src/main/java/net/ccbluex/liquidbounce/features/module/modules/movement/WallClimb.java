@@ -19,15 +19,23 @@ import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 
-@ModuleInfo(name = "WallClimb", description = "Allows you to climb up walls like a spider.", category = ModuleCategory.MOVEMENT)
+@ModuleInfo(name = "WallClimb", spacedName = "Wall Climb", description = "Allows you to climb up walls like a spider.", category = ModuleCategory.MOVEMENT)
 public class WallClimb extends Module {
 
-    private final ListValue modeValue = new ListValue("Mode", new String[] {"Simple", "CheckerClimb", "Clip", "AAC3.3.12", "AACGlide"}, "Simple");
-    private final ListValue clipMode = new ListValue("ClipMode", new String[] {"Jump", "Fast"}, "Fast");
-    private final FloatValue checkerClimbMotionValue = new FloatValue("CheckerClimbMotion", 0F, 0F, 1F);
+    private final ListValue modeValue = new ListValue("Mode", new String[] {"Simple", "CheckerClimb", "Clip", "AAC3.3.12", "AACGlide", "Verus"}, "Simple");
+    private final ListValue clipMode = new ListValue("ClipMode", new String[] {"Jump", "Fast"}, "Fast", { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final FloatValue checkerClimbMotionValue = new FloatValue("CheckerClimbMotion", 0F, 0F, 1F, { return modeValue.get().equalsIgnoreCase("checkerclimb"); });
+    private final FloatValue verusClimbSpeed = new FloatValue("VerusClimbSpeed", 0F, 0F, 1F, { return modeValue.get().equalsIgnoreCase("verus"); });
 
-    private boolean glitch;
+    private boolean glitch, canClimb;
     private int waited;
+
+    @Override
+    public void onEnable() {
+        glitch = false;
+        canClimb = false;
+        waited = 0;
+    }
 
     @EventTarget
     public void onMove(MoveEvent event) {
@@ -38,6 +46,12 @@ public class WallClimb extends Module {
             event.setY(0.2D);
             mc.thePlayer.motionY = 0D;
         }
+    }
+
+    @EventTarget
+    public void onJump(JumpEvent event) {
+        if (canClimb)
+            event.cancelEvent();
     }
 
     @EventTarget
@@ -99,6 +113,15 @@ public class WallClimb extends Module {
 
                 mc.thePlayer.motionY = -0.189;
                 break;
+            case "verus":
+                if (!mc.thePlayer.isCollidedHorizontally || mc.thePlayer.isInWater() || mc.thePlayer.isInLava() || mc.thePlayer.isOnLadder() || mc.thePlayer.isInWeb || mc.thePlayer.isOnLadder()) {
+                    canClimb = false;
+                } else {
+                    canClimb = true; 
+                    mc.thePlayer.motionY = verusClimbSpeed.get(); 
+                    mc.thePlayer.onGround = true;
+                }
+                break;
         }
     }
 
@@ -117,6 +140,9 @@ public class WallClimb extends Module {
 
                 glitch = false;
             }
+
+            if (canClimb)
+                packetPlayer.onGround = true;
         }
     }
 
