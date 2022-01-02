@@ -73,12 +73,12 @@ public abstract class GuiTurningCameraBase extends GuiScreen {
 			// However, the messed up classes happen to include GameSettings.
 			// So these names may seem odd, but they are right.  Look down one
 			// in the options.
-			this.oldCameraMode = WDL.minecraft.gameSettings.showDebugInfo;
-			this.oldHideHud = WDL.minecraft.gameSettings.thirdPersonView;
+			this.oldCameraMode = WDL.minecraft.gameSettings.thirdPersonView;
+			this.oldHideHud = WDL.minecraft.gameSettings.showDebugInfo;
 			this.oldShowDebug = WDL.minecraft.gameSettings.showDebugProfilerChart;
 			this.oldChatVisibility = WDL.minecraft.gameSettings.chatVisibility;
-			WDL.minecraft.gameSettings.showDebugInfo = 0;
-			WDL.minecraft.gameSettings.thirdPersonView = true;
+			WDL.minecraft.gameSettings.thirdPersonView = 0;
+			WDL.minecraft.gameSettings.showDebugInfo = true;
 			WDL.minecraft.gameSettings.showDebugProfilerChart = false;
 			WDL.minecraft.gameSettings.chatVisibility = EnumChatVisibility.HIDDEN;
 			// Gets the render view entity for minecraft.
@@ -201,8 +201,8 @@ public abstract class GuiTurningCameraBase extends GuiScreen {
 	public void onGuiClosed() {
 		super.onGuiClosed();
 		// Again, this looks wrong, but is correct in 1.8.9 WITH INCORRECT MAPPINGS.
-		WDL.minecraft.gameSettings.showDebugInfo = this.oldCameraMode;
-		WDL.minecraft.gameSettings.thirdPersonView = oldHideHud;
+		WDL.minecraft.gameSettings.thirdPersonView = this.oldCameraMode;
+		WDL.minecraft.gameSettings.showDebugInfo = oldHideHud;
 		WDL.minecraft.gameSettings.showDebugProfilerChart = oldShowDebug;
 		WDL.minecraft.gameSettings.chatVisibility = oldChatVisibility;
 		WDL.minecraft.setRenderViewEntity(this.oldRenderViewEntity);
