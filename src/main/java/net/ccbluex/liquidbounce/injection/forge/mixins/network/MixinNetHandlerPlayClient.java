@@ -41,6 +41,7 @@ import net.minecraft.network.play.server.S34PacketMaps;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
 import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.network.play.server.S48PacketResourcePackSend;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.WorldSettings;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
