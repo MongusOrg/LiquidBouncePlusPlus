@@ -171,6 +171,7 @@
     "render.MixinTileEntityMobSpawnerRenderer",
     "render.MixinTileEntityRendererDispatcher",
     "render.MixinVisGraph",
+    "resources.MixinDefaultResourcePack",
     "resources.MixinSkinManager",
     "world.MixinWorld",
     "world.MixinWorldClient"

@@ -34,7 +34,12 @@ import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.client.C19PacketResourcePackStatus;
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
 import net.minecraft.network.play.server.S01PacketJoinGame;
+import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S14PacketEntity;
+import net.minecraft.network.play.server.S24PacketBlockAction;
+import net.minecraft.network.play.server.S34PacketMaps;
+import net.minecraft.network.play.server.S3FPacketCustomPayload;
+import net.minecraft.network.play.server.S40PacketDisconnect;
 import net.minecraft.network.play.server.S48PacketResourcePackSend;
 import net.minecraft.world.WorldSettings;
 import org.spongepowered.asm.mixin.Final;
@@ -103,6 +108,19 @@ public abstract class MixinNetHandlerPlayClient {
         }
     }
 
+    @Inject(method = "handleDisconnect", at = @At("HEAD")) 
+    public void handleDisconnect(S40PacketDisconnect packetIn, CallbackInfo callbackInfo) {
+        if (wdl.WDL.downloading) {
+			wdl.WDL.stopDownload();
+
+			try {
+				Thread.sleep(2000L);
+			} catch (Exception var3) {
+				;
+			}
+		}
+    }
+
     @Inject(method = "handleResourcePack", at = @At("HEAD"), cancellable = true)
     private void handleResourcePack(final S48PacketResourcePackSend p_handleResourcePack_1_, final CallbackInfo callbackInfo) {
         final String url = p_handleResourcePack_1_.getURL();
@@ -155,5 +173,38 @@ public abstract class MixinNetHandlerPlayClient {
 
         if(entity != null)
             LiquidBounce.eventManager.callEvent(new EntityMovementEvent(entity));
+    }
+
+    @Inject(method = "onDisconnect", at = @At("HEAD")) 
+    public void injectDisconnect(IChatComponent reason, CallbackInfo callbackInfo) {
+        if (wdl.WDL.downloading) {
+			wdl.WDL.stopDownload();
+
+			try {
+				Thread.sleep(2000L);
+			} catch (Exception var3) {
+				;
+			}
+		}
+    }
+
+    @Inject(method = "handleBlockAction", at = @At("RETURN"))
+    public void handleBlockAction(S24PacketBlockAction packetIn, CallbackInfo callbackInfo) {
+        wdl.WDLHooks.onNHPCHandleBlockAction((NetHandlerPlayClient) (Object) this, packetIn);
+    }
+
+    @Inject(method = "handleMaps", at = @At("RETURN"))
+    public void handleMaps(S34PacketMaps packetIn, CallbackInfo callbackInfo) {
+        wdl.WDLHooks.onNHPCHandleMaps((NetHandlerPlayClient) (Object) this, packetIn);
+    }
+
+    @Inject(method = "handleCustomPayload", at = @At("RETURN"))
+    public void handleCustomPayload(S3FPacketCustomPayload packetIn, CallbackInfo callbackInfo) {
+        wdl.WDLHooks.onNHPCHandleCustomPayload((NetHandlerPlayClient) (Object) this, packetIn);
+    }
+
+    @Inject(method = "handleChat", at = @At("RETURN"))
+    public void handleChat(S02PacketChat packetIn, CallbackInfo callbackInfo) {
+        wdl.WDLHooks.onNHPCHandleChat((NetHandlerPlayClient) (Object) this, packetIn);
     }
 }
