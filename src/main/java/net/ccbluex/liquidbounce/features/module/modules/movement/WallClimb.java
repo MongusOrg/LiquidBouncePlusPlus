@@ -23,9 +23,9 @@ import net.minecraft.util.MathHelper;
 public class WallClimb extends Module {
 
     private final ListValue modeValue = new ListValue("Mode", new String[] {"Simple", "CheckerClimb", "Clip", "AAC3.3.12", "AACGlide", "Verus"}, "Simple");
-    private final ListValue clipMode = new ListValue("ClipMode", new String[] {"Jump", "Fast"}, "Fast", { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final FloatValue checkerClimbMotionValue = new FloatValue("CheckerClimbMotion", 0F, 0F, 1F, { return modeValue.get().equalsIgnoreCase("checkerclimb"); });
-    private final FloatValue verusClimbSpeed = new FloatValue("VerusClimbSpeed", 0F, 0F, 1F, { return modeValue.get().equalsIgnoreCase("verus"); });
+    private final ListValue clipMode = new ListValue("ClipMode", new String[] {"Jump", "Fast"}, "Fast", () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final FloatValue checkerClimbMotionValue = new FloatValue("CheckerClimbMotion", 0F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("checkerclimb"); });
+    private final FloatValue verusClimbSpeed = new FloatValue("VerusClimbSpeed", 0F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("verus"); });
 
     private boolean glitch, canClimb;
     private int waited;
