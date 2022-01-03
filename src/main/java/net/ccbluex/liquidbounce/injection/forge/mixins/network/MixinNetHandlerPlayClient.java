@@ -199,7 +199,7 @@ public abstract class MixinNetHandlerPlayClient {
         wdl.WDLHooks.onNHPCHandleMaps((NetHandlerPlayClient) (Object) this, packetIn);
     }
 
-    @Inject(method = "handleCustomPayload", at = @At("RETURN"))
+    @Inject(method = "handleCustomPayload", at = @At("TAIL"))
     public void handleCustomPayload(S3FPacketCustomPayload packetIn, CallbackInfo callbackInfo) {
         wdl.WDLHooks.onNHPCHandleCustomPayload((NetHandlerPlayClient) (Object) this, packetIn);
     }
