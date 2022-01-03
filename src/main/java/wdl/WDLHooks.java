@@ -21,7 +21,7 @@ import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S24PacketBlockAction;
 import net.minecraft.network.play.server.S34PacketMaps;
 import net.minecraft.network.play.server.S3FPacketCustomPayload;
-import net.minecraft.profiler.Profiler;
+//import net.minecraft.profiler.Profiler;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.MapData;
@@ -41,7 +41,7 @@ import wdl.gui.GuiWDLPermissions;
  * All of these should be called regardless of any WDL state variables.
  */
 public class WDLHooks {
-	private static final Profiler profiler = Minecraft.getMinecraft().mcProfiler;
+	//private static final Profiler profiler = Minecraft.getMinecraft().mcProfiler;
 	
 	/**
 	 * Called when {@link WorldClient#tick()} is called.
@@ -50,29 +50,29 @@ public class WDLHooks {
 	 */
 	public static void onWorldClientTick(WorldClient sender) {
 		try {
-			profiler.startSection("wdl");
+			//profiler.startSection("wdl");
 			
 			List<EntityPlayer> players = ImmutableList.copyOf(sender.playerEntities);
 			
 			if (sender != WDL.worldClient) {
-				profiler.startSection("onWorldLoad");
+				//profiler.startSection("onWorldLoad");
 				if (WDL.worldLoadingDeferred) {
 					return;
 				}
 				
 				WDLEvents.onWorldLoad(sender);
-				profiler.endSection();  // "onWorldLoad"
+				//profiler.endSection();  // "onWorldLoad"
 			} else {
-				profiler.startSection("inventoryCheck");
+				//profiler.startSection("inventoryCheck");
 				if (WDL.downloading && WDL.thePlayer != null) {
 					if (WDL.thePlayer.openContainer != WDL.windowContainer) {
 						if (WDL.thePlayer.openContainer == WDL.thePlayer.inventoryContainer) {
 							boolean handled;
 							
-							profiler.startSection("onItemGuiClosed");
-							profiler.startSection("Core");
+							//profiler.startSection("onItemGuiClosed");
+							//profiler.startSection("Core");
 							handled = WDLEvents.onItemGuiClosed();
-							profiler.endSection();  // "Core"
+							//profiler.endSection();  // "Core"
 							
 							Container container = WDL.thePlayer.openContainer;
 							if (WDL.lastEntity != null) {
@@ -84,10 +84,10 @@ public class WDLHooks {
 										break;
 									}
 
-									profiler.startSection(info.id);
+									//profiler.startSection(info.id);
 									handled = info.mod.onEntityGuiClosed(
 											sender, entity, container);
-									profiler.endSection();  // info.id
+									//profiler.endSection();  // info.id
 								}
 								
 								if (!handled) {
@@ -104,10 +104,10 @@ public class WDLHooks {
 										break;
 									}
 
-									profiler.startSection(info.id);
+									//profiler.startSection(info.id);
 									handled = info.mod.onBlockGuiClosed(
 											sender, pos, container);
-									profiler.endSection();  // info.id
+									//profiler.endSection();  // info.id
 								}
 								
 								if (!handled) {
@@ -118,25 +118,25 @@ public class WDLHooks {
 								}
 							}
 							
-							profiler.endSection();  // onItemGuiClosed
+							//profiler.endSection();  // onItemGuiClosed
 						} else {
-							profiler.startSection("onItemGuiOpened");
-							profiler.startSection("Core");
+							//profiler.startSection("onItemGuiOpened");
+							//profiler.startSection("Core");
 							WDLEvents.onItemGuiOpened();
-							profiler.endSection();  // "Core"
-							profiler.endSection();  // "onItemGuiOpened"
+							//profiler.endSection();  // "Core"
+							//profiler.endSection();  // "onItemGuiOpened"
 						}
 	
 						WDL.windowContainer = WDL.thePlayer.openContainer;
 					}
 				}
-				profiler.endSection();  // "inventoryCheck"
+				//profiler.endSection();  // "inventoryCheck"
 			}
 			
-			profiler.startSection("capes");
+			//profiler.startSection("capes");
 			CapeHandler.onWorldTick(players);
-			profiler.endSection();  // "capes"
-			profiler.endSection();  // "wdl"
+			//profiler.endSection();  // "capes"
+			//profiler.endSection();  // "wdl"
 		} catch (Throwable e) {
 			WDL.crashed(e, "WDL mod: exception in onWorldClientTick event");
 		}
@@ -152,20 +152,20 @@ public class WDLHooks {
 		try {
 			if (!WDL.downloading) { return; }
 			
-			profiler.startSection("wdl");
+			//profiler.startSection("wdl");
 			
 			if (!loading) {
-				profiler.startSection("onChunkNoLongerNeeded");
+				//profiler.startSection("onChunkNoLongerNeeded");
 				Chunk c = sender.getChunkFromChunkCoords(x, z); 
 				
-				profiler.startSection("Core");
+				//profiler.startSection("Core");
 				wdl.WDLEvents.onChunkNoLongerNeeded(c);
-				profiler.endSection();  // "Core"
+				//profiler.endSection();  // "Core"
 				
-				profiler.endSection();  // "onChunkNoLongerNeeded"
+				//profiler.endSection();  // "onChunkNoLongerNeeded"
 			}
 			
-			profiler.endSection();
+			//profiler.endSection();
 		} catch (Throwable e) {
 			WDL.crashed(e, "WDL mod: exception in onWorldDoPreChunk event");
 		}
@@ -184,15 +184,15 @@ public class WDLHooks {
 		try {
 			if (!WDL.downloading) { return; }
 			
-			profiler.startSection("wdl.onRemoveEntityFromWorld");
+			//profiler.startSection("wdl.onRemoveEntityFromWorld");
 			
 			Entity entity = sender.getEntityByID(eid);
 			
-			profiler.startSection("Core");
+			//profiler.startSection("Core");
 			WDLEvents.onRemoveEntityFromWorld(entity);
-			profiler.endSection();  // "Core"
+			//profiler.endSection();  // "Core"
 			
-			profiler.endSection();  // "wdl.onRemoveEntityFromWorld"
+			//profiler.endSection();  // "wdl.onRemoveEntityFromWorld"
 		} catch (Throwable e) {
 			WDL.crashed(e,
 					"WDL mod: exception in onWorldRemoveEntityFromWorld event");
@@ -214,23 +214,23 @@ public class WDLHooks {
 			
 			if (!WDL.downloading) { return; }
 			
-			profiler.startSection("wdl.onChatMessage");
+			//profiler.startSection("wdl.onChatMessage");
 			
 			//func_148915_c returns the IChatComponent.
 			String chatMessage = packet.getChatComponent().getUnformattedText();
 			
-			profiler.startSection("Core");
+			//profiler.startSection("Core");
 			WDLEvents.onChatMessage(chatMessage);
-			profiler.endSection();  // "Core"
+			//profiler.endSection();  // "Core"
 			
 			for (ModInfo<IChatMessageListener> info : WDLApi
 					.getImplementingExtensions(IChatMessageListener.class)) {
-				profiler.startSection(info.id);
+				//profiler.startSection(info.id);
 				info.mod.onChat(WDL.worldClient, chatMessage);
-				profiler.endSection();  // info.id
+				//profiler.endSection();  // info.id
 			}
 			
-			profiler.endSection();  // "wdl.onChatMessage"
+			//profiler.endSection();  // "wdl.onChatMessage"
 		} catch (Throwable e) {
 			WDL.crashed(e, "WDL mod: exception in onNHPCHandleChat event");
 		}
@@ -251,17 +251,17 @@ public class WDLHooks {
 			
 			if (!WDL.downloading) { return; }
 			
-			profiler.startSection("wdl.onMapDataLoaded");
+			//profiler.startSection("wdl.onMapDataLoaded");
 			
 			int id = packet.getMapId();
 			MapData mapData = ItemMap.loadMapData(packet.getMapId(),
 					WDL.worldClient);
 			
-			profiler.startSection("Core");
+			//profiler.startSection("Core");
 			WDLEvents.onMapDataLoaded(id, mapData);
-			profiler.endSection();  // "Core"
+			//profiler.endSection();  // "Core"
 			
-			profiler.endSection();  // "wdl.onMapDataLoaded"
+			//profiler.endSection();  // "wdl.onMapDataLoaded"
 		} catch (Throwable e) {
 			WDL.crashed(e, "WDL mod: exception in onNHPCHandleMaps event");
 		}
@@ -286,20 +286,20 @@ public class WDLHooks {
 			String channel = packet.getChannelName();
 			byte[] payload = packet.getBufferData().array();
 			
-			profiler.startSection("wdl.onPluginMessage");
-			profiler.startSection("Core");
+			//profiler.startSection("wdl.onPluginMessage");
+			//profiler.startSection("Core");
 			WDLEvents.onPluginChannelPacket(channel, payload);
-			profiler.endSection();  // "Core"
+			//profiler.endSection();  // "Core"
 			
 			for (ModInfo<IPluginChannelListener> info : WDLApi
 					.getImplementingExtensions(IPluginChannelListener.class)) {
-				profiler.startSection(info.id);
+				//profiler.startSection(info.id);
 				info.mod.onPluginChannelPacket(WDL.worldClient, channel,
 						payload);
-				profiler.endSection();  // info.id
+				//profiler.endSection();  // info.id
 			}
 			
-			profiler.endSection();  // "wdl.onPluginMessage"
+			//profiler.endSection();  // "wdl.onPluginMessage"
 		} catch (Throwable e) {
 			WDL.crashed(e,
 					"WDL mod: exception in onNHPCHandleCustomPayload event");
@@ -322,26 +322,26 @@ public class WDLHooks {
 			
 			if (!WDL.downloading) { return; }
 			
-			profiler.startSection("wdl.onBlockEvent");
+			//profiler.startSection("wdl.onBlockEvent");
 			
 			BlockPos pos = packet.getBlockPosition();
 			Block block = packet.getBlockType();
 			int data1 = packet.getData1();
 			int data2 = packet.getData2();
 			
-			profiler.startSection("Core");
+			//profiler.startSection("Core");
 			WDLEvents.onBlockEvent(pos, block, data1, data2);
-			profiler.endSection();  // "Core"
+			//profiler.endSection();  // "Core"
 			
 			for (ModInfo<IBlockEventListener> info : WDLApi
 					.getImplementingExtensions(IBlockEventListener.class)) {
-				profiler.startSection(info.id);
+				//profiler.startSection(info.id);
 				info.mod.onBlockEvent(WDL.worldClient, pos, block, 
 						data1, data2);
-				profiler.endSection();  // info.id
+				//profiler.endSection();  // info.id
 			}
 			
-			profiler.endSection();  // "wdl.onBlockEvent"
+			//profiler.endSection();  // "wdl.onBlockEvent"
 		} catch (Throwable e) {
 			WDL.crashed(e,
 					"WDL mod: exception in onNHPCHandleBlockAction event");

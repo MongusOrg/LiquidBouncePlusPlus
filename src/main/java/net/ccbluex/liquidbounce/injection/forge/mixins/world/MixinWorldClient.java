@@ -22,10 +22,10 @@ public class MixinWorldClient {
         final TrueSight trueSight = (TrueSight) LiquidBounce.moduleManager.getModule(TrueSight.class);
         return flag || trueSight.getState() && trueSight.getBarriersValue().get();
     }
-/*
+
     @Inject(method = "tick", at = @At("RETURN"))
     public void injectWorldTick(CallbackInfo callbackInfo) {
         wdl.WDLHooks.onWorldClientTick((WorldClient) (Object) this);
     }
-*/
+
 }

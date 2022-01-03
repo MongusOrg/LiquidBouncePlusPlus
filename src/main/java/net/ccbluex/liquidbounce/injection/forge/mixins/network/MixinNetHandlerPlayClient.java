@@ -108,20 +108,20 @@ public abstract class MixinNetHandlerPlayClient {
             callbackInfo.cancel();
         }
     }
-/*
+
     @Inject(method = "handleDisconnect", at = @At("HEAD")) 
     public void handleDisconnect(S40PacketDisconnect packetIn, CallbackInfo callbackInfo) {
         if (wdl.WDL.downloading) {
 			wdl.WDL.stopDownload();
 
 			try {
-				Thread.sleep(2000L);
+				Thread.sleep(3000L);
 			} catch (Exception var3) {
 				;
 			}
 		}
     }
-*/
+
     @Inject(method = "handleResourcePack", at = @At("HEAD"), cancellable = true)
     private void handleResourcePack(final S48PacketResourcePackSend p_handleResourcePack_1_, final CallbackInfo callbackInfo) {
         final String url = p_handleResourcePack_1_.getURL();
@@ -175,14 +175,14 @@ public abstract class MixinNetHandlerPlayClient {
         if(entity != null)
             LiquidBounce.eventManager.callEvent(new EntityMovementEvent(entity));
     }
-/*
+
     @Inject(method = "onDisconnect", at = @At("HEAD")) 
     public void injectDisconnect(IChatComponent reason, CallbackInfo callbackInfo) {
         if (wdl.WDL.downloading) {
 			wdl.WDL.stopDownload();
 
 			try {
-				Thread.sleep(2000L);
+				Thread.sleep(3000L);
 			} catch (Exception var3) {
 				;
 			}
@@ -207,5 +207,5 @@ public abstract class MixinNetHandlerPlayClient {
     @Inject(method = "handleChat", at = @At("RETURN"))
     public void handleChat(S02PacketChat packetIn, CallbackInfo callbackInfo) {
         wdl.WDLHooks.onNHPCHandleChat((NetHandlerPlayClient) (Object) this, packetIn);
-    }*/
+    }
 }
