@@ -134,7 +134,7 @@ public class WDLHooks {
 			}
 			
 			//profiler.startSection("capes");
-			CapeHandler.onWorldTick(players);
+			//CapeHandler.onWorldTick(players);
 			//profiler.endSection();  // "capes"
 			//profiler.endSection();  // "wdl"
 		} catch (Throwable e) {

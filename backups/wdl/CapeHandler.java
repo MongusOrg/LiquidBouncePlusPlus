@@ -54,7 +54,7 @@ public class CapeHandler {
 	/**
 	 * Set up the name list. 
 	 */
-	static {
+	/*static {
 		//Pokechu22
 		capes.put(UUID.fromString("6c8976e3-99a9-4d8b-a98e-d4c0c09b305b"),
 				new ResourceLocation("wdl/textures/cape_dev.png"));
@@ -62,7 +62,7 @@ public class CapeHandler {
 		capes.put(UUID.fromString("f6c068f1-0738-4b41-bdb2-69d81d2b0f1c"),
 				new ResourceLocation("wdl/textures/cape_dev.png"));
 		//TODO: find the rest of the needed usernames/uuids and set up capes.
-	}
+	}*/
 	
 	public static void onWorldTick(List<EntityPlayer> players) {
 		if (totalFailures > MAX_TOTAL_FAILURES) {
