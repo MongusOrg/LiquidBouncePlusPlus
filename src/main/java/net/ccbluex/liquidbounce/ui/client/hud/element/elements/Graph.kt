@@ -62,13 +62,13 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 	private val valueStore = arrayListOf<Float>()
 	private val timer = MSTimer()
     private val avgtimer = MSTimer()
-	private val averageNumber = 0F
+	private var averageNumber = 0F
 
-    private val lastX = 0.0
-    private val lastZ = 0.0
-    private val speedVal = 0F
+    private var lastX = 0.0
+    private var lastZ = 0.0
+    private var speedVal = 0F
 
-    private val lastValue = ""
+    private var lastValue = ""
 
     override fun updateElement() {
         if (mc.thePlayer == null) return
@@ -114,8 +114,8 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 
 		val avgheight = Math.min(averageNumber * yMultiplier.get(), maxHeight.get())
 		val firstheight = Math.min(valueStore[valueStore.size - 1] * yMultiplier.get(), maxHeight.get())
-		String working = String.format("%.2f", valueStore[valueStore.size - 1])
-		String average = String.format("%.2f", averageNumber)
+		val working = String.format("%.2f", valueStore[valueStore.size - 1])
+		val average = String.format("%.2f", averageNumber)
 
 		if (showAverageLine.get()) font.drawStringWithShadow(average, defaultX - font.getStringWidth(working) - 5F, maxHeight.get() - avgheight - font.FONT_HEIGHT / 2F, Color(0.1F, 1F, 0.1F).rgb)
 
@@ -126,8 +126,8 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 		GL11.glLineWidth(thickness.get())
 		GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
 		GlStateManager.color(1F, 1F, 1F, 1F)
-		Tessellator tessellator = Tessellator.getInstance()
-		WorldRenderer worldRenderer = tessellator.getWorldRenderer()
+		val tessellator = Tessellator.getInstance()
+		val worldRenderer = tessellator.getWorldRenderer()
         if (showAverageLine.get() && averageLayer.get().equals("bottom", true)) {
             GlStateManager.color(0.1F, 1F, 0.1F, 1F)
 		    worldRenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION)
