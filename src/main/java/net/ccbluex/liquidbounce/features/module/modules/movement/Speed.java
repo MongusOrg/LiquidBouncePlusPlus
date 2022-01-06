@@ -275,7 +275,7 @@ public class Speed extends Module {
             return;
 
         if (bypassWarning.get() && typeValue.get().equalsIgnoreCase("hypixel")) {
-            //LiquidBounce.hud.addNotification(new Notification("If you have understood the risk, you can turn this notification off in settings.", Notification.Type.INFO, 3000L));
+            LiquidBounce.hud.addNotification(new Notification("If you have understood the risk, you can turn this notification off in settings.", Notification.Type.INFO, 3000L));
             LiquidBounce.hud.addNotification(new Notification("Don't use Hypixel speeds on Hypixel as they patched Strafe and will ban you really fast!", Notification.Type.WARNING, 3000L));
         }
 
