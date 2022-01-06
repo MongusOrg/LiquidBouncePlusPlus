@@ -10,6 +10,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.ui.font.Fonts
+import net.ccbluex.liquidbounce.utils.MovementUtils
 import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
@@ -79,7 +80,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 
     override fun drawElement(): Border {
         val font = fontValue.get()
-        val defaultX = 0F
+        var defaultX = 0F
 
         if (mc.thePlayer == null || lastValue != graphValue.get()) {
 			valueStore.clear()
@@ -96,7 +97,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
                 "packet-out" -> valueStore.add(PacketUtils.avgOutBound.toFloat())
             }
             while (valueStore.size > maxGraphValues.get()) 
-			    valueStore.remove(0)
+			    valueStore.removeAt(0)
             timer.reset()
         }
 		
