@@ -246,7 +246,7 @@ class Velocity : Module() {
                     mc.thePlayer.motionZ *= 0.45225
                     mc.thePlayer.motionY *= 0.45
                 } else {
-                    MovementUtils.strafe(0.24)
+                    MovementUtils.strafe(0.24F)
                     mc.thePlayer.motionY -= 0.09
                 }
             }
