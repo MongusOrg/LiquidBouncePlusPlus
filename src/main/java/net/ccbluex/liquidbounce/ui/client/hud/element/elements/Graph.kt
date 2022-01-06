@@ -134,10 +134,10 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
         }
 
         if (bgalphaValue.get() > 0F)
-            RenderUtils.drawRect(-1F, -1F, maxGraphValues.get() * xMultiplier.get() + 1F, maxHeight.get() + 1F, bgColor)
+            RenderUtils.drawRect(-1F, -1F, maxGraphValues.get() * xMultiplier.get() - 1F, maxHeight.get() + 1F, bgColor)
 
         if (bordalpha.get() > 0F)
-            RenderUtils.drawBorder(-1F, -1F, maxGraphValues.get() * xMultiplier.get() + 1F, maxHeight.get() + 1F, bordRad.get(), borderColor)
+            RenderUtils.drawBorder(-1F, -1F, maxGraphValues.get() * xMultiplier.get() - 1F, maxHeight.get() + 1F, bordRad.get(), borderColor)
 
 		val avgheight = Math.min(averageNumber * yMultiplier.get(), maxHeight.get())
 		val firstheight = Math.min(valueStore[valueStore.size - 1] * yMultiplier.get(), maxHeight.get())
