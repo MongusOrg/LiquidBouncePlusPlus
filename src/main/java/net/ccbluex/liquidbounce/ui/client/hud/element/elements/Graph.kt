@@ -81,6 +81,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 
     override fun drawElement(): Border {
         val font = fontValue.get()
+        val width = maxGraphValues.get() * xMultiplier.get()
         val markColor = Color(0.1F, 1F, 0.1F).rgb
         val bgColor = Color(bgredValue.get(), bggreenValue.get(), bgblueValue.get(), bgalphaValue.get()).rgb
         val borderColor = Color(bordredValue.get(), bordgreenValue.get(), bordblueValue.get(), bordalpha.get()).rgb
@@ -141,8 +142,6 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 
 		val avgheight = Math.min(averageNumber * yMultiplier.get(), maxHeight.get())
 		val firstheight = Math.min(valueStore[valueStore.size - 1] * yMultiplier.get(), maxHeight.get())
-
-        val width = maxGraphValues.get() * xMultiplier.get()
 
 		if (showAverageLine.get() && !nameValue.get()) font.drawStringWithShadow(average, -font.getStringWidth(average) - 3F, maxHeight.get() - avgheight - font.FONT_HEIGHT / 2F, markColor)
 
