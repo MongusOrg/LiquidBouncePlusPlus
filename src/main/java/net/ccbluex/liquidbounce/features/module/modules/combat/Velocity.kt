@@ -242,12 +242,12 @@ class Velocity : Module() {
                     return
                 } 
                 if (mc.thePlayer.hurtTime >= 6) {
-                    mc.thePlayer.motionX *= 0.46315
-                    mc.thePlayer.motionZ *= 0.45225
-                    mc.thePlayer.motionY *= 0.45
+                    mc.thePlayer.motionX *= 0.450125
+                    mc.thePlayer.motionZ *= 0.450125
+                    mc.thePlayer.motionY *= 0.450225
                 } else {
                     MovementUtils.strafe(0.24F)
-                    mc.thePlayer.motionY -= 0.09
+                    mc.thePlayer.motionY -= 0.095
                 }
             }
         }
