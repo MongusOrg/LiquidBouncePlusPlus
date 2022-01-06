@@ -158,7 +158,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
             GlStateManager.color(0.1F, 1F, 0.1F, 1F)
 		    worldRenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION)
 		    worldRenderer.pos(0.0, (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
-		    worldRenderer.pos((width - xMultiplier.get()).toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
+		    worldRenderer.pos(width.toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
 		    tessellator.draw()
         }
 		GlStateManager.color(1F, 1F, 1F, 1F)
@@ -173,7 +173,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
             GlStateManager.color(0.1F, 1F, 0.1F, 1F)
 		    worldRenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION)
 		    worldRenderer.pos(0.0, (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
-		    worldRenderer.pos((width - xMultiplier.get()).toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
+		    worldRenderer.pos(width.toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
 		    tessellator.draw()
         }
 		GL11.glDisable(GL11.GL_LINE_SMOOTH)
