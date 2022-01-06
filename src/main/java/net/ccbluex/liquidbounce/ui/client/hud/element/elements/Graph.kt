@@ -38,7 +38,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
     private val updateDelay = IntegerValue("Update-Delay", 1000, 0, 5000)
     private val xMultiplier = FloatValue("xMultiplier", 7F, 1F, 20F)
     private val yMultiplier = FloatValue("yMultiplier", 7F, 0.1F, 20F)
-    private val maxGraphValues = IntegerValue("MaxGraphValues", 5, 100, 300)
+    private val maxGraphValues = IntegerValue("MaxGraphValues", 100, 1, 300)
     private val maxHeight = FloatValue("MaxHeight", 50F, 30F, 150F)
     private val thickness = FloatValue("Thickness", 2F, 1F, 3F)
     private val displayGraphName = BoolValue("Display-Name", true)
@@ -116,19 +116,19 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 
         if (displayGraphName.get()) {
             var displayString = if (nameValue.get()) when (graphValue.get().toLowerCase()) {
-                "speed" -> "Player speed"
-                "bps" -> "Player blocks/s"
-                "packet-in" -> "Inbound packets"
-                else -> "Outbound packets"
-            } else when (graphValue.get().toLowerCase()) {
                 "speed" -> "Player speed ($working blocks/tick)"
                 "bps" -> "Player speed ($working blocks/s)"
                 "packet-in" -> "Inbound packets ($working packets/s)"
                 else -> "Outbound packets ($working packets/s)"
+            } else when (graphValue.get().toLowerCase()) {
+                "speed" -> "Player speed"
+                "bps" -> "Player blocks/s"
+                "packet-in" -> "Inbound packets"
+                else -> "Outbound packets"
             }
             GlStateManager.pushMatrix()
-            GlStateManager.translate(0.5, -5.0 - font.FONT_HEIGHT.toDouble() / 2.0, 0.0)
-            GlStateManager.scale(0.5F, 0.5F, 0.5F)
+            GlStateManager.translate(0.5, -6.0 - font.FONT_HEIGHT.toDouble() / 2.0, 0.0)
+            GlStateManager.scale(0.75F, 0.75F, 0.75F)
             font.drawStringWithShadow(displayString, 0F, 0F, -1)
             GlStateManager.popMatrix()
         }
@@ -179,7 +179,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 		GlStateManager.disableBlend()
 		GlStateManager.popMatrix()
 
-		if (nameValue.get()) font.drawStringWithShadow(average, defaultX - xMultiplier.get() + 5F, maxHeight.get() - firstheight - font.FONT_HEIGHT / 2F, markColor)
+		if (nameValue.get()) font.drawStringWithShadow(average, defaultX - xMultiplier.get() + 5F, maxHeight.get() - avgheight - font.FONT_HEIGHT / 2F, markColor)
         else font.drawStringWithShadow(working, defaultX - xMultiplier.get() + 5F, maxHeight.get() - firstheight - font.FONT_HEIGHT / 2F, -1)
 
         return Border(0F, 0F, maxGraphValues.get() * xMultiplier.get(), maxHeight.get() + 2F)
