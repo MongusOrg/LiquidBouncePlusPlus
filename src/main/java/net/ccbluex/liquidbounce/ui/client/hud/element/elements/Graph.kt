@@ -134,13 +134,15 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
         }
 
         if (bgalphaValue.get() > 0F)
-            RenderUtils.drawRect(-1F, -1F, maxGraphValues.get() * xMultiplier.get() - xMultiplier.get(), maxHeight.get() + 1F, bgColor)
+            RenderUtils.drawRect(-1F, -1F, width - xMultiplier.get() + 1F, maxHeight.get() + 1F, bgColor)
 
         if (bordalpha.get() > 0F)
-            RenderUtils.drawBorder(-1F, -1F, maxGraphValues.get() * xMultiplier.get() - xMultiplier.get(), maxHeight.get() + 1F, bordRad.get(), borderColor)
+            RenderUtils.drawBorder(-1F, -1F, width - xMultiplier.get() + 1F, maxHeight.get() + 1F, bordRad.get(), borderColor)
 
 		val avgheight = Math.min(averageNumber * yMultiplier.get(), maxHeight.get())
 		val firstheight = Math.min(valueStore[valueStore.size - 1] * yMultiplier.get(), maxHeight.get())
+
+        val width = maxGraphValues.get() * xMultiplier.get()
 
 		if (showAverageLine.get() && !nameValue.get()) font.drawStringWithShadow(average, -font.getStringWidth(average) - 3F, maxHeight.get() - avgheight - font.FONT_HEIGHT / 2F, markColor)
 
@@ -155,8 +157,8 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
         if (showAverageLine.get() && averageLayer.get().equals("bottom", true)) {
             GlStateManager.color(0.1F, 1F, 0.1F, 1F)
 		    worldRenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION)
-		    worldRenderer.pos(100.0, (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
-		    worldRenderer.pos((defaultX - xMultiplier.get()).toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
+		    worldRenderer.pos(0.0, (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
+		    worldRenderer.pos((width - xMultiplier.get()).toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
 		    tessellator.draw()
         }
 		GlStateManager.color(1F, 1F, 1F, 1F)
@@ -171,7 +173,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
             GlStateManager.color(0.1F, 1F, 0.1F, 1F)
 		    worldRenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION)
 		    worldRenderer.pos(0.0, (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
-		    worldRenderer.pos((defaultX - xMultiplier.get()).toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
+		    worldRenderer.pos((width - xMultiplier.get()).toDouble(), (maxHeight.get() - avgheight).toDouble(), 0.0).endVertex()
 		    tessellator.draw()
         }
 		GL11.glDisable(GL11.GL_LINE_SMOOTH)
@@ -182,6 +184,6 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 		if (nameValue.get()) font.drawStringWithShadow(average, defaultX - xMultiplier.get() + 3F, maxHeight.get() - avgheight - font.FONT_HEIGHT / 2F, markColor)
         else font.drawStringWithShadow(working, defaultX - xMultiplier.get() + 3F, maxHeight.get() - firstheight - font.FONT_HEIGHT / 2F, -1)
 
-        return Border(0F, 0F, maxGraphValues.get() * xMultiplier.get(), maxHeight.get() + 2F)
+        return Border(0F, 0F, width, maxHeight.get() + 2F)
     }
 }
