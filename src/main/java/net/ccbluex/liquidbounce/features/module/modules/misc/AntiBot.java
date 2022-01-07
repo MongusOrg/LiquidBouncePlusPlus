@@ -90,7 +90,7 @@ public class AntiBot extends Module {
             if (ent.isEmpty()) return;
             for (EntityPlayer e : ent) {
                 mc.theWorld.removeEntity(e);
-                if (debugValue.get()) ClientUtils.displayChatMessage("§7[§a§lAnti Bot§87] §fRemoved §r"+e.getName()+" §fdue to it being a bot.");
+                if (debugValue.get()) ClientUtils.displayChatMessage("§7[§a§lAnti Bot§8§7] §fRemoved §r"+e.getName()+" §fdue to it being a bot.");
             }
         }
     }
