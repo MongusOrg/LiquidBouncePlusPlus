@@ -75,9 +75,6 @@ public abstract class MixinGuiInGame extends MixinGui {
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
-        //GlStateManager.pushMatrix();
-        if (hud.getState()) GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
-
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
             final Minecraft mc = Minecraft.getMinecraft();
             EntityPlayer entityPlayer = (EntityPlayer) mc.getRenderViewEntity();
@@ -119,7 +116,6 @@ public abstract class MixinGuiInGame extends MixinGui {
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
 
-            GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();
             callbackInfo.cancel();
@@ -128,8 +124,6 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
-        //GlStateManager.popMatrix();
-
         if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();

@@ -8,22 +8,23 @@ package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
+import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 
 public class VulcanTimerGround extends SpeedMode {
     public VulcanTimerGround() {
         super("VulcanTimerGround");
     }
+    private final MSTimer timer = new MSTimer();
     @Override
     public  void onDisable() {
         mc.timer.timerSpeed = 1F;
+        timer.reset();
     }
     @Override
     public void onMotion() {
-        if (mc.thePlayer.ticksExisted % 15 == 0)
-            mc.timer.timerSpeed = 0.15F;
-        else
-            mc.timer.timerSpeed = 3F;
-
+        if (timer.hasTimePassed(300L))
+            timer.reset();
+        mc.timer.timerSpeed = 1F + (float)timer.hasTimeLeft(250L) / 250F * 2.05F;
         if (mc.thePlayer.onGround)
             MovementUtils.strafe();
     }
