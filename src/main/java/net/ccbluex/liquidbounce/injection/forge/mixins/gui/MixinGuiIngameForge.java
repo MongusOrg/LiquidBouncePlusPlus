@@ -44,8 +44,8 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
         method = "renderGameOverlay", 
         at = @At(
             /*value = "FIELD", target = "Lnet/minecraftforge/client/GuiIngameForge;renderHotbar:Z", opcode = Opcodes.GETSTATIC*/
-            value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderTooltip(Lnet/minecraft/client/gui/ScaledResolution;F)V", shift = At.Shift.BEFORE, remap = false), 
-        remap = false
+            value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiIngame;renderTooltip(Lnet/minecraft/client/gui/ScaledResolution;F)V", shift = At.Shift.BEFORE), 
+        remap = true
         )
     public void injectHotbarPre(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
@@ -55,8 +55,8 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
         method = "renderGameOverlay", 
         at = @At(
             /*value = "FIELD", target = "Lnet/minecraftforge/client/GuiIngameForge;renderHotbar:Z", opcode = Opcodes.GETSTATIC*/
-            value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;renderTooltip(Lnet/minecraft/client/gui/ScaledResolution;F)V", shift = At.Shift.AFTER, remap = false), 
-        remap = false
+            value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiIngame;renderTooltip(Lnet/minecraft/client/gui/ScaledResolution;F)V", shift = At.Shift.AFTER), 
+        remap = true
         )
     public void injectHotbarPost(float partialTicks, CallbackInfo callbackInfo) {
         GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
