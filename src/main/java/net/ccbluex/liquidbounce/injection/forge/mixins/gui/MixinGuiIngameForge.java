@@ -39,149 +39,149 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
 
     public float xScale = 0F;
 
-    @Inject(method = "renderHealth", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderHealth", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderHealthBegin(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderHealth", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderHealth", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderHealthEnd(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 
-    @Inject(method = "renderFood", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderFood", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderFoodBegin(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderFood", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderFood", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderFoodEnd(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 
-    @Inject(method = "renderExperience", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderExperience", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderExpBegin(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderExperience", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderExperience", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderExpEnd(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 
-    @Inject(method = "renderArmor", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderArmor", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderArmorBegin(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderArmor", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderArmor", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderArmorEnd(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 
-    @Inject(method = "renderHealthMount", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderHealthMount", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderHealthMountBegin(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderHealthMount", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderHealthMount", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderHealthMountEnd(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 
-    @Inject(method = "renderAir", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderAir", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderAirBegin(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderAir", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderAir", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderAirEnd(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 
-    @Inject(method = "renderJumpBar", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderJumpBar", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderJumpBarBegin(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderJumpBar", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderJumpBar", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderJumpBarEnd(int width, int height, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 /*
-    @Inject(method = "renderChat", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderChat", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderChatBegin(int width, int height, CallbackInfo callbackInfo) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderChat", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderChat", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderChatEnd(int width, int height, CallbackInfo callbackInfo) {
         GlStateManager.popMatrix();
     }
 */
-    @Inject(method = "renderRecordOverlay", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderRecordOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderRecordOverlayBegin(int width, int height, float partialTicks, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderRecordOverlay", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderRecordOverlay", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderRecordOverlayEnd(int width, int height, float partialTicks, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 
-    @Inject(method = "renderToolHightlight", at = @At("HEAD"), remap = false)
+    @Inject(method = "renderToolHightlight", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;pre(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)Z", shift = At.Shift.AFTER), remap = false)
     private void renderToolHightlightBegin(ScaledResolution sc, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.pushMatrix();
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(method = "renderToolHightlight", at = @At("RETURN"), remap = false)
+    @Inject(method = "renderToolHightlight", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/client/GuiIngameForge;post(Lnet/minecraftforge/client/event/RenderGameOverlayEvent/ElementType;)V", shift = At.Shift.BEFORE), remap = false)
     private void renderToolHightlightEnd(ScaledResolution sc, CallbackInfo callbackInfo) {
-        final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
-        if (!state) return;
+        /*final boolean state = LiquidBounce.moduleManager.getModule(HUD.class).getState();
+        if (!state) return;*/
         GlStateManager.popMatrix();
     }
 

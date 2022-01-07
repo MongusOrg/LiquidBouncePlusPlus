@@ -50,7 +50,7 @@ public class WallClimb extends Module {
 
     @EventTarget
     public void onJump(JumpEvent event) {
-        if (canClimb)
+        if (modeValue.get().equalsIgnoreCase("verus") && canClimb)
             event.cancelEvent();
     }
 
