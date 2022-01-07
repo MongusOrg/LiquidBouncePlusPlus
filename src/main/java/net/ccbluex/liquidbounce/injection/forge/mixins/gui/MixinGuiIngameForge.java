@@ -40,25 +40,103 @@ public abstract class MixinGuiIngameForge extends MixinGuiInGame {
 
     public float xScale = 0F;
 
-    @Inject(
-        method = "renderGameOverlay", 
-        at = @At(
-            /*value = "FIELD", target = "Lnet/minecraftforge/client/GuiIngameForge;renderHotbar:Z", opcode = Opcodes.GETSTATIC*/
-            value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiIngame;renderTooltip(Lnet/minecraft/client/gui/ScaledResolution;F)V", shift = At.Shift.BEFORE), 
-        remap = true
-        )
-    public void injectHotbarPre(float partialTicks, CallbackInfo callbackInfo) {
+    @Inject(method = "renderHealth", at = @At("HEAD"), remap = false)
+    private void renderHealthBegin(int width, int height, CallbackInfo callbackInfo) {
         GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
     }
 
-    @Inject(
-        method = "renderGameOverlay", 
-        at = @At(
-            /*value = "FIELD", target = "Lnet/minecraftforge/client/GuiIngameForge;renderHotbar:Z", opcode = Opcodes.GETSTATIC*/
-            value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiIngame;renderTooltip(Lnet/minecraft/client/gui/ScaledResolution;F)V", shift = At.Shift.AFTER), 
-        remap = true
-        )
-    public void injectHotbarPost(float partialTicks, CallbackInfo callbackInfo) {
+    @Inject(method = "renderHealth", at = @At("RETURN"), remap = false)
+    private void renderHealthEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderFood", at = @At("HEAD"), remap = false)
+    private void renderFoodBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderFood", at = @At("RETURN"), remap = false)
+    private void renderFoodEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderExperience", at = @At("HEAD"), remap = false)
+    private void renderExpBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderExperience", at = @At("RETURN"), remap = false)
+    private void renderExpEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderArmor", at = @At("HEAD"), remap = false)
+    private void renderArmorBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderArmor", at = @At("RETURN"), remap = false)
+    private void renderArmorEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderHealthMount", at = @At("HEAD"), remap = false)
+    private void renderHealthMountBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderHealthMount", at = @At("RETURN"), remap = false)
+    private void renderHealthMountEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderAir", at = @At("HEAD"), remap = false)
+    private void renderAirBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderAir", at = @At("RETURN"), remap = false)
+    private void renderAirEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderJumpBar", at = @At("HEAD"), remap = false)
+    private void renderJumpBarBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderJumpBar", at = @At("RETURN"), remap = false)
+    private void renderJumpBarEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+/*
+    @Inject(method = "renderChat", at = @At("HEAD"), remap = false)
+    private void renderChatBegin(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderChat", at = @At("RETURN"), remap = false)
+    private void renderChatEnd(int width, int height, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+*/
+    @Inject(method = "renderRecordOverlay", at = @At("HEAD"), remap = false)
+    private void renderRecordOverlayBegin(int width, int height, float partialTicks, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderRecordOverlay", at = @At("RETURN"), remap = false)
+    private void renderRecordOverlayEnd(int width, int height, float partialTicks, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderToolHightlight", at = @At("HEAD"), remap = false)
+    private void renderToolHightlightBegin(ScaledResolution sc, CallbackInfo callbackInfo) {
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
+    }
+
+    @Inject(method = "renderToolHightlight", at = @At("RETURN"), remap = false)
+    private void renderToolHightlightEnd(ScaledResolution sc, CallbackInfo callbackInfo) {
         GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
     }
 

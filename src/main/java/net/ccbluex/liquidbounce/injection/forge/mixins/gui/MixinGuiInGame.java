@@ -48,6 +48,8 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Shadow public GuiPlayerTabOverlay overlayPlayerList;
 
+    public boolean shouldCallPop = true;
+
     @Inject(method = "showCrosshair", at = @At("HEAD"), cancellable = true) 
     private void injectCrosshair(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         final Crosshair crossHair = (Crosshair) LiquidBounce.moduleManager.getModule(Crosshair.class);
@@ -74,6 +76,8 @@ public abstract class MixinGuiInGame extends MixinGui {
     @Inject(method = "renderTooltip", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+
+        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
 
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
             final Minecraft mc = Minecraft.getMinecraft();
@@ -115,15 +119,21 @@ public abstract class MixinGuiInGame extends MixinGui {
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
-
+            GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();
+            shouldCallPop = false;
             callbackInfo.cancel();
+            return;
         }
+
+        shouldCallPop = true;
     }
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
+        if (shouldCallPop) GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+
         if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();
