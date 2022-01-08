@@ -22,9 +22,9 @@ public class VulcanTimerGround extends SpeedMode {
     }
     @Override
     public void onMotion() {
-        if (timer.hasTimePassed(400L))
+        if (timer.hasTimePassed(250L))
             timer.reset();
-        mc.timer.timerSpeed = 1F + (float)timer.hasTimeLeft(250L) / 250F * 1.65F;
+        mc.timer.timerSpeed = 1F + (float)timer.hasTimeLeft(250L) / 250F * 1.5F;
         if (mc.thePlayer.onGround)
             MovementUtils.strafe();
     }
