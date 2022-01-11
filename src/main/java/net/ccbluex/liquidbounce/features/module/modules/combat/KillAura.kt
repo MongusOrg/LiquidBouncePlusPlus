@@ -733,8 +733,7 @@ class KillAura : Module() {
      */
     private fun updateRotations(entity: Entity): Boolean {
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
-        if (disabler.canCancelRot)
-            return true
+        val modify = disabler.canModifyRotation
             
         var boundingBox = entity.entityBoundingBox
         if (rotations.get().equals("Vanilla", ignoreCase = true)){
@@ -761,6 +760,8 @@ class KillAura : Module() {
 
             val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
                     (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
+
+            if (modify) limitedRotation.yaw = disabler.customYaw
 
             if (silentRotationValue.get())
                 RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 15 else 0)
@@ -789,6 +790,8 @@ class KillAura : Module() {
                     maxRange
             ) ?: return false
 
+            if (modify) rotation.yaw = disabler.customYaw
+
             if (silentRotationValue.get())
                 RotationUtils.setTargetRotation(rotation, 1)
             else
@@ -808,6 +811,8 @@ class KillAura : Module() {
                     RotationUtils.OtherRotation(boundingBox,RotationUtils.getCenter(entity.entityBoundingBox), predictValue.get(),
                             mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),maxRange), (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
 
+            if (modify) limitedRotation.yaw = disabler.customYaw
+
             if (silentRotationValue.get()) {
                 RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 15 else 0)
             }else {
@@ -823,8 +828,8 @@ class KillAura : Module() {
      */
     private fun updateHitable() {
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
-        // Disable hitable check if turn speed is zero
-        if(maxTurnSpeed.get() <= 0F || noHitCheck.get() || disabler.canCancelRot) {
+        // Disable hitable check if turn speed is zero (or disabler enabled)
+        if(maxTurnSpeed.get() <= 0F || noHitCheck.get() || disabler.canModifyRotation) {
             hitable = true
             return
         }
