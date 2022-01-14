@@ -682,9 +682,6 @@ class KillAura : Module() {
      * Attack [entity]
      */
     private fun attackEntity(entity: EntityLivingBase) {
-        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
-        val modify = disabler.canModifyRotation
-
         // Stop blocking
         if (mc.thePlayer.isBlocking || blockingStatus) {
             stopBlocking()
@@ -696,7 +693,7 @@ class KillAura : Module() {
         markEntity = entity
             
         // Get rotation and send packet if possible
-        if (rotations.get().equals("spin", true) || modify)
+        if (rotations.get().equals("spin", true))
         {
             val targetedRotation = getTargetRotation(entity) ?: return
             mc.netHandler.addToSendQueue(C03PacketPlayer.C05PacketPlayerLook(targetedRotation.yaw, targetedRotation.pitch, mc.thePlayer.onGround))
@@ -838,13 +835,13 @@ class KillAura : Module() {
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
 
         // Modify hit check for some situations
-        if (rotations.get().equals("spin", true) || disabler.canModifyRotation) {
+        if (rotations.get().equals("spin", true)) {
             hitable = target!!.hurtTime <= 1
             return
         }
 
         // Completely disable rotation check if turn speed equals to 0 or NoHitCheck is enabled
-        if(maxTurnSpeed.get() <= 0F || noHitCheck.get()) {
+        if(maxTurnSpeed.get() <= 0F || noHitCheck.get() || disabler.canModifyRotation) {
             hitable = true
             return
         }
