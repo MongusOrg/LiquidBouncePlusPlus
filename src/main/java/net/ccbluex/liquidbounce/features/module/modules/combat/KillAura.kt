@@ -702,7 +702,7 @@ class KillAura : Module() {
         // Get rotation and send packet if possible
         if (rotations.get().equals("spin", true) || modify)
         {
-            if (entity.hurtResistantTime > 0) return
+            if (entity.hurtTime > 1) return
             val targetedRotation = getTargetRotation(entity) ?: return
             mc.netHandler.addToSendQueue(C03PacketPlayer.C05PacketPlayerLook(targetedRotation.yaw, targetedRotation.pitch, mc.thePlayer.onGround))
 
