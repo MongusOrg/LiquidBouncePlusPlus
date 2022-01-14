@@ -678,6 +678,9 @@ class KillAura : Module() {
      * Attack [entity]
      */
     private fun attackEntity(entity: EntityLivingBase) {
+        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
+        val modify = disabler.canModifyRotation
+
         // Stop blocking
         if (mc.thePlayer.isBlocking || blockingStatus) {
             stopBlocking()
@@ -688,8 +691,12 @@ class KillAura : Module() {
 
         markEntity = entity
 
-        if (rotations.get().equals("spin", true) && !updateRotations(entity))
-            return
+        // Get rotation and send packet if possible
+        if (rotations.get().equals("spin", true) || modify)
+        {
+            val targetedRotation = getTargetRotation(entity) ?: return
+            mc.netHandler.addToSendQueue(C03PacketPlayer.C05PacketPlayerLook(targetedRotation.yaw, targetedRotation.pitch, mc.thePlayer.onGround))
+        }
             
         // Attack target
         if (swingValue.get())
@@ -734,11 +741,25 @@ class KillAura : Module() {
     private fun updateRotations(entity: Entity): Boolean {
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
         val modify = disabler.canModifyRotation
-            
+
+        val defRotation = getTargetRotation(entity) ?: return false
+
+        if (modify) defRotation.yaw = disabler.customYaw
+
+        if (silentRotationValue.get()) {
+            RotationUtils.setTargetRotation(defRotation, if (aacValue.get() && !rotations.get().equals("Spin", ignoreCase = true)) 15 else 0)
+        } else {
+            defRotation.toPlayer(mc.thePlayer!!)
+        }
+
+        return true
+    }
+
+    private fun getTargetRotation(entity: Entity): Rotation? {
         var boundingBox = entity.entityBoundingBox
         if (rotations.get().equals("Vanilla", ignoreCase = true)){
             if (maxTurnSpeed.get() <= 0F)
-                return true
+                return RotationUtils.serverRotation
 
             if (predictValue.get())
                 boundingBox = boundingBox.offset(
@@ -756,23 +777,16 @@ class KillAura : Module() {
                     maxRange,
                     RandomUtils.nextFloat(minRand.get(), maxRand.get()),
                     randomCenterNewValue.get()
-            ) ?: return false
+            ) ?: return null
 
             val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
                     (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
 
-            if (modify) limitedRotation.yaw = disabler.customYaw
-
-            if (silentRotationValue.get())
-                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 15 else 0)
-            else
-                limitedRotation.toPlayer(mc.thePlayer!!)
-
-            return true
+            return limitedRotation
         }
         if (rotations.get().equals("Spin", ignoreCase = true)){
             if (maxTurnSpeed.get() <= 0F)
-                return true
+                return RotationUtils.serverRotation
 
             if (predictValue.get())
                 boundingBox = boundingBox.offset(
@@ -788,16 +802,9 @@ class KillAura : Module() {
                     false,
                     mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),
                     maxRange
-            ) ?: return false
+            ) ?: return null
 
-            if (modify) rotation.yaw = disabler.customYaw
-
-            if (silentRotationValue.get())
-                RotationUtils.setTargetRotation(rotation, 1)
-            else
-                rotation.toPlayer(mc.thePlayer!!)
-
-            return true
+            return rotation
         }
         if (rotations.get().equals("BackTrack", ignoreCase = true)) {
             if (predictValue.get())
@@ -811,16 +818,9 @@ class KillAura : Module() {
                     RotationUtils.OtherRotation(boundingBox,RotationUtils.getCenter(entity.entityBoundingBox), predictValue.get(),
                             mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),maxRange), (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
 
-            if (modify) limitedRotation.yaw = disabler.customYaw
-
-            if (silentRotationValue.get()) {
-                RotationUtils.setTargetRotation(limitedRotation, if (aacValue.get()) 15 else 0)
-            }else {
-                limitedRotation.toPlayer(mc.thePlayer!!)
-                return true
-            }
+            return limitedRotation
         }
-        return true
+        return RotationUtils.serverRotation
     }
 
     /**
@@ -828,8 +828,15 @@ class KillAura : Module() {
      */
     private fun updateHitable() {
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
-        // Disable hitable check if turn speed is zero (or disabler enabled)
-        if(maxTurnSpeed.get() <= 0F || noHitCheck.get() || disabler.canModifyRotation) {
+
+        // Modify hit check for some situations
+        if (rotations.get().equals("spin", true) || disabler.canModifyRotation) {
+            hitable = target!!.hurtTime <= 0 // to prevent packet kick
+            return
+        }
+
+        // Completely disable rotation check if turn speed equals to 0 or NoHitCheck is enabled
+        if(maxTurnSpeed.get() <= 0F || noHitCheck.get()) {
             hitable = true
             return
         }
