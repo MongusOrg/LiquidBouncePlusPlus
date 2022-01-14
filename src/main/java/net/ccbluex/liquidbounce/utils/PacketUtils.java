@@ -41,12 +41,16 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
 
     @EventTarget
     public void onPacket(PacketEvent event) {
-        if (event.getPacket().getClass().getSimpleName().startsWith("C")) outBound++;
-        else if (event.getPacket().getClass().getSimpleName().startsWith("S")) inBound++;
+        handlePacket(event.getPacket());
+    }
 
-        if (event.getPacket() instanceof S32PacketConfirmTransaction) 
+    private void handlePacket(Packet<?> packet) {
+        if (packet.getClass().getSimpleName().startsWith("C")) outBound++;
+        else if (packet.getClass().getSimpleName().startsWith("S")) inBound++;
+
+        if (packet instanceof S32PacketConfirmTransaction) 
         {
-            if (!isInventoryAction(((S32PacketConfirmTransaction) event.getPacket()).getActionNumber())) 
+            if (!isInventoryAction(((S32PacketConfirmTransaction) packet).getActionNumber())) 
                 transCount++;
         }
     }
@@ -83,6 +87,7 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
     public static boolean handleSendPacket(Packet<?> packet) {
         if (packets.contains(packet)) {
             packets.remove(packet);
+            handlePacket(packet); // make sure not to skip silent packets.
             return true;
         }
         return false;
