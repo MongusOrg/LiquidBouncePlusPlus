@@ -102,7 +102,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
     private var speedStr = ""
 
-    private var suggestion = arrayListOf<String>()
+    private var suggestion = listOf<String>()
 
     private var displayText = display
 
@@ -344,13 +344,13 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
         var suggestStr = ""
         for (i in displayText.length - 1 downTo 0 step 1) {
-            if (displayText.indexOf(i).toString() == "%") {
+            if (displayText.charAt(i).toString() == "%") {
                 suggestStr = displayText.substring(i + 1, displayText.length - 1)
                 break
             }
         }
 
-        suggestion = arrayListOf(
+        suggestion = listOf(
             "x",
             "y",
             "z",
