@@ -77,7 +77,7 @@ public class BlurUtils {
             shaderGroup.listShaders.get(i).getShaderManager().getShaderUniform("BlurCoord").set(w, h);
         }
     }
-
+/*
     public static void downscale(boolean start, int strength) {
         ScaledResolution scaledResolution = new ScaledResolution(mc);
         final int scaleFactor = scaledResolution.getScaleFactor();
@@ -146,7 +146,7 @@ public class BlurUtils {
             GlStateManager.disableBlend();
         }
     }
-
+*/
     public static void blurArea(float x, float y, float x2, float y2, float blurStrength) {
         if (!OpenGlHelper.isFramebufferEnabled()) return;
 

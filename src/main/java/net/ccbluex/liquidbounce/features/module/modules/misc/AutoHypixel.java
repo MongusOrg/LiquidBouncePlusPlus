@@ -89,7 +89,7 @@ public class AutoHypixel extends Module {
 
         ScaledResolution sc = new ScaledResolution(mc);
         float middleX = sc.getScaledWidth() / 2F;
-        String detail = "Sending you to another game in " + dFormat.format((float)timer.hasTimeLeft(delayValue.get()) / 1000F) + "s...";
+        String detail = "Next game in " + dFormat.format((float)timer.hasTimeLeft(delayValue.get()) / 1000F) + "s...";
         float middleWidth = Fonts.font40.getStringWidth(detail) / 2F;
         float strength = MathHelper.clamp_float((float) timer.hasTimeLeft(delayValue.get()) / delayValue.get(), 0F, 1F);
         float wid = strength * (5F + middleWidth) * 2F;

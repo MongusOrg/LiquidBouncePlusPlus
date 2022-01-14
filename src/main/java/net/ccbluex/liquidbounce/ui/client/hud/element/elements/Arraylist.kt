@@ -236,7 +236,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
-
+/*
                 if (shadowValue.get()) {
                     val boostedColor = Color(backgroundColorRedValue.get().toFloat() / 255.0F, backgroundColorGreenValue.get().toFloat() / 255.0F,
                             backgroundColorBlueValue.get().toFloat() / 255.0F, (backgroundColorAlphaValue.get().toFloat() / 255.0F * 1.85F).coerceIn(0F, 1F)).rgb
@@ -261,7 +261,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
-
+*/
                 modules.forEachIndexed { index, module ->
                     var displayString = getModName(module)
 
@@ -387,7 +387,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
-
+/*
                 if (shadowValue.get()) {
                     val boostedColor = Color(backgroundColorRedValue.get().toFloat() / 255.0F, backgroundColorGreenValue.get().toFloat() / 255.0F,
                             backgroundColorBlueValue.get().toFloat() / 255.0F, (backgroundColorAlphaValue.get().toFloat() / 255.0F * 1.85F).coerceIn(0F, 1F)).rgb
@@ -415,7 +415,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
-
+*/
                 modules.forEachIndexed { index, module ->
                     var displayString = getModName(module)
 

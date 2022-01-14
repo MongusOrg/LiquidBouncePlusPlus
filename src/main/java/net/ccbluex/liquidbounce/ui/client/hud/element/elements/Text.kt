@@ -100,7 +100,9 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     private var lastX : Double = 0.0
     private var lastZ : Double = 0.0
 
-    private var speedStr = "";
+    private var speedStr = ""
+
+    private var suggestion = arrayListOf<String>()
 
     private var displayText = display
 
@@ -271,16 +273,29 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             else -> color
         }, shadow.get())
 
-        if (editMode && mc.currentScreen is GuiHudDesigner && editTicks <= 40)
-            fontRenderer.drawString("_", fontRenderer.getStringWidth(displayText) + 2F,
-                0F, when (rainbowType) {
-            "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
-            "Sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
-            "LiquidSlowly" -> liquidSlowli
-            "Fade" -> FadeColor
-            "Mixer" -> mixerColor
-            else -> color
-        }, shadow.get()) 
+        if (editMode && mc.currentScreen is GuiHudDesigner) {
+            if (editTicks <= 40)
+                fontRenderer.drawString("_", fontRenderer.getStringWidth(displayText) + 2F,
+                    0F, when (rainbowType) {
+                            "CRainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
+                            "Sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
+                            "LiquidSlowly" -> liquidSlowli
+                            "Fade" -> FadeColor
+                            "Mixer" -> mixerColor
+                    else -> color
+                }, shadow.get()) 
+            if (suggestion.size > 0) {
+                suggestion.forEachIndexed { index, suggest ->
+                    RenderUtils.drawRect(
+                        fontRenderer.getStringWidth(displayText) + 2F, 
+                        fontRenderer.FONT_HEIGHT * index.toFloat() + 5F, 
+                        fontRenderer.getStringWidth(displayText) + 6F + fontRenderer.getStringWidth(suggest), 
+                        fontRenderer.FONT_HEIGHT * index.toFloat() + 6F + fontRenderer.FONT_HEIGHT, 
+                        Color(0, 0, 0, 120).rgb)
+                    fontRenderer.drawStringWithShadow(suggest, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT * index.toFloat() + 5.5F, -1)
+                }
+            }
+        }
 
         if (editMode && mc.currentScreen !is GuiHudDesigner) {
             editMode = false
@@ -326,6 +341,56 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         if (editTicks > 80) editTicks = 0
 
         displayText = if (editMode) displayString.get() else display
+
+        var suggestStr = ""
+        for (i in displayText.length - 1 downTo 0 step 1) {
+            if (displayText.indexOf(i).toString() == "%") {
+                suggestStr = displayText.substring(i + 1, displayText.length - 1)
+                break
+            }
+        }
+
+        suggestion = arrayListOf(
+            "x",
+            "y",
+            "z",
+            "xInt",
+            "yInt",
+            "zInt",
+            "xdp",
+            "ydp",
+            "zdp",
+            "velocity",
+            "ping",
+            "health",
+            "maxHealth",
+            "healthInt",
+            "maxHealthInt",
+            "yaw",
+            "pitch",
+            "yawInt",
+            "pitchInt",
+            "bps",
+            "inBound",
+            "outBound",
+            "hurtTime",
+            "onGround",
+            "userName",
+            "clientName",
+            "clientVersion",
+            "clientCreator",
+            "fps",
+            "date",
+            "time",
+            "serverIp",
+            "cps", "lcps",
+            "mcps",
+            "rcps",
+            "portalVersion",
+            "watchdogLastMin",
+            "staffLastMin",
+            "wdStatus",
+        ).filter { it.startsWith(suggestStr, true) && it.length >= suggestStr.length }
 
         //blocks per sec counter
         if (mc.thePlayer == null) return

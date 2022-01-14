@@ -281,21 +281,7 @@ class Target : Element() {
                     }
 
                     if (riseShadow.get()) {
-                        if (riseShadowLegacy.get()) {
-                            UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
-                        } else {
-                            val opColor = Color(backgroundColorRedValue.get().toFloat() / 255F, backgroundColorGreenValue.get().toFloat() / 255F, backgroundColorBlueValue.get().toFloat() / 255F, (backgroundColorAlphaValue.get().toFloat() / 255F * 1.85F).coerceIn(0F, 1F))
-                            GL11.glTranslated(-renderX, -renderY, 0.0)
-                            GL11.glPushMatrix()
-                            GlStateManager.pushAttrib()
-                            BlurUtils.downscale(true, shadowStrengthValue.get())
-                            RenderUtils.newDrawRect(floatX + 3F, floatY + 3F, floatX + 10F + length - 3F, floatY + 55F - 3F, opColor.rgb)
-                            BlurUtils.downscale(false, shadowStrengthValue.get())
-                            RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb, false)
-                            GlStateManager.popAttrib()
-                            GL11.glPopMatrix()
-                            GL11.glTranslated(renderX, renderY, 0.0)
-                        }
+                        UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
                     } else {
                         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                     }
@@ -516,7 +502,7 @@ class Target : Element() {
             "Slowly" -> Border(0F, 0F, 90F, 36F)
             "Rise" -> Border(0F, 0F, 90F, 55F)
             "Exhibition" -> Border(0F, 3F, 140F, 48F)
-            else -> Border(0F, 0F, 120F, 38F)
+            else -> Border(0F, 0F, 120F, 36F)
         }
     
     private class Particle(var color: Color, var distX: Float, var distY: Float, var radius: Float) {

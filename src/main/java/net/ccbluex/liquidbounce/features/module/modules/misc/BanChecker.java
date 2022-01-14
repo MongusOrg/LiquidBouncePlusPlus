@@ -38,7 +38,7 @@ public class BanChecker extends Module {
     private String checkTag = "Idle...";
 
     public BanChecker() {
-        (new Thread("banCheckHypixel") {
+        (new Thread("Hypixel-BanChecker") {
             public void run() {
                 MSTimer checkTimer = new MSTimer();
                 while (true) {
