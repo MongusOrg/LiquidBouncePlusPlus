@@ -344,7 +344,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
         var suggestStr = ""
         for (i in displayText.length - 1 downTo 0 step 1) {
-            if (displayText.charAt(i).toString() == "%") {
+            if (displayText.get(i).toString() == "%") {
                 suggestStr = displayText.substring(i + 1, displayText.length - 1)
                 break
             }
