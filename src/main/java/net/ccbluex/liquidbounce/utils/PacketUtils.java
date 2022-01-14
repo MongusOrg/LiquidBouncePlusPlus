@@ -44,7 +44,7 @@ public class PacketUtils extends MinecraftInstance implements Listenable {
         handlePacket(event.getPacket());
     }
 
-    private void handlePacket(Packet<?> packet) {
+    private static void handlePacket(Packet<?> packet) {
         if (packet.getClass().getSimpleName().startsWith("C")) outBound++;
         else if (packet.getClass().getSimpleName().startsWith("S")) inBound++;
 
