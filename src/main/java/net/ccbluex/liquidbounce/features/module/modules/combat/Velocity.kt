@@ -247,8 +247,8 @@ class Velocity : Module() {
                     mc.thePlayer.motionY *= 0.650225
                     MovementUtils.strafe()
                 } else if (!mc.thePlayer.onGround) {
-                    MovementUtils.strafe(0.4F)
-                    mc.thePlayer.motionY -= 0.1
+                    MovementUtils.strafe(0F)
+                    mc.thePlayer.motionY -= 0.08
                 }
             }
         }

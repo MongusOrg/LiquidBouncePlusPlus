@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.modules.misc.Teams
 import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
+import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.RaycastUtils
@@ -189,6 +190,9 @@ class KillAura : Module() {
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500, { noInventoryAttackValue.get() })
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50, { targetModeValue.get().equals("multi", true) })
+
+    // idk
+    private val debugValue = BoolValue("Debug", false)
 
     // Visuals
     val moveMarkValue = FloatValue("MoveMark", 0F, 0F, 2F)
@@ -690,17 +694,22 @@ class KillAura : Module() {
         LiquidBounce.eventManager.callEvent(AttackEvent(entity))
 
         markEntity = entity
-
-        // Get rotation and send packet if possible
-        if (rotations.get().equals("spin", true) || modify)
-        {
-            val targetedRotation = getTargetRotation(entity) ?: return
-            mc.netHandler.addToSendQueue(C03PacketPlayer.C05PacketPlayerLook(targetedRotation.yaw, targetedRotation.pitch, mc.thePlayer.onGround))
-        }
             
         // Attack target
         if (swingValue.get())
             mc.thePlayer.swingItem()
+
+        // Get rotation and send packet if possible
+        if (rotations.get().equals("spin", true) || modify)
+        {
+            if (entity.hurtResistantTime > 0) return
+            val targetedRotation = getTargetRotation(entity) ?: return
+            mc.netHandler.addToSendQueue(C03PacketPlayer.C05PacketPlayerLook(targetedRotation.yaw, targetedRotation.pitch, mc.thePlayer.onGround))
+
+            if (debugValue.get())
+                ClientUtils.displayChatMessage("[KillAura] Silent rotation change.")
+        }
+
         mc.netHandler.addToSendQueue(C02PacketUseEntity(entity, C02PacketUseEntity.Action.ATTACK))
 
         if (keepSprintValue.get()) {
@@ -831,7 +840,7 @@ class KillAura : Module() {
 
         // Modify hit check for some situations
         if (rotations.get().equals("spin", true) || disabler.canModifyRotation) {
-            hitable = target!!.hurtTime <= 0 // to prevent packet kick
+            hitable = true
             return
         }
 
