@@ -695,10 +695,6 @@ class KillAura : Module() {
 
         markEntity = entity
             
-        // Attack target
-        if (swingValue.get())
-            mc.thePlayer.swingItem()
-
         // Get rotation and send packet if possible
         if (rotations.get().equals("spin", true) || modify)
         {
@@ -708,6 +704,10 @@ class KillAura : Module() {
             if (debugValue.get())
                 ClientUtils.displayChatMessage("[KillAura] Silent rotation change.")
         }
+
+        // Attack target
+        if (swingValue.get())
+            mc.thePlayer.swingItem()
 
         mc.netHandler.addToSendQueue(C02PacketUseEntity(entity, C02PacketUseEntity.Action.ATTACK))
 
