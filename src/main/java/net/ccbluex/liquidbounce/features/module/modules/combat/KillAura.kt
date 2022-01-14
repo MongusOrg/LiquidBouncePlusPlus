@@ -702,7 +702,6 @@ class KillAura : Module() {
         // Get rotation and send packet if possible
         if (rotations.get().equals("spin", true) || modify)
         {
-            if (entity.hurtTime > 1) return
             val targetedRotation = getTargetRotation(entity) ?: return
             mc.netHandler.addToSendQueue(C03PacketPlayer.C05PacketPlayerLook(targetedRotation.yaw, targetedRotation.pitch, mc.thePlayer.onGround))
 
@@ -840,7 +839,7 @@ class KillAura : Module() {
 
         // Modify hit check for some situations
         if (rotations.get().equals("spin", true) || disabler.canModifyRotation) {
-            hitable = true
+            hitable = target!!.hurtTime <= 1
             return
         }
 
