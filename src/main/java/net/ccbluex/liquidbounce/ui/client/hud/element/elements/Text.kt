@@ -347,7 +347,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         for (i in displayText.length - 1 downTo 0 step 1) {
             if (displayText.get(i).toString() == "%") {
                 try {
-                    suggestStr = displayText.substring(i, displayText.length).replace('%', '')
+                    suggestStr = displayText.substring(i, displayText.length).replace("%", "")
                 } catch (e: Exception) {
                     e.printStackTrace() // and then ignore
                 }
@@ -397,7 +397,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "watchdogLastMin",
             "staffLastMin",
             "wdStatus",
-        ).filter { it.startsWith(suggestStr, true) }.replaceAll { s -> "§7$suggestStr§r${s.substring(suggestStr.length.coerceAtMost(s.length - 1), s.length)}" }.sortedBy { it.length }.reversed()
+        ).filter { it.startsWith(suggestStr, true) }.forEach { s -> "§7$suggestStr§r${s.substring(suggestStr.length.coerceAtMost(s.length - 1), s.length)}" }.sortedBy { it.length }.reversed()
 
         //blocks per sec counter
         if (mc.thePlayer == null) return
