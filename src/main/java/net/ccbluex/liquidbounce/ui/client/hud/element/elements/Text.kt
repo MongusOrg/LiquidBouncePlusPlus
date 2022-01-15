@@ -397,7 +397,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "watchdogLastMin",
             "staffLastMin",
             "wdStatus",
-        ).filter { it.startsWith(suggestStr, true) }.sortedBy { it.length }.reversed().forEach { s -> s = "§7$suggestStr§r${s.substring(suggestStr.length.coerceAtMost(s.length - 1), s.length)}" }
+        ).filter { it.startsWith(suggestStr, true) }.sortedBy { it.length }.reversed()
 
         //blocks per sec counter
         if (mc.thePlayer == null) return
