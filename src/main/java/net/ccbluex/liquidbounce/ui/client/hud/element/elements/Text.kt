@@ -357,7 +357,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             }
         }
 
-        if (!foundPlaceHolder)
+        if (!foundPlaceHolder || suggestStr.length <= 0)
             suggestion = emptyList()
         else suggestion = listOf(
             "x",
