@@ -102,7 +102,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
     private var speedStr = ""
 
-    private var suggestion: MutableList<String> = mutableListOf<String>()
+    private var suggestion = mutableListOf<String>()
 
     private var displayText = display
 
@@ -357,7 +357,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
         if (suggestStr.length <= 0)
             suggestion.clear()
-        else suggestion = mutableListOf<String>(
+        else suggestion = listOf(
             "x",
             "y",
             "z",
@@ -397,7 +397,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "watchdogLastMin",
             "staffLastMin",
             "wdStatus",
-        ).filter { it.startsWith(suggestStr, true) }.sortedBy { it.length }.reversed()
+        ).filter { it.startsWith(suggestStr, true) }.sortedBy { it.length }.reversed().toMutableList()
 
         // may require sth
         if (suggestion.size > 0) {
