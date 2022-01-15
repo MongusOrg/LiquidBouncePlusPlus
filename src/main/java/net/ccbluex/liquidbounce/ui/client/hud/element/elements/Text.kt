@@ -103,8 +103,9 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
     private var speedStr = ""
 
     private var suggestion = mutableListOf<String>()
-
     private var displayText = display
+    private var pointer = 0
+    private var autoComplete = ""
 
     private val display: String
         get() {
@@ -344,10 +345,12 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         displayText = if (editMode) displayString.get() else display
 
         var suggestStr = ""
+        var foundPlaceHolder = false
         for (i in displayText.length - 1 downTo 0 step 1) {
             if (displayText.get(i).toString() == "%") {
                 try {
                     suggestStr = displayText.substring(i, displayText.length).replace("%", "")
+                    foundPlaceHolder = true
                 } catch (e: Exception) {
                     e.printStackTrace() // and then ignore
                 }
@@ -355,7 +358,9 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             }
         }
 
-        if (suggestStr.length <= 0)
+        autoComplete = ""
+
+        if (!foundPlaceHolder)
             suggestion.clear()
         else suggestion = listOf(
             "x",
@@ -399,9 +404,12 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "wdStatus",
         ).filter { it.startsWith(suggestStr, true) }.sortedBy { it.length }.reversed().toMutableList()
 
+        pointer = pointer.coerceIn(0, (suggestion.size - 1).coerceAtLeast(0))
+
         // may require sth
         if (suggestion.size > 0) {
-            suggestion.replaceAll { s -> "§7$suggestStr§r${s.substring((suggestStr.length - 1).coerceIn(0, s.length - 1), s.length)}" }
+            autoComplete = suggestion[pointer].substring((suggestStr.length).coerceIn(0, (suggestion[pointer].length - 1).coerceAtLeast(0)), suggestion[pointer].length)
+            suggestion.replaceAll { s -> "§7$suggestStr§r${s.substring((suggestStr.length).coerceIn(0, (s.length - 1).coerceAtLeast(0)), s.length)}" }
         }
 
         //blocks per sec counter
@@ -427,6 +435,37 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             if (keyCode == Keyboard.KEY_BACK) {
                 if (displayString.get().isNotEmpty())
                     displayString.set(displayString.get().substring(0, displayString.get().length - 1))
+
+                updateElement()
+                return
+            }
+
+            if (keyCode == Keyboard.KEY_UP) {
+                if (suggestion.size > 1) {
+                    if (pointer <= 0)
+                        pointer = suggestion.size - 1
+                    else
+                        pointer--
+                }
+
+                updateElement()
+                return
+            }
+
+            if (keyCode == Keyboard.KEY_DOWN) {
+                if (suggestion.size > 1) {
+                    if (pointer >= suggestion.size - 1)
+                        pointer = 0
+                    else
+                        pointer++
+                }
+
+                updateElement()
+                return
+            }
+
+            if (keyCode == Keyboard.KEY_TAB || keyCode == Keyboard.KEY_RETURN) {
+                displayString.set(displayString.get() + autoComplete)
 
                 updateElement()
                 return
