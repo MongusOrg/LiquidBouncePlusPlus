@@ -409,8 +409,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
         // may require sth
         if (suggestion.size > 0) {
-            autoComplete = suggestion[pointer].substring((suggestStr.length).coerceIn(0, (suggestion[pointer].length - 1).coerceAtLeast(0)), suggestion[pointer].length)
-            suggestion.replaceAll { s -> "§7$suggestStr§r${s.substring((suggestStr.length).coerceIn(0, (s.length - 1).coerceAtLeast(0)), s.length)}" }
+            autoComplete = suggestion[pointer].substring((suggestStr.length).coerceIn(0, suggestion[pointer].length), suggestion[pointer].length)
+            suggestion.replaceAll { s -> "§7$suggestStr§r${s.substring((suggestStr.length).coerceIn(0, s.length), s.length)}" }
         }
 
         //blocks per sec counter
