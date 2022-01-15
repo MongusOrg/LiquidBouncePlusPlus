@@ -285,6 +285,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
                     else -> color
                 }, shadow.get()) 
             if (suggestion.size > 0) {
+                GL11.glColor4f(1f, 1f, 1f, 1f)
                 suggestion.forEachIndexed { index, suggest ->
                     RenderUtils.drawRect(
                         fontRenderer.getStringWidth(displayText) + 2F, 
@@ -343,14 +344,22 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         displayText = if (editMode) displayString.get() else display
 
         var suggestStr = ""
+        var foundPlaceHolder = false
         for (i in displayText.length - 1 downTo 0 step 1) {
             if (displayText.get(i).toString() == "%") {
-                suggestStr = displayText.substring(i + 1, displayText.length - 1)
+                try {
+                    suggestStr = displayText.substring((i + 1).coerceIn(0, displayText.length - 1), displayText.length - 1)
+                    foundPlaceHolder = true
+                } catch (e: Exception) {
+                    e.printStackTrace() // and then ignore
+                }
                 break
             }
         }
 
-        suggestion = listOf(
+        if (!foundPlaceHolder)
+            suggestion = emptyList()
+        else suggestion = listOf(
             "x",
             "y",
             "z",
@@ -390,7 +399,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "watchdogLastMin",
             "staffLastMin",
             "wdStatus",
-        ).filter { it.startsWith(suggestStr, true) && it.length >= suggestStr.length }
+        ).filter { it.startsWith(suggestStr, true) && it.length >= suggestStr.length }.sortedBy { it.length }.reversed()
 
         //blocks per sec counter
         if (mc.thePlayer == null) return
