@@ -102,7 +102,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
     private var speedStr = ""
 
-    private var suggestion = listOf<String>()
+    private var suggestion = mutableListOf<String>()
 
     private var displayText = display
 
@@ -291,9 +291,9 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
                         fontRenderer.getStringWidth(displayText) + 2F, 
                         fontRenderer.FONT_HEIGHT * index.toFloat() + 5F, 
                         fontRenderer.getStringWidth(displayText) + 6F + fontRenderer.getStringWidth(suggest), 
-                        fontRenderer.FONT_HEIGHT * index.toFloat() + 6F + fontRenderer.FONT_HEIGHT, 
+                        fontRenderer.FONT_HEIGHT * index.toFloat() + 5F + fontRenderer.FONT_HEIGHT, 
                         Color(0, 0, 0, 120).rgb)
-                    fontRenderer.drawStringWithShadow(suggest, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT * index.toFloat() + 6F, -1)
+                    fontRenderer.drawStringWithShadow(suggest, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT * index.toFloat() + 5F, -1)
                 }
             }
         }
@@ -356,8 +356,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         }
 
         if (suggestStr.length <= 0)
-            suggestion = emptyList()
-        else suggestion = listOf(
+            suggestion.clear()
+        else suggestion = mutableListOf<String>(
             "x",
             "y",
             "z",
@@ -398,6 +398,11 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "staffLastMin",
             "wdStatus",
         ).filter { it.startsWith(suggestStr, true) }.sortedBy { it.length }.reversed()
+
+        // may require sth
+        if (suggestion.size > 0) {
+            suggestion.replaceAll { s -> "§7$suggestStr§r${s.substring((suggestStr.length - 1).coerceIn(0, s.length - 1), s.length)}" }
+        }
 
         //blocks per sec counter
         if (mc.thePlayer == null) return
