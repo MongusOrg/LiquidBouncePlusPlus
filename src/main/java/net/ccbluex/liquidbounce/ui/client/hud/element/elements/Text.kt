@@ -102,7 +102,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
     private var speedStr = ""
 
-    private var suggestion = mutableListOf<String>()
+    private var suggestion: MutableList<String> = mutableListOf<String>()
 
     private var displayText = display
 
