@@ -180,8 +180,8 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 		GlStateManager.disableBlend()
 		GlStateManager.popMatrix()
 
-		if (nameValue.get()) font.drawStringWithShadow(average, defaultX - xMultiplier.get() + 3F, maxHeight.get() - avgheight - font.FONT_HEIGHT / 2F, markColor)
-        else font.drawStringWithShadow(working, defaultX - xMultiplier.get() + 3F, maxHeight.get() - firstheight - font.FONT_HEIGHT / 2F, -1)
+		if (nameValue.get()) font.drawStringWithShadow(average, width - xMultiplier.get() + 3F, maxHeight.get() - avgheight - font.FONT_HEIGHT / 2F, markColor)
+        else font.drawStringWithShadow(working, width - xMultiplier.get() + 3F, maxHeight.get() - firstheight - font.FONT_HEIGHT / 2F, -1)
 
         return Border(0F, 0F, width, maxHeight.get() + 2F)
     }

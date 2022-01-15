@@ -293,7 +293,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
                         fontRenderer.getStringWidth(displayText) + 6F + fontRenderer.getStringWidth(suggest), 
                         fontRenderer.FONT_HEIGHT * index.toFloat() + 6F + fontRenderer.FONT_HEIGHT, 
                         Color(0, 0, 0, 120).rgb)
-                    fontRenderer.drawStringWithShadow(suggest, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT * index.toFloat() + 5.5F, -1)
+                    fontRenderer.drawStringWithShadow(suggest, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT * index.toFloat() + 6F, -1)
                 }
             }
         }
@@ -344,12 +344,10 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         displayText = if (editMode) displayString.get() else display
 
         var suggestStr = ""
-        var foundPlaceHolder = false
         for (i in displayText.length - 1 downTo 0 step 1) {
             if (displayText.get(i).toString() == "%") {
                 try {
-                    suggestStr = displayText.substring((i + 1).coerceIn(0, displayText.length - 1), displayText.length - 1)
-                    foundPlaceHolder = true
+                    suggestStr = displayText.substring(i, displayText.length).replace('%', '')
                 } catch (e: Exception) {
                     e.printStackTrace() // and then ignore
                 }
@@ -357,7 +355,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             }
         }
 
-        if (!foundPlaceHolder || suggestStr.length <= 0)
+        if (suggestStr.length <= 0)
             suggestion = emptyList()
         else suggestion = listOf(
             "x",
@@ -399,7 +397,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "watchdogLastMin",
             "staffLastMin",
             "wdStatus",
-        ).filter { it.startsWith(suggestStr, true) && it.length >= suggestStr.length }.sortedBy { it.length }.reversed()
+        ).filter { it.startsWith(suggestStr, true) }.replaceAll { s -> "§7$suggestStr§r${s.substring(suggestStr.length.coerceAtMost(s.length - 1), s.length)}" }.sortedBy { it.length }.reversed()
 
         //blocks per sec counter
         if (mc.thePlayer == null) return
