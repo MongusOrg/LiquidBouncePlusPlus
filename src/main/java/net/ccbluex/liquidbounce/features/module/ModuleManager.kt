@@ -173,7 +173,8 @@ class ModuleManager : Listenable {
                 FastStairs::class.java,
                 SlimeJump::class.java,
                 Parkour::class.java,
-                WallClimb::class.java
+                WallClimb::class.java,
+                AntiDesync::class.java
         )
 
         registerModule(Fucker)

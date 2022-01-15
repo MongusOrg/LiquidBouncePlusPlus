@@ -294,7 +294,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
                         fontRenderer.FONT_HEIGHT * index.toFloat() + 5F, 
                         fontRenderer.getStringWidth(displayText) + 6F + totalLength, 
                         fontRenderer.FONT_HEIGHT * index.toFloat() + 5F + fontRenderer.FONT_HEIGHT, 
-                        if (index == pointer) Color(50, 50, 50, 120).rgb else Color(0, 0, 0, 120).rgb)
+                        if (index == pointer) Color(90, 90, 90, 120).rgb else Color(0, 0, 0, 120).rgb)
                     fontRenderer.drawStringWithShadow(suggest, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT * index.toFloat() + 5F, -1)
                 }
             }
@@ -349,12 +349,22 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
         var foundPlaceHolder = false
         for (i in displayText.length - 1 downTo 0 step 1) {
             if (displayText.get(i).toString() == "%") {
-                try {
-                    suggestStr = displayText.substring(i, displayText.length).replace("%", "")
-                    foundPlaceHolder = true
-                } catch (e: Exception) {
-                    e.printStackTrace() // and then ignore
+                var placeHolderCounter = 1
+                var z = i
+
+                for (j in z downTo 0 step 1) {
+                    if (displayText.get(j).toString() == "%") placeHolderCounter++
                 }
+
+                if (placeHolderCounter % 2 != 0) {
+                    try {
+                        suggestStr = displayText.substring(i, displayText.length).replace("%", "")
+                        foundPlaceHolder = true
+                    } catch (e: Exception) {
+                        e.printStackTrace() // and then ignore
+                    }
+                }
+
                 break
             }
         }
@@ -402,8 +412,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "portalVersion",
             "watchdogLastMin",
             "staffLastMin",
-            "wdStatus",
-        ).filter { it.startsWith(suggestStr, true) }.sortedBy { it.length }.reversed().toMutableList()
+            "wdStatus"
+        ).filter { it.startsWith(suggestStr, true) && it.length > suggestStr.length }.sortedBy { it.length }.reversed().toMutableList()
 
         pointer = pointer.coerceIn(0, (suggestion.size - 1).coerceAtLeast(0))
 

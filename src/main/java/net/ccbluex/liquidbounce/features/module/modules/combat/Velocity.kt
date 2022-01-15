@@ -242,13 +242,11 @@ class Velocity : Module() {
                     return
                 } 
                 if (mc.thePlayer.hurtTime >= 6) {
-                    mc.thePlayer.motionX *= 0.750125
-                    mc.thePlayer.motionZ *= 0.750125
-                    mc.thePlayer.motionY *= 0.650225
                     MovementUtils.strafe()
+                    mc.thePlayer.motionY *= 0.727
                 } else if (!mc.thePlayer.onGround) {
                     MovementUtils.strafe(0F)
-                    mc.thePlayer.motionY -= 0.08
+                    mc.thePlayer.motionY -= 0.095
                 }
             }
         }
@@ -305,7 +303,7 @@ class Velocity : Module() {
                 }
             }
         }
-        //since explosion velocity packet doesn't support in LiquidBounce.
+        //since LiquidBounce base doesn't support explosion velocity packets
         if (packet is S27PacketExplosion) {
             mc.thePlayer.motionX = mc.thePlayer.motionX + packet.func_149149_c() * (horizontalExplosionValue.get())
             mc.thePlayer.motionY = mc.thePlayer.motionY + packet.func_149144_d() * (verticalExplosionValue.get())
