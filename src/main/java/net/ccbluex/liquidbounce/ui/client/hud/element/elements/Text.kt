@@ -287,13 +287,14 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
                 }, shadow.get()) 
             if (suggestion.size > 0) {
                 GL11.glColor4f(1f, 1f, 1f, 1f)
+                val totalLength = fontRenderer.getStringWidth(suggestion[0])
                 suggestion.forEachIndexed { index, suggest ->
                     RenderUtils.drawRect(
                         fontRenderer.getStringWidth(displayText) + 2F, 
                         fontRenderer.FONT_HEIGHT * index.toFloat() + 5F, 
-                        fontRenderer.getStringWidth(displayText) + 6F + fontRenderer.getStringWidth(suggest), 
+                        fontRenderer.getStringWidth(displayText) + 6F + totalLength, 
                         fontRenderer.FONT_HEIGHT * index.toFloat() + 5F + fontRenderer.FONT_HEIGHT, 
-                        Color(0, 0, 0, 120).rgb)
+                        if (index == pointer) Color(50, 50, 50, 120).rgb else Color(0, 0, 0, 120).rgb)
                     fontRenderer.drawStringWithShadow(suggest, fontRenderer.getStringWidth(displayText) + 4F, fontRenderer.FONT_HEIGHT * index.toFloat() + 5F, -1)
                 }
             }
