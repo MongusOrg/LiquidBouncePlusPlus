@@ -356,7 +356,7 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
                     if (displayText.get(j).toString() == "%") placeHolderCounter++
                 }
 
-                if (placeHolderCounter % 2 != 0) {
+                if (placeHolderCounter % 2 == 0) {
                     try {
                         suggestStr = displayText.substring(i, displayText.length).replace("%", "")
                         foundPlaceHolder = true
