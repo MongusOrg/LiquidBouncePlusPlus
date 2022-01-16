@@ -27,7 +27,7 @@ import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 @ModuleInfo(name = "Criticals", description = "Automatically deals critical hits.", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Invalid"), "Packet")
+    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Invalid", "VerusSmart"), "Packet")
     val delayValue = IntegerValue("Delay", 0, 0, 500)
     private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.1F, 0.42F)
     private val downYValue = FloatValue("DownY", 0f, 0f, 0.1F)
@@ -35,13 +35,15 @@ class Criticals : Module() {
     private val onlyAuraValue = BoolValue("OnlyAura", false)
 
     val msTimer = MSTimer()
-    private var readyCrits: Boolean = false
-    private var canCrits: Boolean = true;
+    private var readyCrits = false
+    private var canCrits = true
+    private var counter = 0
 
     override fun onEnable() {
         if (modeValue.get().equals("NoGround", ignoreCase = true))
             mc.thePlayer.jump()
-        canCrits=true;
+        canCrits = true
+        counter = 0;
     }
 
     @EventTarget
@@ -137,6 +139,16 @@ class Criticals : Module() {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E+27, z, false))
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y - 1E+68, z, false))
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 1E+41, z, false))
+                }
+
+                "verussmart" -> {
+                    counter++
+                    if (counter == 1) {
+                        mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.001, z, true))
+                        mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y, z, false))
+                    }
+                    if (counter >= 5)
+                        counter = 0
                 }
 
                 "visual" -> mc.thePlayer.onCriticalHit(entity)
