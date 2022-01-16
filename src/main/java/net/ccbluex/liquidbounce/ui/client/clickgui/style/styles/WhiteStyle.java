@@ -5,7 +5,7 @@
  *
  * This code was taken from UnlegitMC/FDPClient. Please credit them when using this code in your repository.
  */
-package et.ccbluex.liquidbounce.ui.client.clickgui.style.styles;
+package net.ccbluex.liquidbounce.ui.client.clickgui.style.styles;
 
 import net.ccbluex.liquidbounce.ui.client.clickgui.Panel;
 import net.ccbluex.liquidbounce.ui.client.clickgui.elements.ButtonElement;
@@ -111,7 +111,7 @@ public class WhiteStyle extends Style {
 
                 moduleElement.slowlySettingsYPos = moduleElement.getY() + 6;
                 for (final Value value : moduleValues) {
-                    if(!value.getCanDisplay().invoke())
+                    if(!((boolean)value.getCanDisplay().invoke()))
                         continue;
 
                     if (value instanceof BoolValue) {
