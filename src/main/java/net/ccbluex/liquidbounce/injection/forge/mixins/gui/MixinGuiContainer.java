@@ -91,6 +91,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
         ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        final Minecraft mc = Minecraft.getMinecraft();
 
         if (progress >= 1F) progress = 1F;
         else progress = (float)(System.currentTimeMillis() - lastMS) / 750F;
@@ -106,7 +107,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
         boolean checkFullSilence = chestStealer.getState() && chestStealer.getSilenceValue().get() && !chestStealer.getStillDisplayValue().get();
 
-        if (animMod != null && animMod.getState() && !checkFullSilence) {
+        if (animMod != null && animMod.getState() && !(mc.currentScreen instanceof GuiChest && checkFullSilence)) {
             GL11.glPushMatrix();
             switch (animMod.guiAnimations.get()) {
                 case "Zoom":
@@ -126,7 +127,6 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         }
         
         try {
-            Minecraft mc = Minecraft.getMinecraft();
             GuiScreen guiScreen = mc.currentScreen;
 
             if (stealButton != null) stealButton.enabled = !chestStealer.getState();
@@ -178,8 +178,10 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     public void drawScreenReturn(CallbackInfo callbackInfo) {
         final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
         ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
+        final Minecraft mc = Minecraft.getMinecraft();
         boolean checkFullSilence = chestStealer.getState() && chestStealer.getSilenceValue().get() && !chestStealer.getStillDisplayValue().get();
-        if (animMod != null && animMod.getState() && !checkFullSilence)
+
+        if (animMod != null && animMod.getState() && !(mc.currentScreen instanceof GuiChest && checkFullSilence))
             GL11.glPopMatrix();
     }
 }

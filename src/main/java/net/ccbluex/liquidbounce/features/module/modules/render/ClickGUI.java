@@ -14,10 +14,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer;
 import net.ccbluex.liquidbounce.ui.client.clickgui.ClickGui;
-import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.LiquidBounceStyle;
-import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.NullStyle;
-import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.SlowlyStyle;
-import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.BlackStyle;
+import net.ccbluex.liquidbounce.ui.client.clickgui.style.styles.*;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
@@ -32,7 +29,7 @@ import java.awt.*;
 
 @ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT)
 public class ClickGUI extends Module { // TODO fr fr new clickgui
-    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black"}, "Null") {
+    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White"}, "Null") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
             updateStyle();
@@ -107,6 +104,10 @@ public class ClickGUI extends Module { // TODO fr fr new clickgui
                 break;
             case "black":
                 LiquidBounce.clickGui.style = new BlackStyle();
+                break;
+            case "white":
+                LiquidBounce.clickGui.style = new WhiteStyle();
+                break;
         }
     }
 

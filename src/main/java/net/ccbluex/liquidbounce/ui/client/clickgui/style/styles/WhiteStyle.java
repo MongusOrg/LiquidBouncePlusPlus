@@ -7,10 +7,10 @@
  */
 package net.ccbluex.liquidbounce.launch.data.legacyui.clickgui.style.styles;
 
-import net.ccbluex.liquidbounce.launch.data.legacyui.clickgui.Panel;
-import net.ccbluex.liquidbounce.launch.data.legacyui.clickgui.elements.ButtonElement;
-import net.ccbluex.liquidbounce.launch.data.legacyui.clickgui.elements.ModuleElement;
-import net.ccbluex.liquidbounce.launch.data.legacyui.clickgui.style.Style;
+import net.ccbluex.liquidbounce.ui.client.clickgui.Panel;
+import net.ccbluex.liquidbounce.ui.client.clickgui.elements.ButtonElement;
+import net.ccbluex.liquidbounce.ui.client.clickgui.elements.ModuleElement;
+import net.ccbluex.liquidbounce.ui.client.clickgui.style.Style;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.block.BlockUtils;
