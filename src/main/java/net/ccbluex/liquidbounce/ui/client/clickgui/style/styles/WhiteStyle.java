@@ -39,7 +39,7 @@ public class WhiteStyle extends Style {
 
         final float sliderValue = (float) x + (float) width * (displayValue - min) / (max - min);
 
-        RenderUtils.drawRect(x, y, x + width, y + 2, Color.DARK_GRAY.getRGB());
+        RenderUtils.drawRect(x, y, x + width, y + 2, new Color(120, 120, 120).getRGB());
         RenderUtils.drawRect(x, y, sliderValue, y + 2, color);
         RenderUtils.drawFilledCircle((int) sliderValue, y + 1, 3, color);
 
@@ -128,7 +128,7 @@ public class WhiteStyle extends Style {
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
                         }
 
-                        Fonts.font35.drawString(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, ((BoolValue) value).get() ? Color.BLACK.getRGB() : Color.DARK_GRAY.getRGB());
+                        Fonts.font35.drawString(text, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, ((BoolValue) value).get() ? Color.BLACK.getRGB() : new Color(120, 120, 120).getRGB());
                         moduleElement.slowlySettingsYPos += 11;
                     } else if (value instanceof ListValue) {
                         final ListValue listValue = (ListValue) value;
@@ -162,7 +162,7 @@ public class WhiteStyle extends Style {
                                 }
 
                                 GlStateManager.resetColor();
-                                Fonts.font35.drawString("- " + valueOfList, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, listValue.get() != null && listValue.get().equalsIgnoreCase(valueOfList) ? Color.BLACK.getRGB() : Color.DARK_GRAY.getRGB());
+                                Fonts.font35.drawString("- " + valueOfList, moduleElement.getX() + moduleElement.getWidth() + 6, moduleElement.slowlySettingsYPos + 2, listValue.get() != null && listValue.get().equalsIgnoreCase(valueOfList) ? Color.BLACK.getRGB() : new Color(120, 120, 120).getRGB());
                                 moduleElement.slowlySettingsYPos += Fonts.font35.FONT_HEIGHT + 1;
                             }
                         }
