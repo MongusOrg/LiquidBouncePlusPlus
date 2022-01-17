@@ -84,7 +84,7 @@ public class Speed extends Module {
             new OnGround(),
             new YPort(),
             new YPort2(),
-            new VulcanTimerGround(),
+            new AEMineLowHop(),
         
             // Verus
             new VerusHop(),
@@ -173,7 +173,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "VulcanTimerGround"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("other"); }) {
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "AEMineLowHop"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("other"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
