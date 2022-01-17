@@ -20,7 +20,7 @@ public class AEMineLowHop extends SpeedMode {
 
     @Override
     public void onEnable() {
-        multiplier = 0.6F;
+        multiplier = 0.5F;
     }
 
     @Override
@@ -42,8 +42,8 @@ public class AEMineLowHop extends SpeedMode {
                     MovementUtils.strafe(multiplier);
                     event.setY(0.41999998688698);
                     multiplier -= 0.02F;
-                    if (multiplier <= 0.5F)
-                        multiplier = 0.6F;
+                    if (multiplier <= 0.42F)
+                        multiplier = 0.5F;
                 }
                 MovementUtils.strafe();
             }
