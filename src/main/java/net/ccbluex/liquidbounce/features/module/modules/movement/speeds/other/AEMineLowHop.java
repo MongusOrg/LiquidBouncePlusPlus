@@ -41,8 +41,8 @@ public class AEMineLowHop extends SpeedMode {
                     mc.thePlayer.motionY = 0;
                     MovementUtils.strafe(multiplier);
                     event.setY(0.41999998688698);
-                    multiplier -= 0.02F;
-                    if (multiplier <= 0.42F)
+                    multiplier -= 0.05F;
+                    if (multiplier <= 0.4F)
                         multiplier = 0.5F;
                 }
                 MovementUtils.strafe();
