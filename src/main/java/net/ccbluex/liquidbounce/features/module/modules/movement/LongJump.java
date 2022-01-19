@@ -33,8 +33,9 @@ import net.minecraft.util.EnumFacing;
 public class LongJump extends Module {
 
     private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP"/*, "HypixelDamage", "HypixelDamage2"*/, "Damage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
-    private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
+
+    private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
 
     /*private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan", () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
     private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
