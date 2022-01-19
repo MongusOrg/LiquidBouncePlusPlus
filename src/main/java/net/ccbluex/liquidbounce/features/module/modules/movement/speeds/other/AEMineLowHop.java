@@ -12,15 +12,8 @@ import net.ccbluex.liquidbounce.utils.MovementUtils;
 
 public class AEMineLowHop extends SpeedMode {
 
-    private float multiplier = 0;
-
     public AEMineLowHop() {
         super("AEMineLowHop");
-    }
-
-    @Override
-    public void onEnable() {
-        multiplier = 0.5F;
     }
 
     @Override
@@ -39,11 +32,8 @@ public class AEMineLowHop extends SpeedMode {
                 if (mc.thePlayer.onGround) {
                     mc.thePlayer.jump();
                     mc.thePlayer.motionY = 0;
-                    MovementUtils.strafe(multiplier);
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 1.05F);
                     event.setY(0.41999998688698);
-                    multiplier -= 0.05F;
-                    if (multiplier <= 0.4F)
-                        multiplier = 0.5F;
                 }
                 MovementUtils.strafe();
             }
