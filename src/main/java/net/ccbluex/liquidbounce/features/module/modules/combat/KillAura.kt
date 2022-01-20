@@ -749,7 +749,9 @@ class KillAura : Module() {
 
         val defRotation = getTargetRotation(entity) ?: return false
 
-        if (modify) defRotation.yaw = disabler.customYaw
+        if (modify) {
+            defRotation = Rotation(disabler.customYaw, mc.thePlayer.rotationPitch)
+        }
 
         if (silentRotationValue.get()) {
             RotationUtils.setTargetRotation(defRotation, if (aacValue.get() && !rotations.get().equals("Spin", ignoreCase = true)) 15 else 0)
