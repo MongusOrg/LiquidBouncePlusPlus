@@ -13,7 +13,6 @@ repositories {
     maven { url = "https://maven.minecraftforge.net/" }
     maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
     maven { url = "https://jitpack.io/" }
-    maven { url = "https://plugins.gradle.org/m2" }
 }
 
 version = "plus"
@@ -53,9 +52,6 @@ dependencies {
         exclude module: "launchwrapper"
     }
 
-    include "com.viaversion:viaversion:${viaversion_version}"
-    include "com.viaversion:viabackwards:${viabackwards_version}"
-    include "com.viaversion:viarewind-fabric:${viarewind_version}"
     include "org.yaml:snakeyaml:1.29"
 
     implementation('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
