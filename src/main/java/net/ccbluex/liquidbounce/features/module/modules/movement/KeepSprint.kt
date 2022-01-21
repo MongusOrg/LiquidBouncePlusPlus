@@ -13,7 +13,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.minecraft.network.play.client.C0BPacketEntityAction
 
-@ModuleInfo(name = "KeepSprint", spacedName = "Keep Sprint", description = "Keep you sprint.", category = ModuleCategory.MOVEMENT)
+@ModuleInfo(name = "KeepSprint", spacedName = "Keep Sprint", description = "Keep you sprint. Hypixel auto ban.", category = ModuleCategory.MOVEMENT)
 class KeepSprint: Module() {
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
