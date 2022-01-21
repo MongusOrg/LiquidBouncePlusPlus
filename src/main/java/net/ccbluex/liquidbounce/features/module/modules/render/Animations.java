@@ -32,6 +32,13 @@ public class Animations extends Module {
     //swing cancel
     public static final ListValue swingCancelMode = new ListValue("NoSwingMode", new String[]{"ServerSide", "Default"}, "Default");
 
+    //normal item position
+    public static final FloatValue itemPosX = new FloatValue("ItemPosX", 0f, -1f, 1f);
+    public static final FloatValue itemPosY = new FloatValue("ItemPosY", 0f, -1f, 1f);
+    public static final FloatValue itemPosZ = new FloatValue("ItemPosZ", 0f, -1f, 1f);
+
+    //scale all items
+    public static final FloatValue Scale = new FloatValue("Scale", 0.4f, 0f, 4f);
 
     //change Position Blocking Sword
     public static final FloatValue blockPosX = new FloatValue("BlockPosX", 0f, -1f, 1f);
@@ -42,9 +49,6 @@ public class Animations extends Module {
     public static final IntegerValue customRotate1 = new IntegerValue("CustomRotate1", 0, -360, 360);
     public static final IntegerValue customRotate2 = new IntegerValue("CustomRotate2", 0, -360, 360);
     public static final IntegerValue customRotate3 = new IntegerValue("CustomRotate3", 0, -360, 360);
-
-    //scale all items
-    public static final FloatValue Scale = new FloatValue("Scale", 0.4f, 0f, 4f);
 
     //modify item swing and rotate
     public static final BoolValue RotateItems = new BoolValue("RotateItems", false);

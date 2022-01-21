@@ -340,6 +340,7 @@ public abstract class MixinItemRenderer {
         GlStateManager.pushMatrix();
 
         if (LiquidBounce.moduleManager.getModule(Animations.class).getState()) {
+            GL11.glTranslated(Animations.itemPosX.get().doubleValue(), Animations.itemPosY.get().doubleValue(), Animations.itemPosZ.get().doubleValue());
             GL11.glScaled(Animations.bobbing.get(), Animations.bobbing.get(), Animations.bobbing.get());
         }
 

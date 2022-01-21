@@ -59,6 +59,8 @@ public class LongJump extends Module {
     private final FloatValue redeskyTimerBoostEndValue = new FloatValue("Redesky-TimerBoostEnd", 1.0F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
     private final IntegerValue redeskyTimerBoostSlowDownSpeedValue = new IntegerValue("Redesky-TimerBoost-SlowDownSpeed", 2, 1, 10, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
 
+    private final ListValue verusDmgModeValue = new ListValue("VerusDmg-DamageMode", new String[]{"Instant", "InstantC06", "Jump"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
+    private final ListValue verusBoostModeValue = new ListValue("VerusDmg-BoostMode", new String[]{"Static", "Gradual"}, "Gradual", () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
     private final FloatValue verusBoostValue = new FloatValue("VerusDmg-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
     private final FloatValue verusHeightValue = new FloatValue("VerusDmg-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
     private final FloatValue verusTimerValue = new FloatValue("VerusDmg-Timer", 1F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
@@ -81,6 +83,7 @@ public class LongJump extends Module {
     private float currentTimer = 1F;
 
     private boolean verusDmged, hpxDamage, damaged = false;
+    private int verusJumpTimes = 0;
     private int pearlState = 0;
 
     private MSTimer dmgTimer = new MSTimer();
@@ -101,6 +104,7 @@ public class LongJump extends Module {
         hpxDamage = false;
         damaged = false;
         pearlState = 0;
+        verusJumpTimes = 0;
 
         dmgTimer.reset();
 
@@ -109,11 +113,25 @@ public class LongJump extends Module {
         double z = mc.thePlayer.posZ;
 
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
-            if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
-                mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+            if (verusDmgModeValue.get().equalsIgnoreCase("Instant")) {
+                if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, false));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, false));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, y, mc.thePlayer.posZ, true));
+                    mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                }
+            } else if (verusDmgModeValue.get().equalsIgnoreCase("InstantC06")) {
+                if (mc.thePlayer.onGround && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, 4, 0).expand(0, 0, 0)).isEmpty()) {
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y + 4, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, y, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                    mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
+                }
+            } else if (verusDmgModeValue.get().equalsIgnoreCase("Jump")) {
+                if (mc.thePlayer.onGround) {
+                    mc.thePlayer.jump();
+                    verusJumpTimes = 1;
+                }
             }
         }
 /*
@@ -188,11 +206,22 @@ public class LongJump extends Module {
                 MovementUtils.strafe(verusBoostValue.get());
                 mc.thePlayer.motionY = verusHeightValue.get();
             }
+
+            if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5) {
+                if (mc.thePlayer.onGround) {
+                    mc.thePlayer.jump();
+                    verusJumpTimes += 1;
+                }
+                return;
+            }
+
             if (verusDmged)
                 mc.timer.timerSpeed = verusTimerValue.get();
             else {
                 mc.thePlayer.movementInput.moveForward = 0F;
                 mc.thePlayer.movementInput.moveStrafe = 0F;
+                if (!verusDmgModeValue.get().equalsIgnoreCase("Jump"))
+                    mc.thePlayer.motionY = 0;
             }
 
             return;
@@ -407,10 +436,10 @@ public class LongJump extends Module {
             event.zeroXZ();
         }
 
-        if (mode.equalsIgnoreCase("damage") && damageNoMoveValue.get() && !damaged) 
+        if ((mode.equalsIgnoreCase("damage") && damageNoMoveValue.get() && !damaged) || (mode.equalsIgnoreCase("verusdmg") && !verusDmged))
             event.zeroXZ();
 
-        if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged)/* || (mode.equalsIgnoreCase("hypixeldamage2") && !hpxDamage)*/ || (mode.equalsIgnoreCase("pearl") && pearlState != 2))
+        if (/* || (mode.equalsIgnoreCase("hypixeldamage2") && !hpxDamage)*/mode.equalsIgnoreCase("pearl") && pearlState != 2)
             event.cancelEvent();
     }
 
@@ -418,8 +447,10 @@ public class LongJump extends Module {
     public void onPacket(PacketEvent event) {
         final String mode = modeValue.get();
         if (event.getPacket() instanceof C03PacketPlayer) {
-            C03PacketPlayer c03 = (C03PacketPlayer) event.getPacket();
-            if ((mode.equalsIgnoreCase("verusdmg") && !verusDmged)/* || (mode.equalsIgnoreCase("hypixeldamage2") && !hpxDamage)*/ || (mode.equalsIgnoreCase("pearl") && pearlState != 2)) c03.setMoving(false);
+            C03PacketPlayer packetPlayer = (C03PacketPlayer) event.getPacket();
+            if (mode.equalsIgnoreCase("verus") && verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5) {
+                packetPlayer.onGround = false;
+            }
         }
     }
 
