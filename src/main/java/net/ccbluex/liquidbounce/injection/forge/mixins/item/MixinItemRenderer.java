@@ -333,6 +333,9 @@ public abstract class MixinItemRenderer {
         float f1 = abstractclientplayer.getSwingProgress(partialTicks);
         float f2 = abstractclientplayer.prevRotationPitch + (abstractclientplayer.rotationPitch - abstractclientplayer.prevRotationPitch) * partialTicks;
         float f3 = abstractclientplayer.prevRotationYaw + (abstractclientplayer.rotationYaw - abstractclientplayer.prevRotationYaw) * partialTicks;
+        if (LiquidBounce.moduleManager.getModule(Animations.class).getState()) {
+            GL11.glTranslated(Animations.itemPosX.get().doubleValue(), Animations.itemPosY.get().doubleValue(), Animations.itemPosZ.get().doubleValue());
+        }
         this.rotateArroundXAndY(f2, f3);
         this.setLightMapFromPlayer(abstractclientplayer);
         this.rotateWithPlayerRotations((EntityPlayerSP) abstractclientplayer, partialTicks);
@@ -341,7 +344,6 @@ public abstract class MixinItemRenderer {
 
         if (LiquidBounce.moduleManager.getModule(Animations.class).getState()) {
             GL11.glTranslated(Animations.itemPosX.get().doubleValue(), Animations.itemPosY.get().doubleValue(), Animations.itemPosZ.get().doubleValue());
-            GL11.glScaled(Animations.bobbing.get(), Animations.bobbing.get(), Animations.bobbing.get());
         }
 
         if (this.itemToRender != null) {
@@ -775,6 +777,10 @@ public abstract class MixinItemRenderer {
         GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
         RenderHelper.disableStandardItemLighting();
+
+        if (LiquidBounce.moduleManager.getModule(Animations.class).getState()) {
+            GL11.glTranslated(-Animations.itemPosX.get().doubleValue(), -Animations.itemPosY.get().doubleValue(), -Animations.itemPosZ.get().doubleValue());
+        }
     }
 
     //undone
