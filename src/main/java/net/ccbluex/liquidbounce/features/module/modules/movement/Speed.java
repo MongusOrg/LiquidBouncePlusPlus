@@ -84,7 +84,6 @@ public class Speed extends Module {
             new OnGround(),
             new YPort(),
             new YPort2(),
-            new AEMineLowHop(),
         
             // Verus
             new VerusHop(),
@@ -173,7 +172,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "AEMineLowHop"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("other"); }) {
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("other"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -188,7 +187,7 @@ public class Speed extends Module {
         }
     };
     
-    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop"}, "Hop", () -> { return typeValue.get().equalsIgnoreCase("verus"); }) {
+    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop", "Drew"}, "Hop", () -> { return typeValue.get().equalsIgnoreCase("verus"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -203,6 +202,8 @@ public class Speed extends Module {
         }
     };
 
+    public final FloatValue verusTimer = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { return getModeName().equalsIgnoreCase("verusdrew"); });
+
     public final FloatValue customSpeedValue = new FloatValue("CustomSpeed", 1.0F, 0.2F, 10F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final FloatValue customYValue = new FloatValue("CustomY", 0F, 0F, 4F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final FloatValue customTimerValue = new FloatValue("CustomTimer", 1F, 0.1F, 2F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
@@ -212,6 +213,7 @@ public class Speed extends Module {
 
     public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false, () -> { return typeValue.get().equalsIgnoreCase("other"); });
     public final BoolValue bypassWarning = new BoolValue("BypassWarning", true, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
+    
 
     public final FloatValue portMax = new FloatValue("AAC-PortLength", 1, 1, 20, () -> { return typeValue.get().equalsIgnoreCase("aac"); });
     public final FloatValue aacGroundTimerValue = new FloatValue("AACGround-Timer", 3F, 1.1F, 10F, () -> { return typeValue.get().equalsIgnoreCase("aac"); });

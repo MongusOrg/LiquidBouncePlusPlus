@@ -36,9 +36,9 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
     // general
     private val graphValue = ListValue("Graph-Value", arrayOf("Speed", "BPS", "Packet-In", "Packet-Out"), "Speed")
     private val updateDelay = IntegerValue("Update-Delay", 1000, 0, 5000)
-    private val xMultiplier = FloatValue("xMultiplier", 7F, 1F, 20F)
+    private val xMultiplier = FloatValue("xMultiplier", 4F, 1F, 20F)
     private val yMultiplier = FloatValue("yMultiplier", 7F, 0.1F, 20F)
-    private val maxGraphValues = IntegerValue("MaxGraphValues", 100, 1, 300)
+    private val maxGraphValues = IntegerValue("MaxGraphValues", 25, 1, 300)
     private val maxHeight = FloatValue("MaxHeight", 50F, 30F, 150F)
     private val thickness = FloatValue("Thickness", 2F, 1F, 3F)
     private val displayGraphName = BoolValue("Display-Name", true)
