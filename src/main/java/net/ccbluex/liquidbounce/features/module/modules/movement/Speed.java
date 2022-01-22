@@ -321,9 +321,9 @@ public class Speed extends Module {
             case "Spartan":
             mode = "Spartan";
             break;
-            case "Hypixel":
+            /*case "Hypixel":
             mode = hypixelModeValue.get();
-            break;
+            break;*/
             case "Verus":
             mode = verusModeValue.get();
             break;
@@ -345,9 +345,9 @@ public class Speed extends Module {
             case "Spartan":
             mode = "SpartanYPort";
             break;
-            case "Hypixel":
+            /*case "Hypixel":
             mode = "Hypixel" + hypixelModeValue.get();
-            break;
+            break;*/
             case "Verus":
             mode = "Verus" + verusModeValue.get();
             break;
