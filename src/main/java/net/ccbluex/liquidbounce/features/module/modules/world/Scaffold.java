@@ -85,7 +85,7 @@ public class Scaffold extends Module {
 
 
     //make sprint compatible with tower.add sprint tricks
-    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"Same", "Ground", "Off"}, "Off");
+    public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"Same", "Ground", "Air", "Off"}, "Off");
     // Basic stuff
     private final BoolValue swingValue = new BoolValue("Swing", true);
     private final BoolValue downValue = new BoolValue("Down", false);
@@ -324,7 +324,7 @@ public class Scaffold extends Module {
             }
         }
 
-        if (sprintModeValue.get().equalsIgnoreCase("off") || (sprintModeValue.get().equalsIgnoreCase("ground") && !mc.thePlayer.onGround)) {
+        if (sprintModeValue.get().equalsIgnoreCase("off") || (sprintModeValue.get().equalsIgnoreCase("ground") && !mc.thePlayer.onGround) || (sprintModeValue.get().equalsIgnoreCase("air") && mc.thePlayer.onGround)) {
             mc.thePlayer.setSprinting(false);
         }
 
