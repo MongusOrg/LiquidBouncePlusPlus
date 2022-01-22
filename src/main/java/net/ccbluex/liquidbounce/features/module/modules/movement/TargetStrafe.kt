@@ -53,14 +53,16 @@ class TargetStrafe : Module() {
     private val outLine = BoolValue("Outline", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
+    private lateinit var fly: Fly
 
     var direction: Int = 1
     var lastView: Int = 0
     var hasChangedThirdPerson: Boolean = true
 
     override fun onInitialize() {
-        killAura=LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
-        speed=LiquidBounce.moduleManager.getModule(Speed::class.java) as Speed
+        killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
+        speed = LiquidBounce.moduleManager.getModule(Speed::class.java) as Speed
+        fly = LiquidBounce.moduleManager.getModule(Fly::class.java) as Fly
     }
 
     override fun onEnable() {
@@ -95,8 +97,12 @@ class TargetStrafe : Module() {
 
     @EventTarget
     fun onMove(event: MoveEvent) {
-        if (canStrafe && safewalk.get() && checkVoid())
-            event.isSafeWalk = true
+        if (canStrafe) {
+            strafe(event, MovementUtils.getSpeed(event.x, event.z))
+            
+            if (safewalk.get() && checkVoid())
+                event.isSafeWalk = true
+        }
     }
 
     fun strafe(event: MoveEvent, moveSpeed: Double) {
@@ -120,7 +126,7 @@ class TargetStrafe : Module() {
         }
 
     val canStrafe: Boolean
-        get() = (state && (speed.state && speed.typeValue.get().equals("hypixel", true)) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
+        get() = (state && (speed.state || fly.state) && killAura.state && killAura.target != null && !mc.thePlayer.isSneaking && keyMode)
 
     private fun checkVoid(): Boolean {
         for (x in -1..0) {

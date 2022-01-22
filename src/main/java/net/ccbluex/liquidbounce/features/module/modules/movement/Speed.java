@@ -64,10 +64,10 @@ public class Speed extends Module {
             new AACYPort2(),
 
             // Hypixel
-            new HypixelBoost(),
+            /*new HypixelBoost(),
             new HypixelMiniPort(),
             new HypixelYPort(),
-            new HypixelStable(),
+            new HypixelStable(),*/
 
             // Spartan
             new SpartanYPort(),
@@ -90,7 +90,7 @@ public class Speed extends Module {
             new VerusLowHop()
     };
 
-    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Verus", "Custom", "Other"}, "NCP") {
+    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan"/*, "Hypixel"*/, "Verus", "Custom", "Other"}, "NCP") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -156,7 +156,7 @@ public class Speed extends Module {
                 onEnable();
         }
     };
-
+/*
     public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "MiniPort", "YPort", "Stable"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
 
         @Override
@@ -171,7 +171,7 @@ public class Speed extends Module {
                 onEnable();
         }
     };
-
+*/
     public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("other"); }) {
 
         @Override
