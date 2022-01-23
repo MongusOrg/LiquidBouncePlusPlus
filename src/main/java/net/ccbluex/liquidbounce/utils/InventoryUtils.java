@@ -1,7 +1,7 @@
 /*
  * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * https:Blocks.github.com/WYSI-Foundation/LiquidBouncePlus/
  */
 package net.ccbluex.liquidbounce.utils;
 
@@ -24,10 +24,61 @@ import java.util.List;
 public final class InventoryUtils extends MinecraftInstance implements Listenable {
 
     public static final MSTimer CLICK_TIMER = new MSTimer();
-    public static final List<Block> BLOCK_BLACKLIST = Arrays.asList(Blocks.enchanting_table, Blocks.chest, Blocks.ender_chest, Blocks.trapped_chest,
-            Blocks.anvil, Blocks.sand, Blocks.web, Blocks.torch, Blocks.crafting_table, Blocks.furnace, Blocks.waterlily, Blocks.dispenser,
-            Blocks.stone_pressure_plate, Blocks.wooden_pressure_plate, Blocks.noteblock, Blocks.dropper, Blocks.tnt, Blocks.standing_banner, Blocks.wall_banner,
-            Blocks.redstone_torch);
+    public static final List<Block> BLOCK_BLACKLIST = Arrays.asList(
+            Blocks.enchanting_table, 
+            Blocks.chest, 
+            Blocks.ender_chest, 
+            Blocks.trapped_chest,
+            Blocks.anvil, 
+            Blocks.sand, 
+            Blocks.web, 
+            Blocks.torch, 
+            Blocks.crafting_table, 
+            Blocks.furnace, 
+            Blocks.waterlily, 
+            Blocks.dispenser,
+            Blocks.stone_pressure_plate, 
+            Blocks.wooden_pressure_plate, 
+            Blocks.noteblock, 
+            Blocks.dropper, 
+            Blocks.tnt, 
+            Blocks.standing_banner, 
+            Blocks.wall_banner,
+            Blocks.redstone_torch,
+            // recently added
+            Blocks.gravel,
+            Blocks.cactus,
+            Blocks.bed,
+            Blocks.lever,
+            Blocks.standing_sign,
+            Blocks.wall_sign,
+            Blocks.jukebox,
+            Blocks.oak_fence,
+            Blocks.spruce_fence,
+            Blocks.birch_fence,
+            Blocks.jungle_fence,
+            Blocks.dark_oak_fence,
+            Blocks.acia_fence,
+            Blocks.oak_fence_gate,
+            Blocks.spruce_fence_gate,
+            Blocks.birch_fence_gate,
+            Blocks.jungle_fence_gate,
+            Blocks.dark_oak_fence_gate,
+            Blocks.acia_fence_gate,
+            Blocks.nether_brick_fence,
+            Blocks.cake,
+            Blocks.trapdoor,
+            Blocks.melon_block,
+            Blocks.brewing_stand,
+            Blocks.cauldron,
+            Blocks.skull,
+            Blocks.hopper,
+            Blocks.carpet,
+            Blocks.redstone_wire,
+            Blocks.light_weighted_pressure_plate,
+            Blocks.heavy_weighted_pressure_plate,
+            Blocks.daylight_detector
+    );
 
     public static int findItem(final int startSlot, final int endSlot, final Item item) {
         for(int i = startSlot; i < endSlot; i++) {
@@ -61,7 +112,7 @@ public final class InventoryUtils extends MinecraftInstance implements Listenabl
                     return i;
             }
         }
-
+/*
         for(int i = 36; i < 45; i++) {
             final ItemStack itemStack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
 
@@ -73,7 +124,7 @@ public final class InventoryUtils extends MinecraftInstance implements Listenabl
                     return i;
             }
         }
-
+*/
         return -1;
     }
 

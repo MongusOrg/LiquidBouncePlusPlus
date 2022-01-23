@@ -533,7 +533,7 @@ public class Tower extends Module {
 
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
                 final Block block = ((ItemBlock) itemStack.getItem()).getBlock();
-                if (mc.thePlayer.getHeldItem() == itemStack || !InventoryUtils.BLOCK_BLACKLIST.contains(block))
+                if (mc.thePlayer.getHeldItem() == itemStack || (!InventoryUtils.BLOCK_BLACKLIST.contains(block) && block.isFullCube()))
                     amount += itemStack.stackSize;
             }
         }
