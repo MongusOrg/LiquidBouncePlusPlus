@@ -52,14 +52,7 @@ public class VerusDrew extends SpeedMode {
 
         // check movement
         if (forward == 0.0F && strafing == 0.0F) return;
-        boolean reversed = forward < 0.0F;
-
-        float strafingYaw = 90.0F * (forward > 0.0F ? forward / 2.0F : reversed ? -(forward / 2.0F) : 1.0F);
-        if (reversed) yaw += 180.0F;
-        if (strafing > 0.0F) yaw -= strafingYaw;
-        else if (strafing < 0.0F) yaw += strafingYaw;
-        mc.thePlayer.motionX = Math.cos((yaw + 90.0) * 0.017453292519943295) * 0.36;
-        mc.thePlayer.motionZ = Math.cos((yaw) * 0.017453292519943295) * 0.36;
+        MovementUtils.strafe(0.36F); // why complicated stuffs when you can just
     }
 
     @Override
