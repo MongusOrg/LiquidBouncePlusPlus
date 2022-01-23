@@ -87,7 +87,8 @@ public class Speed extends Module {
         
             // Verus
             new VerusHop(),
-            new VerusLowHop()
+            new VerusLowHop(),
+            new VerusDrew()
     };
 
     public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan"/*, "Hypixel"*/, "Verus", "Custom", "Other"}, "NCP") {

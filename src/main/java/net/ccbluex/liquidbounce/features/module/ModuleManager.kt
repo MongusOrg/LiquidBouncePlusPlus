@@ -174,7 +174,8 @@ class ModuleManager : Listenable {
                 SlimeJump::class.java,
                 Parkour::class.java,
                 WallClimb::class.java,
-                AntiDesync::class.java
+                AntiDesync::class.java,
+                FakeLag::class.java
         )
 
         registerModule(Fucker)
