@@ -88,7 +88,7 @@ public class Speed extends Module {
             // Verus
             new VerusHop(),
             new VerusLowHop(),
-            new VerusDrew()
+            new VerusHard()
     };
 
     public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan"/*, "Hypixel"*/, "Verus", "Custom", "Other"}, "NCP") {
@@ -188,7 +188,7 @@ public class Speed extends Module {
         }
     };
     
-    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop", "Drew"}, "Hop", () -> { return typeValue.get().equalsIgnoreCase("verus"); }) {
+    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop", "Hard"}, "Hop", () -> { return typeValue.get().equalsIgnoreCase("verus"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {

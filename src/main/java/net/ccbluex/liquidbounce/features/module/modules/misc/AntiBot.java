@@ -217,7 +217,7 @@ public class AntiBot extends Module {
         if(antiBot.pingValue.get()) {
             EntityPlayer player = (EntityPlayer) entity;
 
-            if(mc.getNetHandler().getPlayerInfo(player.getUniqueID()).getResponseTime() == 0)
+            if(mc.getNetHandler().getPlayerInfo(player.getUniqueID()) != null && mc.getNetHandler().getPlayerInfo(player.getUniqueID()).getResponseTime() == 0)
                 return true;
         }
 

@@ -13,10 +13,10 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMod
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.minecraft.util.MathHelper;
 
-public class VerusDrew extends SpeedMode {
+public class VerusHard extends SpeedMode {
 
-    public VerusDrew() {
-        super("VerusDrew");
+    public VerusHard() {
+        super("VerusHard");
     }
 
     @Override
