@@ -65,6 +65,8 @@ public class Fly extends Module {
 
             // Verus
             "Verus",
+            "VerusFloat",
+            "VerusLowHop",
 
             // Spartan
             "Spartan",
@@ -124,6 +126,9 @@ public class Fly extends Module {
     private final MSTimer groundTimer = new MSTimer();
     
     private final TickTimer spartanTimer = new TickTimer();
+    private final TickTimer verusTimer = new TickTimer();
+
+    private boolean shouldSpoofGround = false;
 
     private boolean noPacketModify;
 
@@ -164,6 +169,9 @@ public class Fly extends Module {
             return;
 
         noPacketModify = true;
+
+        verusTimer.reset();
+        shouldSpoofGround = false;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -405,6 +413,35 @@ public class Fly extends Module {
                     mc.thePlayer.movementInput.moveStrafe = 0F;
                 }
                 break;
+            case "veruslowhop":
+                if (!mc.thePlayer.isInWeb && !mc.thePlayer.isInLava() && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder() && mc.thePlayer.ridingEntity == null) {
+                    if (MovementUtils.isMoving()) {
+                        mc.gameSettings.keyBindJump.pressed = false;
+                        if (mc.thePlayer.onGround) {
+                            mc.thePlayer.jump();
+                            mc.thePlayer.motionY = 0;
+                            MovementUtils.strafe(0.61F);
+                            event.setY(0.41999998688698);
+                        }
+                        MovementUtils.strafe();
+                    }
+                }
+                break;
+            case "verusfloat":
+                if (!mc.thePlayer.onGround)
+                    break; // ignore
+                    
+                verusTimer.update();
+                if (verusTimer.hasTimePassed(5)) {
+                    shouldSpoofGround = true;
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
+                    if (verusTimer.hasTimePassed(10))
+                        verusTimer.reset();
+                } else {
+                    shouldSpoofGround = false;
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 1.6F);
+                }
+                break;
             case "creative":
                 mc.thePlayer.capabilities.isFlying = true;
 
@@ -565,6 +602,9 @@ public class Fly extends Module {
                     sendAAC5Packets();
             }
 
+            if (mode.equalsIgnoreCase("VerusFloat")) 
+                packetPlayer.onGround = shouldSpoofGround;
+
             if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
                 packetPlayer.onGround = false;
             }
@@ -645,7 +685,7 @@ public class Fly extends Module {
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, startY, event.getZ() + 1));
         }
 
-        if (mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) 
+        if (event.getBlock() instanceof BlockAir && ((mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) || mode.equalsIgnoreCase("verusfloat") || mode.equalsIgnoreCase("veruslowhop")))
             event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
 
         if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && 

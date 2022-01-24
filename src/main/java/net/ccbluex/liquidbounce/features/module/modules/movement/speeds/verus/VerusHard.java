@@ -39,20 +39,16 @@ public class VerusHard extends SpeedMode {
         if (mc.thePlayer.onGround) {
             mc.thePlayer.jump();
             if(mc.thePlayer.isSprinting()) {
-                float f = mc.thePlayer.rotationYaw * 0.017453292F;
-                mc.thePlayer.motionX -= MathHelper.sin(f) * 0.2;
-                mc.thePlayer.motionZ += MathHelper.cos(f) * 0.2;
+                MovementUtils.strafe(MovementUtils.getSpeed() + 0.2F);
             }
         }
 
-        // double speed, float forward, float strafing, float yaw
-        float forward = mc.thePlayer.movementInput.moveForward;
-        float strafing = mc.thePlayer.movementInput.moveStrafe;
-        float yaw = mc.thePlayer.rotationYaw;
-
         // check movement
-        if (forward == 0.0F && strafing == 0.0F) return;
-        MovementUtils.strafe(0.36F); // why complicated stuffs when you can just
+        if (!MovementUtils.isMoving()) {
+            MovementUtils.strafe(0F);
+        } else {
+            MovementUtils.strafe(Math.max(0.36F, MovementUtils.getSpeed())); // why complicated stuffs when you can just
+        }
     }
 
     @Override

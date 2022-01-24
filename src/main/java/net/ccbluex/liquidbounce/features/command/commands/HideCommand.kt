@@ -7,6 +7,7 @@ package net.ccbluex.liquidbounce.features.command.commands
 
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
+import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.ClientUtils
 
@@ -83,14 +84,26 @@ class HideCommand : Command("hide", emptyArray()) {
         if (args.isEmpty()) return emptyList()
 
         val moduleName = args[0]
-
-        return when (args.size) {
-            1 -> LiquidBounce.moduleManager.modules
+        when (args.size) {
+            1 -> {
+                val moduleList = LiquidBounce.moduleManager.modules
                     .map { it.name }
                     .filter { it.startsWith(moduleName, true) }
-                    .toList()
-            else -> emptyList()
+                    .toMutableList()
+
+                moduleList.addAll(listOf("category", "list", "clear", "reset"))
+                return moduleList
+            }
+            2 -> {
+                if (moduleName.equals("category", true))
+                    return ModuleCategory.values()
+                            .map { it.displayName }
+                            .filter { it.startsWith(args[1], true) }
+                            .toList()
+            }
         }
+
+        return emptyList()
     }
 
 }
