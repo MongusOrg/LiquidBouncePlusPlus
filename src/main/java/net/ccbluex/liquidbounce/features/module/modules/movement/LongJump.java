@@ -60,7 +60,6 @@ public class LongJump extends Module {
     private final IntegerValue redeskyTimerBoostSlowDownSpeedValue = new IntegerValue("Redesky-TimerBoost-SlowDownSpeed", 2, 1, 10, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
 
     private final ListValue verusDmgModeValue = new ListValue("VerusDmg-DamageMode", new String[]{"Instant", "InstantC06", "Jump"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
-    private final ListValue verusBoostModeValue = new ListValue("VerusDmg-BoostMode", new String[]{"Static", "Gradual"}, "Gradual", () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
     private final FloatValue verusBoostValue = new FloatValue("VerusDmg-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
     private final FloatValue verusHeightValue = new FloatValue("VerusDmg-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
     private final FloatValue verusTimerValue = new FloatValue("VerusDmg-Timer", 1F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
@@ -448,7 +447,7 @@ public class LongJump extends Module {
         final String mode = modeValue.get();
         if (event.getPacket() instanceof C03PacketPlayer) {
             C03PacketPlayer packetPlayer = (C03PacketPlayer) event.getPacket();
-            if (mode.equalsIgnoreCase("verus") && verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5) {
+            if (mode.equalsIgnoreCase("verusdmg") && verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5) {
                 packetPlayer.onGround = false;
             }
         }

@@ -203,7 +203,7 @@ public class Speed extends Module {
         }
     };
 
-    public final FloatValue verusTimer = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { return getModeName().equalsIgnoreCase("verusdrew"); });
+    public final FloatValue verusTimer = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { return getModeName().equalsIgnoreCase("verushard"); });
 
     public final FloatValue customSpeedValue = new FloatValue("CustomSpeed", 1.0F, 0.2F, 10F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final FloatValue customYValue = new FloatValue("CustomY", 0F, 0F, 4F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });

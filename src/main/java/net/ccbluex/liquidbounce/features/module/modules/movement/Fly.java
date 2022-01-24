@@ -128,7 +128,7 @@ public class Fly extends Module {
     private final TickTimer spartanTimer = new TickTimer();
     private final TickTimer verusTimer = new TickTimer();
 
-    private boolean shouldSpoofGround = false;
+    private boolean shouldFakeJump = false;
 
     private boolean noPacketModify;
 
@@ -171,7 +171,7 @@ public class Fly extends Module {
         noPacketModify = true;
 
         verusTimer.reset();
-        shouldSpoofGround = false;
+        shouldFakeJump = false;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -414,18 +414,20 @@ public class Fly extends Module {
                 }
                 break;
             case "verusfloat":
-                if (!mc.thePlayer.onGround)
+                if (!mc.thePlayer.onGround) {
+                    shouldFakeJump = false;
                     break; // ignore
+                }
                     
                 verusTimer.update();
                 if (verusTimer.hasTimePassed(5)) {
-                    shouldSpoofGround = true;
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
-                    if (verusTimer.hasTimePassed(10))
+                    shouldFakeJump = false;
+                    MovementUtils.strafe(MovementUtils.getSpeed() / 159.0F);
+                    if (verusTimer.hasTimePassed(8))
                         verusTimer.reset();
                 } else {
-                    shouldSpoofGround = false;
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 1.6F);
+                    shouldFakeJump = true;
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 1.25F);
                 }
                 break;
             case "creative":
@@ -572,6 +574,8 @@ public class Fly extends Module {
         if(packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
 
+            boolean lastOnGround = packetPlayer.onGround;
+
             if (mode.equalsIgnoreCase("NCP") || mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && verusSpoofGround.get() && verusDmged))
                 packetPlayer.onGround = true;
 
@@ -588,8 +592,14 @@ public class Fly extends Module {
                     sendAAC5Packets();
             }
 
-            if (mode.equalsIgnoreCase("VerusFloat")) 
-                packetPlayer.onGround = shouldSpoofGround;
+            if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving()) {
+                if (shouldFakeJump) {
+                    packetPlayer.y += 0.42;
+                    packetPlayer.onGround = false;
+                } else {
+                    packetPlayer.onGround = lastOnGround;
+                }
+            }
 
             if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
                 packetPlayer.onGround = false;
