@@ -415,21 +415,21 @@ public class Fly extends Module {
                 }
                 break;
             case "verusfloat":
-                if (!mc.thePlayer.onGround) {
-                    shouldFakeJump = false;
+                if (!mc.thePlayer.onGround || !MovementUtils.isMoving()) {
+                    shouldFakeJump = true;
                     break; // ignore
                 }
-                    
-                verusTimer.update();
-                if (verusTimer.hasTimePassed(4)) {
+                
+                if (verusTimer.hasTimePassed(10)) {
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
                     shouldFakeJump = true;
-                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0F);
-                    if (verusTimer.hasTimePassed(8))
+                    if (verusTimer.hasTimePassed(12))
                         verusTimer.reset();
                 } else {
+                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0F);
                     shouldFakeJump = false;
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 1.05F);
                 }
+                verusTimer.update();
                 break;
             case "creative":
                 mc.thePlayer.capabilities.isFlying = true;
@@ -596,11 +596,10 @@ public class Fly extends Module {
             if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving()) {
                 if (shouldFakeJump) {
                     packetPlayer.onGround = false;
-                    packetPlayer.y = mc.thePlayer.posY + 0.25;
                 } else {
-                    packetPlayer.onGround = lastOnGround;
+                    packetPlayer.onGround = true;
                 }
-                if (debugValue.get()) ClientUtils.displayChatMessage("onGround: " + packetPlayer.onGround);
+                if (debugValue.get()) ClientUtils.displayChatMessage("onGround: " + packetPlayer.onGround + ", last:" + lastOnGround);
             }
 
             if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
