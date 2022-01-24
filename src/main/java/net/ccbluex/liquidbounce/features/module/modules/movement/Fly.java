@@ -252,7 +252,7 @@ public class Fly extends Module {
             case "funcraft":
                 if (mc.thePlayer.onGround)
                     mc.thePlayer.jump();
-                moveSpeed = 1.7;
+                moveSpeed = 1;
                 break;
         }
 
@@ -411,20 +411,6 @@ public class Fly extends Module {
                 } else {
                     mc.thePlayer.movementInput.moveForward = 0F;
                     mc.thePlayer.movementInput.moveStrafe = 0F;
-                }
-                break;
-            case "veruslowhop":
-                if (!mc.thePlayer.isInWeb && !mc.thePlayer.isInLava() && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder() && mc.thePlayer.ridingEntity == null) {
-                    if (MovementUtils.isMoving()) {
-                        mc.gameSettings.keyBindJump.pressed = false;
-                        if (mc.thePlayer.onGround) {
-                            mc.thePlayer.jump();
-                            mc.thePlayer.motionY = 0;
-                            MovementUtils.strafe(0.61F);
-                            event.setY(0.41999998688698);
-                        }
-                        MovementUtils.strafe();
-                    }
                 }
                 break;
             case "verusfloat":
@@ -671,6 +657,20 @@ public class Fly extends Module {
                 break;
             case "hypixelglide":
                 event.zeroXZ();
+                break;
+            case "veruslowhop":
+                if (!mc.thePlayer.isInWeb && !mc.thePlayer.isInLava() && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder() && mc.thePlayer.ridingEntity == null) {
+                    if (MovementUtils.isMoving()) {
+                        mc.gameSettings.keyBindJump.pressed = false;
+                        if (mc.thePlayer.onGround) {
+                            mc.thePlayer.jump();
+                            mc.thePlayer.motionY = 0;
+                            MovementUtils.strafe(0.61F);
+                            event.setY(0.41999998688698);
+                        }
+                        MovementUtils.strafe();
+                    }
+                }
                 break;
         }
     }
