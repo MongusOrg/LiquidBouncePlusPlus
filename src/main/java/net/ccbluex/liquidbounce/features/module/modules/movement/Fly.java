@@ -118,6 +118,7 @@ public class Fly extends Module {
 
     // Visuals
     private final BoolValue markValue = new BoolValue("Mark", true);
+    private final BoolValue debugValue = new BoolValue("Debug", false);
 
     private BlockPos lastPosition;
 
@@ -420,14 +421,14 @@ public class Fly extends Module {
                 }
                     
                 verusTimer.update();
-                if (verusTimer.hasTimePassed(5)) {
-                    shouldFakeJump = false;
-                    MovementUtils.strafe(MovementUtils.getSpeed() / 159.0F);
+                if (verusTimer.hasTimePassed(4)) {
+                    shouldFakeJump = true;
+                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0);
                     if (verusTimer.hasTimePassed(8))
                         verusTimer.reset();
                 } else {
-                    shouldFakeJump = true;
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 1.25F);
+                    shouldFakeJump = false;
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() * 1.05F);
                 }
                 break;
             case "creative":
@@ -594,11 +595,12 @@ public class Fly extends Module {
 
             if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving()) {
                 if (shouldFakeJump) {
-                    packetPlayer.y += 0.42;
                     packetPlayer.onGround = false;
+                    packetPlayer.y = mc.thePlayer.posY + 0.25;
                 } else {
                     packetPlayer.onGround = lastOnGround;
                 }
+                if (debugValue.get()) ClientUtils.displayChatMessage("onGround: " + packetPlayer.onGround);
             }
 
             if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
@@ -669,7 +671,7 @@ public class Fly extends Module {
                 event.zeroXZ();
                 break;
             case "veruslowhop":
-                if (!mc.thePlayer.isInWeb && !mc.thePlayer.isInLava() && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder() && mc.thePlayer.ridingEntity == null) {
+                if (!mc.thePlayer.isInWeb && !mc.thePlayer.isInLava() && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder() && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.ridingEntity == null) {
                     if (MovementUtils.isMoving()) {
                         mc.gameSettings.keyBindJump.pressed = false;
                         if (mc.thePlayer.onGround) {
