@@ -423,7 +423,7 @@ public class Fly extends Module {
                 verusTimer.update();
                 if (verusTimer.hasTimePassed(4)) {
                     shouldFakeJump = true;
-                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0);
+                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0F);
                     if (verusTimer.hasTimePassed(8))
                         verusTimer.reset();
                 } else {
