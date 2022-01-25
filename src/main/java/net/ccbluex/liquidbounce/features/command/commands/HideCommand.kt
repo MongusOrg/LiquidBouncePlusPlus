@@ -91,7 +91,7 @@ class HideCommand : Command("hide", emptyArray()) {
                     .filter { it.startsWith(moduleName, true) }
                     .toMutableList()
 
-                moduleList.addAll(listOf("category", "list", "clear", "reset"))
+                moduleList.addAll(listOf("category", "list", "clear", "reset").filter { it.startsWith(moduleName, true) })
                 return moduleList
             }
             2 -> {

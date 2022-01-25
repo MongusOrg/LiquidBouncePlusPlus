@@ -429,7 +429,7 @@ public class Fly extends Module {
                     verusTimer.reset();
                 } else {
                     shouldFakeJump = false;
-                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0F);
+                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 69.0F);
                 }
                 verusTimer.update();
                 break;
@@ -597,10 +597,10 @@ public class Fly extends Module {
 
             if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving() && shouldActive) {
                 if (shouldFakeJump) {
-                    packetPlayer.onGround = true;
+                    packetPlayer.onGround = false;
                     packetPlayer.y += RandomUtils.nextDouble(0.080, 0.100);
                 } else {
-                    packetPlayer.onGround = false;
+                    packetPlayer.onGround = true;
                 }
                 if (debugValue.get()) ClientUtils.displayChatMessage("onGround: " + packetPlayer.onGround + ", last:" + lastOnGround);
             }

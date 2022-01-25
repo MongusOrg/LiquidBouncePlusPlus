@@ -96,9 +96,14 @@ public class AsianHat extends Module {
 
         checkPosition(radius);
         pre3D();
-        if (hatRotation.get() && RotationUtils.targetRotation != null && RotationUtils.serverRotation != null) {
-            GlStateManager.rotate(RotationUtils.serverRotation.getPitch() + (RotationUtils.targetRotation.getPitch() - RotationUtils.serverRotation.getPitch()) * partialTicks, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(RotationUtils.serverRotation.getYaw() + (RotationUtils.targetRotation.getYaw() - RotationUtils.serverRotation.getYaw()) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+        if (hatRotation.get() && RotationUtils.serverRotation != null) {
+            if (this.mc.gameSettings.thirdPersonView == 0) {
+                GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, -1.0F, 0.0F);
+                GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, -1.0F, 0.0F, 0.0F);
+            } else {
+                GlStateManager.rotate(RotationUtils.serverRotation.getPitch() + 180.0F, 0.0F, -1.0F, 0.0F);
+                GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), -1.0F, 0.0F, 0.0F);
+            }
         }
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
