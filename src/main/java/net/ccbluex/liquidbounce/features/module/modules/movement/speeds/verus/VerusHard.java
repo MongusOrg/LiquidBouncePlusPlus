@@ -39,7 +39,7 @@ public class VerusHard extends SpeedMode {
         if (mc.thePlayer.onGround) {
             mc.thePlayer.jump();
             if(mc.thePlayer.isSprinting()) {
-                MovementUtils.strafe(MovementUtils.getSpeed() + 0.15F);
+                MovementUtils.strafe(MovementUtils.getSpeed() + 0.2F);
             }
         }
 
@@ -47,7 +47,7 @@ public class VerusHard extends SpeedMode {
         if (!MovementUtils.isMoving()) {
             MovementUtils.strafe(0F);
         } else {
-            MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0F); // why complicated stuffs when you can just and btw this is hardcoded
+            MovementUtils.strafe(0.36F); // why complicated stuffs when you can just and btw this is hardcoded
         }
     }
 

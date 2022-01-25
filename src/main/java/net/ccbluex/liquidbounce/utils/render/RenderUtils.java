@@ -397,7 +397,6 @@ public final class RenderUtils extends MinecraftInstance {
     }
 
     public static void drawTriAngle(float cx, float cy, float r, float n, Color color, boolean polygon) {
-        glPushMatrix();
         cx *= 2.0;
         cy *= 2.0;
         double b = 6.2831852 / n;
@@ -406,33 +405,30 @@ public final class RenderUtils extends MinecraftInstance {
         r *= 2.0;
         double x = r;
         double y = 0.0;
-        glEnable(3042);
-        glDisable(3553);
-        glBlendFunc(770, 771);
-        glEnable(2848);
-        glHint(3154, 4354);
-        glHint(3155, 4354);
-        glScalef(0.5f, 0.5f, 0.5f);
-        GlStateManager.color(0,0,0);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        glLineWidth(1F);
+        enableGlCap(GL_LINE_SMOOTH);
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GlStateManager.resetColor();
         glColor(color);
-        glBegin(polygon ? GL_POLYGON : 2);
+        GlStateManager.scale(0.5f, 0.5f, 0.5f);
+        worldrenderer.begin(polygon ? GL_POLYGON : 2, DefaultVertexFormats.POSITION);
         int ii = 0;
         while (ii < n) {
-            glVertex2d(x + cx, y + cy);
+            worldrenderer.pos((double)x + cx, (double)y + cy, 0.0D).endVertex();
             double t = x;
             x = p * x - s * y;
             y = s * t + p * y;
             ii++;
         }
-        glEnd();
-        glScalef(2f, 2f, 2f);
-        glEnable(3553);
-        glDisable(3042);
-        glDisable(2848);
-        glHint(3154, 4352);
-        glHint(3155, 4352);
-        glPopMatrix();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.scale(2f, 2f, 2f);
         GlStateManager.color(1, 1, 1, 1);
     }
 

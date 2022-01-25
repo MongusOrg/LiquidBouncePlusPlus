@@ -129,7 +129,7 @@ public class Fly extends Module {
     private final TickTimer spartanTimer = new TickTimer();
     private final TickTimer verusTimer = new TickTimer();
 
-    private boolean shouldFakeJump = false;
+    private boolean shouldFakeJump = false, shouldActive = false;
 
     private boolean noPacketModify;
 
@@ -173,6 +173,7 @@ public class Fly extends Module {
 
         verusTimer.reset();
         shouldFakeJump = false;
+        shouldActive = true;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -416,18 +417,19 @@ public class Fly extends Module {
                 break;
             case "verusfloat":
                 if (!mc.thePlayer.onGround || !MovementUtils.isMoving()) {
-                    shouldFakeJump = true;
+                    shouldActive = false;
+                    verusTimer.reset();
                     break; // ignore
                 }
                 
-                if (verusTimer.hasTimePassed(10)) {
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
+                shouldActive = true;
+                if (verusTimer.hasTimePassed(6)) {
                     shouldFakeJump = true;
-                    if (verusTimer.hasTimePassed(12))
-                        verusTimer.reset();
+                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
+                    verusTimer.reset();
                 } else {
-                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0F);
                     shouldFakeJump = false;
+                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 159.0F);
                 }
                 verusTimer.update();
                 break;
@@ -593,11 +595,12 @@ public class Fly extends Module {
                     sendAAC5Packets();
             }
 
-            if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving()) {
+            if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving() && shouldActive) {
                 if (shouldFakeJump) {
-                    packetPlayer.onGround = false;
-                } else {
                     packetPlayer.onGround = true;
+                    packetPlayer.y += RandomUtils.nextDouble(0.080, 0.100);
+                } else {
+                    packetPlayer.onGround = false;
                 }
                 if (debugValue.get()) ClientUtils.displayChatMessage("onGround: " + packetPlayer.onGround + ", last:" + lastOnGround);
             }

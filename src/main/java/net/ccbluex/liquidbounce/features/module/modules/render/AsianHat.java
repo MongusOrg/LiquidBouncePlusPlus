@@ -48,6 +48,7 @@ public class AsianHat extends Module {
     private final IntegerValue spaceValue = new IntegerValue("Color-Space", 0, 0, 200);
     private final BoolValue noFirstPerson = new BoolValue("NoFirstPerson", true);
     private final BoolValue hatBorder = new BoolValue("HatBorder", true);
+    private final BoolValue hatRotation = new BoolValue("HatRotation", true);
     private final IntegerValue borderAlphaValue = new IntegerValue("BorderAlpha", 255, 0, 255);
     private final FloatValue borderWidthValue = new FloatValue("BorderWidth", 1F, 0.1F, 4F);
 
@@ -83,6 +84,8 @@ public class AsianHat extends Module {
         float al = colorAlphaValue.get() / 255.0F;
         float Eal = colorEndAlphaValue.get() / 255.0F;
 
+        float partialTicks = event.getPartialTicks();
+
         double viewX = -mc.getRenderManager().viewerPosX;
         double viewY = -mc.getRenderManager().viewerPosY;
         double viewZ = -mc.getRenderManager().viewerPosZ;
@@ -92,6 +95,10 @@ public class AsianHat extends Module {
 
         checkPosition(radius);
         pre3D();
+        if (hatRotation.get() && RotationUtils.targetRotation != null && RotationUtils.serverRotation != null) {
+            GlStateManager.rotate(RotationUtils.serverRotation.getPitch() + (RotationUtils.targetRotation.getPitch() - RotationUtils.serverRotation.getPitch()) * partialTicks, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(RotationUtils.serverRotation.getYaw() + (RotationUtils.targetRotation.getYaw() - RotationUtils.serverRotation.getYaw()) * partialTicks + 180.0F, 0.0F, 1.0F, 0.0F);
+        }
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
         // main section
