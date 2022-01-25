@@ -96,19 +96,15 @@ public class AsianHat extends Module {
 
         checkPosition(radius);
         pre3D();
+        GlStateManager.translate(viewX, viewY, viewZ);
         if (hatRotation.get() && RotationUtils.serverRotation != null) {
-            if (this.mc.gameSettings.thirdPersonView == 0) {
-                GlStateManager.rotate(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks + 180.0F, 0.0F, -1.0F, 0.0F);
-                GlStateManager.rotate(entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks, -1.0F, 0.0F, 0.0F);
-            } else {
-                GlStateManager.rotate(RotationUtils.serverRotation.getPitch() + 180.0F, 0.0F, -1.0F, 0.0F);
-                GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), -1.0F, 0.0F, 0.0F);
-            }
+            GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), 0.0F, 0.0F, 1.0F);
+            GlStateManager.rotate(RotationUtils.serverRotation.getPitch(), 0.0F, 1.0F, 0.0F);
         }
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
         // main section
-        worldrenderer.pos(viewX + posX, viewY + posY + height + 0.3, viewZ + posZ).color(r, g, b, al).endVertex();
+        worldrenderer.pos(posX, posY + height + 0.3, posZ).color(r, g, b, al).endVertex();
 
         int i = 0;
         for (double[] smolPos : positions) {
@@ -121,15 +117,15 @@ public class AsianHat extends Module {
                 float g2 = colour2.getGreen() / 255.0F;
                 float b2 = colour2.getBlue() / 255.0F;
 
-                worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r2, g2, b2, Eal).endVertex();
+                worldrenderer.pos(posX2, posY + height, posZ2).color(r2, g2, b2, Eal).endVertex();
             } else {
-                worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r, g, b, Eal).endVertex();
+                worldrenderer.pos(posX2, posY + height, posZ2).color(r, g, b, Eal).endVertex();
             }
 
             i++;
 		}
 
-        worldrenderer.pos(viewX + posX, viewY + posY + height + 0.3, viewZ + posZ).color(r, g, b, al).endVertex();
+        worldrenderer.pos(posX, posY + height + 0.3, posZ).color(r, g, b, al).endVertex();
         tessellator.draw();
 
         // border section
@@ -151,9 +147,9 @@ public class AsianHat extends Module {
                     float g2 = colour2.getGreen() / 255.0F;
                     float b2 = colour2.getBlue() / 255.0F;
 
-                    worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r2, g2, b2, lineAlp).endVertex();
+                    worldrenderer.pos(posX2, posY + height, posZ2).color(r2, g2, b2, lineAlp).endVertex();
                 } else {
-                    worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r, g, b, lineAlp).endVertex();
+                    worldrenderer.pos(posX2, posY + height, posZ2).color(r, g, b, lineAlp).endVertex();
                 }
 
                 i++;
@@ -161,61 +157,7 @@ public class AsianHat extends Module {
 
             tessellator.draw();
         }
-
-        /*GL11.glTranslated(-, -mc.getRenderManager().viewerPosY, -mc.getRenderManager().viewerPosZ);
-		GL11.glBegin(GL11.GL_POLYGON);
         
-        GL11.glColor4f(r, g, b, al);
-        GL11.glVertex3d(posX, posY + height + 0.3F, posZ);
-
-        for (int i = 0; i <= 360; i += 1) {
-			double posX2 = posX - Math.sin(i * Math.PI / 180) * radius;
-			double posZ2 = posZ + Math.cos(i * Math.PI / 180) * radius;
-            
-            if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
-                Color colour2 = getColor(entity, i * spaceValue.get());
-                float r2 = colour2.getRed() / 255.0F;
-                float g2 = colour2.getGreen() / 255.0F;
-                float b2 = colour2.getBlue() / 255.0F;
-
-                GL11.glColor4f(r2, g2, b2, Eal);
-            }
-
-			GL11.glVertex3d(posX2, posY + height, posZ2);
-		}
-
-        GL11.glColor4f(r, g, b, al);
-        GL11.glVertex3d(posX, posY + height + 0.3F, posZ);
-
-        GL11.glEnd();
-
-        if (hatBorder.get()) {
-            float lineAlp = borderAlphaValue.get() / 255.0F;
-
-            GL11.glLineWidth(borderWidthValue.get());
-            GL11.glBegin(GL11.GL_LINE_LOOP);
-
-            GL11.glColor4f(r, g, b, lineAlp);
-            
-            for (int j = 0; j <= 360; j += 1) {
-			    double posX2 = posX - Math.sin(j * Math.PI / 180) * radius;
-			    double posZ2 = posZ + Math.cos(j * Math.PI / 180) * radius;
-
-			    GL11.glVertex3d(posX2, posY + height, posZ2);
-
-                if (spaceValue.get() > 0 && !colorModeValue.get().equalsIgnoreCase("Custom")) {
-                    Color colour2 = getColor(entity, j * spaceValue.get());
-                    float r2 = colour2.getRed() / 255.0F;
-                    float g2 = colour2.getGreen() / 255.0F;
-                    float b2 = colour2.getBlue() / 255.0F;
-
-                    GL11.glColor4f(r2, g2, b2, lineAlp);
-                }
-		    }
-
-            GL11.glEnd();
-        }*/
-
         post3D();
     }
 

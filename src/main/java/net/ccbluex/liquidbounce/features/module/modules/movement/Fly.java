@@ -415,7 +415,7 @@ public class Fly extends Module {
                     mc.thePlayer.movementInput.moveStrafe = 0F;
                 }
                 break;
-            case "verusfloat":
+            case "verusfloat": // flagging idk why
                 if (!mc.thePlayer.onGround || !MovementUtils.isMoving()) {
                     shouldActive = false;
                     verusTimer.reset();
@@ -423,13 +423,13 @@ public class Fly extends Module {
                 }
                 
                 shouldActive = true;
-                if (verusTimer.hasTimePassed(6)) {
+                if (verusTimer.hasTimePassed(4)) {
                     shouldFakeJump = true;
                     MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
                     verusTimer.reset();
                 } else {
                     shouldFakeJump = false;
-                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 69.0F);
+                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 64.0F);
                 }
                 verusTimer.update();
                 break;
@@ -598,7 +598,6 @@ public class Fly extends Module {
             if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving() && shouldActive) {
                 if (shouldFakeJump) {
                     packetPlayer.onGround = false;
-                    packetPlayer.y += RandomUtils.nextDouble(0.080, 0.100);
                 } else {
                     packetPlayer.onGround = true;
                 }
