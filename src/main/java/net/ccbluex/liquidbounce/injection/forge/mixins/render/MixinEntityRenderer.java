@@ -8,10 +8,12 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 import com.google.common.base.Predicates;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.Render3DEvent;
+import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.player.Reach;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
 import net.ccbluex.liquidbounce.features.module.modules.render.CameraClip;
 import net.ccbluex.liquidbounce.features.module.modules.render.NoHurtCam;
+import net.ccbluex.liquidbounce.features.module.modules.render.TargetMark;
 import net.ccbluex.liquidbounce.features.module.modules.render.Tracers;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -144,12 +146,18 @@ public abstract class MixinEntityRenderer {
 
     @Inject(method = "setupCameraTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;setupViewBobbing(F)V", shift = At.Shift.BEFORE))
     private void setupCameraViewBobbingBefore(final CallbackInfo callbackInfo) {
-        if (LiquidBounce.moduleManager.getModule(Tracers.class).getState()) GL11.glPushMatrix();
+        final TargetMark targetMark = (TargetMark) LiquidBounce.moduleManager.getModule(TargetMark.class);
+        final KillAura aura = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
+
+        if ((targetMark != null && aura != null && targetMark.modeValue.get().equalsIgnoreCase("tracers") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) || LiquidBounce.moduleManager.getModule(Tracers.class).getState()) GL11.glPushMatrix();
     }
 
     @Inject(method = "setupCameraTransform", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/EntityRenderer;setupViewBobbing(F)V", shift = At.Shift.AFTER))
     private void setupCameraViewBobbingAfter(final CallbackInfo callbackInfo) {
-        if (LiquidBounce.moduleManager.getModule(Tracers.class).getState()) GL11.glPopMatrix();
+        final TargetMark targetMark = (TargetMark) LiquidBounce.moduleManager.getModule(TargetMark.class);
+        final KillAura aura = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
+
+        if ((targetMark != null && aura != null && targetMark.modeValue.get().equalsIgnoreCase("tracers") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) || LiquidBounce.moduleManager.getModule(Tracers.class).getState()) GL11.glPopMatrix();
     }
 
     /**

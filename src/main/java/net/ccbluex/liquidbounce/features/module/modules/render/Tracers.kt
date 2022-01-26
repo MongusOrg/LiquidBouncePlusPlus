@@ -60,7 +60,7 @@ class Tracers : Module() {
                     else -> Color(255, 255, 255, 150)
                 }
 
-                drawTraces(entity, color)
+                drawTraces(entity, color, true)
             }
         }
 
@@ -74,7 +74,7 @@ class Tracers : Module() {
         GlStateManager.resetColor()
     }
 
-    private fun drawTraces(entity: Entity, color: Color) {
+    fun drawTraces(entity: Entity, color: Color, drawHeight: Boolean) {
         val x = (entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * mc.timer.renderPartialTicks
                 - mc.renderManager.renderPosX)
         val y = (entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * mc.timer.renderPartialTicks
@@ -89,8 +89,13 @@ class Tracers : Module() {
         RenderUtils.glColor(color)
 
         GL11.glVertex3d(eyeVector.xCoord, mc.thePlayer.getEyeHeight().toDouble() + eyeVector.yCoord, eyeVector.zCoord)
-        GL11.glVertex3d(x, y, z)
-        GL11.glVertex3d(x, y, z)
-        GL11.glVertex3d(x, y + entity.height, z)
+        if (drawHeight) {
+            GL11.glVertex3d(x, y, z)
+            GL11.glVertex3d(x, y, z)
+            GL11.glVertex3d(x, y + entity.height, z)
+        } else {
+            GL11.glVertex3d(x, y + entity.height / 2.0, z)
+        }
+        
     }
 }

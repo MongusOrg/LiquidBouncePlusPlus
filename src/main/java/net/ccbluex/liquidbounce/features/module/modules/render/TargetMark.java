@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.*;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,18 +33,19 @@ import java.awt.Color;
 @ModuleInfo(name = "TargetMark", spacedName = "Target Mark", description = "Display your KillAura's target in 3D.", category = ModuleCategory.RENDER)
 public class TargetMark extends Module {
 
-    public final ListValue modeValue = new ListValue("Mode", new String[]{"Default", "Box", "Jello"}, "Default");
+    public final ListValue modeValue = new ListValue("Mode", new String[]{"Default", "Box", "Jello", "Tracers"}, "Default");
     private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
 	private final IntegerValue colorRedValue = new IntegerValue("Red", 255, 0, 255);
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
 	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
 	private final IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
-	private final FloatValue jelloAlphaValue = new FloatValue("JelloEndAlphaPercent", 0.4F, 0F, 1F);
-	private final FloatValue jelloWidthValue = new FloatValue("JelloCircleWidth", 3F, 0.01F, 5F);
-	private final FloatValue jelloGradientHeightValue = new FloatValue("JelloGradientHeight", 3F, 1F, 8F);
+	private final FloatValue jelloAlphaValue = new FloatValue("JelloEndAlphaPercent", 0.4F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
+	private final FloatValue jelloWidthValue = new FloatValue("JelloCircleWidth", 3F, 0.01F, 5F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
+	private final FloatValue jelloGradientHeightValue = new FloatValue("JelloGradientHeight", 3F, 1F, 8F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
+	private final FloatValue thicknessValue = new FloatValue("Thickness", 1F, 0.1F, 5F, () -> { return modeValue.get().equalsIgnoreCase("tracers"); });
    	private final BoolValue colorTeam = new BoolValue("Team", false);
 
 	private EntityLivingBase entity;
@@ -140,7 +142,37 @@ public class TargetMark extends Module {
 		    post3D();
         } else if (modeValue.get().equalsIgnoreCase("default")) {
             if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawPlatform(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()));
-        } else {
+        } else if (modeValue.get().equalsIgnoreCase("tracers")) {
+			if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) {
+				final Tracers tracers = (Tracers) LiquidBounce.moduleManager.getModule(Tracers.class);
+				if (tracers == null) return;
+			
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		        GL11.glEnable(GL11.GL_BLEND);
+		        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		        GL11.glLineWidth(thicknessValue.get());
+		        GL11.glDisable(GL11.GL_TEXTURE_2D);
+		        GL11.glDisable(GL11.GL_DEPTH_TEST);
+		        GL11.glDepthMask(false);
+
+        		GL11.glBegin(GL11.GL_LINES);
+
+                int dist = (int)(mc.thePlayer.getDistanceToEntity(entity) * 2);
+
+                if (dist > 255) dist = 255;
+
+                tracers.drawTraces(aura.getTarget(), getColor(aura.getTarget()));
+            	
+        		GL11.glEnd();
+
+        		GL11.glEnable(GL11.GL_TEXTURE_2D);
+        		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        		GL11.glEnable(GL11.GL_DEPTH_TEST);
+        		GL11.glDepthMask(true);
+        		GL11.glDisable(GL11.GL_BLEND);
+        		GlStateManager.resetColor();
+			}
+		} else {
             if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawEntityBox(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()), false);
         }
 	}
