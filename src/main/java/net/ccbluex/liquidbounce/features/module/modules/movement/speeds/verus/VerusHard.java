@@ -43,7 +43,7 @@ public class VerusHard extends SpeedMode {
             }
         }
 
-        MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 79.0F); // why complicated stuffs when you can just and btw this is hardcoded
+        MovementUtils.strafe(Math.max((float)MovementUtils.getBaseMoveSpeed() * 0.95F, MovementUtils.getSpeed())); // why complicated stuffs when you can just and btw this is hardcoded
     }
 
     @Override
