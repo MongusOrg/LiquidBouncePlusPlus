@@ -151,8 +151,8 @@ public class ValuesConfig extends FileConfig {
         theAlteningObject.addProperty("API-Key", GuiTheAltening.Companion.getApiKey());
         jsonObject.add("thealtening", theAlteningObject);
 
-        final JsonObject capeObject = new JsonObject();
-        /*capeObject.addProperty("TransferCode", GuiDonatorCape.Companion.getTransferCode());
+        /*final JsonObject capeObject = new JsonObject();
+        capeObject.addProperty("TransferCode", GuiDonatorCape.Companion.getTransferCode());
         capeObject.addProperty("CapeEnabled", GuiDonatorCape.Companion.getCapeEnabled());*/
         //jsonObject.add("DonatorCape", capeObject);
 

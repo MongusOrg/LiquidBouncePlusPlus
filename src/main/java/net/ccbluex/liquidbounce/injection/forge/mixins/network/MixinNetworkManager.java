@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.network;
 import io.netty.channel.ChannelHandlerContext;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.PacketEvent;
+import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -37,4 +38,17 @@ public class MixinNetworkManager {
         if(event.isCancelled())
             callback.cancel();
     }
+
+    /**
+     * show player head in tab bar
+     * @author Liulihaocai, FDPClient
+     */
+    @Inject(method = "getIsencrypted", at = @At("HEAD"), cancellable = true)
+    private void injectEncryption(CallbackInfoReturnable<Boolean> cir) {
+        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        if(hud != null && hud.getTabHead().get()) {
+            cir.setReturnValue(true);
+        }
+    }
+
 }
