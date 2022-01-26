@@ -157,7 +157,7 @@ public class TargetMark extends Module {
 
         		GL11.glBegin(GL11.GL_LINES);
 
-                int dist = (int)(mc.thePlayer.getDistanceToEntity(entity) * 2);
+                int dist = (int)(mc.thePlayer.getDistanceToEntity(aura.getTarget()) * 2);
 
                 if (dist > 255) dist = 255;
 
