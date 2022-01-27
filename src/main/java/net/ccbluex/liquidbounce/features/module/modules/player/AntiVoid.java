@@ -48,7 +48,7 @@ public class AntiVoid extends Module {
     public final BoolValue scaffoldValue = new BoolValue("AutoScaffold", true);
     public final BoolValue towerValue = new BoolValue("AutoTower", true);
 
-    private BlockPos detectedLocation = null;
+    private BlockPos detectedLocation = BlockPos.ORIGIN;
     private double lastX = 0; 
     private double lastY = 0; 
     private double lastZ = 0;
@@ -135,7 +135,7 @@ public class AntiVoid extends Module {
                     mc.thePlayer.moveForward
                 );
 
-                if (fallingPlayer.findCollision(maxFindRangeValue.get()) != null) detectedLocation = fallingPlayer.findCollision(maxFindRangeValue.get()).getPos();
+                if (fallingPlayer != null && fallingPlayer.findCollision(maxFindRangeValue.get()) != null && fallingPlayer.findCollision(maxFindRangeValue.get()).getPos() != null) detectedLocation = fallingPlayer.findCollision(maxFindRangeValue.get()).getPos();
 
                 if (detectedLocation != null && Math.abs(mc.thePlayer.posY - detectedLocation.getY()) +
                     mc.thePlayer.fallDistance <= maxFallDistSimulateValue.get()) {

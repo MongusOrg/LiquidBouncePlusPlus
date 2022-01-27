@@ -136,6 +136,9 @@ public class Scaffold extends Module {
     //Test AAC Value
     private final BoolValue aacPitchValue = new BoolValue("AAC-Pitch", false, () -> { return rotationModeValue.get().equalsIgnoreCase("aac"); });
 
+    // Test Verus
+    public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
+
     private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false, () -> { return rotationsValue.get(); });
     private final IntegerValue keepLengthValue = new IntegerValue("KeepRotationLength", 0, 0, 20, () -> { return rotationsValue.get() && !keepRotationValue.get(); });
     private final ListValue placeConditionValue = new ListValue("Place-Condition", new String[] {"Air", "FallDown", "NegativeMotion", "Always"}, "Always");
@@ -569,8 +572,27 @@ public class Scaffold extends Module {
 
         }
 
-        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
-                targetPlace.getEnumFacing(), targetPlace.getVec3())) {
+        // verus thingy
+        final BlockPos hitPos = targetPlace.getBlockPos();
+        final Vec3 hitVec = targetPlace.getVec3();
+
+        if (verusScaffold.get()) { // scaffold 14e check
+            float f = (float)(hitVec.xCoord - (double)hitPos.getX());
+            float f1 = (float)(hitVec.yCoord - (double)hitPos.getY());
+            float f2 = (float)(hitVec.zCoord - (double)hitPos.getZ());
+
+            if (f > 1.0f)
+                hitVec.xCoord = (float)hitPos.getX() + 1F;
+
+            if (f1 > 1.0f)
+                hitVec.yCoord = (float)hitPos.getY() + 1F;
+
+            if (f2 > 1.0f)
+                hitVec.zCoord = (float)hitPos.getZ() + 1F;
+        }
+
+        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, hitPos,
+                targetPlace.getEnumFacing(), hitVec)) {
             delayTimer.reset();
             delay = (!placeableDelay.get() ? 0L : TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get()));
 

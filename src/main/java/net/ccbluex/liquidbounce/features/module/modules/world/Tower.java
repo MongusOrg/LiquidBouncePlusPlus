@@ -86,6 +86,8 @@ public class Tower extends Module {
 
     private final FloatValue timerValue = new FloatValue("Timer", 1F, 0F, 10F);
 
+    // Test Verus
+    public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
 
     // Jump mode
     private final FloatValue jumpMotionValue = new FloatValue("JumpMotion", 0.42F, 0.3681289F, 0.79F);
@@ -303,8 +305,27 @@ public class Tower extends Module {
             itemStack = mc.thePlayer.inventoryContainer.getSlot(blockSlot).getStack();
         }
 
+        // verus thingy
+        final BlockPos hitPos = this.placeInfo.getBlockPos();
+        final Vec3 hitVec = placeInfo.getVec3();
+
+        if (verusScaffold.get()) { // scaffold 14e check
+            float f = (float)(hitVec.xCoord - (double)hitPos.getX());
+            float f1 = (float)(hitVec.yCoord - (double)hitPos.getY());
+            float f2 = (float)(hitVec.zCoord - (double)hitPos.getZ());
+
+            if (f > 1.0f)
+                hitVec.xCoord = (float)hitPos.getX() + 1F;
+
+            if (f1 > 1.0f)
+                hitVec.yCoord = (float)hitPos.getY() + 1F;
+
+            if (f2 > 1.0f)
+                hitVec.zCoord = (float)hitPos.getZ() + 1F;
+        }
+
         // Place block
-        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, this.placeInfo.getBlockPos(), placeInfo.getEnumFacing(), placeInfo.getVec3())) {
+        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, hitPos, placeInfo.getEnumFacing(), hitVec)) {
             if (swingValue.get())
                 mc.thePlayer.swingItem();
             else
