@@ -581,14 +581,13 @@ public class Scaffold extends Module {
             float f1 = (float)(hitVec.yCoord - (double)hitPos.getY());
             float f2 = (float)(hitVec.zCoord - (double)hitPos.getZ());
 
-            if (f > 1.0f)
-                hitVec.xCoord = (float)hitPos.getX() + 1F;
+            if (f > 1.0f || f1 > 1.0f || f2 > 1.0f) {
+                double hitX = Math.min((double)hitVec.xCoord, (double)hitPos.getX() + 1D);
+                double hitY = Math.min((double)hitVec.yCoord, (double)hitPos.getY() + 1D);
+                double hitZ = Math.min((double)hitVec.zCoord, (double)hitPos.getZ() + 1D);
 
-            if (f1 > 1.0f)
-                hitVec.yCoord = (float)hitPos.getY() + 1F;
-
-            if (f2 > 1.0f)
-                hitVec.zCoord = (float)hitPos.getZ() + 1F;
+                hitVec = new Vec3(hitX, hitY, hitZ);
+            }
         }
 
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, hitPos,
