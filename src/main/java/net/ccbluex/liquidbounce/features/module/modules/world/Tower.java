@@ -307,7 +307,7 @@ public class Tower extends Module {
 
         // verus thingy
         final BlockPos hitPos = this.placeInfo.getBlockPos();
-        final Vec3 hitVec = placeInfo.getVec3();
+        Vec3 hitVec = placeInfo.getVec3();
 
         if (verusScaffold.get()) { // scaffold 14e check
             float f = (float)(hitVec.xCoord - (double)hitPos.getX());

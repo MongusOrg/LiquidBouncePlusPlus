@@ -574,7 +574,7 @@ public class Scaffold extends Module {
 
         // verus thingy
         final BlockPos hitPos = targetPlace.getBlockPos();
-        final Vec3 hitVec = targetPlace.getVec3();
+        Vec3 hitVec = targetPlace.getVec3();
 
         if (verusScaffold.get()) { // scaffold 14e check
             float f = (float)(hitVec.xCoord - (double)hitPos.getX());
