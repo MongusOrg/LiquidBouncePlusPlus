@@ -98,6 +98,9 @@ public class AntiStaff extends Module {
 
             if (packetChat.getChatComponent().getUnformattedText().toLowerCase().startsWith("cages opened")) {
                 LiquidBounce.hud.addNotification(new Notification("Activated staff checks.", Notification.Type.SUCCESS));
+                for (EntityPlayer entity : mc.theWorld.playerEntities) {
+                    possiblePlayers.add(entity);
+                }
                 shouldActive = true;
             }
         }
@@ -112,7 +115,7 @@ public class AntiStaff extends Module {
                     for (int[] positions : possiblePositions) {
                         if ((positions[0] == (int)entity.prevPosX && positions[1] == (int)entity.prevPosZ) 
                             || (positions[0] == (int)entity.posX && positions[1] == (int)entity.posZ)) {
-                            LiquidBounce.hud.addNotification(new Notification("Found a suspicious entity, possible staff: " + entity.getName(), Notification.Type.ERROR));
+                            LiquidBounce.hud.addNotification(new Notification("Found a suspicious teleported entity, possible staff: " + entity.getName(), Notification.Type.ERROR));
                             possibleStaffs.add(entity);
                             return;
                         }
