@@ -79,7 +79,7 @@ public class AntiStaff extends Module {
                     break;
                 case "leaveserver":
                     mc.theWorld.sendQuittingDisconnectingPacket();
-			        LiquidBounce.hud.addNotification(new Notification("Attempted to disconnect from the server.", Notification.Type.SUCCESS));
+			        LiquidBounce.hud.addNotification(new Notification("Attempted to disconnect from the server. (may crash if you leave)", Notification.Type.SUCCESS));
                     break;
             }
             sentAction = true;
@@ -103,7 +103,7 @@ public class AntiStaff extends Module {
                     {
                         LiquidBounce.hud.addNotification(new Notification("Found an unknown invisible entity but game is not started yet: " + entity.getName(), Notification.Type.ERROR));
                         possibleStaffs.add(entity);
-                        return;
+                        continue;
                     }
                     possiblePlayers.add(entity);
                 }
