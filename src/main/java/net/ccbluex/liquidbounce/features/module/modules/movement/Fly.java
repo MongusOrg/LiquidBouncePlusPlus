@@ -54,9 +54,6 @@ public class Fly extends Module {
             "NCP",
             "OldNCP",
 
-            // Hypixel
-            "HypixelGlide",
-
             // FunCraft
             "FunCraft",
 
@@ -65,7 +62,7 @@ public class Fly extends Module {
 
             // Verus
             "Verus",
-            "VerusFloat",
+            //"VerusFloat",
             "VerusLowHop",
 
             // Spartan
@@ -79,6 +76,7 @@ public class Fly extends Module {
             // Other
             "Jetpack",
             "KeepAlive",
+            "Clip",
             "Jump",
             "Derp",
             "Collide"
@@ -111,14 +109,18 @@ public class Fly extends Module {
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
 
     // Hypixel glide
-    private final BoolValue hypixelGlideCustom = new BoolValue("HypixelGlide-Custom", false, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide"); });
-    private final IntegerValue hypixelGlideDelay = new IntegerValue("HypixelGlide-DelayTick", 25, 1, 50, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
-    private final FloatValue hypixelGlideForward = new FloatValue("HypixelGlide-Forward", 7.9F, 0, 10, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
-    private final FloatValue hypixelGlideDown = new FloatValue("HypixelGlide-Down", 1.75F, 0, 5, () -> { return modeValue.get().equalsIgnoreCase("hypixelglide") && hypixelGlideCustom.get(); });
+    private final IntegerValue clipDelay = new IntegerValue("Clip-DelayTick", 25, 1, 50, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final FloatValue clipH = new FloatValue("Clip-Horizontal", 7.9F, 0, 10, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final FloatValue clipV = new FloatValue("Clip-Vertical", 1.75F, -10, 10, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final FloatValue clipMotionY = new FloatValue("Clip-MotionY", 0F, -2, 2, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final FloatValue clipTimer = new FloatValue("Clip-Timer", 1F, -0.08F, 10F, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final BoolValue clipGroundSpoof = new BoolValue("Clip-GroundSpoof", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final BoolValue clipCollisionCheck = new BoolValue("Clip-CollisionCheck", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final BoolValue clipNoMove = new BoolValue("Clip-NoMove", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
 
     // Visuals
     private final BoolValue markValue = new BoolValue("Mark", true);
-    private final BoolValue debugValue = new BoolValue("Debug", false);
+    //private final BoolValue debugValue = new BoolValue("Debug", false, () -> { return modeValue.get().equalsIgnoreCase("verusfloat"); });
 
     private BlockPos lastPosition;
 
@@ -162,6 +164,29 @@ public class Fly extends Module {
 
         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(expectedX, expectedY, expectedZ, mc.thePlayer.onGround));
         mc.thePlayer.setPosition(expectedX, expectedY, expectedZ);
+    }
+
+    private void hClip(double x, double y, double z) {
+        if (mc.thePlayer == null) return;
+
+        double expectedX = mc.thePlayer.posX + x;
+        double expectedY = mc.thePlayer.posY + y;
+        double expectedZ = mc.thePlayer.posZ + z;
+
+        PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(expectedX, expectedY, expectedZ, mc.thePlayer.onGround));
+        mc.thePlayer.setPosition(expectedX, expectedY, expectedZ);
+    }
+
+    private double[] getMoves(double h, double v) {
+        if (mc.thePlayer == null) return new double[]{ 0.0, 0.0, 0.0 };
+
+        final double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
+
+        double expectedX = (-Math.sin(yaw) * h);
+        double expectedY = v;
+        double expectedZ = (Math.cos(yaw) * h);
+
+        return new double[] { expectedX, expectedY, expectedZ };
     }
     
     @Override
@@ -334,10 +359,14 @@ public class Fly extends Module {
                     mc.thePlayer.motionY = 0.2D;
                 MovementUtils.strafe();
                 break;
-            case "hypixelglide":
-                mc.thePlayer.motionY = 0;
-                if (mc.thePlayer.ticksExisted % (hypixelGlideCustom.get() ? hypixelGlideDelay.get() : 25) == 0) 
-                    doMove((hypixelGlideCustom.get() ? (double)hypixelGlideForward.get() : 7.9), (hypixelGlideCustom.get() ? (double)-hypixelGlideDown.get() : -1.75));
+            case "clip":
+                mc.thePlayer.motionY = clipMotionY.get();
+                mc.timer.timerSpeed = clipTimer.get();
+                if (mc.thePlayer.ticksExisted % clipDelay.get() == 0) {
+                    double[] expectMoves = getMoves((double)clipH.get(), (double)clipV.get());
+                    if (!clipCollisionCheck.get() || mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(expectMoves[0], expectMoves[1], expectMoves[2]).expand(0, 0, 0)).isEmpty())
+                        hClip(expectMoves[0], expectMoves[1], expectMoves[2]);
+                }
                 break;
             case "damage":
                 mc.thePlayer.capabilities.isFlying = false;
@@ -415,7 +444,7 @@ public class Fly extends Module {
                     mc.thePlayer.movementInput.moveStrafe = 0F;
                 }
                 break;
-            case "verusfloat": // flagging idk why
+            /*case "verusfloat": // flagging idk why
                 if (!mc.thePlayer.onGround || !MovementUtils.isMoving()) {
                     shouldActive = false;
                     verusTimer.reset();
@@ -432,7 +461,7 @@ public class Fly extends Module {
                     MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 64.0F);
                 }
                 verusTimer.update();
-                break;
+                break;*/
             case "creative":
                 mc.thePlayer.capabilities.isFlying = true;
 
@@ -595,14 +624,17 @@ public class Fly extends Module {
                     sendAAC5Packets();
             }
 
-            if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving() && shouldActive) {
+            /*if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving() && shouldActive) {
                 if (shouldFakeJump) {
                     packetPlayer.onGround = false;
                 } else {
                     packetPlayer.onGround = true;
                 }
                 if (debugValue.get()) ClientUtils.displayChatMessage("onGround: " + packetPlayer.onGround + ", last:" + lastOnGround);
-            }
+            }*/
+
+            if (mode.equalsIgnoreCase("clip") && clipGroundSpoof.get())
+                packetPlayer.onGround = true;
 
             if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
                 packetPlayer.onGround = false;
@@ -668,8 +700,8 @@ public class Fly extends Module {
                     else
                         event.cancelEvent();
                 break;
-            case "hypixelglide":
-                event.zeroXZ();
+            case "clip":
+                if (clipNoMove.get()) event.zeroXZ();
                 break;
             case "veruslowhop":
                 if (!mc.thePlayer.isInWeb && !mc.thePlayer.isInLava() && !mc.thePlayer.isInWater() && !mc.thePlayer.isOnLadder() && !mc.gameSettings.keyBindJump.isKeyDown() && mc.thePlayer.ridingEntity == null) {
@@ -698,7 +730,7 @@ public class Fly extends Module {
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, startY, event.getZ() + 1));
         }
 
-        if (event.getBlock() instanceof BlockAir && ((mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) || mode.equalsIgnoreCase("verusfloat") || mode.equalsIgnoreCase("veruslowhop")))
+        if (event.getBlock() instanceof BlockAir && ((mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking())/* || mode.equalsIgnoreCase("verusfloat")*/ || mode.equalsIgnoreCase("veruslowhop")))
             event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
 
         if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && 
