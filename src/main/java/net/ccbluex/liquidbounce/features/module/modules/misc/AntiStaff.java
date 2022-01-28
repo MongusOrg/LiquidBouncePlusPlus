@@ -42,6 +42,8 @@ public class AntiStaff extends Module {
     private final ListValue detectionAction = new ListValue("Detection-Action", new String[] {"LeaveMap", "LeaveServer", "None"}, "LeaveMap");
     private final BoolValue waitForGameStart = new BoolValue("WaitForStartGame", true);
     private final BoolValue invisibleCheck = new BoolValue("InvisibleCheck", true);
+    private final BoolValue vanishCheck = new BoolValue("VanishCheck", true);
+    private final BoolValue posCheck = new BoolValue("PositionCheck", true);
     private final IntegerValue minimumAliveTick = new IntegerValue("Minimum-AliveTick", 20, 0, 200);
     private final IntegerValue minimumEntityTick = new IntegerValue("Minimum-EntityTick", 1, 0, 200);
     private final IntegerValue collectDelay = new IntegerValue("GarbageCollect-Delay", 40, 1, 200);
@@ -99,12 +101,6 @@ public class AntiStaff extends Module {
             if (packetChat.getChatComponent().getUnformattedText().toLowerCase().startsWith("cages opened")) {
                 LiquidBounce.hud.addNotification(new Notification("Activated staff checks.", Notification.Type.SUCCESS));
                 for (EntityPlayer entity : mc.theWorld.playerEntities) {
-                    if (invisibleCheck.get() && entity.isInvisible() && !possibleStaffs.contains(entity)) // check if entity never existed in the world before
-                    {
-                        LiquidBounce.hud.addNotification(new Notification("Found an unknown invisible entity but game is not started yet: " + entity.getName(), Notification.Type.ERROR));
-                        possibleStaffs.add(entity);
-                        continue;
-                    }
                     possiblePlayers.add(entity);
                 }
                 shouldActive = true;
@@ -113,7 +109,13 @@ public class AntiStaff extends Module {
 
         if (packet instanceof S14PacketEntity && shouldActive) {
             final S14PacketEntity packetEntity = (S14PacketEntity) event.getPacket();
-            final Entity entity = packetEntity.getEntity(mc.theWorld);
+            Entity entity = packetEntity.getEntity(mc.theWorld);
+
+            if (vanishCheck.get() && entity.ticksExisted >= minimumEntityTick.get() && packetEntity.getEntity(mc.theWorld) == null && (!possiblePlayers.contains(entity) && !possibleStaffs.contains(entity))) {
+                LiquidBounce.hud.addNotification(new Notification("Found an unknown vanished entity, possible staff: " + entity.getName(), Notification.Type.ERROR));
+                possibleStaffs.add(entity);
+                return;
+            }
 
             if (entity instanceof EntityPlayer && (!possiblePlayers.contains(entity) && !possibleStaffs.contains(entity))) {
                 // position check, most important part
@@ -124,7 +126,7 @@ public class AntiStaff extends Module {
                         possibleStaffs.add(entity);
                         return;
                     }
-                    for (int[] positions : possiblePositions) {
+                    if (posCheck.get()) for (int[] positions : possiblePositions) {
                         if ((positions[0] == (int)entity.prevPosX && positions[1] == (int)entity.prevPosZ) 
                             || (positions[0] == (int)entity.posX && positions[1] == (int)entity.posZ)) {
                             LiquidBounce.hud.addNotification(new Notification("Found a suspicious teleported entity, possible staff: " + entity.getName(), Notification.Type.ERROR));
