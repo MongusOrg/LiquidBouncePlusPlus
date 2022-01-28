@@ -99,6 +99,12 @@ public class AntiStaff extends Module {
             if (packetChat.getChatComponent().getUnformattedText().toLowerCase().startsWith("cages opened")) {
                 LiquidBounce.hud.addNotification(new Notification("Activated staff checks.", Notification.Type.SUCCESS));
                 for (EntityPlayer entity : mc.theWorld.playerEntities) {
+                    if (invisibleCheck.get() && entity.isInvisible() && !possibleStaffs.contains(entity)) // check if entity never existed in the world before
+                    {
+                        LiquidBounce.hud.addNotification(new Notification("Found an unknown invisible entity but game is not started yet: " + entity.getName(), Notification.Type.ERROR));
+                        possibleStaffs.add(entity);
+                        return;
+                    }
                     possiblePlayers.add(entity);
                 }
                 shouldActive = true;
@@ -109,9 +115,15 @@ public class AntiStaff extends Module {
             final S14PacketEntity packetEntity = (S14PacketEntity) event.getPacket();
             final Entity entity = packetEntity.getEntity(mc.theWorld);
 
-            if (entity instanceof EntityPlayer && (!possiblePlayers.contains(entity) || !possibleStaffs.contains(entity))) {
+            if (entity instanceof EntityPlayer && (!possiblePlayers.contains(entity) && !possibleStaffs.contains(entity))) {
                 // position check, most important part
                 if (entity.ticksExisted >= minimumEntityTick.get()) { // might have tp delay
+                    if (invisibleCheck.get() && entity.isInvisible() && !possiblePlayers.contains(entity)) // check if entity never existed in the world before
+                    {
+                        LiquidBounce.hud.addNotification(new Notification("Found an unknown invisible entity, possible staff: " + entity.getName(), Notification.Type.ERROR));
+                        possibleStaffs.add(entity);
+                        return;
+                    }
                     for (int[] positions : possiblePositions) {
                         if ((positions[0] == (int)entity.prevPosX && positions[1] == (int)entity.prevPosZ) 
                             || (positions[0] == (int)entity.posX && positions[1] == (int)entity.posZ)) {
@@ -119,12 +131,6 @@ public class AntiStaff extends Module {
                             possibleStaffs.add(entity);
                             return;
                         }
-                    }
-                    if (invisibleCheck.get() && entity.isInvisible() && !possiblePlayers.contains(entity)) // check if entity never existed in the world before
-                    {
-                        LiquidBounce.hud.addNotification(new Notification("Found an unknown invisible entity, possible staff: " + entity.getName(), Notification.Type.ERROR));
-                        possibleStaffs.add(entity);
-                        return;
                     }
                 }
             }
