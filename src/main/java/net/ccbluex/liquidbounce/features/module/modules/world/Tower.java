@@ -88,6 +88,7 @@ public class Tower extends Module {
 
     // Test Verus
     public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
+    public final BoolValue verusFlyFix = new BoolValue("VerusFlyFix", true);
 
     // Jump mode
     private final FloatValue jumpMotionValue = new FloatValue("JumpMotion", 0.42F, 0.3681289F, 0.79F);
@@ -440,6 +441,11 @@ public class Tower extends Module {
             final C09PacketHeldItemChange packetHeldItemChange = (C09PacketHeldItemChange) packet;
 
             slot = packetHeldItemChange.getSlotId();
+        }
+
+        if (verusFlyFix.get() && packet instanceof C03PacketPlayer) {
+            final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
+            packetPlayer.y = Math.round(packetPlayer.y / 0.015625) * 0.015625;
         }
     }
 
