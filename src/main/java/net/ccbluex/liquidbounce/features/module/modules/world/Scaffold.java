@@ -133,9 +133,6 @@ public class Scaffold extends Module {
     private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F, () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
     private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
 
-    //Test AAC Value
-    private final BoolValue aacPitchValue = new BoolValue("AAC-Pitch", false, () -> { return rotationModeValue.get().equalsIgnoreCase("aac"); });
-
     // Test Verus
     public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
 
@@ -819,7 +816,7 @@ public class Scaffold extends Module {
                         // face block
                         for (int i = 0; i < (staticYawMode ? 2 : 1); i++) {
                             final double diffX = staticYawMode && i == 0 ? 0 : hitVec.xCoord - eyesPos.xCoord;
-                            final double diffY = staticYawMode && aacPitchValue.get() && i == 0 ? 0 : hitVec.yCoord - eyesPos.yCoord;
+                            final double diffY = staticYawMode && i == 0 ? 0 : hitVec.yCoord - eyesPos.yCoord;
                             final double diffZ = staticYawMode && i == 1 ? 0 : hitVec.zCoord - eyesPos.zCoord;
 
                             final double diffXZ = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
