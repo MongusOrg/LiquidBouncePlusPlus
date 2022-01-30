@@ -14,7 +14,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
-import net.ccbluex.liquidbounce.features.module.modules.world.Tower;
+//import net.ccbluex.liquidbounce.features.module.modules.world.Tower;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
 import net.ccbluex.liquidbounce.utils.block.BlockUtils;
@@ -46,7 +46,7 @@ public class AntiVoid extends Module {
     public final BoolValue resetFallDistanceValue = new BoolValue("Reset-FallDistance", true);
     public final BoolValue renderTraceValue = new BoolValue("Render-Trace", true);
     public final BoolValue scaffoldValue = new BoolValue("AutoScaffold", true);
-    public final BoolValue towerValue = new BoolValue("AutoTower", true);
+    //public final BoolValue towerValue = new BoolValue("AutoTower", true);
 
     private BlockPos detectedLocation = BlockPos.ORIGIN;
     private double lastX = 0; 
@@ -107,8 +107,8 @@ public class AntiVoid extends Module {
                     if (scaffoldValue.get() && !LiquidBounce.moduleManager.getModule(Scaffold.class).getState())
                         LiquidBounce.moduleManager.getModule(Scaffold.class).setState(true);
 
-                    if (towerValue.get() && !LiquidBounce.moduleManager.getModule(Tower.class).getState())
-                        LiquidBounce.moduleManager.getModule(Tower.class).setState(true);
+                    /*if (towerValue.get() && !LiquidBounce.moduleManager.getModule(Tower.class).getState())
+                        LiquidBounce.moduleManager.getModule(Tower.class).setState(true);*/
                 }
             }
         } else {
@@ -175,8 +175,8 @@ public class AntiVoid extends Module {
                     if (scaffoldValue.get() && !LiquidBounce.moduleManager.getModule(Scaffold.class).getState())
                         LiquidBounce.moduleManager.getModule(Scaffold.class).setState(true);
 
-                    if (towerValue.get() && !LiquidBounce.moduleManager.getModule(Tower.class).getState())
-                        LiquidBounce.moduleManager.getModule(Tower.class).setState(true);
+                    /*if (towerValue.get() && !LiquidBounce.moduleManager.getModule(Tower.class).getState())
+                        LiquidBounce.moduleManager.getModule(Tower.class).setState(true);*/
                 }
             }
         }
