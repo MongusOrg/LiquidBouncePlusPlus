@@ -361,35 +361,32 @@ public class Scaffold extends Module {
                 }
                 break;
             case "verus": // thanks ratted client
-                if (!mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, -0.01, 0).expand(0, 0, 0)).isEmpty() && mc.thePlayer.onGround && mc.thePlayer.isCollidedVertically) {
+                if (!mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, -0.01, 0)).isEmpty() && mc.thePlayer.onGround && mc.thePlayer.isCollidedVertically) {
                     verusState = 0;
                     verusJumped = true;
                 }
                 if (verusJumped) {
                     MovementUtils.strafe();
                     switch (verusState) {
-                        case 0: {
+                        case 0:
                             fakeJump();
                             mc.thePlayer.motionY = 0.41999998688697815;
                             ++verusState;
                             break;
-                        }
-                        case 1: {
+                        case 1:
                             ++verusState;
-                        }
-                        case 2: {
+                            break;
+                        case 2:
                             ++verusState;
-                        }
-                        case 3: {
+                            break;
+                        case 3:
                             event.setOnGround(true);
                             mc.thePlayer.motionY = 0.0;
                             ++verusState;
                             break;
-                        }
-                        case 4: {
+                        case 4:
                             ++verusState;
                             break;
-                        }
                     }
                     verusJumped = false;
                 }
@@ -672,7 +669,7 @@ public class Scaffold extends Module {
 
                     final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
                     if (InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock) {
-                        if (!stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
+                        if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
                                 mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                             move(event);
 
@@ -1024,7 +1021,7 @@ public class Scaffold extends Module {
                         // face block
                         for (int i = 0; i < (staticYawMode ? 2 : 1); i++) {
                             final double diffX = staticYawMode && i == 0 ? 0 : hitVec.xCoord - eyesPos.xCoord;
-                            final double diffY = hitVec.yCoord - eyesPos.yCoord;
+                            final double diffY = staticYawMode && i == 0 ? 0 : hitVec.yCoord - eyesPos.yCoord;
                             final double diffZ = staticYawMode && i == 1 ? 0 : hitVec.zCoord - eyesPos.zCoord;
 
                             final double diffXZ = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
