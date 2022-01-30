@@ -793,8 +793,8 @@ public class Scaffold extends Module {
             }
         }
 */
-        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, hitPos,
-                targetPlace.getEnumFacing(), hitVec)) {
+        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
+                targetPlace.getEnumFacing(), targetPlace.getVec3())) {
             delayTimer.reset();
             delay = (!placeableDelay.get() ? 0L : TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get()));
 
