@@ -242,7 +242,7 @@ public class Scaffold extends Module {
     private final TickTimer timer = new TickTimer();
     private double jumpGround = 0;
     private int verusState = 0;
-    private boolean verusJumped = 0;
+    private boolean verusJumped = false;
 
     public boolean isTowerOnly() {
         return (towerEnabled.get() && !onJumpValue.get());
