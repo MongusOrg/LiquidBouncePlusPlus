@@ -425,16 +425,17 @@ class KillAura : Module() {
 
         smartBlocking = false
         if (smartAutoBlockValue.get() && target != null) {
-            if (!smartABItemValue.get() || (target.heldItem != null && target.heldItem.getItem() != null && (target.heldItem.getItem() is ItemSword || target.heldItem.getItem() is ItemAxe))) {
-                if (mc.thePlayer.getDistanceToEntityBox(target) < smartABRangeValue.get()) {
+            val smTarget = target
+            if (!smartABItemValue.get() || (smTarget.heldItem != null && smTarget.heldItem.getItem() != null && (smTarget.heldItem.getItem() is ItemSword || smTarget.heldItem.getItem() is ItemAxe))) {
+                if (mc.thePlayer.getDistanceToEntityBox(smTarget) < smartABRangeValue.get()) {
                     if (smartABFacingValue.get()) {
-                        if (target.rayTrace(smartABRangeValue.get().toDouble(), 1F).typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
-                            val eyesVec = target.getPositionEyes(1F)
-                            val lookVec = target.getLook(1F)
+                        if (smTarget.rayTrace(smartABRangeValue.get().toDouble(), 1F).typeOfHit == MovingObjectPosition.MovingObjectType.MISS) {
+                            val eyesVec = smTarget.getPositionEyes(1F)
+                            val lookVec = smTarget.getLook(1F)
                             val pointingVec = eyesVec.addVector(lookVec.xCoord * smartABRangeValue.get(), lookVec.yCoord * smartABRangeValue.get(), lookVec.zCoord * smartABRangeValue.get())
                             val border = mc.thePlayer.getCollisionBorderSize() + smartABTolerationValue.get()
                             val bb = mc.thePlayer.entityBoundingBox.expand(border.toDouble(), border.toDouble(), border.toDouble())
-                            smartBlocking = bb.calculateIntercept(eyesVec, pointingVec) != null || bb.intersectsWith(target.entityBoundingBox)
+                            smartBlocking = bb.calculateIntercept(eyesVec, pointingVec) != null || bb.intersectsWith(smTarget.entityBoundingBox)
                         }
                     } else
                         smartBlocking = true
