@@ -29,6 +29,7 @@ import net.ccbluex.liquidbounce.value.FloatValue;
 import net.ccbluex.liquidbounce.value.IntegerValue;
 import net.ccbluex.liquidbounce.value.ListValue;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -37,6 +38,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C09PacketHeldItemChange;
 import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
@@ -240,7 +242,7 @@ public class Scaffold extends Module {
     private final TickTimer timer = new TickTimer();
     private double jumpGround = 0;
     private int verusState = 0;
-    private int verusJumped = 0;
+    private boolean verusJumped = 0;
 
     public boolean isTowerOnly() {
         return (towerEnabled.get() && !onJumpValue.get());
@@ -404,7 +406,6 @@ public class Scaffold extends Module {
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
         if (towerActivation()) {
-            shouldEagle = false;
             shouldGoDown = false;
             return;
         }
@@ -771,7 +772,7 @@ public class Scaffold extends Module {
         }
 
         // blacklist check
-        if (itemStack != null && itemStack instanceof ItemBlock) {
+        if (itemStack != null && itemStack.getItem() != null && itemStack.getItem() instanceof ItemBlock) {
             Block block = ((ItemBlock)itemStack.getItem()).getBlock();
             if (InventoryUtils.BLOCK_BLACKLIST.contains(block) || !block.isFullCube()) return;
         }
@@ -972,7 +973,7 @@ public class Scaffold extends Module {
             return;
 
         for (int i = 0; i < ((modeValue.get().equalsIgnoreCase("Expand") && !towerActivation()) ? expandLengthValue.get() + 1 : 2); i++) {
-            final BlockPos blockPos = new BlockPos(mc.thePlayer.posX + (mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0), !towerActivation() && (sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? launchY - 1 : (mc.thePlayer.posY - (mc.thePlayerr.posY == (int) mc.thePlayer.posY + 0.5D ? 0D : 1.0D) - (shouldGoDown ? 1D : 0)), mc.thePlayer.posZ + (mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0));
+            final BlockPos blockPos = new BlockPos(mc.thePlayer.posX + (mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0), !towerActivation() && (sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? launchY - 1 : (mc.thePlayer.posY - (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? 0D : 1.0D) - (shouldGoDown ? 1D : 0)), mc.thePlayer.posZ + (mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0));
             final PlaceInfo placeInfo = PlaceInfo.get(blockPos);
 
             if (BlockUtils.isReplaceable(blockPos) && placeInfo != null) {
