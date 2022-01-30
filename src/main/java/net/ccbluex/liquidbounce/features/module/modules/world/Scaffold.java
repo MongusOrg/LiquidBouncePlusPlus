@@ -310,8 +310,8 @@ public class Scaffold extends Module {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
                             mc.thePlayer.posY + 0.42D, mc.thePlayer.posZ, false));
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,
-                            mc.thePlayer.posY + 0.753D, mc.thePlayer.posZ, false));
-                    mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1D, mc.thePlayer.posZ);
+                            mc.thePlayer.posY + 0.76D, mc.thePlayer.posZ, false));
+                    mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 1.08D, mc.thePlayer.posZ);
                     timer.reset();
                 }
                 break;
@@ -650,7 +650,7 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock || towerActivation()) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 
@@ -675,15 +675,15 @@ public class Scaffold extends Module {
 
                         final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
                         if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
-                            /*if (search(blockPos) && rotationsValue.get()) {
+                            if (search(blockPos, true) && rotationsValue.get()) {
                                 final VecRotation vecRotation = RotationUtils.faceBlock(blockPos);
 
                                 if (vecRotation != null) {
                                     RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, vecRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
                                     targetPlace.setVec3(vecRotation.getVec());
                                 }
-                            }*/
-                            findBlock(false);
+                            }
+                            //findBlock(false);
                         }
                     }    
                 } else {
@@ -865,6 +865,12 @@ public class Scaffold extends Module {
 
         if (airSafeValue.get() || mc.thePlayer.onGround)
             event.setSafeWalk(true);
+    }
+
+    @EventTarget
+    public void onJump(final JumpEvent event) {
+        if (towerEnabled.get())
+            event.cancelEvent();
     }
 
     /**
