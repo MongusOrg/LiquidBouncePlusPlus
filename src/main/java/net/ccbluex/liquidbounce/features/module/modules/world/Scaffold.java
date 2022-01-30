@@ -161,7 +161,7 @@ public class Scaffold extends Module {
     private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
 
     // Test Verus
-    public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
+    //public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
 
     private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false, () -> { return rotationsValue.get(); });
     private final IntegerValue keepLengthValue = new IntegerValue("KeepRotationLength", 0, 0, 20, () -> { return rotationsValue.get() && !keepRotationValue.get(); });
@@ -655,12 +655,12 @@ public class Scaffold extends Module {
         }
 
         if (eventState == EventState.PRE) {
+            timer.update();
+
             if ((!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
                     !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock))
                 || !shouldPlace())
                 return;
-
-            timer.update();
 
             { // no idea why i put brackets here but may use later
                 if (towerActivation()) {
@@ -675,14 +675,15 @@ public class Scaffold extends Module {
 
                         final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
                         if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
-                            if (search(blockPos) && rotationsValue.get()) {
+                            /*if (search(blockPos) && rotationsValue.get()) {
                                 final VecRotation vecRotation = RotationUtils.faceBlock(blockPos);
 
                                 if (vecRotation != null) {
                                     RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, vecRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
                                     targetPlace.setVec3(vecRotation.getVec());
                                 }
-                            }
+                            }*/
+                            findBlock(false);
                         }
                     }    
                 } else {
@@ -773,7 +774,7 @@ public class Scaffold extends Module {
             Block block = ((ItemBlock)itemStack.getItem()).getBlock();
             if (InventoryUtils.BLOCK_BLACKLIST.contains(block) || !block.isFullCube()) return;
         }
-
+/*
         // verus thingy
         final BlockPos hitPos = targetPlace.getBlockPos();
         Vec3 hitVec = targetPlace.getVec3();
@@ -791,7 +792,7 @@ public class Scaffold extends Module {
                 hitVec = new Vec3(hitX, hitY, hitZ);
             }
         }
-
+*/
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, hitPos,
                 targetPlace.getEnumFacing(), hitVec)) {
             delayTimer.reset();
@@ -979,13 +980,13 @@ public class Scaffold extends Module {
             }
         }
     }
-
-    /**
+/*
+    
      * Search for placeable block
      *
      * @param blockPosition pos
      * @return
-     */
+    
     private boolean search(final BlockPos blockPosition) {
         if (!BlockUtils.isReplaceable(blockPosition))
             return false;
@@ -1074,7 +1075,7 @@ public class Scaffold extends Module {
         targetPlace = placeRotation.getPlaceInfo();
         return true;
     }
-
+*/
     /**
      * Search for placeable block
      *

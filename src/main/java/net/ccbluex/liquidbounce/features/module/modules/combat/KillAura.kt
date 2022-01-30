@@ -134,7 +134,7 @@ class KillAura : Module() {
     private val smartABRangeValue = FloatValue("SmartAB-Range", 3.5F, 3F, 8F, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() })
     private val smartABTolerationValue = FloatValue("SmartAB-Toleration", 0F, 0F, 2F, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() })
 
-    private val afterTickPatchValue = BoolValue("AfterTickPatch", true, { !autoBlockModeValue.get().equals("AfterTick", true) })
+    private val afterTickPatchValue = BoolValue("AfterTickPatch", true, { autoBlockModeValue.get().equals("AfterTick", true) })
     private val blockRate = IntegerValue("BlockRate", 100, 1, 100, { !autoBlockModeValue.get().equals("None", true) })
 
     // Raycast
