@@ -425,7 +425,7 @@ class KillAura : Module() {
 
         smartBlocking = false
         if (smartAutoBlockValue.get() && target != null) {
-            val smTarget = target
+            val smTarget = target!!
             if (!smartABItemValue.get() || (smTarget.heldItem != null && smTarget.heldItem.getItem() != null && (smTarget.heldItem.getItem() is ItemSword || smTarget.heldItem.getItem() is ItemAxe))) {
                 if (mc.thePlayer.getDistanceToEntityBox(smTarget) < smartABRangeValue.get()) {
                     if (smartABFacingValue.get()) {
