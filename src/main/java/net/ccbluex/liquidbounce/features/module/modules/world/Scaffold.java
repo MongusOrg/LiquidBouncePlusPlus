@@ -183,7 +183,7 @@ public class Scaffold extends Module {
 
     // Safety
     private final BoolValue sameYValue = new BoolValue("SameY", false, () -> { return !towerEnabled.get(); });
-    private final BoolValue autoJumpValue = new BoolValue("AutoJump", , () -> { return !towerEnabled.get(); });
+    private final BoolValue autoJumpValue = new BoolValue("AutoJump", false, () -> { return !towerEnabled.get(); });
     private final BoolValue safeWalkValue = new BoolValue("SafeWalk", true);
     private final BoolValue airSafeValue = new BoolValue("AirSafe", false, () -> { return safeWalkValue.get(); });
     private final BoolValue autoDisableSpeedValue = new BoolValue("AutoDisable-Speed", true);
