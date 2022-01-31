@@ -32,7 +32,7 @@ class AutoKnight : Module() {
     private var clickStage = 0
 
     private fun debug(s: String) {
-        ClientUtils.displayChatMessage("[AK] $s")
+        if (debugValue.get()) ClientUtils.displayChatMessage("[AK] $s")
     }
 
     override fun onEnable() {
@@ -62,8 +62,8 @@ class AutoKnight : Module() {
             }
             if (clickStage == 1 && displayName.contains("Knight", true)) {
                 debug("detected knight kit selection")
-                Timer().schedule(250L) {
-                    clickStage = 2
+                Timer().schedule(500L) {
+                    mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
@@ -77,6 +77,7 @@ class AutoKnight : Module() {
 
             if (text.contains("has been selected", true)) {
                 debug("finished")
+                clickStage = 2
                 LiquidBounce.hud.addNotification(Notification("Successfully selected Knight kit.", Notification.Type.SUCCESS))
             }
         }
