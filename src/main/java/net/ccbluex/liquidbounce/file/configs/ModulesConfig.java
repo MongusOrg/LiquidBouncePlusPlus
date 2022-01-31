@@ -93,7 +93,7 @@ public class ModulesConfig extends FileConfig {
             jsonMod.addProperty("Array", module.getArray());
             final JsonArray jsonAD = new JsonArray();
             for (DisableEvent e : module.getAutoDisables()) {
-                jsonAD.add(e.getName());
+                jsonAD.add(e.toString());
             }
             jsonMod.add("AutoDisable", jsonAD);
             jsonObject.add(module.getName(), jsonMod);
