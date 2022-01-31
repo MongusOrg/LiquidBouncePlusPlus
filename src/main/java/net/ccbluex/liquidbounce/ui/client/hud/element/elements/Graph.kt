@@ -106,6 +106,8 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 			    valueStore.removeAt(0)
             timer.reset()
         }
+
+        if (valueStore.isEmpty()) return Border(0F, 0F, width, maxHeight.get() + 2F) // prevent spam logs
 		
 		if (avgtimer.hasTimePassed(avgUpdateDelay.get().toLong())) {
 			averageNumber = (averageNumber + valueStore[valueStore.size - 1]) / 2F

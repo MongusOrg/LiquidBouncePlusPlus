@@ -415,7 +415,9 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "portalVersion",
             "watchdogLastMin",
             "staffLastMin",
-            "wdStatus"
+            "wdStatus",
+            "sessionTime",
+            "worldTime"
         ).filter { it.startsWith(suggestStr, true) && it.length > suggestStr.length }.sortedBy { it.length }.reversed().toMutableList()
 
         pointer = pointer.coerceIn(0, (suggestion.size - 1).coerceAtLeast(0))

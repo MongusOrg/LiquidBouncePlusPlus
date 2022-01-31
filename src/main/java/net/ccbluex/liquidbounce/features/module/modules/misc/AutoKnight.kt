@@ -49,9 +49,12 @@ class AutoKnight : Module() {
     fun onUpdate(event: UpdateEvent) {
         if (clickStage == 1) {
             clickStage = 2
-            mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
-            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
-            debug("clicked kit selector")
+            Timer().schedule(50L) {
+                mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
+                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
+                debug("clicked kit selector")
+            }
+            
         }
     }
 
@@ -71,12 +74,12 @@ class AutoKnight : Module() {
 
             if (!availableForSelect && clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
                 debug("found item")
-                availableForSelect = true
-                Timer().schedule(500L) { // in case it duplicates
+                Timer().schedule(1000L) { // in case it duplicates
                     expectSlot = slot
                     clickStage = 1
                     debug("sent trigger")
                 }
+                availableForSelect = true
             }
 
             if (clickStage == 2 && displayName.contains("Knight", true)) {
