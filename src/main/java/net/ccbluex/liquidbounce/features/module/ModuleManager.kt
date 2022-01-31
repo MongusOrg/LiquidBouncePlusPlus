@@ -178,7 +178,8 @@ class ModuleManager : Listenable {
                 FakeLag::class.java,
                 PacketFixer::class.java,
                 AutoPlay::class.java,
-                AutoKnight::class.java
+                AutoKnight::class.java,
+                AntiBan::class.java
         )
 
         registerModule(Fucker)
