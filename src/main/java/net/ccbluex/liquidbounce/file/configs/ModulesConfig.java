@@ -63,7 +63,7 @@ public class ModulesConfig extends FileConfig {
                         JsonArray jsonAD = jsonModule.getAsJsonArray("AutoDisable");
                         if (jsonAD.size() > 0) for (int i = 0; i <= jsonAD.size() - 1; i++) {
                             try {
-                                DisableEvent disableEvent = DisableEvent.valueOf(jsonAD.get(i));
+                                DisableEvent disableEvent = DisableEvent.valueOf(jsonAD.get(i).getAsString());
                                 module.getAutoDisables().add(disableEvent);   
                             } catch (Exception e) {
                                 // nothing
@@ -95,7 +95,7 @@ public class ModulesConfig extends FileConfig {
             for (DisableEvent e : module.getAutoDisables()) {
                 jsonAD.add(e.getName());
             }
-            jsonObject.addProperty("AutoDisable", jsonAD);
+            jsonMod.add("AutoDisable", jsonAD);
             jsonObject.add(module.getName(), jsonMod);
         }
 
