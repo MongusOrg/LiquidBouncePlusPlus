@@ -672,8 +672,8 @@ public class Scaffold extends Module {
                             mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                         move(event);
 
-                    findBlock(false);
                     place();
+                    findBlock(false);
                 }    
             } else {
                 verusState = 0;

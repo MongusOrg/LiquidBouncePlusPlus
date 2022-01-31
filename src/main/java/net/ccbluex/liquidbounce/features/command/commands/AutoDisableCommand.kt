@@ -52,6 +52,7 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
                 val disableType = when (disableWhen) {
                     DisableEvent.FLAG -> "when you get flagged."
                     DisableEvent.WORLD_CHANGE -> "when you change the world."
+                    DisableEvent.GAME_END -> "when the game end."
                     else -> null
                 }
 
@@ -64,12 +65,12 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
                 return
             } catch (e: IllegalArgumentException) {
                 chat("§c§lWrong auto disable type!")
-                chatSyntax("autodisable <module> <none/flag/world_change>")
+                chatSyntax("autodisable <module> <none/flag/world_change/game_end>")
                 return
             }
         }
 
-        chatSyntax("autodisable <module/list> <none/flag/world_change>")
+        chatSyntax("autodisable <module/list> <none/flag/world_change/game_end>")
     }
 
     override fun tabComplete(args: Array<String>): List<String> {
@@ -82,7 +83,7 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
                     .map { it.name }
                     .filter { it.startsWith(moduleName, true) }
                     .toList()
-            2 -> listOf<String>("none", "flag", "world_change").filter { it.startsWith(args[1], true) }
+            2 -> listOf<String>("none", "flag", "world_change", "game_end").filter { it.startsWith(args[1], true) }
             else -> emptyList()
         }
     }

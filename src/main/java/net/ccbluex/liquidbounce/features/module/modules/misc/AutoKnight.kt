@@ -13,8 +13,8 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
-import net.ccbluex.liquidbounce.value.IntegerValue
-import net.ccbluex.liquidbounce.value.ListValue
+import net.ccbluex.liquidbounce.utils.ClientUtils
+import net.ccbluex.liquidbounce.value.BoolValue
 import net.minecraft.event.ClickEvent
 import net.minecraft.network.play.client.*
 import net.minecraft.network.play.server.S02PacketChat
@@ -26,24 +26,24 @@ import kotlin.concurrent.schedule
 
 @ModuleInfo(name = "AutoKnight", spacedName = "Auto Knight", description = "Automatically selects Knight kit for you in BlocksMC Skywars.", category = ModuleCategory.MISC)
 class AutoKnight : Module() {
+
+    private val debugValue = BoolValue("Debug", false)
+
     private var clickStage = 0
-    private var kitSelected = false
+
+    private fun debug(s: String) {
+        ClientUtils.displayChatMessage("[AK] $s")
+    }
 
     override fun onEnable() {
         clickStage = 0
-        kitSelected = false
     }
 
     @EventTarget
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
 
-        if (!kitSelected && clickStage == 1 && packet is S2DPacketOpenWindow) {
-            event.cancelEvent()
-            clickStage = 2
-        }
-
-        if (!kitSelected && packet is S2FPacketSetSlot) {
+        if (packet is S2FPacketSetSlot) {
             val item = packet.func_149174_e() ?: return
             val windowId = packet.func_149175_c()
             val slot = packet.func_149173_d()
@@ -51,15 +51,24 @@ class AutoKnight : Module() {
             val displayName = item.displayName
 
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
+                debug("detected kit selector")
                 Timer().schedule(500L) {
                     clickStage = 1
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(0))
                     mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(item))
-                    mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
+                    debug("clicked")
+                    //mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
                 }
-            } else if (clickStage == 2 && displayName.contains("knight", true)) {
-                clickStage = 3
-                mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
+            }
+            if (clickStage == 1 && displayName.contains("Knight", true)) {
+                debug("detected knight kit selection")
+                Timer().schedule(250L) {
+                    clickStage = 2
+                    mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
+                    mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
+                    mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
+                    debug("selected")
+                }
             }
         }
         
@@ -67,15 +76,17 @@ class AutoKnight : Module() {
             val text = packet.chatComponent.unformattedText
 
             if (text.contains("has been selected", true)) {
-                kitSelected = true
+                debug("finished")
                 LiquidBounce.hud.addNotification(Notification("Successfully selected Knight kit.", Notification.Type.SUCCESS))
             }
         }
     }
 
+    override val tag: String
+        get() = "Stage: $clickStage"
+
     @EventTarget
     fun onWorld(event: WorldEvent) {
         clickStage = 0
-        kitSelected = false
     }
 }
