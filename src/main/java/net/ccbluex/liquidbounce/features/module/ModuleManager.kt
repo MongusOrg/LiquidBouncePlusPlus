@@ -176,8 +176,9 @@ class ModuleManager : Listenable {
                 WallClimb::class.java,
                 AntiDesync::class.java,
                 FakeLag::class.java,
-                PacketFixer::class.java//,
-                //AntiStaff::class.java
+                PacketFixer::class.java,
+                AutoPlay::class.java,
+                AutoKnight::class.java
         )
 
         registerModule(Fucker)

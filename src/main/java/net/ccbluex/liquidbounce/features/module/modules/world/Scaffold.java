@@ -672,10 +672,7 @@ public class Scaffold extends Module {
                             mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                         move(event);
 
-                    final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
-                    if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
-                        findBlock(false);
-                    }
+                    findBlock(false);
                 }    
             } else {
                 verusState = 0;
@@ -738,7 +735,7 @@ public class Scaffold extends Module {
             return;
         }
 
-        if (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || (!towerActivation() && (sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord))
+        if (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || (!towerActivation() && ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord)))
             return;
 
         int blockSlot = -1;

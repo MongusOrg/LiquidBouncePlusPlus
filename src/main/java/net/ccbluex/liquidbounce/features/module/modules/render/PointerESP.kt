@@ -5,11 +5,6 @@
  *
  * This code was taken from UnlegitMC/FDPClient, modified. Please credit them and us when using this code in your repository.
  */
-/*
- * LiquidBounce+ Hacked Client
- * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
- */
 package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.event.EventTarget
