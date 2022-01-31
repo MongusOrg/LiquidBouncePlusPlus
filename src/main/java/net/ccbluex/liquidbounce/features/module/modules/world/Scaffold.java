@@ -650,7 +650,7 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && !towerActivation() && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 
@@ -662,41 +662,31 @@ public class Scaffold extends Module {
                 || !shouldPlace())
                 return;
 
-            { // no idea why i put brackets here but may use later
-                if (towerActivation()) {
-                    launchY = (int)mc.thePlayer.posY;
-                    targetPlace = null;
+            if (towerActivation()) {
+                launchY = (int)mc.thePlayer.posY;
+                //targetPlace = null;
 
-                    final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
-                    if (InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock) {
-                        if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
-                                mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
-                            move(event);
+                final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
+                if (InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock) {
+                    if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
+                            mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
+                        move(event);
 
-                        final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
-                        if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
-                            if (search(blockPos, true) && rotationsValue.get()) {
-                                final VecRotation vecRotation = RotationUtils.faceBlock(blockPos);
-
-                                if (vecRotation != null) {
-                                    RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, vecRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
-                                    targetPlace.setVec3(vecRotation.getVec());
-                                }
-                            }
-                            //findBlock(false);
-                        }
-                    }    
-                } else {
-                    verusState = 0;
-                    findBlock(mode.equalsIgnoreCase("expand"));
-                }
+                    final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
+                    if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
+                        findBlock(false);
+                    }
+                }    
+            } else {
+                verusState = 0;
+                findBlock(mode.equalsIgnoreCase("expand"));
             }
         }
-
+/*
         if (towerActivation() && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) { // smh it just doesn't work properly with some tower modes so
             place();
         }
-
+*/
         //XZReducer
         mc.thePlayer.motionX *= xzMultiplier.get();
         mc.thePlayer.motionZ *= xzMultiplier.get();
