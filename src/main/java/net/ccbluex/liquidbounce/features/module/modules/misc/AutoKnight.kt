@@ -49,11 +49,11 @@ class AutoKnight : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if (availableForSelect && duplication < 1) {
+        if (availableForSelect && duplication < 1 && clickStage == 2) {
             duplication++
             debug("detected kit selector v2")
-            Timer().schedule(50L) {
-                clickStage = 1
+            Timer().schedule(250L) {
+                clickStage = 3
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
@@ -67,7 +67,7 @@ class AutoKnight : Module() {
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
 
-        if (availableForSelect && packet is S2DPacketOpenWindow && clickStage < 2)
+        if (availableForSelect && packet is S2DPacketOpenWindow && clickStage < 4)
             event.cancelEvent()
 
         if (packet is S2FPacketSetSlot) {
@@ -80,10 +80,13 @@ class AutoKnight : Module() {
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
                 availableForSelect = true
                 expectSlot = slot
+                clickStage = 1
             }
-            if (clickStage == 1 && displayName.contains("Knight", true)) {
+
+            if (clickStage == 3 && displayName.contains("Knight", true)) {
                 debug("detected knight kit selection")
                 Timer().schedule(50L) {
+                    clickStage = 4
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
@@ -96,9 +99,14 @@ class AutoKnight : Module() {
         if (packet is S02PacketChat) {
             val text = packet.chatComponent.unformattedText
 
+            if (text.contains("cages open", true) && clickStage == 1) {
+                debug("detected skywars")
+                clickStage = 2
+                LiquidBounce.hud.addNotification(Notification("Successfully selected Knight kit.", Notification.Type.SUCCESS))
+            }
+
             if (text.contains("has been selected", true)) {
                 debug("finished")
-                clickStage = 2
                 LiquidBounce.hud.addNotification(Notification("Successfully selected Knight kit.", Notification.Type.SUCCESS))
             }
         }
