@@ -228,7 +228,7 @@ public class Speed extends Module {
             return;
 
         if(MovementUtils.isMoving())
-            mc.thePlayer.setSprinting(true);
+            mc.thePlayer.setSprinting(!getModeName().equalsIgnoreCase("verushard"));
 
         final SpeedMode speedMode = getMode();
 
@@ -242,7 +242,7 @@ public class Speed extends Module {
             return;
 
         if(MovementUtils.isMoving())
-            mc.thePlayer.setSprinting(true);
+            mc.thePlayer.setSprinting(!getModeName().equalsIgnoreCase("verushard"));
 
         final SpeedMode speedMode = getMode();
 

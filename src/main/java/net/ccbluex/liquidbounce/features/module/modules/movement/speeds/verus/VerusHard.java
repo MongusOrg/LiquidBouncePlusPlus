@@ -39,11 +39,11 @@ public class VerusHard extends SpeedMode {
         if (mc.thePlayer.onGround) {
             mc.thePlayer.jump();
             if(mc.thePlayer.isSprinting()) {
-                MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() + 0.1F);
+                MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed() + 0.225F);
             }
         }
 
-        MovementUtils.strafe(Math.max((float)MovementUtils.getBaseMoveSpeed() * 0.95F, MovementUtils.getSpeed())); // why complicated stuffs when you can just and btw this is hardcoded
+        MovementUtils.strafe(Math.max((float)MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed())); // no sprint = faster - verus, since 2018
     }
 
     @Override

@@ -72,9 +72,9 @@ class AutoKnight : Module() {
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
                 debug("found item")
                 clickStage = 1
-                expectSlot = slot
-                Timer().schedule(150L) { // in case it duplicates
+                Timer().schedule(250L) { // in case it duplicates
                     availableForSelect = true
+                    expectSlot = slot
                 }
             }
 
