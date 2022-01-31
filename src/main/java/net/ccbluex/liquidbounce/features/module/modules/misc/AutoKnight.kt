@@ -52,10 +52,9 @@ class AutoKnight : Module() {
         if (availableForSelect && duplication < 1 && clickStage == 2) {
             duplication++
             debug("detected kit selector v2")
-            Timer().schedule(250L) {
+            Timer().schedule(50L) {
                 clickStage = 3
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
-                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
                 debug("clicked")
                 //mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
@@ -78,6 +77,7 @@ class AutoKnight : Module() {
             val displayName = item.displayName
 
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
+                debug("found item")
                 availableForSelect = true
                 expectSlot = slot
                 clickStage = 1
@@ -85,7 +85,7 @@ class AutoKnight : Module() {
 
             if (clickStage == 3 && displayName.contains("Knight", true)) {
                 debug("detected knight kit selection")
-                Timer().schedule(50L) {
+                Timer().schedule(150L) {
                     clickStage = 4
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
@@ -100,9 +100,10 @@ class AutoKnight : Module() {
             val text = packet.chatComponent.unformattedText
 
             if (text.contains("cages open", true) && clickStage == 1) {
-                debug("detected skywars")
-                clickStage = 2
-                LiquidBounce.hud.addNotification(Notification("Successfully selected Knight kit.", Notification.Type.SUCCESS))
+                Timer().schedule(150L) {
+                    debug("detected skywars")
+                    clickStage = 2
+                }
             }
 
             if (text.contains("has been selected", true)) {
