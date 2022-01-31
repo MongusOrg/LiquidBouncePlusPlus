@@ -18,7 +18,7 @@ import net.ccbluex.liquidbounce.utils.misc.HttpUtils
 import net.minecraft.network.play.server.S14PacketEntity
 import net.minecraft.network.play.server.S1DPacketEntityEffect
 
-import Kotlin.concurrent.thread
+import kotlin.concurrent.thread
 
 @ModuleInfo(name = "AntiBan", spacedName = "Anti Ban", description = "Anti staff on BlocksMC. Automatically leaves a map if detected vanished staffs.", category = ModuleCategory.MISC)
 class AntiBan : Module() {
