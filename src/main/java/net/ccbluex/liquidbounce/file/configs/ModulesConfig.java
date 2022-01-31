@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.file.FileConfig;
@@ -93,7 +94,7 @@ public class ModulesConfig extends FileConfig {
             jsonMod.addProperty("Array", module.getArray());
             final JsonArray jsonAD = new JsonArray();
             for (DisableEvent e : module.getAutoDisables()) {
-                jsonAD.add(e.toString());
+                jsonAD.add(new JsonPrimitive(e.toString()));
             }
             jsonMod.add("AutoDisable", jsonAD);
             jsonObject.add(module.getName(), jsonMod);
