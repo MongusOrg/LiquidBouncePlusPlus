@@ -20,10 +20,11 @@ import net.ccbluex.liquidbounce.ui.client.clickgui.ClickGui
 import net.ccbluex.liquidbounce.ui.client.hud.HUD
 import net.ccbluex.liquidbounce.ui.client.hud.HUD.Companion.createDefault
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.InventoryUtils
+import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
+import net.ccbluex.liquidbounce.utils.SessionUtils
 import net.ccbluex.liquidbounce.utils.misc.sound.TipSoundManager
 import net.ccbluex.liquidbounce.betterfps.BetterFPSCore
 import net.minecraft.util.ResourceLocation
@@ -84,6 +85,7 @@ object LiquidBounce {
         eventManager.registerListener(BungeeCordSpoof())
         eventManager.registerListener(InventoryUtils())
         eventManager.registerListener(PacketUtils())
+        eventManager.registerListener(SessionUtils())
 
         // Init Discord RPC
         clientRichPresence = ClientRichPresence()

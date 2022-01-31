@@ -30,6 +30,7 @@ class AutoKnight : Module() {
     private val debugValue = BoolValue("Debug", false)
 
     private var clickStage = 0
+    private var duplication = 0
 
     private fun debug(s: String) {
         if (debugValue.get()) ClientUtils.displayChatMessage("[AK] $s")
@@ -37,6 +38,7 @@ class AutoKnight : Module() {
 
     override fun onEnable() {
         clickStage = 0
+        duplication = 0
     }
 
     @EventTarget
@@ -51,18 +53,22 @@ class AutoKnight : Module() {
             val displayName = item.displayName
 
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
-                debug("detected kit selector")
-                Timer().schedule(500L) {
-                    clickStage = 1
-                    mc.netHandler.addToSendQueue(C09PacketHeldItemChange(0))
-                    mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(item))
-                    debug("clicked")
-                    //mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
+                duplication++
+                if (duplication >= 2) {
+                    debug("detected kit selector v2")
+                    Timer().schedule(100L) {
+                        clickStage = 1
+                        mc.netHandler.addToSendQueue(C09PacketHeldItemChange(0))
+                        mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(item))
+                        debug("clicked")
+                        //mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
+                    }
                 }
+                
             }
             if (clickStage == 1 && displayName.contains("Knight", true)) {
                 debug("detected knight kit selection")
-                Timer().schedule(500L) {
+                Timer().schedule(50L) {
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
@@ -89,5 +95,6 @@ class AutoKnight : Module() {
     @EventTarget
     fun onWorld(event: WorldEvent) {
         clickStage = 0
+        duplication = 0
     }
 }

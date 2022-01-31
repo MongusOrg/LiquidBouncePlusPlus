@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.file.configs;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -57,10 +58,18 @@ public class ModulesConfig extends FileConfig {
                     module.setArray(jsonModule.get("Array").getAsBoolean());
 
                 if (jsonModule.has("AutoDisable")) {
+                    module.getAutoDisables().clear();
                     try {
-                        DisableEvent disableEvent = DisableEvent.valueOf(jsonModule.get("AutoDisable").getAsString());
-                        module.setAutoDisable(disableEvent);
-                    } catch (IllegalArgumentException e) {
+                        JsonArray jsonAD = jsonModule.getAsJsonArray("AutoDisable");
+                        if (jsonAD.size() > 0) for (int i = 0; i <= jsonAD.size() - 1; i++) {
+                            try {
+                                DisableEvent disableEvent = DisableEvent.valueOf(jsonAD.get(i));
+                                module.getAutoDisables().add(disableEvent);   
+                            } catch (Exception e) {
+                                // nothing
+                            }
+                        }
+                    } catch (Exception e) {
                         //nothing.
                     }
                 }
@@ -82,7 +91,11 @@ public class ModulesConfig extends FileConfig {
             jsonMod.addProperty("State", module.getState());
             jsonMod.addProperty("KeyBind", module.getKeyBind());
             jsonMod.addProperty("Array", module.getArray());
-            jsonMod.addProperty("AutoDisable", module.getAutoDisable().toString());
+            final JsonArray jsonAD = new JsonArray();
+            for (DisableEvent e : module.getAutoDisables()) {
+                jsonAD.add(e.getName());
+            }
+            jsonObject.addProperty("AutoDisable", jsonAD);
             jsonObject.add(module.getName(), jsonMod);
         }
 

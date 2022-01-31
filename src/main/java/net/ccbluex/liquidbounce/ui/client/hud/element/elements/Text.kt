@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.utils.CPSCounter
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.ServerUtils
+import net.ccbluex.liquidbounce.utils.SessionUtils
 import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
@@ -164,6 +165,8 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "watchdogLastMin" -> BanChecker.WATCHDOG_BAN_LAST_MIN.toString()
             "staffLastMin" -> BanChecker.STAFF_BAN_LAST_MIN.toString()
             "wdStatus" -> return if (PacketUtils.isWatchdogActive()) "Active" else "Inactive"
+            "sessionTime" -> return SessionUtils.getFormatSessionTime()
+            "worldTime" -> return SessionUtils.getFormatWorldTime()
             else -> null // Null = don't replace
         }
     }

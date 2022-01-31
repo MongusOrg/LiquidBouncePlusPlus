@@ -20,6 +20,7 @@ import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager;
 import net.ccbluex.liquidbounce.ui.client.altmanager.sub.altgenerator.GuiTheAltening;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.ServerUtils;
+import net.ccbluex.liquidbounce.utils.SessionUtils;
 import net.ccbluex.liquidbounce.utils.login.LoginUtils;
 import net.ccbluex.liquidbounce.utils.login.MinecraftAccount;
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils;
@@ -53,6 +54,8 @@ public abstract class MixinGuiDisconnected extends MixinGuiScreen {
     @Inject(method = "initGui", at = @At("RETURN"))
     private void initGui(CallbackInfo callbackInfo) {
         reconnectTimer = 0;
+        SessionUtils.handleConnection();
+
         buttonList.add(reconnectButton = new GuiButton(1, this.width / 2 - 100, this.height / 2 + field_175353_i / 2 + this.fontRendererObj.FONT_HEIGHT + 22, 98, 20, "Reconnect"));
 
         this.drawReconnectDelaySlider();
@@ -127,6 +130,7 @@ public abstract class MixinGuiDisconnected extends MixinGuiScreen {
             this.updateReconnectButton();
         }
         Fonts.fontSFUI40.drawCenteredString("Played as "+this.mc.session.getUsername()+", server: "+ServerUtils.serverData.serverIP, this.width / 2F, this.height / 2F + field_175353_i / 2F + this.fontRendererObj.FONT_HEIGHT + 96, -1, true);
+        Fonts.fontSFUI40.drawCenteredString("You have played " + SessionUtils.getFormatLastSessionTime() + "before getting kicked.", this.width / 2F, this.height / 2F + field_175353_i / 2F + this.fontRendererObj.FONT_HEIGHT * 2F + 96, -1, true);
     }
 
     private void drawReconnectDelaySlider() {

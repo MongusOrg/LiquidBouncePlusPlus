@@ -404,6 +404,7 @@ public class Scaffold extends Module {
     public void onUpdate(final UpdateEvent event) {
         if (towerActivation()) {
             shouldGoDown = false;
+            mc.gameSettings.keyBindSneak.pressed = false;
             return;
         }
 
@@ -650,12 +651,11 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if (!towerActivation() && (!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName)) {
             place();
         }
 
         if (eventState == EventState.PRE) {
-            targetPlace = null;
             timer.update();
 
             if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
@@ -672,7 +672,6 @@ public class Scaffold extends Module {
                             mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                         move(event);
 
-                    place();
                     findBlock(false);
                 }    
             } else {

@@ -46,7 +46,7 @@ open class Module : MinecraftInstance(), Listenable {
 
     var slideStep = 0F
     var animation = 0F
-    var autoDisable: DisableEvent = DisableEvent.NONE
+    var autoDisables = mutableListOf<DisableEvent>()
 
     init {
         val moduleInfo = javaClass.getAnnotation(ModuleInfo::class.java)!!

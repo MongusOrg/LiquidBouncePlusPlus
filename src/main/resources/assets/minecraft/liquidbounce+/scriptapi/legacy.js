@@ -95,6 +95,10 @@ var _AdaptedModule = function (module) {
         return this.module.getName();
     }
 
+    this.getSpacedName = function () {
+        return this.module.getName();
+    }
+
     this.getDescription = function () {
         return this.module.getDescription();
     }
@@ -163,6 +167,7 @@ var _ModuleManager = function () {
     this.registerModule = function (scriptModule) {
         var moduleConfig = {
             name: scriptModule.getName(),
+            spacedName: scriptModule.getSpacedName(),
             description: scriptModule.getDescription(),
             category: scriptModule.getCategory()
         };

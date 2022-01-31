@@ -29,7 +29,7 @@ class AutoDisable : Module() {
 
     fun disableModules(enumDisable: DisableEvent) {
         var moduleNames: Int = 0
-        LiquidBounce.moduleManager.modules.filter { it.autoDisable == enumDisable && it.state }.forEach { it.toggle(); moduleNames++ }
+        LiquidBounce.moduleManager.modules.filter { it.autoDisables.contains(enumDisable) && it.state }.forEach { it.toggle(); moduleNames++ }
 
         if (moduleNames <= 0) return
         LiquidBounce.hud.addNotification(Notification("Disabled $moduleNames modules due to ${ when (enumDisable) {
@@ -46,7 +46,6 @@ class AutoDisable : Module() {
     }
 
     enum class DisableEvent {
-        NONE,
         FLAG,
         WORLD_CHANGE,
         GAME_END

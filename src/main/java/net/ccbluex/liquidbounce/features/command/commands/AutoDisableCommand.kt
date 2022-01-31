@@ -23,14 +23,14 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
             when (args[1].toLowerCase()) {
                 "list" -> {
                     chat("§c§lAutoDisable modules:")
-                    LiquidBounce.moduleManager.modules.filter { it.autoDisable != DisableEvent.NONE }.forEach {
-                        ClientUtils.displayChatMessage("§6> §c${it.name} §7| §a${it.autoDisable.name.toLowerCase()}")
+                    LiquidBounce.moduleManager.modules.filter { it.autoDisables.size > 0 }.forEach {
+                        ClientUtils.displayChatMessage("§6> §c${it.name} §7| §a${it.autoDisables.map { d -> d.name.toLowerCase() }.joinToString()}")
                     }
                     return
                 }
                 "clear" -> {
-                    LiquidBounce.moduleManager.modules.filter { it.autoDisable != DisableEvent.NONE }.forEach {
-                        it.autoDisable = DisableEvent.NONE
+                    LiquidBounce.moduleManager.modules.filter { it.autoDisables.size > 0 }.forEach {
+                        it.autoDisables.clear()
                     }
                     chat("Successfully cleared the AutoDisable list.")
                     return
@@ -46,8 +46,24 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
                 return
             }
 
+            if (args[2].equals("clear", true)) {
+                module.autoDisables.clear()
+                chat("Module §a§l${module.name}§3 has been removed from AutoDisable trigger list.")
+                playEdit()
+                return
+            }
+
             try {
                 val disableWhen = DisableEvent.valueOf(args[2].toUpperCase())
+
+                var added = "will now"
+                if (module.autoDisables.contains(disableWhen)) {
+                    if (module.autoDisables.remove(disableWhen)) {
+                        added = "will no longer"
+                    }
+                } else {
+                    module.autoDisables.add(disableWhen)
+                }
 
                 val disableType = when (disableWhen) {
                     DisableEvent.FLAG -> "when you get flagged."
@@ -56,21 +72,18 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
                     else -> null
                 }
 
-                // Find key by name and change
-                module.autoDisable = disableWhen
-
                 // Response to user
-                chat("Module §a§l${module.name}§3 ${if (disableType == null) "is removed from the AutoDisable list." else "should be disabled $disableType"}")
+                chat("Module §a§l${module.name}§3 $added be disabled $disableType.")
                 playEdit()
                 return
             } catch (e: IllegalArgumentException) {
                 chat("§c§lWrong auto disable type!")
-                chatSyntax("autodisable <module> <none/flag/world_change/game_end>")
+                chatSyntax("autodisable <module> <clear/flag/world_change/game_end>")
                 return
             }
         }
 
-        chatSyntax("autodisable <module/list> <none/flag/world_change/game_end>")
+        chatSyntax("autodisable <module/list> <clear/flag/world_change/game_end>")
     }
 
     override fun tabComplete(args: Array<String>): List<String> {
@@ -83,7 +96,7 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
                     .map { it.name }
                     .filter { it.startsWith(moduleName, true) }
                     .toList()
-            2 -> listOf<String>("none", "flag", "world_change", "game_end").filter { it.startsWith(args[1], true) }
+            2 -> listOf<String>("clear", "flag", "world_change", "game_end").filter { it.startsWith(args[1], true) }
             else -> emptyList()
         }
     }
