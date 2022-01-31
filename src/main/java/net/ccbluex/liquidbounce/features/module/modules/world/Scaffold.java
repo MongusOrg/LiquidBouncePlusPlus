@@ -650,7 +650,7 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock || towerActivation()) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && !towerActivation() && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 
@@ -691,6 +691,10 @@ public class Scaffold extends Module {
                     findBlock(mode.equalsIgnoreCase("expand"));
                 }
             }
+        }
+
+        if (towerActivation() && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) { // smh it just doesn't work properly with some tower modes so
+            place();
         }
 
         //XZReducer
