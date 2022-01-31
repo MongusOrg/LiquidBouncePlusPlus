@@ -33,16 +33,16 @@ class AutoDisable : Module() {
 
         if (moduleNames <= 0) return
         LiquidBounce.hud.addNotification(Notification("Disabled $moduleNames modules due to ${ when (enumDisable) {
-                FLAG -> "unexpected teleport"
-                WORLD_CHANGE -> "world change"
-                else -> "game ended"
-            }}.", Notification.Type.INFO, 1000L))
+                DisableEvent.FLAG -> "unexpected teleport"
+                DisableEvent.WORLD_CHANGE -> "world change"
+                else -> "game ended"}}.", Notification.Type.INFO, 1000L))
     }
 
-    @JvmStatic
-    fun handleGameEnd() {
-        val autoDisableModule = LiquidBounce.moduleManager[AutoDisable::class.java]!! as AutoDisable
-        autoDisableModule.disableModules(DisableEvent.GAME_END)
+    companion object {
+        fun handleGameEnd() {
+            val autoDisableModule = LiquidBounce.moduleManager[AutoDisable::class.java]!! as AutoDisable
+            autoDisableModule.disableModules(DisableEvent.GAME_END)
+        }
     }
 
     enum class DisableEvent {
