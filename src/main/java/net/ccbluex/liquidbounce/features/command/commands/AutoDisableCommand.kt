@@ -73,7 +73,7 @@ class AutoDisableCommand : Command("autodisable", arrayOf("ad")) {
                 }
 
                 // Response to user
-                chat("Module §a§l${module.name}§3 $added be disabled $disableType.")
+                chat("Module §a§l${module.name}§3 $added be disabled $disableType")
                 playEdit()
                 return
             } catch (e: IllegalArgumentException) {

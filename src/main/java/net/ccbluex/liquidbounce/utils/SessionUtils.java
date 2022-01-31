@@ -7,10 +7,14 @@ package net.ccbluex.liquidbounce.utils;
 
 import net.ccbluex.liquidbounce.event.EventTarget;
 import net.ccbluex.liquidbounce.event.Listenable;
+import net.ccbluex.liquidbounce.event.ScreenEvent;
 import net.ccbluex.liquidbounce.event.SessionEvent;
 import net.ccbluex.liquidbounce.event.WorldEvent;
-
 import net.ccbluex.liquidbounce.utils.timer.MSTimer;
+
+import net.minecraft.client.gui.GuiDownloadTerrain;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.GuiConnecting;
 
 public class SessionUtils extends MinecraftInstance implements Listenable {
 
@@ -21,6 +25,10 @@ public class SessionUtils extends MinecraftInstance implements Listenable {
     public static long backupSessionTime = 0L;
     public static long lastWorldTime = 0L;
 
+    private static boolean requireDelay = false;
+
+    private static GuiScreen lastScreen = null;
+
     @EventTarget
     public void onWorld(WorldEvent event) {
         lastWorldTime = System.currentTimeMillis() - worldTimer.time;
@@ -28,6 +36,9 @@ public class SessionUtils extends MinecraftInstance implements Listenable {
 
         if (event.getWorldClient() == null) {
             backupSessionTime = System.currentTimeMillis() - sessionTimer.time;
+            requireDelay = true;
+        } else {
+            requireDelay = false;
         }
     }
 
@@ -36,14 +47,23 @@ public class SessionUtils extends MinecraftInstance implements Listenable {
         handleConnection();
     }
 
+    @EventTarget
+    public void onScreen(ScreenEvent event) {
+        if (event.getGuiScreen() == null && lastScreen != null && (lastScreen instanceof GuiDownloadTerrain || lastScreen instanceof GuiConnecting))
+            handleReconnection();
+
+        lastScreen = event.getGuiScreen();
+    }
+
     public static void handleConnection() {
         backupSessionTime = 0L;
+        requireDelay = true;
         lastSessionTime = System.currentTimeMillis() - sessionTimer.time;
         sessionTimer.reset();
     }
 
     public static void handleReconnection() {
-        sessionTimer.time = System.currentTimeMillis() - backupSessionTime;
+        if (requireDelay) sessionTimer.time = System.currentTimeMillis() - backupSessionTime;
     }
 
     public static String getFormatSessionTime() {

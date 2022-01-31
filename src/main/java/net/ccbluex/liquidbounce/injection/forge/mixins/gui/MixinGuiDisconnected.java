@@ -130,7 +130,7 @@ public abstract class MixinGuiDisconnected extends MixinGuiScreen {
             this.updateReconnectButton();
         }
         Fonts.fontSFUI40.drawCenteredString("Played as "+this.mc.session.getUsername()+", server: "+ServerUtils.serverData.serverIP, this.width / 2F, this.height / 2F + field_175353_i / 2F + this.fontRendererObj.FONT_HEIGHT + 96, -1, true);
-        Fonts.fontSFUI40.drawCenteredString("You have played " + SessionUtils.getFormatLastSessionTime() + "before getting kicked.", this.width / 2F, this.height / 2F + field_175353_i / 2F + this.fontRendererObj.FONT_HEIGHT * 2F + 96, -1, true);
+        Fonts.fontSFUI40.drawCenteredString("You have played " + SessionUtils.getFormatLastSessionTime() + "before getting kicked.", this.width / 2F, this.height / 2F + field_175353_i / 2F + this.fontRendererObj.FONT_HEIGHT * 2F + 98, -1, true);
     }
 
     private void drawReconnectDelaySlider() {

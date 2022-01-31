@@ -31,34 +31,27 @@ class AutoKnight : Module() {
     private val debugValue = BoolValue("Debug", false)
 
     private var clickStage = 0
-    private var duplication = 0
 
     private var availableForSelect = false
     private var expectSlot = -1
 
     private fun debug(s: String) {
-        if (debugValue.get()) ClientUtils.displayChatMessage("[AK] $s")
+        if (debugValue.get()) ClientUtils.displayChatMessage("§7[§4§lAuto Knight§7] §r$s")
     }
 
     override fun onEnable() {
         clickStage = 0
-        duplication = 0
         availableForSelect = false
         expectSlot = -1
     }
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if (availableForSelect && duplication < 1 && clickStage == 2) {
-            duplication++
-            debug("detected kit selector v2")
-            Timer().schedule(50L) {
-                clickStage = 3
-                mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
-                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
-                debug("clicked")
-                //mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
-            }
+        if (availableForSelect && clickStage == 1) {
+            clickStage = 2
+            mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
+            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
+            debug("clicked kit selector")
         }
     }
 
@@ -66,7 +59,7 @@ class AutoKnight : Module() {
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
 
-        if (availableForSelect && packet is S2DPacketOpenWindow && clickStage < 4)
+        if (availableForSelect && packet is S2DPacketOpenWindow && clickStage < 3)
             event.cancelEvent()
 
         if (packet is S2FPacketSetSlot) {
@@ -78,15 +71,17 @@ class AutoKnight : Module() {
 
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
                 debug("found item")
-                availableForSelect = true
-                expectSlot = slot
                 clickStage = 1
+                expectSlot = slot
+                Timer().schedule(150L) { // in case it duplicates
+                    availableForSelect = true
+                }
             }
 
-            if (clickStage == 3 && displayName.contains("Knight", true)) {
+            if (clickStage == 2 && displayName.contains("Knight", true)) {
                 debug("detected knight kit selection")
-                Timer().schedule(150L) {
-                    clickStage = 4
+                Timer().schedule(50L) {
+                    clickStage = 3
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
@@ -99,15 +94,9 @@ class AutoKnight : Module() {
         if (packet is S02PacketChat) {
             val text = packet.chatComponent.unformattedText
 
-            if (text.contains("cages open", true) && clickStage == 1) {
-                Timer().schedule(150L) {
-                    debug("detected skywars")
-                    clickStage = 2
-                }
-            }
-
-            if (text.contains("has been selected", true)) {
+            if (text.contains("Knight kit has been selected", true)) {
                 debug("finished")
+                event.cancelEvent()
                 LiquidBounce.hud.addNotification(Notification("Successfully selected Knight kit.", Notification.Type.SUCCESS))
             }
         }
@@ -116,7 +105,6 @@ class AutoKnight : Module() {
     @EventTarget
     fun onWorld(event: WorldEvent) {
         clickStage = 0
-        duplication = 0
         availableForSelect = false
         expectSlot = -1
     }
