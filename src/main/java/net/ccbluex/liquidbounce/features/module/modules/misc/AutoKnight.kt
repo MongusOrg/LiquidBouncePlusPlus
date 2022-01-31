@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.features.module.modules.misc
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.PacketEvent
+import net.ccbluex.liquidbounce.event.UpdateEvent
 import net.ccbluex.liquidbounce.event.WorldEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
@@ -33,6 +34,7 @@ class AutoKnight : Module() {
     private var duplication = 0
 
     private var availableForSelect = false
+    private var expectSlot = -1
 
     private fun debug(s: String) {
         if (debugValue.get()) ClientUtils.displayChatMessage("[AK] $s")
@@ -42,6 +44,23 @@ class AutoKnight : Module() {
         clickStage = 0
         duplication = 0
         availableForSelect = false
+        expectSlot = -1
+    }
+
+    @EventTarget
+    fun onUpdate(event: UpdateEvent) {
+        if (availableForSelect && duplication < 1) {
+            duplication++
+            debug("detected kit selector v2")
+            Timer().schedule(50L) {
+                clickStage = 1
+                mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
+                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
+                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
+                debug("clicked")
+                //mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
+            }
+        }
     }
 
     @EventTarget
@@ -60,22 +79,11 @@ class AutoKnight : Module() {
 
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
                 availableForSelect = true
-                duplication++
-                if (duplication < 2) {
-                    debug("detected kit selector v2")
-                    Timer().schedule(200L) {
-                        clickStage = 1
-                        mc.netHandler.addToSendQueue(C09PacketHeldItemChange(slot - 36))
-                        mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(slot).getStack()))
-                        debug("clicked")
-                        //mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
-                    }
-                }
-                
+                expectSlot = slot
             }
             if (clickStage == 1 && displayName.contains("Knight", true)) {
                 debug("detected knight kit selection")
-                Timer().schedule(10L) {
+                Timer().schedule(50L) {
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
@@ -101,5 +109,6 @@ class AutoKnight : Module() {
         clickStage = 0
         duplication = 0
         availableForSelect = false
+        expectSlot = -1
     }
 }
