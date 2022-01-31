@@ -15,12 +15,13 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils
+//import net.minecraft.network.play.server.S02PacketChat
 import net.minecraft.network.play.server.S14PacketEntity
 import net.minecraft.network.play.server.S1DPacketEntityEffect
 
 import kotlin.concurrent.thread
 
-@ModuleInfo(name = "AntiBan", spacedName = "Anti Ban", description = "Anti staff on BlocksMC. Automatically leaves a map if detected vanished staffs.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "AntiBan", spacedName = "Anti Ban", description = "Anti staff on BlocksMC. Automatically leaves a map if detected known staffs.", category = ModuleCategory.MISC)
 class AntiBan : Module() {
 
     private var obStaffs = "none"
@@ -55,17 +56,20 @@ class AntiBan : Module() {
             val entity = mc.theWorld.getEntityByID(packet.entityId)
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. You should quit ASAP.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members with invis. You should quit ASAP.", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
+                    detected = true
                 }
             }
         }
         if (packet is S14PacketEntity) {
             val entity = packet.getEntity(mc.theWorld)
+
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
                     LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. You should quit ASAP.", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
+                    detected = true
                 }
             }
         }
