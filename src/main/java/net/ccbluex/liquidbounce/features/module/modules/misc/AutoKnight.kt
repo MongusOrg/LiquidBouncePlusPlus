@@ -38,8 +38,10 @@ class AutoKnight : Module() {
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
 
-        if (!kitSelected && clickStage == 1 && packet is S2DPacketOpenWindow)
+        if (!kitSelected && clickStage == 1 && packet is S2DPacketOpenWindow) {
             event.cancelEvent()
+            clickStage = 2
+        }
 
         if (!kitSelected && packet is S2FPacketSetSlot) {
             val item = packet.func_149174_e() ?: return
@@ -50,14 +52,14 @@ class AutoKnight : Module() {
 
             if (clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) {
                 Timer().schedule(500L) {
+                    clickStage = 1
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(0))
                     mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(item))
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
-                    clickStage++
                 }
-            } else if (clickStage == 1 && windowId != 0 && itemName.contains("bow", true) && displayName.contains("Knight", true)) {
-                mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 727))
-                clickStage++
+            } else if (clickStage == 2 && displayName.contains("knight", true)) {
+                clickStage = 3
+                mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
             }
         }
         

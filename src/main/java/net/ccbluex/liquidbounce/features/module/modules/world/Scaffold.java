@@ -650,16 +650,16 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if (!towerActivation() && (!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 
         if (eventState == EventState.PRE) {
+            targetPlace = null;
             timer.update();
 
-            if ((!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
-                    !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock))
-                || !shouldPlace())
+            if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
+                    !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
                 return;
 
             if (towerActivation()) {
@@ -673,6 +673,7 @@ public class Scaffold extends Module {
                         move(event);
 
                     findBlock(false);
+                    place();
                 }    
             } else {
                 verusState = 0;
@@ -735,7 +736,7 @@ public class Scaffold extends Module {
             return;
         }
 
-        if (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || (!towerActivation() && ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord)))
+        if (!towerActivation() && (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord)))
             return;
 
         int blockSlot = -1;
@@ -765,25 +766,7 @@ public class Scaffold extends Module {
             Block block = ((ItemBlock)itemStack.getItem()).getBlock();
             if (InventoryUtils.BLOCK_BLACKLIST.contains(block) || !block.isFullCube()) return;
         }
-/*
-        // verus thingy
-        final BlockPos hitPos = targetPlace.getBlockPos();
-        Vec3 hitVec = targetPlace.getVec3();
 
-        if (verusScaffold.get()) { // scaffold 14e check
-            float f = (float)(hitVec.xCoord - (double)hitPos.getX());
-            float f1 = (float)(hitVec.yCoord - (double)hitPos.getY());
-            float f2 = (float)(hitVec.zCoord - (double)hitPos.getZ());
-
-            if (f > 1.0f || f1 > 1.0f || f2 > 1.0f) {
-                double hitX = Math.min((double)hitVec.xCoord, (double)hitPos.getX() + 1.0D);
-                double hitY = Math.min((double)hitVec.yCoord, (double)hitPos.getY() + 1.0D);
-                double hitZ = Math.min((double)hitVec.zCoord, (double)hitPos.getZ() + 1.0D);
-
-                hitVec = new Vec3(hitX, hitY, hitZ);
-            }
-        }
-*/
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
                 targetPlace.getEnumFacing(), targetPlace.getVec3())) {
             delayTimer.reset();
@@ -802,11 +785,11 @@ public class Scaffold extends Module {
                 mc.getNetHandler().addToSendQueue(new C0APacketAnimation());
         }
 
-        if (!stayAutoBlock.get() && blockSlot >= 0 && !autoBlockMode.get().equalsIgnoreCase("Switch"))
-            mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
-
         // Reset
         this.targetPlace = null;
+
+        if (!stayAutoBlock.get() && blockSlot >= 0 && !autoBlockMode.get().equalsIgnoreCase("Switch"))
+            mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
     }
 
 
