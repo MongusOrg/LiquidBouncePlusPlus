@@ -76,7 +76,7 @@ class AutoKit : Module() {
                 // close the things and notify
                 clickStage = 0
                 availableForSelect = false
-                mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
+                mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
                 LiquidBounce.hud.addNotification(Notification("Kit checker timed out. Please use the right kit name.", Notification.Type.ERROR))
                 debug("can't find any kit with that name")
