@@ -58,7 +58,7 @@ class Rotations : Module() {
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
         return getState(Scaffold::class.java) ||
                 (getState(KillAura::class.java) && killAura.target != null) ||
-                /*(getState(Disabler::class.java) && disabler.canRenderInto3D) ||*/
+                (getState(Disabler::class.java) && disabler.canRenderInto3D) ||
                 getState(BowAimbot::class.java) || getState(Fucker::class.java) ||
                 getState(ChestAura::class.java) || getState(Fly::class.java)
     }

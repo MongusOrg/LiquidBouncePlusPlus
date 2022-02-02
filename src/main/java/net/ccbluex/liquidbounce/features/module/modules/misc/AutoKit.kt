@@ -39,7 +39,7 @@ class AutoKit : Module() {
 
     private var clickStage = 0
 
-    private var availableForSelect = false
+    private var listening = false
     private var expectSlot = -1
 
     private var timeoutTimer = TickTimer()
@@ -51,7 +51,7 @@ class AutoKit : Module() {
 
     override fun onEnable() {
         clickStage = 0
-        availableForSelect = false
+        listening = false
         expectSlot = -1
 
         timeoutTimer.reset()
@@ -67,7 +67,7 @@ class AutoKit : Module() {
             clickStage = 2
             delayTimer.reset()
             debug("clicked kit selector")
-        } else {
+        } else if (!listening) {
             delayTimer.reset()
         }
 
@@ -76,7 +76,7 @@ class AutoKit : Module() {
             if (timeoutTimer.hasTimePassed(40)) {
                 // close the things and notify
                 clickStage = 0
-                availableForSelect = false
+                listening = false
                 mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
                 LiquidBounce.hud.addNotification(Notification("Kit checker timed out. Please use the right kit name.", Notification.Type.ERROR))
@@ -91,12 +91,16 @@ class AutoKit : Module() {
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
 
-        if (availableForSelect && packet is S2DPacketOpenWindow && clickStage < 3 && !editMode.get())
+        if (!editMode.get() && listening && packet is S2DPacketOpenWindow) {
             event.cancelEvent()
+            debug("listening so cancel open window packet")
+            return
+        }
 
         if (packet is C0DPacketCloseWindow && editMode.get()) {
             editMode.set(false)
             LiquidBounce.hud.addNotification(Notification("Edit mode aborted.", Notification.Type.INFO))
+            debug("abort edit mode")
             return
         }
 
@@ -107,13 +111,13 @@ class AutoKit : Module() {
             val itemName = item.unlocalizedName
             val displayName = item.displayName
 
-            if (!availableForSelect && clickStage == 0 && windowId == 0 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) { // dynamic for solo/teams
+            if (clickStage == 0 && windowId == 0 && slot >= 36 && slot <= 44 && itemName.contains("bow", true) && displayName.contains("kit selector", true)) { // dynamic for solo/teams
                 if (editMode.get()) {
-                    availableForSelect = true
+                    listening = true
                     debug("found item, listening to kit selection cuz of edit mode")
                     return
                 } else {
-                    availableForSelect = true
+                    listening = true
                     clickStage = 1
                     expectSlot = slot
                     debug("found item, sent trigger")
@@ -125,9 +129,9 @@ class AutoKit : Module() {
                 timeoutTimer.reset()
                 clickStage = 3
                 debug("detected kit selection")
-                Timer().schedule(150L) {
+                Timer().schedule(250L) {
                     mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
-                    mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
+                    //mc.netHandler.addToSendQueue(C0EPacketClickWindow(windowId, slot, 0, 0, item, 1919))
                     mc.netHandler.addToSendQueue(C0DPacketCloseWindow(windowId))
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
                     debug("selected")
@@ -145,13 +149,16 @@ class AutoKit : Module() {
                     kitNameValue.set(kitName)
                     editMode.set(false)
                     clickStage = 0
-                    availableForSelect = false
-                    debug("finished detecting kit")
+                    listening = false
                     LiquidBounce.hud.addNotification(Notification("Successfully detected and added $kitName kit.", Notification.Type.SUCCESS))
+                    debug("finished detecting kit")
+                    return
                 } else {
-                    debug("finished")
+                    listening = false
                     event.cancelEvent()
                     LiquidBounce.hud.addNotification(Notification("Successfully selected ${kitNameValue.get()} kit.", Notification.Type.SUCCESS))
+                    debug("finished")
+                    return
                 }
             }
         }
@@ -160,7 +167,7 @@ class AutoKit : Module() {
     @EventTarget
     fun onWorld(event: WorldEvent) {
         clickStage = 0
-        availableForSelect = false
+        listening = false
         expectSlot = -1
 
         timeoutTimer.reset()
@@ -168,5 +175,5 @@ class AutoKit : Module() {
     }
 
     override val tag: String
-        get() = if (editMode.get() && availableForSelect) "Listening..." else kitNameValue.get()
+        get() = if (editMode.get() && listening) "Listening..." else kitNameValue.get()
 }

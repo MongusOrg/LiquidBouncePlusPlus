@@ -783,14 +783,14 @@ class KillAura : Module() {
      * Update killaura rotations to enemy
      */
     private fun updateRotations(entity: Entity): Boolean {
-        /*val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
-        val modify = disabler.canModifyRotation*/
+        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
+        val modify = disabler.canModifyRotation
 
         var defRotation = getTargetRotation(entity) ?: return false
 
-        /*if (modify) {
-            defRotation = Rotation(disabler.customYaw, mc.thePlayer.rotationPitch)
-        }*/
+        if (modify) {
+            defRotation = Rotation(disabler.customYaw, defRotation.pitch)
+        }
 
         if (silentRotationValue.get()) {
             RotationUtils.setTargetRotation(defRotation, if (aacValue.get() && !rotations.get().equals("Spin", ignoreCase = true)) 15 else 0)
@@ -873,7 +873,7 @@ class KillAura : Module() {
      * Check if enemy is hitable with current rotations
      */
     private fun updateHitable() {
-        //val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
+        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
 
         // Modify hit check for some situations
         if (rotations.get().equals("spin", true)) {
@@ -882,7 +882,7 @@ class KillAura : Module() {
         }
 
         // Completely disable rotation check if turn speed equals to 0 or NoHitCheck is enabled
-        if(maxTurnSpeed.get() <= 0F || noHitCheck.get()/* || disabler.canModifyRotation*/) {
+        if(maxTurnSpeed.get() <= 0F || noHitCheck.get() || disabler.canModifyRotation) {
             hitable = true
             return
         }
