@@ -28,7 +28,7 @@ import net.minecraft.util.IChatComponent
 import java.util.*
 import kotlin.concurrent.schedule
 
-@ModuleInfo(name = "Auto Kit", spacedName = "Auto Kit", description = "Automatically selects kits for you in BlocksMC Skywars.", category = ModuleCategory.MISC)
+@ModuleInfo(name = "AutoKit", spacedName = "Auto Kit", description = "Automatically selects kits for you in BlocksMC Skywars.", category = ModuleCategory.MISC)
 class AutoKit : Module() {
 
     private val kitNameValue = TextValue("Kit-Name", "Armorer")
@@ -46,7 +46,7 @@ class AutoKit : Module() {
     private var delayTimer = MSTimer()
 
     private fun debug(s: String) {
-        if (debugValue.get()) ClientUtils.displayChatMessage("§7[§4§lAuto Knight§7] §r$s")
+        if (debugValue.get()) ClientUtils.displayChatMessage("§7[§4§lAuto Kit§7] §r$s")
     }
 
     override fun onEnable() {
@@ -137,7 +137,7 @@ class AutoKit : Module() {
                     clickStage = 0
                     availableForSelect = false
                     debug("finished detecting kit")
-                    LiquidBounce.hud.addNotification(Notification("Successfully detected $kitName kit.", Notification.Type.SUCCESS))
+                    LiquidBounce.hud.addNotification(Notification("Successfully detected and added $kitName kit.", Notification.Type.SUCCESS))
                 } else {
                     debug("finished")
                     event.cancelEvent()
