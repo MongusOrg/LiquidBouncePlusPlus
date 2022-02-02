@@ -64,7 +64,6 @@ class InvCleaner : Module() {
     private val sortValue = BoolValue("Sort", true)
     private val throwValue = BoolValue("ThrowGarbage", true)
     private val armorValue = BoolValue("Armor", true)
-    private val noCombatValue = BoolValue("NoCombat", false)
     private val itemDelayValue = IntegerValue("ItemDelay", 0, 0, 5000)
     private val nbtGoalValue = ListValue("NBTGoal", ItemUtils.EnumNBTPriorityType.values().map { it.toString() }.toTypedArray(), "NONE")
     private val nbtItemNotGarbage = BoolValue("NBTItemNotGarbage", true, { !nbtGoalValue.equals("NONE") })
@@ -122,8 +121,7 @@ class InvCleaner : Module() {
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if (noMoveValue.get() && MovementUtils.isMoving() ||
-            mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0 ||
-            (LiquidBounce.combatManager.inCombat && noCombatValue.get())) {
+            mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0) {
             invOpened = false
             return
         }
@@ -261,7 +259,7 @@ class InvCleaner : Module() {
                         item is ItemEnderPearl || item is ItemBucket || ignoreVehiclesValue.get() && (item is ItemBoat || item is ItemMinecart)
             }
         } catch (ex: Exception) {
-            ClientUtils.logError("(InventoryCleaner) Failed to check item: ${itemStack.unlocalizedName}.", ex)
+            ClientUtils.logger.error("(InventoryCleaner) Failed to check item: ${itemStack.unlocalizedName}.", ex)
             true
         }
     }
