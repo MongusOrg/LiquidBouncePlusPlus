@@ -21,12 +21,12 @@ public abstract class MixinGuiIngameMenu extends MixinGuiScreen {
         if(!this.mc.isIntegratedServerRunning())
             this.buttonList.add(new GuiButton(1337, this.width / 2 - 100, this.height / 4 + 128, "Reconnect"));
 
-        wdl.WDLHooks.injectWDLButtons((GuiIngameMenu) (Object) this, this.buttonList);
+        //wdl.WDLHooks.injectWDLButtons((GuiIngameMenu) (Object) this, this.buttonList);
     }
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
     private void actionPerformed(GuiButton button, CallbackInfo callbackInfo) {
-        wdl.WDLHooks.handleWDLButtonClick((GuiIngameMenu) (Object) this, button);
+        //wdl.WDLHooks.handleWDLButtonClick((GuiIngameMenu) (Object) this, button);
 
         if(button.id == 1337) {
             mc.theWorld.sendQuittingDisconnectingPacket();

@@ -24,7 +24,7 @@ public class MixinWorldClient {
         final TrueSight trueSight = (TrueSight) LiquidBounce.moduleManager.getModule(TrueSight.class);
         return flag || trueSight.getState() && trueSight.getBarriersValue().get();
     }
-
+/*
     @Inject(method = "tick", at = @At("RETURN"))
     public void injectWorldTick(CallbackInfo callbackInfo) {
         wdl.WDLHooks.onWorldClientTick((WorldClient) (Object) this);
@@ -39,5 +39,5 @@ public class MixinWorldClient {
     public void removeEntityFromWorld(int p_73028_1_, CallbackInfoReturnable<Entity> callbackInfo) {
         wdl.WDLHooks.onWorldClientRemoveEntityFromWorld((WorldClient) (Object) this, p_73028_1_);
     }
-
+*/
 }

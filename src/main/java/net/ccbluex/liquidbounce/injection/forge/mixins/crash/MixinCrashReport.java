@@ -18,10 +18,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(CrashReport.class)
 @SideOnly(Side.CLIENT)
 public class MixinCrashReport {
-
+/*
     @Inject(method = "populateEnvironment", at = @At("TAIL"))
     private void injectCrashEnv(CallbackInfo callbackInfo) {
 		  wdl.WDLHooks.onCrashReportPopulateEnvironment((CrashReport) (Object) this);
     }
-
+*/
 }
