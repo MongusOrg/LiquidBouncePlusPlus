@@ -29,7 +29,7 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 @ModuleInfo(name = "Auto Kit", spacedName = "Auto Kit", description = "Automatically selects kits for you in BlocksMC Skywars.", category = ModuleCategory.MISC)
-class Auto Kit : Module() {
+class AutoKit : Module() {
 
     private val kitNameValue = TextValue("Kit-Name", "Armorer")
 
