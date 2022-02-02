@@ -5,7 +5,7 @@
  *
  * This part is taken from UnlegitMC/FDPClient. Please credit them when using this in your repository.
  */
-package net.ccbluex.liquidbounce.utils.item;
+package net.ccbluex.liquidbounce.utils.item
 
 import net.ccbluex.liquidbounce.utils.RegexUtils
 import net.minecraft.enchantment.Enchantment

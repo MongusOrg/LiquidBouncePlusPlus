@@ -83,7 +83,7 @@ object LiquidBounce {
         eventManager.registerListener(RotationUtils())
         eventManager.registerListener(AntiForge())
         eventManager.registerListener(BungeeCordSpoof())
-        eventManager.registerListener(InventoryUtils())
+        eventManager.registerListener(InventoryUtils)
         eventManager.registerListener(PacketUtils())
         eventManager.registerListener(SessionUtils())
 

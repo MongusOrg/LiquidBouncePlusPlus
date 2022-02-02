@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.script.api.global
 
-import net.ccbluex.liquidbounce.utils.item.ItemUtils
+import net.ccbluex.liquidbounce.utils.item.ItemCreator
 import net.minecraft.item.ItemStack
 
 /**
@@ -19,5 +19,5 @@ object Item {
      * @return An instance of [ItemStack] with the given data.
      */
     @JvmStatic
-    fun create(itemArguments: String): ItemStack = ItemUtils.createItem(itemArguments)
+    fun create(itemArguments: String): ItemStack = ItemCreator.createItem(itemArguments)
 }

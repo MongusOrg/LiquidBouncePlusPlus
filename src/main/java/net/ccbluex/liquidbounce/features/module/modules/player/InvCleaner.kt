@@ -287,7 +287,7 @@ class InvCleaner : Module() {
     private fun findBetterItem(targetSlot: Int, slotStack: ItemStack?): Int? {
         val type = type(targetSlot)
 
-        when (type.lowercase()) {
+        when (type.toLowerCase()) {
             "sword", "pickaxe", "axe" -> {
                 val currentType: Class<out Item> = when {
                     type.equals("Sword", ignoreCase = true) -> ItemSword::class.java
