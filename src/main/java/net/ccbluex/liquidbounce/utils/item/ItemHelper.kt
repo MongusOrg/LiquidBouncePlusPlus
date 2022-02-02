@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack
 /**
  * @author MCModding4K
  */
-object ItemUtils {
+object ItemHelper {
     fun getEnchantment(itemStack: ItemStack, enchantment: Enchantment): Int {
         if (itemStack.enchantmentTagList == null || itemStack.enchantmentTagList.hasNoTags()) return 0
         for (i in 0 until itemStack.enchantmentTagList.tagCount()) {

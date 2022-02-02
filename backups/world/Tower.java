@@ -171,7 +171,7 @@ public class Tower extends Module {
             timer.update();
 
             final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
-            if (autoBlockMode.get().equalsIgnoreCase("Packet") ? InventoryUtils.INSTANCE.findAutoBlockBlock() != -1 || isHeldItemBlock : isHeldItemBlock) {
+            if (autoBlockMode.get().equalsIgnoreCase("Packet") ? InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock : isHeldItemBlock) {
                 if (!stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
                         mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                     move();
@@ -297,7 +297,7 @@ public class Tower extends Module {
             if (!autoBlockMode.get().equalsIgnoreCase("Packet"))
                 return;
 
-            blockSlot = InventoryUtils.INSTANCE.findAutoBlockBlock();
+            blockSlot = InventoryUtils.findAutoBlockBlock();
 
             if (blockSlot == -1)
                 return;
@@ -560,7 +560,7 @@ public class Tower extends Module {
 
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
                 final Block block = ((ItemBlock) itemStack.getItem()).getBlock();
-                if (mc.thePlayer.getHeldItem() == itemStack || (!InventoryUtils.INSTANCE.BLOCK_BLACKLIST.contains(block) && block.isFullCube()))
+                if (mc.thePlayer.getHeldItem() == itemStack || (!InventoryUtils.BLOCK_BLACKLIST.contains(block) && block.isFullCube()))
                     amount += itemStack.stackSize;
             }
         }

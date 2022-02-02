@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.HUD
 import net.ccbluex.liquidbounce.ui.client.hud.HUD.Companion.createDefault
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
+import net.ccbluex.liquidbounce.utils.InventoryHelper
 import net.ccbluex.liquidbounce.utils.InventoryUtils
 import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
@@ -83,7 +84,8 @@ object LiquidBounce {
         eventManager.registerListener(RotationUtils())
         eventManager.registerListener(AntiForge())
         eventManager.registerListener(BungeeCordSpoof())
-        eventManager.registerListener(InventoryUtils)
+        eventManager.registerListener(InventoryUtils())
+        eventManager.registerListener(InventoryHelper)
         eventManager.registerListener(PacketUtils())
         eventManager.registerListener(SessionUtils())
 

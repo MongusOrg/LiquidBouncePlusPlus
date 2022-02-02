@@ -51,7 +51,7 @@ public class ArmorComparator implements Comparator<ArmorPiece> {
 
             // If both have the same enchantment threshold, prefer the item with more enchantments
             if (otherEnchantmentCmp == 0) {
-                int enchantmentCountCmp = Integer.compare(ItemUtils.INSTANCE.getEnchantmentCount(o1.getItemStack()), ItemUtils.INSTANCE.getEnchantmentCount(o2.getItemStack()));
+                int enchantmentCountCmp = Integer.compare(ItemUtils.getEnchantmentCount(o1.getItemStack()), ItemUtils.getEnchantmentCount(o2.getItemStack()));
 
                 if (enchantmentCountCmp != 0)
                     return enchantmentCountCmp;
@@ -90,7 +90,7 @@ public class ArmorComparator implements Comparator<ArmorPiece> {
         float sum = 0.0f;
 
         for (int i = 0; i < DAMAGE_REDUCTION_ENCHANTMENTS.length; i++) {
-            sum += ItemUtils.INSTANCE.getEnchantment(itemStack, DAMAGE_REDUCTION_ENCHANTMENTS[i]) * ENCHANTMENT_FACTORS[i] * ENCHANTMENT_DAMAGE_REDUCTION_FACTOR[i];
+            sum += ItemUtils.getEnchantment(itemStack, DAMAGE_REDUCTION_ENCHANTMENTS[i]) * ENCHANTMENT_FACTORS[i] * ENCHANTMENT_DAMAGE_REDUCTION_FACTOR[i];
         }
 
         return sum;
@@ -101,7 +101,7 @@ public class ArmorComparator implements Comparator<ArmorPiece> {
         float sum = 0.0f;
 
         for (int i = 0; i < OTHER_ENCHANTMENTS.length; i++) {
-            sum += ItemUtils.INSTANCE.getEnchantment(itemStack, OTHER_ENCHANTMENTS[i]) * OTHER_ENCHANTMENT_FACTORS[i];
+            sum += ItemUtils.getEnchantment(itemStack, OTHER_ENCHANTMENTS[i]) * OTHER_ENCHANTMENT_FACTORS[i];
         }
 
         return sum;

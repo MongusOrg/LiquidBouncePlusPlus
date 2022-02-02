@@ -24,7 +24,7 @@ import net.minecraft.network.play.client.C0EPacketClickWindow
 import net.minecraft.network.play.client.C16PacketClientStatus
 import net.minecraft.potion.Potion
 
-object InventoryUtils : MinecraftInstance(), Listenable {
+object InventoryHelper : MinecraftInstance(), Listenable {
     val CLICK_TIMER = MSTimer()
     val INV_TIMER = MSTimer()
     val BLOCK_BLACKLIST = listOf(Blocks.enchanting_table, 
@@ -79,49 +79,9 @@ object InventoryUtils : MinecraftInstance(), Listenable {
             Blocks.heavy_weighted_pressure_plate,
             Blocks.daylight_detector)
 
-    fun findItem(startSlot: Int, endSlot: Int, item: Item): Int {
-        for (i in startSlot until endSlot) {
-            val stack = mc.thePlayer.inventoryContainer.getSlot(i).stack
-            if (stack != null && stack.item === item) {
-                return i
-            }
-        }
-        return -1
-    }
-
-    fun hasSpaceHotbar(): Boolean {
-        for (i in 36..44) {
-            mc.thePlayer.inventoryContainer.getSlot(i).stack ?: return true
-        }
-        return false
-    }
-
-    fun findAutoBlockBlock(): Int {
-        for (i in 36..44) {
-            val itemStack = mc.thePlayer.inventoryContainer.getSlot(i).stack
-            if (itemStack != null && itemStack.item is ItemBlock) {
-                val itemBlock = itemStack.item as ItemBlock
-                val block = itemBlock.getBlock()
-                if (canPlaceBlock(block) && itemStack.stackSize > 0) {
-                    return i
-                }
-            }
-        }
-        return -1
-    }
-
-    fun canPlaceBlock(block: Block): Boolean {
-        return block.isFullCube && !BLOCK_BLACKLIST.contains(block)
-    }
-
     fun isBlockListBlock(itemBlock: ItemBlock): Boolean {
         val block = itemBlock.getBlock()
         return BLOCK_BLACKLIST.contains(block) || !block.isFullCube
-    }
-
-    @EventTarget
-    fun onClick(event: ClickWindowEvent) {
-        CLICK_TIMER.reset()
     }
 
     @EventTarget
@@ -142,7 +102,7 @@ object InventoryUtils : MinecraftInstance(), Listenable {
     fun closePacket() {
         mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
     }
-
+/*
     fun isPositivePotionEffect(id: Int): Boolean {
         if (id == Potion.regeneration.id || id == Potion.moveSpeed.id ||
             id == Potion.heal.id || id == Potion.nightVision.id ||
@@ -165,13 +125,6 @@ object InventoryUtils : MinecraftInstance(), Listenable {
 
         return false
     }
-
-    fun getItemDurability(stack: ItemStack): Float {
-        if (stack.isItemStackDamageable && stack.maxDamage> 0) {
-            return (stack.maxDamage - stack.itemDamage) / stack.maxDamage.toFloat()
-        }
-        return 1f
-    }
-
+*/
     override fun handleEvents() = true
 }

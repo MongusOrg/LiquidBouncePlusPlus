@@ -63,7 +63,7 @@ public class AutoArmor extends Module {
 
     @EventTarget
     public void onRender3D(final Render3DEvent event) {
-        if (!InventoryUtils.INSTANCE.CLICK_TIMER.hasTimePassed(delay) ||
+        if (!InventoryUtils.CLICK_TIMER.hasTimePassed(delay) ||
                 (mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0))
             return;
 

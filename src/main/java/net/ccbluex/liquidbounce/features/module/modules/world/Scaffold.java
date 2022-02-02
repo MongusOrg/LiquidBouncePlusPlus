@@ -658,7 +658,7 @@ public class Scaffold extends Module {
         if (eventState == EventState.PRE) {
             timer.update();
 
-            if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.INSTANCE.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
+            if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
                     !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
                 return;
 
@@ -667,7 +667,7 @@ public class Scaffold extends Module {
                 //targetPlace = null;
 
                 final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
-                if (InventoryUtils.INSTANCE.findAutoBlockBlock() != -1 || isHeldItemBlock) {
+                if (InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock) {
                     if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
                             mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                         move(event);
@@ -745,7 +745,7 @@ public class Scaffold extends Module {
             if (autoBlockMode.get().equalsIgnoreCase("Off"))
                 return;
 
-            blockSlot = InventoryUtils.INSTANCE.findAutoBlockBlock();
+            blockSlot = InventoryUtils.findAutoBlockBlock();
 
             if (blockSlot == -1)
                 return;
@@ -763,7 +763,7 @@ public class Scaffold extends Module {
         // blacklist check
         if (itemStack != null && itemStack.getItem() != null && itemStack.getItem() instanceof ItemBlock) {
             Block block = ((ItemBlock)itemStack.getItem()).getBlock();
-            if (InventoryUtils.INSTANCE.BLOCK_BLACKLIST.contains(block) || !block.isFullCube()) return;
+            if (InventoryUtils.BLOCK_BLACKLIST.contains(block) || !block.isFullCube()) return;
         }
 
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
@@ -1167,7 +1167,7 @@ public class Scaffold extends Module {
 
             if (itemStack != null && itemStack.getItem() instanceof ItemBlock) {
                 Block block = ((ItemBlock)itemStack.getItem()).getBlock();
-                if (!InventoryUtils.INSTANCE.BLOCK_BLACKLIST.contains(block) && block.isFullCube()) amount += itemStack.stackSize;
+                if (!InventoryUtils.BLOCK_BLACKLIST.contains(block) && block.isFullCube()) amount += itemStack.stackSize;
             }
         }
 

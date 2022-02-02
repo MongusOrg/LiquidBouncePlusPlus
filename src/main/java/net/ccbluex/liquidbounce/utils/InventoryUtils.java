@@ -64,7 +64,7 @@ public final class InventoryUtils extends MinecraftInstance implements Listenabl
             Blocks.jungle_fence_gate,
             Blocks.dark_oak_fence_gate,
             Blocks.nether_brick_fence,
-            Blocks.cake,
+            //Blocks.cake,
             Blocks.trapdoor,
             Blocks.melon_block,
             Blocks.brewing_stand,
