@@ -59,6 +59,7 @@ public class SessionUtils extends MinecraftInstance implements Listenable {
         backupSessionTime = 0L;
         requireDelay = true;
         lastSessionTime = System.currentTimeMillis() - sessionTimer.time;
+        if (lastSessionTime < 0L) lastSessionTime = 0L;
         sessionTimer.reset();
     }
 

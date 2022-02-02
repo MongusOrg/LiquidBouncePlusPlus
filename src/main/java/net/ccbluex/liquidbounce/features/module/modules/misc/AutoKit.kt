@@ -94,6 +94,12 @@ class AutoKit : Module() {
         if (availableForSelect && packet is S2DPacketOpenWindow && clickStage < 3 && !editMode.get())
             event.cancelEvent()
 
+        if (packet is C0DPacketCloseWindow && editMode.get()) {
+            editMode.set(false)
+            LiquidBounce.hud.addNotification(Notification("Edit mode aborted.", Notification.Type.INFO))
+            return
+        }
+
         if (packet is S2FPacketSetSlot) {
             val item = packet.func_149174_e() ?: return
             val windowId = packet.func_149175_c()
@@ -105,11 +111,13 @@ class AutoKit : Module() {
                 if (editMode.get()) {
                     availableForSelect = true
                     debug("found item, listening to kit selection cuz of edit mode")
+                    return
                 } else {
-                    expectSlot = slot
-                    clickStage = 1
                     availableForSelect = true
+                    clickStage = 1
+                    expectSlot = slot
                     debug("found item, sent trigger")
+                    return
                 }
             }
 
@@ -124,6 +132,7 @@ class AutoKit : Module() {
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
                     debug("selected")
                 }
+                return
             }
         }
         
@@ -159,5 +168,5 @@ class AutoKit : Module() {
     }
 
     override val tag: String
-        get() = kitNameValue.get()
+        get() = if (editMode.get() && availableForSelect) "Listening..." else kitNameValue.get()
 }
