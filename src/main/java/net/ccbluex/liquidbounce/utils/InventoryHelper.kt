@@ -102,7 +102,7 @@ object InventoryHelper : MinecraftInstance(), Listenable {
     fun closePacket() {
         mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
     }
-/*
+
     fun isPositivePotionEffect(id: Int): Boolean {
         if (id == Potion.regeneration.id || id == Potion.moveSpeed.id ||
             id == Potion.heal.id || id == Potion.nightVision.id ||
@@ -125,6 +125,6 @@ object InventoryHelper : MinecraftInstance(), Listenable {
 
         return false
     }
-*/
+
     override fun handleEvents() = true
 }
