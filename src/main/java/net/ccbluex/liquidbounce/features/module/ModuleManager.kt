@@ -178,7 +178,7 @@ class ModuleManager : Listenable {
                 FakeLag::class.java,
                 PacketFixer::class.java,
                 AutoPlay::class.java,
-                AutoKnight::class.java,
+                AutoKit::class.java,
                 AntiBan::class.java
         )
 
