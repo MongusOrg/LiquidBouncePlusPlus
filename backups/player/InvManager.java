@@ -318,7 +318,7 @@ public class InvManager extends Module {
                 (item.getItem().getUnlocalizedName().contains("slime")) || (item.getItem().getUnlocalizedName().contains("web")) ||
                 ((item.getItem() instanceof ItemGlassBottle)) || (item.getItem().getUnlocalizedName().contains("piston")) ||
                 (item.getItem().getUnlocalizedName().contains("potion") && (isBadPotion(item))) ||
-                (item.getItem() instanceof ItemBlock && InventoryUtils.BLOCK_BLACKLIST.contains(((ItemBlock)item.getItem()).getBlock())) ||
+                (item.getItem() instanceof ItemBlock && InventoryUtils.INSTANCE.BLOCK_BLACKLIST.contains(((ItemBlock)item.getItem()).getBlock())) ||
              //   ((item.getItem() instanceof ItemArmor) && isBestArmor(item)) ||
              //   (item.getItem() instanceof ItemEgg || (item.getItem().getUnlocalizedName().contains("bow")) && !item.getDisplayName().contains("Kit")) ||
              //   ((item.getItem() instanceof ItemSword) && !isBestSword(item)) ||
