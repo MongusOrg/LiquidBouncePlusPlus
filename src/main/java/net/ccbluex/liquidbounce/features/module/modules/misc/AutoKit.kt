@@ -60,7 +60,8 @@ class AutoKit : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if (clickStage == 1 && delayTimer.hasTimePassed(1000L)) { // minimum requirement in case of duplicated s2f packets
+        if (clickStage == 1) { // minimum requirement in case of duplicated s2f packets
+            if (!delayTimer.hasTimePassed(1000L)) return
             mc.netHandler.addToSendQueue(C09PacketHeldItemChange(expectSlot - 36))
             mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(expectSlot).getStack()))
             clickStage = 2

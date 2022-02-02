@@ -35,8 +35,8 @@ import java.util.stream.Collectors
 import java.util.stream.IntStream
 
 
-@ModuleInfo(name = "InvCleaner", spacedName = "Inv Cleaner", description = "Automatically throws away useless items.", category = ModuleCategory.PLAYER)
-class InvCleaner : Module() {
+@ModuleInfo(name = "InvManager", spacedName = "Inv Manager", description = "Manage your inventory. Combination of InvCleaner + AutoArmor.", category = ModuleCategory.PLAYER)
+class InvManager : Module() {
     /**
      * OPTIONS
      */
