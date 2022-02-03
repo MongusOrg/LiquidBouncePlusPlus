@@ -132,6 +132,12 @@ class LocalAutoSettingsCommand : Command("localautosettings", arrayOf("localsett
                 }
                 return emptyList()
             }
+            3 -> {
+                if (args[0].equals("save", true)) {
+                    return listOf("all", "states", "binds", "values").filter { it.startsWith(args[2], true) }
+                }
+                return emptyList()
+            }
             else -> emptyList()
         }
     }

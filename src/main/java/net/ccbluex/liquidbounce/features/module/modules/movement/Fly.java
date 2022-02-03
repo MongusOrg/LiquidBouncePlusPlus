@@ -85,6 +85,7 @@ public class Fly extends Module {
     private final FloatValue vanillaSpeedValue = new FloatValue("Speed", 2F, 0F, 5F, () -> { 
         return (modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("damage") || modeValue.get().equalsIgnoreCase("pearl") || modeValue.get().equalsIgnoreCase("aac5-vanilla") || modeValue.get().equalsIgnoreCase("bugspartan") || modeValue.get().equalsIgnoreCase("keepalive") || modeValue.get().equalsIgnoreCase("derp"));
     });
+    private final FloatValue vanillaVSpeedValue = new FloatValue("V-Speed", 2F, 0F, 5F, () -> { return modeValue.get().equalsIgnoreCase("motion"); });
     private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
 
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
@@ -323,6 +324,7 @@ public class Fly extends Module {
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
         final float vanillaSpeed = vanillaSpeedValue.get();
+        final float vanillaVSpeed = vanillaVSpeedValue.get();
 
         mc.thePlayer.noClip = false;
         if (modeValue.get().equalsIgnoreCase("aac5-vanilla") && aac5NoClipValue.get())
@@ -335,9 +337,9 @@ public class Fly extends Module {
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
                 if (mc.gameSettings.keyBindJump.isKeyDown())
-                    mc.thePlayer.motionY += vanillaSpeed;
+                    mc.thePlayer.motionY += vanillaVSpeed;
                 if (mc.gameSettings.keyBindSneak.isKeyDown())
-                    mc.thePlayer.motionY -= vanillaSpeed;
+                    mc.thePlayer.motionY -= vanillaVSpeed;
                 MovementUtils.strafe(vanillaSpeed);
                 handleVanillaKickBypass();
                 break;
