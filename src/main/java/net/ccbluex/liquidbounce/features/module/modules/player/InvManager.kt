@@ -89,7 +89,7 @@ class InvManager : Module() {
 
     private var invOpened = false
         set(value) {
-            if (value != field) {
+            if (value != field && simulateInventory.get()) {
                 if (value) {
                     InventoryHelper.openPacket()
                 } else {
@@ -109,7 +109,13 @@ class InvManager : Module() {
         invOpened = false
     }
 
+    private fun resetInvDelay() {
+        delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+    }
+
     private fun checkOpen(): Boolean {
+        if (!simulateInventory.get()) return false
+
         if (!invOpened && openInventory) {
             invOpened = true
             simDelayTimer.reset()
@@ -120,13 +126,13 @@ class InvManager : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if (noMoveValue.get() && MovementUtils.isMoving() ||
-            mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0) {
+        if ((noMoveValue.get() && MovementUtils.isMoving()) ||
+            (mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0)) {
             invOpened = false
             return
         }
 
-        if (!InventoryHelper.CLICK_TIMER.hasTimePassed(delay) || mc.currentScreen !is GuiInventory && invOpenValue.get()) {
+        if (!InventoryHelper.CLICK_TIMER.hasTimePassed(delay) || (mc.currentScreen !is GuiInventory && invOpenValue.get())) {
             return
         }
 
@@ -170,8 +176,7 @@ class InvManager : Module() {
 
                 mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, garbageItem, 4, 4, mc.thePlayer)
 
-                delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
-
+                resetInvDelay()
                 return
             }
         }
@@ -187,7 +192,7 @@ class InvManager : Module() {
 
                     mc.playerController.windowClick(0, if (bestItem < 9) bestItem + 36 else bestItem, index, 2, mc.thePlayer)
 
-                    delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+                    resetInvDelay()
                     return
                 }
             }
@@ -460,7 +465,7 @@ class InvManager : Module() {
             mc.netHandler.addToSendQueue(C09PacketHeldItemChange(item))
             mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(item).stack))
             mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
-            delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+            resetInvDelay()
             return true
         } else {
             if (checkOpen()) {
@@ -470,7 +475,7 @@ class InvManager : Module() {
                 mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, item, 0, 4, mc.thePlayer)
             }
             mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, if (isArmorSlot) item else if (item < 9) item + 36 else item, 0, 1, mc.thePlayer)
-            delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+            resetInvDelay()
             return true
         }
     }

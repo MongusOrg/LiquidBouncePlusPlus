@@ -10,6 +10,7 @@ package net.ccbluex.liquidbounce.utils
 import net.ccbluex.liquidbounce.event.ClickWindowEvent
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.Listenable
+import net.ccbluex.liquidbounce.event.ClickWindowEvent
 import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.minecraft.block.Block
@@ -26,7 +27,7 @@ import net.minecraft.potion.Potion
 
 object InventoryHelper : MinecraftInstance(), Listenable {
     val CLICK_TIMER = MSTimer()
-    val INV_TIMER = MSTimer()
+    //val INV_TIMER = MSTimer()
     val BLOCK_BLACKLIST = listOf(Blocks.enchanting_table, 
             Blocks.chest, 
             Blocks.ender_chest, 
@@ -85,11 +86,16 @@ object InventoryHelper : MinecraftInstance(), Listenable {
     }
 
     @EventTarget
+    fun onClickWindow(event: ClickWindowEvent) {
+        CLICK_TIMER.reset()
+    }
+
+    @EventTarget
     fun onPacket(event: PacketEvent) {
-        val packet = event.packet
+        val packet = event.packet/*
         if (packet is C0EPacketClickWindow || packet is C08PacketPlayerBlockPlacement) {
             INV_TIMER.reset()
-        }
+        }*/
         if (packet is C08PacketPlayerBlockPlacement) {
             CLICK_TIMER.reset()
         }
