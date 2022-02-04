@@ -79,13 +79,15 @@ public class ColorMixer extends Module {
 
     public static void regenerateColors(boolean forceValue) {
         final ColorMixer colMixer = (ColorMixer) LiquidBounce.moduleManager.getModule(ColorMixer.class);
+
+        if (colMixer == null) return;
             
         // color generation
-        if (forceValue || lastColors.length <= 0 || lastColors.length != (blendAmount.get() * 2) - 1) {
-            Color[] generator = new Color[(blendAmount.get() * 2) - 1];
+        if (forceValue || lastColors.length <= 0 || lastColors.length != (colMixer.blendAmount.get() * 2) - 1) {
+            Color[] generator = new Color[(colMixer.blendAmount.get() * 2) - 1];
 
             // reflection is cool
-            for (int i = 1; i <= blendAmount.get(); i++) {
+            for (int i = 1; i <= colMixer.blendAmount.get(); i++) {
                 Color result = Color.white;
                 try {                
                     Field red = ColorMixer.class.getField("col"+i+"RedValue");
@@ -104,8 +106,8 @@ public class ColorMixer extends Module {
                 generator[i - 1] = result;
             }
 
-            int h = blendAmount.get();
-            for (int z = blendAmount.get() - 2; z >= 0; z--) {
+            int h = colMixer.blendAmount.get();
+            for (int z = colMixer.blendAmount.get() - 2; z >= 0; z--) {
                 generator[h] = generator[z];
                 h++;
             }
@@ -114,13 +116,13 @@ public class ColorMixer extends Module {
         }
 
         // cache thingy
-        if (forceValue || lastFraction.length <= 0 || lastFraction.length != (blendAmount.get() * 2) - 1) {
+        if (forceValue || lastFraction.length <= 0 || lastFraction.length != (colMixer.blendAmount.get() * 2) - 1) {
             // color frac regenerate if necessary
-            float[] colorFraction = new float[(blendAmount.get() * 2) - 1];    
+            float[] colorFraction = new float[(colMixer.blendAmount.get() * 2) - 1];    
 
-            for (int i = 0; i <= (blendAmount.get() * 2) - 2; i++)
+            for (int i = 0; i <= (colMixer.blendAmount.get() * 2) - 2; i++)
             {
-                colorFraction[i] = (float)i / (float)((blendAmount.get() * 2) - 2);
+                colorFraction[i] = (float)i / (float)((colMixer.blendAmount.get() * 2) - 2);
             }
 
             lastFraction = colorFraction;
