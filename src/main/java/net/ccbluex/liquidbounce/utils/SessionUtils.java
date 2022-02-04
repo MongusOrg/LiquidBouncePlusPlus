@@ -68,6 +68,8 @@ public class SessionUtils extends MinecraftInstance implements Listenable {
     }
 
     public static String getFormatSessionTime() {
+        if (System.currentTimeMillis() - sessionTimer.time < 0L) sessionTimer.reset();
+
         int realTime = (int) (System.currentTimeMillis() - sessionTimer.time) / 1000;
         int hours = (int) realTime / 3600;
         int seconds = (realTime % 3600) % 60;
@@ -77,6 +79,8 @@ public class SessionUtils extends MinecraftInstance implements Listenable {
     }
 
     public static String getFormatLastSessionTime() {
+        if (lastSessionTime < 0L) lastSessionTime = 0L;
+
         int realTime = (int) lastSessionTime / 1000;
         int hours = (int) realTime / 3600;
         int seconds = (realTime % 3600) % 60;
@@ -86,6 +90,8 @@ public class SessionUtils extends MinecraftInstance implements Listenable {
     }
 
     public static String getFormatWorldTime() {
+        if (System.currentTimeMillis() - worldTimer.time < 0L) worldTimer.reset();
+
         int realTime = (int) (System.currentTimeMillis() - worldTimer.time) / 1000;
         int hours = (int) realTime / 3600;
         int seconds = (realTime % 3600) % 60;

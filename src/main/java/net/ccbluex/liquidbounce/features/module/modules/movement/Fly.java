@@ -88,6 +88,8 @@ public class Fly extends Module {
     private final FloatValue vanillaVSpeedValue = new FloatValue("V-Speed", 2F, 0F, 5F, () -> { return modeValue.get().equalsIgnoreCase("motion"); });
     private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
 
+    private final BoolValue groundSpoofValue = new BoolValue("GroundSpoof", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
+
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
 
     // Verus
@@ -636,6 +638,9 @@ public class Fly extends Module {
             }*/
 
             if (mode.equalsIgnoreCase("clip") && clipGroundSpoof.get())
+                packetPlayer.onGround = true;
+
+            if ((mode.equalsIgnoreCase("motion") || mode.equalsIgnoreCase("creative")) && groundSpoofValue.get())
                 packetPlayer.onGround = true;
 
             if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
