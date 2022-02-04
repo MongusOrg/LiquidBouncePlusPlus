@@ -22,7 +22,8 @@ public class ColorElement extends IntegerValue {
 
     @Override
     protected void onChanged(final Integer oldValue, final Integer newValue) {
-        regenerateColors();
+        regenerateColors(true);
+        System.out.println("reset color");
     }
 
     enum Material {

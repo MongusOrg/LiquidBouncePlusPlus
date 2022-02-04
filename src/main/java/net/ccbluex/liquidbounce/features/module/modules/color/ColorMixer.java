@@ -25,63 +25,63 @@ public class ColorMixer extends Module {
     private static float[] lastFraction = new float[]{};
     public static Color[] lastColors = new Color[]{};
 
-    public static final IntegerValue blendAmount = new IntegerValue("Mixer-Amount", 2, 2, 10) {
+    public final IntegerValue blendAmount = new IntegerValue("Mixer-Amount", 2, 2, 10) {
         @Override
         protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
+            regenerateColors(oldValue != newValue);
         }
     };
-    
+    /*
     @Override
     public void onInitialize() {
         regenerateColors();
     }
-
-    public static ColorElement col1RedValue = new ColorElement(1, ColorElement.Material.RED);
-    public static ColorElement col1GreenValue = new ColorElement(1, ColorElement.Material.GREEN);
-    public static ColorElement col1BlueValue = new ColorElement(1, ColorElement.Material.BLUE);
-    public static ColorElement col2RedValue = new ColorElement(2, ColorElement.Material.RED);
-    public static ColorElement col2GreenValue = new ColorElement(2, ColorElement.Material.GREEN);
-    public static ColorElement col2BlueValue = new ColorElement(2, ColorElement.Material.BLUE);
-    public static ColorElement col3RedValue = new ColorElement(3, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col3GreenValue = new ColorElement(3, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col3BlueValue = new ColorElement(3, ColorElement.Material.BLUE, blendAmount);
-    public static ColorElement col4RedValue = new ColorElement(4, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col4GreenValue = new ColorElement(4, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col4BlueValue = new ColorElement(4, ColorElement.Material.BLUE, blendAmount);
-    public static ColorElement col5RedValue = new ColorElement(5, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col5GreenValue = new ColorElement(5, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col5BlueValue = new ColorElement(5, ColorElement.Material.BLUE, blendAmount);
-    public static ColorElement col6RedValue = new ColorElement(6, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col6GreenValue = new ColorElement(6, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col6BlueValue = new ColorElement(6, ColorElement.Material.BLUE, blendAmount);
-    public static ColorElement col7RedValue = new ColorElement(7, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col7GreenValue = new ColorElement(7, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col7BlueValue = new ColorElement(7, ColorElement.Material.BLUE, blendAmount);
-    public static ColorElement col8RedValue = new ColorElement(8, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col8GreenValue = new ColorElement(8, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col8BlueValue = new ColorElement(8, ColorElement.Material.BLUE, blendAmount);
-    public static ColorElement col9RedValue = new ColorElement(9, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col9GreenValue = new ColorElement(9, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col9BlueValue = new ColorElement(9, ColorElement.Material.BLUE, blendAmount);
-    public static ColorElement col10RedValue = new ColorElement(10, ColorElement.Material.RED, blendAmount);
-    public static ColorElement col10GreenValue = new ColorElement(10, ColorElement.Material.GREEN, blendAmount);
-    public static ColorElement col10BlueValue = new ColorElement(10, ColorElement.Material.BLUE, blendAmount);
+    */
+    public final ColorElement col1RedValue = new ColorElement(1, ColorElement.Material.RED);
+    public final ColorElement col1GreenValue = new ColorElement(1, ColorElement.Material.GREEN);
+    public final ColorElement col1BlueValue = new ColorElement(1, ColorElement.Material.BLUE);
+    public final ColorElement col2RedValue = new ColorElement(2, ColorElement.Material.RED);
+    public final ColorElement col2GreenValue = new ColorElement(2, ColorElement.Material.GREEN);
+    public final ColorElement col2BlueValue = new ColorElement(2, ColorElement.Material.BLUE);
+    public final ColorElement col3RedValue = new ColorElement(3, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col3GreenValue = new ColorElement(3, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col3BlueValue = new ColorElement(3, ColorElement.Material.BLUE, blendAmount);
+    public final ColorElement col4RedValue = new ColorElement(4, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col4GreenValue = new ColorElement(4, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col4BlueValue = new ColorElement(4, ColorElement.Material.BLUE, blendAmount);
+    public final ColorElement col5RedValue = new ColorElement(5, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col5GreenValue = new ColorElement(5, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col5BlueValue = new ColorElement(5, ColorElement.Material.BLUE, blendAmount);
+    public final ColorElement col6RedValue = new ColorElement(6, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col6GreenValue = new ColorElement(6, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col6BlueValue = new ColorElement(6, ColorElement.Material.BLUE, blendAmount);
+    public final ColorElement col7RedValue = new ColorElement(7, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col7GreenValue = new ColorElement(7, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col7BlueValue = new ColorElement(7, ColorElement.Material.BLUE, blendAmount);
+    public final ColorElement col8RedValue = new ColorElement(8, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col8GreenValue = new ColorElement(8, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col8BlueValue = new ColorElement(8, ColorElement.Material.BLUE, blendAmount);
+    public final ColorElement col9RedValue = new ColorElement(9, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col9GreenValue = new ColorElement(9, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col9BlueValue = new ColorElement(9, ColorElement.Material.BLUE, blendAmount);
+    public final ColorElement col10RedValue = new ColorElement(10, ColorElement.Material.RED, blendAmount);
+    public final ColorElement col10GreenValue = new ColorElement(10, ColorElement.Material.GREEN, blendAmount);
+    public final ColorElement col10BlueValue = new ColorElement(10, ColorElement.Material.BLUE, blendAmount);
 
     public static Color getMixedColor(int index, int seconds) {
         final ColorMixer colMixer = (ColorMixer) LiquidBounce.moduleManager.getModule(ColorMixer.class);
         if (colMixer == null) return Color.white;
 
-        if (lastColors.length <= 0 || lastFraction.length <= 0) regenerateColors(); // just to make sure it won't go white
+        if (lastColors.length <= 0 || lastFraction.length <= 0) regenerateColors(true); // just to make sure it won't go white
 
         return BlendUtils.blendColors(lastFraction, lastColors, (System.currentTimeMillis() + index) % (seconds * 1000) / (float) (seconds * 1000));
     }
 
-    public static void regenerateColors() {
+    public static void regenerateColors(boolean forceValue) {
         final ColorMixer colMixer = (ColorMixer) LiquidBounce.moduleManager.getModule(ColorMixer.class);
             
         // color generation
-        if (lastColors.length <= 0 || lastColors.length != (blendAmount.get() * 2) - 1) {
+        if (forceValue || lastColors.length <= 0 || lastColors.length != (blendAmount.get() * 2) - 1) {
             Color[] generator = new Color[(blendAmount.get() * 2) - 1];
 
             // reflection is cool
@@ -114,7 +114,7 @@ public class ColorMixer extends Module {
         }
 
         // cache thingy
-        if (lastFraction.length <= 0 || lastFraction.length != (blendAmount.get() * 2) - 1) {
+        if (forceValue || lastFraction.length <= 0 || lastFraction.length != (blendAmount.get() * 2) - 1) {
             // color frac regenerate if necessary
             float[] colorFraction = new float[(blendAmount.get() * 2) - 1];    
 
