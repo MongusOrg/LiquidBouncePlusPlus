@@ -109,11 +109,11 @@ public class ColorMixer extends Module {
         // cache thingy
         if (lastFraction.length <= 0 || lastFraction.length != blendAmount.get() + 1) {
             // color frac regenerate if necessary
-            float[] colorFraction = new float[blendAmount.get() + 1];    
+            float[] colorFraction = new float[(blendAmount.get() * 2) - 1];    
 
-            for (int i = 0; i <= blendAmount.get(); i++)
+            for (int i = 0; i <= (blendAmount.get() * 2) - 1; i++)
             {
-                colorFraction[i] = (float) i / (float) blendAmount.get();
+                colorFraction[i] = (float) i / (float) ((blendAmount.get() * 2) - 1);
             }
 
             lastFraction = colorFraction;
