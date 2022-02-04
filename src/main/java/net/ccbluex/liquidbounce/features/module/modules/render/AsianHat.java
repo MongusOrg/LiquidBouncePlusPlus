@@ -99,7 +99,8 @@ public class AsianHat extends Module {
 
         if (hatRotation.get() && RotationUtils.serverRotation != null) {
             GlStateManager.translate(viewX, viewY, viewZ);
-            GlStateManager.rotate(0, RotationUtils.serverRotation.getPitch(), RotationUtils.serverRotation.getYaw());
+            GlStateManager.rotate(RotationUtils.serverRotation.getPitch(), 0, 1, 0);
+            GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), 0, 0, 1);
         }
 
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
