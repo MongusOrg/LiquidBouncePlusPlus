@@ -100,8 +100,8 @@ public class ColorMixer extends Module {
                 Field blue = ColorMixer.class.getField("col"+i+"BlueValue");
 
                 int r = ((IntegerValue)red.get(colMixer)).get();
-                int g = ((IntegerValue)red.get(colMixer)).get();
-                int b = ((IntegerValue)red.get(colMixer)).get();
+                int g = ((IntegerValue)green.get(colMixer)).get();
+                int b = ((IntegerValue)blue.get(colMixer)).get();
 
                 result = new Color(Math.max(0, Math.min(r, 255)), Math.max(0, Math.min(g, 255)), Math.max(0, Math.min(b, 255)));
             } catch (Exception e) {
@@ -127,7 +127,7 @@ public class ColorMixer extends Module {
 
             for (int i = 0; i <= (blendAmount.get() * 2) - 2; i++)
             {
-                colorFraction[i] = (float) i / (float) ((blendAmount.get() * 2) - 2);
+                colorFraction[i] = (float)i / (float)((blendAmount.get() * 2) - 2);
             }
 
             lastFraction = colorFraction;
