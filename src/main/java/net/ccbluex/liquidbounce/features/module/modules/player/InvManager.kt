@@ -89,7 +89,7 @@ class InvManager : Module() {
 
     private var invOpened = false
         set(value) {
-            if (value != field && simulateInventory.get()) {
+            if (value != field && (simulateInventory.get() && !invOpenValue.get())) {
                 if (value) {
                     InventoryHelper.openPacket()
                 } else {
@@ -114,13 +114,14 @@ class InvManager : Module() {
     }
 
     private fun checkOpen(): Boolean {
-        if (!simulateInventory.get()) return false
+        if (!simulateInventory.get() || mc.currentScreen is GuiInventory) return false
 
         if (!invOpened && openInventory) {
             invOpened = true
             simDelayTimer.reset()
             return true
         }
+        
         return !simDelayTimer.hasTimePassed(simulateDelayValue.get().toLong())
     }
 
