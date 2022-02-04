@@ -31,201 +31,42 @@ public class ColorMixer extends Module {
             regenerateColors();
         }
     };
-
+    
     @Override
     public void onInitialize() {
         regenerateColors();
     }
 
-    public static IntegerValue col1RedValue = new IntegerValue("Color1-Red", 255, 0, 255) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col1GreenValue = new IntegerValue("Color1-Green", 255, 0, 255) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col1BlueValue = new IntegerValue("Color1-Blue", 255, 0, 255) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col2RedValue = new IntegerValue("Color2-Red", 255, 0, 255) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col2GreenValue = new IntegerValue("Color2-Green", 255, 0, 255) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col2BlueValue = new IntegerValue("Color2-Blue", 255, 0, 255) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col3RedValue = new IntegerValue("Color3-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 3); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col3GreenValue = new IntegerValue("Color3-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 3); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col3BlueValue = new IntegerValue("Color3-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 3); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col4RedValue = new IntegerValue("Color4-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 4); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col4GreenValue = new IntegerValue("Color4-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 4); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col4BlueValue = new IntegerValue("Color4-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 4); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col5RedValue = new IntegerValue("Color5-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 5); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col5GreenValue = new IntegerValue("Color5-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 5); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col5BlueValue = new IntegerValue("Color5-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 5); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col6RedValue = new IntegerValue("Color6-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 6); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col6GreenValue = new IntegerValue("Color6-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 6); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col6BlueValue = new IntegerValue("Color6-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 6); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col7RedValue = new IntegerValue("Color7-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 7); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col7GreenValue = new IntegerValue("Color7-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 7); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col7BlueValue = new IntegerValue("Color7-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 7); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col8RedValue = new IntegerValue("Color8-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 8); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col8GreenValue = new IntegerValue("Color8-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 8); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col8BlueValue = new IntegerValue("Color8-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 8); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col9RedValue = new IntegerValue("Color9-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 9); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col9GreenValue = new IntegerValue("Color9-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 9); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col9BlueValue = new IntegerValue("Color9-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 9); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-
-    public static IntegerValue col10RedValue = new IntegerValue("Color10-Red", 255, 0, 255, () -> { return (blendAmount.get() >= 10); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col10GreenValue = new IntegerValue("Color10-Green", 255, 0, 255, () -> { return (blendAmount.get() >= 10); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
-    public static IntegerValue col10BlueValue = new IntegerValue("Color10-Blue", 255, 0, 255, () -> { return (blendAmount.get() >= 10); }) {
-        @Override
-        protected void onChanged(final Integer oldValue, final Integer newValue) {
-            regenerateColors();
-        }
-    };
+    public static IntegerValue col1RedValue = new ColorElement(1, ColorElement.RED);
+    public static IntegerValue col1GreenValue = new ColorElement(1, ColorElement.GREEN);
+    public static IntegerValue col1BlueValue = new ColorElement(1, ColorElement.BLUE);
+    public static IntegerValue col2RedValue = new ColorElement(2, ColorElement.RED);
+    public static IntegerValue col2GreenValue = new ColorElement(2, ColorElement.GREEN);
+    public static IntegerValue col2BlueValue = new ColorElement(2, ColorElement.BLUE);
+    public static IntegerValue col3RedValue = new ColorElement(3, ColorElement.RED);
+    public static IntegerValue col3GreenValue = new ColorElement(3, ColorElement.GREEN);
+    public static IntegerValue col3BlueValue = new ColorElement(3, ColorElement.BLUE);
+    public static IntegerValue col4RedValue = new ColorElement(4, ColorElement.RED);
+    public static IntegerValue col4GreenValue = new ColorElement(4, ColorElement.GREEN);
+    public static IntegerValue col4BlueValue = new ColorElement(4, ColorElement.BLUE);
+    public static IntegerValue col5RedValue = new ColorElement(5, ColorElement.RED);
+    public static IntegerValue col5GreenValue = new ColorElement(5, ColorElement.GREEN);
+    public static IntegerValue col5BlueValue = new ColorElement(5, ColorElement.BLUE);
+    public static IntegerValue col6RedValue = new ColorElement(6, ColorElement.RED);
+    public static IntegerValue col6GreenValue = new ColorElement(6, ColorElement.GREEN);
+    public static IntegerValue col6BlueValue = new ColorElement(6, ColorElement.BLUE);
+    public static IntegerValue col7RedValue = new ColorElement(7, ColorElement.RED);
+    public static IntegerValue col7GreenValue = new ColorElement(7, ColorElement.GREEN);
+    public static IntegerValue col7BlueValue = new ColorElement(7, ColorElement.BLUE);
+    public static IntegerValue col8RedValue = new ColorElement(8, ColorElement.RED);
+    public static IntegerValue col8GreenValue = new ColorElement(8, ColorElement.GREEN);
+    public static IntegerValue col8BlueValue = new ColorElement(8, ColorElement.BLUE);
+    public static IntegerValue col9RedValue = new ColorElement(9, ColorElement.RED);
+    public static IntegerValue col9GreenValue = new ColorElement(9, ColorElement.GREEN);
+    public static IntegerValue col9BlueValue = new ColorElement(9, ColorElement.BLUE);
+    public static IntegerValue col10RedValue = new ColorElement(10, ColorElement.RED);
+    public static IntegerValue col10GreenValue = new ColorElement(10, ColorElement.GREEN);
+    public static IntegerValue col10BlueValue = new ColorElement(10, ColorElement.BLUE);
 
     public static Color getMixedColor(int index, int seconds) {
         final ColorMixer colMixer = (ColorMixer) LiquidBounce.moduleManager.getModule(ColorMixer.class);
