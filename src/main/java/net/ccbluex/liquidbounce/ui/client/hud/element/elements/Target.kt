@@ -530,10 +530,10 @@ class Target : Element() {
         fun render(x: Float, y: Float, fade: Boolean, speed: Float, fadeSpeed: Float) {
             if (progress >= 1.0) {
                 progress = 1.0
-                if (fade) alpha -= (fadeSpeed * 0.01F * RenderUtils.deltaTime)
+                if (fade) alpha -= (fadeSpeed * 0.02F * RenderUtils.deltaTime)
                 if (alpha < 0F) alpha = 0F
             } else
-                progress += (speed * 0.05F * RenderUtils.deltaTime).toDouble()
+                progress += (speed * 0.025F * RenderUtils.deltaTime).toDouble()
 
             if (alpha <= 0F) return
 
