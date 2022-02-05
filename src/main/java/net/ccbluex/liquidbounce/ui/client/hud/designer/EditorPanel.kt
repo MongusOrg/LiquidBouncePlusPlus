@@ -273,6 +273,7 @@ class EditorPanel(private val hudDesigner: GuiHudDesigner, var x: Int, var y: In
 
         // Values
         for (value in element.values) {
+            if (!value.canDisplay.invoke()) continue
             when (value) {
                 is BoolValue -> {
                     // Title

@@ -169,7 +169,7 @@ public class AntiBot extends Module {
         if (antiBot == null || !antiBot.getState())
             return false;
 
-        if (antiBot.experimentalNPCDetection.get() && (entity.getDisplayName().getUnformattedText().toLowerCase().contains("NPC") || entity.getDisplayName().getUnformattedText().toLowerCase().contains("CIT-")))
+        if (antiBot.experimentalNPCDetection.get() && (entity.getDisplayName().getUnformattedText().toLowerCase().contains("npc") || entity.getDisplayName().getUnformattedText().toLowerCase().contains("cit-")))
             return true;
 
         if (antiBot.illegalName.get() && (entity.getName().contains(" ") || entity.getDisplayName().getUnformattedText().contains(" "))) 

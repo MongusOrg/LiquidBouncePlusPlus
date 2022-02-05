@@ -56,19 +56,34 @@ class Target : Element() {
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
     private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
-    private val blurValue = BoolValue("Blur", false)
-    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
-    private val tSlideAnim = BoolValue("TSlide-Animation", true)
+    private val blurValue = BoolValue("Blur", false, { styleValue.get().equals("rise", true) })
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { styleValue.get().equals("rise", true) && blurValue.get() })
+    private val tSlideAnim = BoolValue("TSlide-Animation", true, { !styleValue.get().equals("rise", true) })
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
-    private val riseShadow = BoolValue("Rise-Shadow", true)
-    private val riseShadowLegacy = BoolValue("Rise-Shadow-Legacy", true)
-    private val shadowStrengthValue = IntegerValue("Rise-Shadow-Strength", 4, 1, 40)
-    private val riseParticle = BoolValue("Rise-Particle", true)
-    private val riseParticleFade = BoolValue("Rise-Particle-Fade", true)
-    private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40)
-    private val distanceValue = IntegerValue("Rise-Distance", 50, 1, 200)
-    private val riseParticleSpeed = FloatValue("Rise-ParticleSpeed", 0.05F, 0.01F, 0.2F)
-    private val exhiFontValue = FontValue("Exhi-Font", Fonts.fontSFUI35)
+    private val riseShadow = BoolValue("Rise-Shadow", true, { styleValue.get().equals("rise", true) })
+    private val riseShadowLegacy = BoolValue("Rise-Shadow-Legacy", true, { styleValue.get().equals("rise", true) })
+    private val shadowStrengthValue = IntegerValue("Rise-Shadow-Strength", 4, 1, 40, { styleValue.get().equals("rise", true) })
+    private val riseParticle = BoolValue("Rise-Particle", true, { styleValue.get().equals("rise", true) })
+    private val riseParticleFade = BoolValue("Rise-Particle-Fade", true, { styleValue.get().equals("rise", true) && riseParticle.get() })
+    private val gradientAmountValue = IntegerValue("Rise-Gradient-Amount", 4, 1, 40, { styleValue.get().equals("rise", true) })
+    private val distanceValue = IntegerValue("Rise-GradientDistance", 50, 1, 200, { styleValue.get().equals("rise", true) })
+    private val riseParticleSpeed = FloatValue("Rise-ParticleSpeed", 0.05F, 0.01F, 0.2F, { styleValue.get().equals("rise", true) && riseParticle.get() })
+    private val riseParticleFadingSpeed = FloatValue("ParticleFadingSpeed", 0.05F, 0.01F, 0.2F, { styleValue.get().equals("rise", true) && riseParticle.get() })
+    private val generateAmountValue = IntegerValue("ParticleGenerateAmount", 10, 1, 40, { styleValue.get().equals("rise", true) && riseParticle.get() })
+    private val particleRange = FloatValue("Rise-ParticleRange", 50f, 0f, 50f, { styleValue.get().equals("rise", true) && riseParticle.get() })
+    private val minParticleSize: FloatValue = object : FloatValue("MinParticleSize", 0.5f, 0f, 5f, { styleValue.get().equals("rise", true) && riseParticle.get() }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = maxParticleSize.get()
+            if (v < newValue) set(v)
+        }
+    }
+    private val maxParticleSize: FloatValue = object : FloatValue("MaxParticleSize", 2.5f, 0f, 5f, { styleValue.get().equals("rise", true) && riseParticle.get() }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = minParticleSize.get()
+            if (v > newValue) set(v)
+        }
+    }
+    private val exhiFontValue = FontValue("Exhi-Font", Fonts.fontSFUI35, { styleValue.get().equals("exhibition", true) })
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer", "Health"), "Custom")
     private val redValue = IntegerValue("Red", 252, 0, 255)
     private val greenValue = IntegerValue("Green", 96, 0, 255)
@@ -76,14 +91,14 @@ class Target : Element() {
     private val saturationValue = FloatValue("Saturation", 1F, 0F, 1F)
     private val brightnessValue = FloatValue("Brightness", 1F, 0F, 1F)
     private val mixerSecondsValue = IntegerValue("Seconds", 2, 1, 10)
-    private val backgroundColorRedValue = IntegerValue("Background-Red", 0, 0, 255)
-    private val backgroundColorGreenValue = IntegerValue("Background-Green", 0, 0, 255)
-    private val backgroundColorBlueValue = IntegerValue("Background-Blue", 0, 0, 255)
-    private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 160, 0, 255)
-    private val borderColorRedValue = IntegerValue("Liquid-Border-Red", 0, 0, 255)
-    private val borderColorGreenValue = IntegerValue("Liquid-Border-Green", 0, 0, 255)
-    private val borderColorBlueValue = IntegerValue("Liquid-Border-Blue", 0, 0, 255)
-    private val borderColorAlphaValue = IntegerValue("Liquid-Border-Alpha", 0, 0, 255)
+    private val backgroundColorRedValue = IntegerValue("Background-Red", 0, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) || styleValue.get().equals("slowly", true) })
+    private val backgroundColorGreenValue = IntegerValue("Background-Green", 0, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) || styleValue.get().equals("slowly", true) })
+    private val backgroundColorBlueValue = IntegerValue("Background-Blue", 0, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) || styleValue.get().equals("slowly", true) })
+    private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 160, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) || styleValue.get().equals("slowly", true) })
+    private val borderColorRedValue = IntegerValue("Liquid-Border-Red", 0, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) })
+    private val borderColorGreenValue = IntegerValue("Liquid-Border-Green", 0, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) })
+    private val borderColorBlueValue = IntegerValue("Liquid-Border-Blue", 0, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) })
+    private val borderColorAlphaValue = IntegerValue("Liquid-Border-Alpha", 0, 0, 255, { styleValue.get().equals("liquidbounce", true) || styleValue.get().equals("liquidbounce+", true) })
 
     private val shieldIcon = ResourceLocation("liquidbounce+/shield.png")
 
@@ -289,8 +304,12 @@ class Target : Element() {
                     if (riseParticle.get()) {
                         if (convertedTarget.hurtTime > convertedTarget.maxHurtTime / 2) {
                             if (!gotDamaged) {
-                                for (j in 0..8) 
-                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.4F, 1.0F) else 0F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(-30F, 30F), RandomUtils.nextFloat(0.5F, 2.5F)))
+                                var parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
+                                var distParticle = particleRange.get()
+                                for (j in 0..(generateAmountValue.get())) {
+                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.5F, 1.0F) else 0F), RandomUtils.nextFloat(-distParticle, distParticle), RandomUtils.nextFloat(-distParticle, distParticle), parSize))
+                                    parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
+                                }
 
                                 gotDamaged = true
                             }
@@ -302,7 +321,7 @@ class Target : Element() {
 
                         particleList.forEach { particle ->
                             if (particle.alpha > 0F)
-                                particle.render(5F + 15F, 5 + 15F, riseParticleFade.get(), riseParticleSpeed.get())
+                                particle.render(5F + 15F, 5 + 15F, riseParticleFade.get(), riseParticleSpeed.get(), riseParticleFadingSpeed.get())
                             else
                                 deleteQueue.add(particle)
                         }
@@ -508,13 +527,13 @@ class Target : Element() {
     private class Particle(var color: Color, var distX: Float, var distY: Float, var radius: Float) {
         var alpha = 1F
         var progress = 0.0
-        fun render(x: Float, y: Float, fade: Boolean, speed: Float) {
+        fun render(x: Float, y: Float, fade: Boolean, speed: Float, fadeSpeed: Float) {
             if (progress >= 1.0) {
                 progress = 1.0
-                if (fade) alpha -= 0.1F
+                if (fade) alpha -= (fadeSpeed * 0.01F * RenderUtils.deltaTime)
                 if (alpha < 0F) alpha = 0F
             } else
-                progress += speed.toDouble()
+                progress += (speed * 0.05F * RenderUtils.deltaTime).toDouble()
 
             if (alpha <= 0F) return
 

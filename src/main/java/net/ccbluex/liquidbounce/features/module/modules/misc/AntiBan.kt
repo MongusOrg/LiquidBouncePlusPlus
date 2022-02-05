@@ -56,7 +56,7 @@ class AntiBan : Module() {
             val entity = mc.theWorld.getEntityByID(packet.entityId)
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members with invis. You should quit ASAP.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -67,7 +67,7 @@ class AntiBan : Module() {
 
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. You should quit ASAP.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
