@@ -57,7 +57,7 @@ class InvManager : Module() {
 
     private val invOpenValue = BoolValue("InvOpen", false)
     private val simulateInventory = BoolValue("SimulateInventory", true)
-    private val simulateDelayValue = IntegerValue("SimulateInventoryDelay", 0, 0, 1000, { simulateInventory.get() })
+    //private val simulateDelayValue = IntegerValue("SimulateInventoryDelay", 0, 0, 1000, { simulateInventory.get() })
     private val noMoveValue = BoolValue("NoMove", false)
     private val hotbarValue = BoolValue("Hotbar", true)
     private val randomSlotValue = BoolValue("RandomSlot", false)
@@ -89,7 +89,7 @@ class InvManager : Module() {
 
     private var invOpened = false
         set(value) {
-            if (value != field && (simulateInventory.get() && !invOpenValue.get())) {
+            if (value != field && openInventory) {
                 if (value) {
                     InventoryHelper.openPacket()
                 } else {
@@ -114,28 +114,25 @@ class InvManager : Module() {
     }
 
     private fun checkOpen(): Boolean {
-        if (!simulateInventory.get() || mc.currentScreen is GuiInventory) return false
+        if (!simulateInventory.get() || !invOpenValue.get() || mc.currentScreen is GuiInventory) return false
 
-        if (!invOpened && openInventory) {
-            invOpened = true
-            simDelayTimer.reset()
-            return true
-        }
-        
-        return !simDelayTimer.hasTimePassed(simulateDelayValue.get().toLong())
+        return !invOpened
     }
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if ((noMoveValue.get() && MovementUtils.isMoving()) ||
-            (mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0)) {
+        if (mc.currentScreen !is GuiInventory && invOpenValue.get() ||
+            noMoveValue.get() && MovementUtils.isMoving() ||
+            mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0) {
             invOpened = false
             return
         }
 
-        if (!InventoryHelper.CLICK_TIMER.hasTimePassed(delay) || (mc.currentScreen !is GuiInventory && invOpenValue.get())) {
+        if (!InventoryHelper.CLICK_TIMER.hasTimePassed(delay)) {
             return
         }
+
+        invOpened = true
 
         if (armorValue.get()) {
             // Find best armor
@@ -164,9 +161,8 @@ class InvManager : Module() {
                 .toMutableList()
 
             // Shuffle items
-            if (randomSlotValue.get()) {
+            if (randomSlotValue.get())
                 garbageItems.shuffle()
-            }
 
             val garbageItem = garbageItems.firstOrNull()
             if (garbageItem != null) {
@@ -175,7 +171,7 @@ class InvManager : Module() {
                     return
                 }
 
-                mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, garbageItem, 4, 4, mc.thePlayer)
+                mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, garbageItem, 0, 4, mc.thePlayer)
 
                 resetInvDelay()
                 return

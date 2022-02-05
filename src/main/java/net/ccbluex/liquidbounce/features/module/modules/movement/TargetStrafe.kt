@@ -51,6 +51,7 @@ class TargetStrafe : Module() {
     private val accuracyValue = IntegerValue("Accuracy", 0, 0, 59)
     private val thicknessValue = FloatValue("Thickness", 1F, 0.1F, 5F)
     private val outLine = BoolValue("Outline", true)
+    private val expMode = BoolValue("ExperimentalSpeed", true)
     private lateinit var killAura: KillAura
     private lateinit var speed: Speed
     private lateinit var fly: Fly
@@ -112,7 +113,7 @@ class TargetStrafe : Module() {
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
 
         val forward = if (mc.thePlayer.getDistanceToEntity(target) <= radius.get()) 0.0 else 1.0
-        var modifySpeed = maximizeSpeed(target, moveSpeed, killAura.rangeValue.get())
+        var modifySpeed = if (expMode.get()) maximizeSpeed(target, moveSpeed, killAura.rangeValue.get()) else moveSpeed
         
         MovementUtils.setSpeed(event, modifySpeed, rotYaw, direction.toDouble(), forward)
     }
@@ -120,7 +121,7 @@ class TargetStrafe : Module() {
     private fun maximizeSpeed(ent: EntityLivingBase, speed: Double, range: Float): Double {
         mc.thePlayer ?: return 0.0
         val dist = mc.thePlayer.getDistanceToEntity(ent).toDouble()
-        val maxDist = (range * range).coerceAtMost(radius.get() * radius.get()).toDouble() - dist * dist
+        val maxDist = (range * range).coerceAtMost(radius.get() * radius.get() - 0.25f).toDouble() - (dist * dist)
 
         return speed.coerceIn(0.0, maxDist)
     }
