@@ -7,10 +7,10 @@ package net.ccbluex.liquidbounce.features.module.modules.player
 
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.UpdateEvent
+import net.ccbluex.liquidbounce.event.WorldEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
-import net.ccbluex.liquidbounce.features.module.modules.combat.AutoArmor
 import net.ccbluex.liquidbounce.injection.implementations.IItemStack
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.InventoryUtils
@@ -24,8 +24,12 @@ import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.init.Blocks
 import net.minecraft.item.*
+import net.minecraft.network.play.client.C07PacketPlayerDigging
+import net.minecraft.network.play.client.C09PacketHeldItemChange
 import net.minecraft.network.play.client.C0DPacketCloseWindow
 import net.minecraft.network.play.client.C16PacketClientStatus
+import net.minecraft.util.BlockPos
+import net.minecraft.util.EnumFacing
 import kotlin.concurrent.thread
 
 @ModuleInfo(name = "InvManager", spacedName = "Inv Manager", description = "Automatically throws away useless items, and also equips armors for you.", category = ModuleCategory.PLAYER)
@@ -83,11 +87,14 @@ class InvManager : Module() {
     private val sortSlot9Value = ListValue("SortSlot-9", items, "Food", { sortValue.get() })
 
     private var garbageQueue = mutableMapOf<Int, ItemStack>()
-    private var armorQueue = mutableMapOf<Int, ItemStack>()
+    private var armorQueue = arrayOf<ArmorPart?>()
+
+    private val goal: ItemHelper.EnumNBTPriorityType
+        get() = ItemHelper.EnumNBTPriorityType.valueOf(nbtGoalValue.get())
 
     private var spoofInventory = false
         set(value) {
-            if (value != field && !invOpenValue.get() && invSpoof.get()) {
+            if (value != field && !invOpenValue.get()) {
                 if (value)
                     InventoryHelper.openPacket()
                 else
@@ -102,35 +109,78 @@ class InvManager : Module() {
 
     private var delay = 0L
 
+    override fun onEnable() {
+        if (invSpoof.get() && !invSpoofOld.get())
+            spoofInventory = false
+
+        garbageQueue.clear()
+        armorQueue = arrayOf<ArmorPart?>()
+    }
+
+    @EventTarget
+    fun onWorld(event: WorldEvent) {
+        if (invSpoof.get() && !invSpoofOld.get())
+            spoofInventory = false
+
+        garbageQueue.clear()
+        armorQueue = arrayOf<ArmorPart?>()
+    }
+
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if (!InventoryUtils.CLICK_TIMER.hasTimePassed(delay) ||
-                mc.currentScreen !is GuiInventory && invOpenValue.get() ||
                 noMoveValue.get() && MovementUtils.isMoving() ||
                 mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0)
             return
 
-        findAllGarbageItems()
+        findQueueItems()
 
-        if (armorsValue.get())
-            findWearableArmors()
+        if (hotbarValue.get() && !spoofInventory && mc.currentScreen !is GuiInventory) {
+            for (index in 0..8) {
+                val bestItem = mc.thePlayer.inventory.getStackInSlot(index) ?: continue
+                if (bestItem.item != null && garbageQueue.containsKey(bestItem)) {
+                    if (index != mc.thePlayer.inventory.currentItem) mc.netHandler.addToSendQueue(C09PacketHeldItemChange(index))
+                    mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.DROP_ALL_ITEMS, BlockPos.ORIGIN, EnumFacing.DOWN))
+                    if (index != mc.thePlayer.inventory.currentItem) mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
 
-        if (garbageQueue.isEmpty && armorQueue.isEmpty) {
-            spoofInventory = false
-            return // ignore since there is nothing to do
+                    garbageQueue.remove(bestItem)
+                }
+            }
         }
 
-        if (!invSpoofOld.get())
-            spoofInventory = true
+        if (mc.currentScreen !is GuiInventory && invOpenValue.get() && !invSpoof.get()) return
 
+        if (garbageQueue.isEmpty() && armorQueue.size <= 0) {
+            if (invSpoof.get() && !invSpoofOld.get())
+                spoofInventory = false
+            return
+        }
+        
         if (sortValue.get())
             sortHotbar()
 
+        if (invSpoof.get() && !invSpoofOld.get())
+            spoofInventory = true
+
+        if (armorsValue.get()) {
+            // Swap armor
+            for (i in 0..3) {
+                val ArmorPart = armorQueue[i] ?: continue
+                val armorSlot = 3 - i
+                val oldArmor: ItemStack? = mc.thePlayer.inventory.armorItemInSlot(armorSlot)
+                if (oldArmor == null || oldArmor.item !is ItemArmor || ItemHelper.compareArmor(ArmorPart(oldArmor, -1), ArmorPart, nbtArmorPriority.get(), goal) < 0) {
+                    if (oldArmor != null && move(8 - armorSlot, true)) {
+                        return
+                    }
+                    if (mc.thePlayer.inventory.armorItemInSlot(armorSlot) == null && move(ArmorPart.slot, false)) {
+                        return
+                    }
+                }
+            }
+        }
+
         while (InventoryUtils.CLICK_TIMER.hasTimePassed(delay)) {
-            val garbageItems = items(9, if (hotbarValue.get()) 45 else 36)
-                    .filter { !isUseful(it.value, it.key) }
-                    .keys
-                    .toMutableList()
+            val garbageItems = garbageQueue.keys.toMutableList()
 
             // Shuffle items
             if (randomSlotValue.get())
@@ -139,23 +189,107 @@ class InvManager : Module() {
             val garbageItem = garbageItems.firstOrNull() ?: break
 
             // Drop all useless items
-            val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get()
+            val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get() && invSpoofOld.get()
 
             if (openInventory)
-                mc.netHandler.addToSendQueue(C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT))
+                InventoryHelper.openPacket()
 
             mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, garbageItem, 1, 4, mc.thePlayer)
 
             if (openInventory)
-                mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
+                InventoryUtils.closePacket()
 
             delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
         }
     }
 
-    private fun findAllGarbageItems() {
+    /**
+     * INVENTORY SORTER
+     */
+
+    /**
+     * Sort hotbar
+     */
+    private fun sortHotbar() {
+        for (index in 0..8) {
+            val bestItem = findBetterItem(index, mc.thePlayer.inventory.getStackInSlot(index)) ?: continue
+
+            if (bestItem != index) {
+                val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get() && invSpoofOld.get()
+
+                if (openInventory)
+                    InventoryHelper.openPacket()
+
+                mc.playerController.windowClick(0, if (bestItem < 9) bestItem + 36 else bestItem, index,
+                        2, mc.thePlayer)
+
+                if (openInventory)
+                    InventoryUtils.closePacket()
+
+                delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+                break
+            }
+        }
+    }
+
+    private fun findQueueItems() {
         garbageQueue.clear()
-        garbageQueue = items(9, if (hotbarValue.get()) 45 else 36).filter { !isUseful(it.value, it.key) }
+        garbageQueue = items(9, 45).filter { !isUseful(it.value, it.key) }.toMutableMap()
+        
+        if (armorsValue.get()) armorQueue = findBestArmor()
+    }
+
+    private fun findBestArmor(): Array<ArmorPart?> {
+        val ArmorParts = IntStream.range(0, 36)
+            .filter { i: Int ->
+                val itemStack = mc.thePlayer.inventory.getStackInSlot(i)
+                (itemStack != null && itemStack.item is ItemArmor &&
+                        (i < 9 || System.currentTimeMillis() - (itemStack as IItemStack).itemDelay >= itemDelayValue.get()))
+            }
+            .mapToObj { i: Int -> ArmorPart(mc.thePlayer.inventory.getStackInSlot(i), i) }
+            .collect(Collectors.groupingBy { obj: ArmorPart -> obj.armorType })
+
+        val bestArmor = arrayOfNulls<ArmorPart>(4)
+        for ((key, value) in ArmorParts) {
+            bestArmor[key!!] = value.also { it.sortWith { ArmorPart, ArmorPart2 -> ItemHelper.compareArmor(ArmorPart, ArmorPart2, nbtArmorPriority.get(), goal) } }.lastOrNull()
+        }
+
+        return bestArmor
+    }
+
+    /**
+     * Shift+Left clicks the specified item
+     *
+     * @param item        Slot of the item to click
+     * @param isArmorSlot
+     * @return True if it is unable to move the item
+     */
+    fun move(item: Int, isArmorSlot: Boolean): Boolean {
+        if (!isArmorSlot && item < 9 && hotbarValue.get() && mc.currentScreen !is GuiInventory && !spoofInventory) {
+            if (item != mc.thePlayer.inventory.currentItem) mc.netHandler.addToSendQueue(C09PacketHeldItemChange(item))
+            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventoryContainer.getSlot(item).getStack()))
+            if (item != mc.thePlayer.inventory.currentItem) mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
+
+            delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+
+            return true
+        } else if (!(noMoveValue.get() && MovementUtils.isMoving()) && (!invOpenValue.get() || mc.currentScreen is GuiInventory) && item != -1) {
+            val openInventory = invSpoof.get() && mc.currentScreen !is GuiInventory && !invSpoofOld.get()
+
+            if (openInventory)
+                InventoryHelper.openPacket()
+
+            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, isArmorSlot ? item : (item < 9 ? item + 36 : item), 0, 1, mc.thePlayer)
+
+            delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+
+            if (openInventory)
+                InventoryHelper.closePacket()
+
+            return true
+        }
+
+        return false
     }
 
     /**
@@ -223,35 +357,6 @@ class InvManager : Module() {
         } catch (ex: Exception) {
             ClientUtils.getLogger().error("(InventoryCleaner) Failed to check item: ${itemStack.unlocalizedName}.", ex)
             true
-        }
-    }
-
-    /**
-     * INVENTORY SORTER
-     */
-
-    /**
-     * Sort hotbar
-     */
-    private fun sortHotbar() {
-        for (index in 0..8) {
-            val bestItem = findBetterItem(index, mc.thePlayer.inventory.getStackInSlot(index)) ?: continue
-
-            if (bestItem != index) {
-                val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get()
-
-                if (openInventory)
-                    mc.netHandler.addToSendQueue(C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT))
-
-                mc.playerController.windowClick(0, if (bestItem < 9) bestItem + 36 else bestItem, index,
-                        2, mc.thePlayer)
-
-                if (openInventory)
-                    mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
-
-                delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
-                break
-            }
         }
     }
 
