@@ -610,7 +610,7 @@ public class Fly extends Module {
             return;
 
         if (packet instanceof S08PacketPlayerPosLook && !shouldFly) {
-            shouldFly = true
+            shouldFly = true;
         }
 
         if (packet instanceof C03PacketPlayer) {
