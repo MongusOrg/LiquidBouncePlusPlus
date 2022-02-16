@@ -200,7 +200,7 @@ class InvManager : Module() {
             mc.playerController.windowClick(mc.thePlayer.openContainer.windowId, garbageItem, 1, 4, mc.thePlayer)
 
             if (openInventory)
-                InventoryUtils.closePacket()
+                InventoryHelper.closePacket()
 
             delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
         }
@@ -227,7 +227,7 @@ class InvManager : Module() {
                         2, mc.thePlayer)
 
                 if (openInventory)
-                    InventoryUtils.closePacket()
+                    InventoryHelper.closePacket()
 
                 delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
                 break
