@@ -5,11 +5,11 @@
  */
 package net.ccbluex.liquidbounce.event
 
-import java.util.*
+//import java.util.*
 
 class EventManager {
 
-    private val registry = HashMap<Class<out Event>, MutableList<EventHook>>()
+    private val registry = hashMapOf<Class<out Event>, MutableList<EventHook>>()
 
     /**
      * Register [listener]
@@ -23,9 +23,9 @@ class EventManager {
                 val eventClass = method.parameterTypes[0] as Class<out Event>
                 val eventTarget = method.getAnnotation(EventTarget::class.java)
 
-                val invokableEventTargets = registry.getOrDefault(eventClass, ArrayList())
+                val invokableEventTargets = registry.getOrElse(eventClass, { arrayListOf<EventHook>() })
                 invokableEventTargets.add(EventHook(listener, method, eventTarget))
-                registry[eventClass] = invokableEventTargets
+                registry.put(eventClass, invokableEventTargets)
             }
         }
     }
@@ -39,7 +39,7 @@ class EventManager {
         for ((key, targets) in registry) {
             targets.removeIf { it.eventClass == listenable }
 
-            registry[key] = targets
+            registry.put(key, targets)
         }
     }
 
@@ -49,14 +49,11 @@ class EventManager {
      * @param event to call
      */
     fun callEvent(event: Event) {
-        val targets = registry[event.javaClass] ?: return
+        val targets = registry.get(event.javaClass) ?: return
 
-        for (invokableEventTarget in targets) {
+        targets.filter { it.eventClass.handleEvents() || it.isIgnoreCondition }.forEach {
             try {
-                if (!invokableEventTarget.eventClass.handleEvents() && !invokableEventTarget.isIgnoreCondition)
-                    continue
-
-                invokableEventTarget.method.invoke(invokableEventTarget.eventClass, event)
+                it.method.invoke(it.eventClass, event)
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }

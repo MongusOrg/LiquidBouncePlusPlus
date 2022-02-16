@@ -5,7 +5,7 @@
  */
 package net.ccbluex.liquidbounce.injection.forge;
 
-import net.ccbluex.liquidbounce.injection.transformers.ForgeNetworkTransformer;
+import net.ccbluex.liquidbounce.injection.transformers.*;
 import net.ccbluex.liquidbounce.script.remapper.injection.transformers.AbstractJavaLinkerTransformer;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import net.ccbluex.liquidbounce.patcher.tweaker.ClassTransformer;
@@ -32,7 +32,7 @@ public class TransformerLoader implements IFMLLoadingPlugin {
      */
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {ForgeNetworkTransformer.class.getName(), AbstractJavaLinkerTransformer.class.getName(), ClassTransformer.class.getName(), ModClassTransformer.class.getName()};
+        return new String[] {ForgeNetworkTransformer.class.getName(), AbstractJavaLinkerTransformer.class.getName(), ClassTransformer.class.getName(), ModClassTransformer.class.getName(), OptimizeTransformer.class.getName()};
     }
 
     /**

@@ -13,6 +13,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.render.BlockOverlay;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed;
+import net.ccbluex.liquidbounce.injection.access.StaticStorage;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.*;
@@ -977,7 +978,7 @@ public class Scaffold extends Module {
 
         PlaceRotation placeRotation = null;
 
-        for (final EnumFacing side : EnumFacing.values()) {
+        for (final EnumFacing side : StaticStorage.facings()) {
             final BlockPos neighbor = blockPosition.offset(side);
 
             if (!BlockUtils.canBeClicked(neighbor))
@@ -1075,7 +1076,7 @@ public class Scaffold extends Module {
 
         PlaceRotation placeRotation = null;
 
-        for (final EnumFacing side : EnumFacing.values()) {
+        for (final EnumFacing side : StaticStorage.facings()) {
             final BlockPos neighbor = blockPosition.offset(side);
 
             if (!BlockUtils.canBeClicked(neighbor))

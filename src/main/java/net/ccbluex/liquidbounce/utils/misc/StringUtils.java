@@ -15,6 +15,8 @@ import java.util.HashMap;
 public final class StringUtils {
 
     private static HashMap<String,String> stringCache = new HashMap<>();
+    private static HashMap<String,String> stringReplaceCache = new HashMap<>();
+    private static HashMap<String,String> stringRegexCache = new HashMap<>();
     private static HashMap<String,String> airCache = new HashMap<>();
 
     public static String fixString(String str){
@@ -61,8 +63,15 @@ public final class StringUtils {
     }
 
     public static String replace(final String string, final String searchChars, String replaceChars) {
+        return replace(string, searchChars, replaceChars, false);
+    }
+
+    public static String replace(final String string, final String searchChars, String replaceChars, boolean forceReload) {
         if(string.isEmpty() || searchChars.isEmpty() || searchChars.equals(replaceChars))
             return string;
+
+        if (!forceReload && stringRegexCache.get(searchChars) != null && stringRegexCache.get(searchChars).equals(replaceChars) && stringReplaceCache.containsKey(string))
+            return stringReplaceCache.getOrDefault(string, replace(string, searchChars, replaceChars, true)); // will attempt to retry replacement once again
 
         if(replaceChars == null)
             replaceChars = "";
@@ -84,6 +93,10 @@ public final class StringUtils {
             stringBuilder.replace(start, start + searchCharsLength, replaceChars);
         }
 
-        return stringBuilder.toString();
+        String result = stringBuilder.toString();
+        stringReplaceCache.put(string, result);
+        stringRegexCache.put(searchChars, replaceChars);
+
+        return result;
     }
 }

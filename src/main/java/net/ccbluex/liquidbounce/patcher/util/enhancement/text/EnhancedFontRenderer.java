@@ -28,7 +28,7 @@ public final class EnhancedFontRenderer implements Enhancement {
         .removalListener((key, value, cause) -> {
             if (value == null) return;
             glRemoval.add(((CachedString) value).getListId());
-        }).executor(POOL).maximumSize(5000).build();
+        }).executor(POOL).maximumSize(500).build();
 
     public EnhancedFontRenderer() {
         instances.add(this);

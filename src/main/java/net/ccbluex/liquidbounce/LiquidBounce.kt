@@ -27,7 +27,7 @@ import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.utils.SessionUtils
 import net.ccbluex.liquidbounce.utils.misc.sound.TipSoundManager
-import net.ccbluex.liquidbounce.betterfps.BetterFPSCore
+//import net.ccbluex.liquidbounce.betterfps.BetterFPSCore
 import net.minecraft.util.ResourceLocation
 import kotlin.concurrent.thread
 
@@ -35,7 +35,7 @@ object LiquidBounce {
 
     // Client information
     const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "050222"
+    const val CLIENT_VERSION = "160222"
     const val CLIENT_CREATOR = "CCBlueX, WYSI-Foundation"
     const val CLIENT_CLOUD = "https://wysi-foundation.github.io/LiquidCloud/LiquidBounce"
 
@@ -49,7 +49,7 @@ object LiquidBounce {
     lateinit var fileManager: FileManager
     lateinit var scriptManager: ScriptManager
 
-    var betterFPSCore: BetterFPSCore = BetterFPSCore()
+    //var betterFPSCore: BetterFPSCore = BetterFPSCore()
     lateinit var tipSoundManager: TipSoundManager
 
     // HUD & ClickGUI

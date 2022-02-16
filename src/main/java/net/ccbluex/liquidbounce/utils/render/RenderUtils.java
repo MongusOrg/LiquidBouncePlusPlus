@@ -199,13 +199,13 @@ public final class RenderUtils extends MinecraftInstance {
         worldrenderer.begin(GL_POLYGON, DefaultVertexFormats.POSITION);
 
         double degree = Math.PI / 180;
-        for (double i = 0; i <= 90; i += 0.5)
+        for (double i = 0; i <= 90; i += 1)
             worldrenderer.pos(x2 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius, 0.0D).endVertex();
-        for (double i = 90; i <= 180; i += 0.5)
+        for (double i = 90; i <= 180; i += 1)
             worldrenderer.pos(x2 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius, 0.0D).endVertex();
-        for (double i = 180; i <= 270; i += 0.5)
+        for (double i = 180; i <= 270; i += 1)
             worldrenderer.pos(x1 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius, 0.0D).endVertex();
-        for (double i = 270; i <= 360; i += 0.5)
+        for (double i = 270; i <= 360; i += 1)
             worldrenderer.pos(x1 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius, 0.0D).endVertex();
 
         tessellator.draw();
@@ -284,13 +284,13 @@ public final class RenderUtils extends MinecraftInstance {
         glBegin(GL_POLYGON);
     
         double degree = Math.PI / 180;
-        for (double i = 0; i <= 90; i += 0.5)
+        for (double i = 0; i <= 90; i += 1)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
-        for (double i = 90; i <= 180; i += 0.5)
+        for (double i = 90; i <= 180; i += 1)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (double i = 180; i <= 270; i += 0.5)
+        for (double i = 180; i <= 270; i += 1)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (double i = 270; i <= 360; i += 0.5)
+        for (double i = 270; i <= 360; i += 1)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
         glEnd();
 
@@ -343,13 +343,13 @@ public final class RenderUtils extends MinecraftInstance {
         glBegin(GL_POLYGON);
     
         double degree = Math.PI / 180;
-        for (double i = 0; i <= 90; i += 0.25)
+        for (double i = 0; i <= 90; i += 1)
             glVertex2d(xBR + Math.sin(i * degree) * rBR, yBR + Math.cos(i * degree) * rBR);
-        for (double i = 90; i <= 180; i += 0.25)
+        for (double i = 90; i <= 180; i += 1)
             glVertex2d(xTR + Math.sin(i * degree) * rTR, yTR + Math.cos(i * degree) * rTR);
-        for (double i = 180; i <= 270; i += 0.25)
+        for (double i = 180; i <= 270; i += 1)
             glVertex2d(xTL + Math.sin(i * degree) * rTL, yTL + Math.cos(i * degree) * rTL);
-        for (double i = 270; i <= 360; i += 0.25)
+        for (double i = 270; i <= 360; i += 1)
             glVertex2d(xBL + Math.sin(i * degree) * rBL, yBL + Math.cos(i * degree) * rBL);
         glEnd();
 
@@ -384,13 +384,13 @@ public final class RenderUtils extends MinecraftInstance {
         glBegin(GL_POLYGON);
     
         double degree = Math.PI / 180;
-        for (double i = 0; i <= 90; i += 0.25)
+        for (double i = 0; i <= 90; i += 1)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
-        for (double i = 90; i <= 180; i += 0.25)
+        for (double i = 90; i <= 180; i += 1)
             glVertex2d(x2 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (double i = 180; i <= 270; i += 0.25)
+        for (double i = 180; i <= 270; i += 1)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y1 + Math.cos(i * degree) * radius);
-        for (double i = 270; i <= 360; i += 0.25)
+        for (double i = 270; i <= 360; i += 1)
             glVertex2d(x1 + Math.sin(i * degree) * radius, y2 + Math.cos(i * degree) * radius);
         glEnd();
         glDisable(GL_LINE_SMOOTH);

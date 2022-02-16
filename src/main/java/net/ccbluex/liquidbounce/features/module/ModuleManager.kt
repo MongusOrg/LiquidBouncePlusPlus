@@ -143,7 +143,7 @@ class ModuleManager : Listenable {
                 AutoDisable::class.java,
                 Crosshair::class.java,
                 VehicleOneHit::class.java,
-                BetterFPS::class.java,
+                //BetterFPS::class.java,
                 SpinBot::class.java,
                 MultiActions::class.java,
                 AntiVoid::class.java,

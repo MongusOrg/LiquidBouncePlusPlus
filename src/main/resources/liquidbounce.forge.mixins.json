@@ -149,7 +149,6 @@
     "gui.MixinServerSelectionList",
     "item.MixinItemRenderer",
     "item.MixinItemStack",
-    "math.MixinMathHelper",
     "network.MixinNetHandlerPlayClient",
     "network.MixinNetworkManagerChInit",
     "network.MixinNetworkManager",

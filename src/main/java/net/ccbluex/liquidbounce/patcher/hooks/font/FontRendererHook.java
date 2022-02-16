@@ -178,7 +178,7 @@ public final class FontRendererHook {
             colorState.blue = cachedString.getLastBlue();
             colorState.alpha = cachedString.getLastAlpha();
             GlStateManager.translate(-posX, -posY, 0.0f);
-            GlStateManager.resetColor();
+            //GlStateManager.resetColor();
             GlStateManager.color(1, 1, 1, 1);
 
             this.fontRendererAccessor.setPosX(posX + cachedString.getWidth());
@@ -189,6 +189,7 @@ public final class FontRendererHook {
         int list = 0;
         textureState.textureName = glTextureId;
         GlStateManager.resetColor();
+        
         if (Patcher.betterFontRendererStringCache.get()) {
             list = enhancedFontRenderer.getGlList();
             GL11.glNewList(list, GL11.GL_COMPILE_AND_EXECUTE);

@@ -74,6 +74,7 @@ public class Fly extends Module {
             "AAC5-Vanilla",
 
             // Other
+            "Watchdog",
             "Jetpack",
             "KeepAlive",
             "Clip",
@@ -146,7 +147,7 @@ public class Fly extends Module {
     private int boostTicks, dmgCooldown = 0;
     private int verusJumpTimes = 0;
 
-    private boolean verusDmged, shouldActiveDmg = false;
+    private boolean verusDmged, shouldActiveDmg, shouldFly = false;
 
     private float lastYaw, lastPitch;
 
@@ -198,6 +199,7 @@ public class Fly extends Module {
             return;
 
         noPacketModify = true;
+        shouldFly = false;
 
         verusTimer.reset();
         shouldFakeJump = false;
@@ -607,7 +609,11 @@ public class Fly extends Module {
         if(noPacketModify)
             return;
 
-        if(packet instanceof C03PacketPlayer) {
+        if (packet instanceof S08PacketPlayerPosLook && !shouldFly) {
+            shouldFly = true
+        }
+
+        if (packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
 
             boolean lastOnGround = packetPlayer.onGround;
@@ -744,6 +750,16 @@ public class Fly extends Module {
             (verusDmgModeValue.get().equalsIgnoreCase("none") || verusDmged)))
             && event.getY() < mc.thePlayer.posY)
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY, event.getZ() + 1));
+
+        if (event.getBlock() instanceof BlockAir && mode.equalsIgnoreCase("watchdog")) {
+            if (shouldFly) {
+                event.setBoundingBox(AxisAlignedBB.fromBounds(15.0D, 1.0D, 15.0D, -15.0D, -1.0D, -15.0D).offset(event.getX(), event.getY() + 0.05D, event.getZ()));
+            } else {
+                if (event.getY() >= startY - 1.0D) {
+                    event.setBoundingBox(AxisAlignedBB.fromBounds(15.0D, 1.0D, 15.0D, -15.0D, -1.0D, -15.0D).offset(event.getX(), startY + 1.0D, event.getZ()));
+                }
+            }
+        }
     }
 
     @EventTarget
