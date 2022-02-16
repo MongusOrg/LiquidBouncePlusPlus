@@ -54,8 +54,8 @@ object ItemHelper {
     private val otherArmorEnchantments = arrayOf(Enchant(Enchantment.featherFalling, 3.0f), Enchant(Enchantment.thorns, 1.0f), Enchant(Enchantment.respiration, 0.1f), Enchant(Enchantment.aquaAffinity, 0.05f), Enchant(Enchantment.unbreaking, 0.01f))
 
     fun compareArmor(
-        o1: ArmorPiece,
-        o2: ArmorPiece,
+        o1: ArmorPart,
+        o2: ArmorPart,
         nbtedPriority: Float = 0f,
         goal: EnumNBTPriorityType = EnumNBTPriorityType.NONE
     ): Int {

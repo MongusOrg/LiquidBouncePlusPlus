@@ -12,12 +12,12 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.injection.implementations.IItemStack
-import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.ccbluex.liquidbounce.utils.InventoryUtils
-import net.ccbluex.liquidbounce.utils.MovementUtils
+import net.ccbluex.liquidbounce.utils.*
 import net.ccbluex.liquidbounce.utils.item.*
+import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.utils.timer.TimeUtils
 import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.client.gui.inventory.GuiInventory
@@ -25,12 +25,15 @@ import net.minecraft.enchantment.Enchantment
 import net.minecraft.init.Blocks
 import net.minecraft.item.*
 import net.minecraft.network.play.client.C07PacketPlayerDigging
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
 import net.minecraft.network.play.client.C09PacketHeldItemChange
 import net.minecraft.network.play.client.C0DPacketCloseWindow
 import net.minecraft.network.play.client.C16PacketClientStatus
 import net.minecraft.util.BlockPos
 import net.minecraft.util.EnumFacing
 import kotlin.concurrent.thread
+import java.util.stream.Collectors
+import java.util.stream.IntStream
 
 @ModuleInfo(name = "InvManager", spacedName = "Inv Manager", description = "Automatically throws away useless items, and also equips armors for you.", category = ModuleCategory.PLAYER)
 class InvManager : Module() {
@@ -279,7 +282,7 @@ class InvManager : Module() {
             if (openInventory)
                 InventoryHelper.openPacket()
 
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, isArmorSlot ? item : (item < 9 ? item + 36 : item), 0, 1, mc.thePlayer)
+            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, (if (isArmorSlot) item else if (item < 9) item + 36 else item), 0, 1, mc.thePlayer)
 
             delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
 
