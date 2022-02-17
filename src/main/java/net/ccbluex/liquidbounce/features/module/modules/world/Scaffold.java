@@ -652,39 +652,37 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock || towerActivation()) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 
         if (eventState == EventState.PRE) {
-            timer.update();
-
             if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
                     !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
                 return;
 
+            findBlock(mode.equalsIgnoreCase("expand"));
+
+            // Tower stuffs (hopefully fixes some tower modes don't work properly)
             if (towerActivation()) {
-                launchY = (int)mc.thePlayer.posY;
-                //targetPlace = null;
+                targetPlace = null;
+                timer.update();
 
                 final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
                 if (InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock) {
+                    launchY = (int)mc.thePlayer.posY;
+
                     if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
                             mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                         move(event);
 
                     findBlock(false);
-                }    
+                }  
             } else {
                 verusState = 0;
-                findBlock(mode.equalsIgnoreCase("expand"));
             }
         }
-/*
-        if (towerActivation() && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) { // smh it just doesn't work properly with some tower modes so
-            place();
-        }
-*/
+
         //XZReducer
         mc.thePlayer.motionX *= xzMultiplier.get();
         mc.thePlayer.motionZ *= xzMultiplier.get();
@@ -1097,7 +1095,7 @@ public class Scaffold extends Module {
                         // face block
                         for (int i = 0; i < (staticYawMode ? 2 : 1); i++) {
                             final double diffX = staticYawMode && i == 0 ? 0 : hitVec.xCoord - eyesPos.xCoord;
-                            final double diffY = staticYawMode && i == 0 ? 0 : hitVec.yCoord - eyesPos.yCoord;
+                            final double diffY = hitVec.yCoord - eyesPos.yCoord;
                             final double diffZ = staticYawMode && i == 1 ? 0 : hitVec.zCoord - eyesPos.zCoord;
 
                             final double diffXZ = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
