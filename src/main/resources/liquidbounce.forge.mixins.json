@@ -153,6 +153,7 @@
     "network.MixinNetworkManagerChInit",
     "network.MixinNetworkManager",
     "network.MixinNetworkPlayerInfo",
+    "optimize.MixinEnumFacing",
     "packets.MixinC00Handshake",
     "packets.MixinS2EPacketCloseWindow",
     "render.MixinEffectRenderer",
