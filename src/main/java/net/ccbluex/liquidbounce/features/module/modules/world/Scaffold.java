@@ -670,7 +670,7 @@ public class Scaffold extends Module {
                 place();
             }
 
-            if (event.eventState == EventState.PRE) {
+            if (eventState == EventState.PRE) {
                 targetPlace = null;
                 timer.update();
 
