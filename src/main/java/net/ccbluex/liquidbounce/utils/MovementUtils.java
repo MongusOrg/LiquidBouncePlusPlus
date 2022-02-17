@@ -70,6 +70,10 @@ public final class MovementUtils extends MinecraftInstance {
         return getRawDirectionRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
     }
 
+    public static float getRawDirection(float yaw) {
+        return getRawDirectionRotation(yaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
+    }
+
     public static double getDirectionRotation(float yaw, float pStrafe, float pForward) {
         float rotationYaw = yaw;
 

@@ -652,7 +652,7 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock || towerActivation()) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
         }
 
@@ -662,9 +662,15 @@ public class Scaffold extends Module {
                 return;
 
             findBlock(mode.equalsIgnoreCase("expand"));
+        }
 
+        if (towerActivation()) {
             // Tower stuffs (hopefully fixes some tower modes don't work properly)
-            if (towerActivation()) {
+            if (placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+                place();
+            }
+
+            if (event.eventState == EventState.PRE) {
                 targetPlace = null;
                 timer.update();
 
@@ -676,11 +682,21 @@ public class Scaffold extends Module {
                             mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
                         move(event);
 
-                    findBlock(false);
+                    final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
+                    if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
+                        if (search(blockPos, true) && rotationsValue.get()) {
+                            final VecRotation vecRotation = RotationUtils.faceBlock(blockPos);
+
+                            if (vecRotation != null) {
+                                RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, vecRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
+                                targetPlace.setVec3(vecRotation.getVec());
+                            }
+                        }
+                    }
                 }  
-            } else {
-                verusState = 0;
             }
+        } else {
+            verusState = 0;
         }
 
         //XZReducer
