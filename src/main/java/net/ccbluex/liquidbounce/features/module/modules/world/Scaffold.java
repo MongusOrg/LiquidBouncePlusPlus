@@ -699,7 +699,7 @@ public class Scaffold extends Module {
 
                 final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
                 if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
-                    if (search(blockPos, true) && rotationsValue.get()) {
+                    if (search(blockPos, true, true) && rotationsValue.get()) {
                         final VecRotation vecRotation = RotationUtils.faceBlock(blockPos);
 
                         if (vecRotation != null) {
@@ -722,7 +722,7 @@ public class Scaffold extends Module {
                 (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? new BlockPos(mc.thePlayer)
                         : new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ).down()));
 
-        if (!expand && (!BlockUtils.isReplaceable(blockPosition) || search(blockPosition, !shouldGoDown)))
+        if (!expand && (!BlockUtils.isReplaceable(blockPosition) || search(blockPosition, !shouldGoDown, false)))
             return;
 
         if (expand) {
@@ -731,14 +731,14 @@ public class Scaffold extends Module {
                         mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0,
                         0,
                         mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0
-                ), false))
+                ), false, false))
 
                     return;
             }
         } else if (searchValue.get()) {
             for (int x = -1; x <= 1; x++)
                 for (int z = -1; z <= 1; z++)
-                    if (search(blockPosition.add(x, 0, z), !shouldGoDown))
+                    if (search(blockPosition.add(x, 0, z), !shouldGoDown, false))
                         return;
         }
     }
@@ -803,7 +803,10 @@ public class Scaffold extends Module {
         }
 
         // Reset
-        this.(towerActive ? towerPlace : targetPlace) = null;
+        if (towerActive)
+            this.towerPlace = null;
+        else
+            this.targetPlace = null;
 
         if (!stayAutoBlock.get() && blockSlot >= 0 && !autoBlockMode.get().equalsIgnoreCase("Switch"))
             mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
@@ -977,102 +980,11 @@ public class Scaffold extends Module {
             }
         }
     }
-/*
-    
-     * Search for placeable block
-     *
-     * @param blockPosition pos
-     * @return
-    
-    private boolean search(final BlockPos blockPosition) {
-        if (!BlockUtils.isReplaceable(blockPosition))
-            return false;
 
-        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC") || (rotationModeValue.get().contains("static") && !rotationModeValue.get().equalsIgnoreCase("static3"));
-
-        final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY +
-                mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
-
-        PlaceRotation placeRotation = null;
-
-        for (final EnumFacing side : StaticStorage.facings()) {
-            final BlockPos neighbor = blockPosition.offset(side);
-
-            if (!BlockUtils.canBeClicked(neighbor))
-                continue;
-
-            final Vec3 dirVec = new Vec3(side.getDirectionVec());
-
-            for (double xSearch = 0.1D; xSearch < 0.9D; xSearch += 0.1D) {
-                for (double ySearch = 0.1D; ySearch < 0.9D; ySearch += 0.1D) {
-                    for (double zSearch = 0.1D; zSearch < 0.9D; zSearch += 0.1D) {
-                        final Vec3 posVec = new Vec3(blockPosition).addVector(xSearch, ySearch, zSearch);
-                        final double distanceSqPosVec = eyesPos.squareDistanceTo(posVec);
-                        final Vec3 hitVec = posVec.add(new Vec3(dirVec.xCoord * 0.5, dirVec.yCoord * 0.5, dirVec.zCoord * 0.5));
-
-                        if ((eyesPos.squareDistanceTo(hitVec) > 18D ||
-                                distanceSqPosVec > eyesPos.squareDistanceTo(posVec.add(dirVec)) ||
-                                mc.theWorld.rayTraceBlocks(eyesPos, hitVec, false,
-                                        true, false) != null))
-                            continue;
-
-                        // face block
-                        for (int i = 0; i < (staticYawMode ? 2 : 1); i++) {
-                            final double diffX = staticYawMode && i == 0 ? 0 : hitVec.xCoord - eyesPos.xCoord;
-                            final double diffY = staticYawMode && i == 0 ? 0 : hitVec.yCoord - eyesPos.yCoord;
-                            final double diffZ = staticYawMode && i == 1 ? 0 : hitVec.zCoord - eyesPos.zCoord;
-
-                            final double diffXZ = MathHelper.sqrt_double(diffX * diffX + diffZ * diffZ);
-
-                            final Rotation rotation = new Rotation(
-                                    MathHelper.wrapAngleTo180_float((float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90F),
-                                    MathHelper.wrapAngleTo180_float((float) -Math.toDegrees(Math.atan2(diffY, diffXZ)))
-                            );
-
-                            final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotation);
-                            final Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4, rotationVector.yCoord * 4, rotationVector.zCoord * 4);
-                            final MovingObjectPosition obj = mc.theWorld.rayTraceBlocks(eyesPos, vector, false,
-                                    false, true);
-
-                            if (!(obj.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && obj.getBlockPos().equals(neighbor)))
-                                continue;
-
-                            if (placeRotation == null || RotationUtils.getRotationDifference(rotation) <
-                                    RotationUtils.getRotationDifference(placeRotation.getRotation()))
-                                placeRotation = new PlaceRotation(new PlaceInfo(neighbor, side.getOpposite(), hitVec), rotation);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (placeRotation == null)
-            return false;
-
-        if (rotationsValue.get()) {
-            if (minTurnSpeed.get() < 180) {
-                final Rotation limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, placeRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get()));
-                if ((int)(10 * MathHelper.wrapAngleTo180_float(limitedRotation.getYaw())) == (int)(10 * MathHelper.wrapAngleTo180_float(placeRotation.getRotation().getYaw()))
-                    && (int)(10 * MathHelper.wrapAngleTo180_float(limitedRotation.getPitch())) == (int)(10 * MathHelper.wrapAngleTo180_float(placeRotation.getRotation().getPitch()))) {
-                    RotationUtils.setTargetRotation(placeRotation.getRotation(), keepLengthValue.get());
-                    lockRotation = placeRotation.getRotation();
-                    faceBlock = true;
-                } else {
-                    RotationUtils.setTargetRotation(limitedRotation, keepLengthValue.get());
-                    lockRotation = limitedRotation;
-                    faceBlock = false;
-                }
-            } else {
-                RotationUtils.setTargetRotation(placeRotation.getRotation(), keepLengthValue.get());
-                lockRotation = placeRotation.getRotation();
-                faceBlock = true;
-            }
-        }
-
-        targetPlace = placeRotation.getPlaceInfo();
-        return true;
+    private boolean search(final BlockPos blockPosition, final boolean checks) {
+        return search(blockPosition, checks, false);
     }
-*/
+    
     /**
      * Search for placeable block
      *
@@ -1080,7 +992,7 @@ public class Scaffold extends Module {
      * @param checks        visible
      * @return
      */
-    private boolean search(final BlockPos blockPosition, final boolean checks) {
+    private boolean search(final BlockPos blockPosition, final boolean checks, boolean towerActive) {
         faceBlock = false;
 
         if (!BlockUtils.isReplaceable(blockPosition))
@@ -1170,7 +1082,12 @@ public class Scaffold extends Module {
             }
             
         }
-        targetPlace = placeRotation.getPlaceInfo();
+
+        if (towerActive) 
+            towerPlace = placeRotation.getPlaceInfo();
+        else
+            targetPlace = placeRotation.getPlaceInfo();
+
         return true;
     }
 
