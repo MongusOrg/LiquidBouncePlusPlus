@@ -12,7 +12,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.aac.*;
-//import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel.*;
+import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.hypixel.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.ncp.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other.*;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.verus.*;
@@ -64,10 +64,8 @@ public class Speed extends Module {
             new AACYPort2(),
 
             // Hypixel
-            /*new HypixelBoost(),
-            new HypixelMiniPort(),
-            new HypixelYPort(),
-            new HypixelStable(),*/
+            new HypixelBoost(),
+            new HypixelStable(),
 
             // Spartan
             new SpartanYPort(),

@@ -39,7 +39,7 @@ public class HypixelBoost extends SpeedMode {
             if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
                 mc.thePlayer.jump();
                 event.setY(mc.thePlayer.motionY = 0.4199999999);
-                moveSpeed *= 1.375;
+                moveSpeed *= 1.475;
             }
             
             mc.timer.timerSpeed = Math.max(1F + Math.abs((float)mc.thePlayer.motionY) * 3F, 1F);

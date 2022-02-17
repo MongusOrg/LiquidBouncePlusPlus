@@ -208,7 +208,7 @@ public class Scaffold extends Module {
      */
 
     // Target block
-    private PlaceInfo targetPlace;
+    private PlaceInfo targetPlace, towerPlace;
 
     // Launch position
     private int launchY;
@@ -643,64 +643,72 @@ public class Scaffold extends Module {
 
     @EventTarget
     public void onMotion(final MotionEvent event) {
+        // XZReducer
+        mc.thePlayer.motionX *= xzMultiplier.get();
+        mc.thePlayer.motionZ *= xzMultiplier.get();
+
         // Lock Rotation
         if (rotationsValue.get() && keepRotationValue.get() && lockRotation != null)
             RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, lockRotation, RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
 
-        if (towerActivation()) mc.timer.timerSpeed = towerTimerValue.get();
-
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock || towerActivation()) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
-            place();
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+            place(false);
         }
 
-        if (towerActivation()) {
-            // Tower stuffs (hopefully fixes some tower modes don't work properly)
-            if (eventState == EventState.PRE) {
-                targetPlace = null;
-                timer.update();
+        if (eventState == EventState.PRE) {
+            if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
+                    !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
+                return;
 
-                final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
-                if (InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock) {
-                    launchY = (int)mc.thePlayer.posY;
-
-                    if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
-                            mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
-                        move(event);
-
-                    final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
-                    if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
-                        if (search(blockPos, true) && rotationsValue.get()) {
-                            final VecRotation vecRotation = RotationUtils.faceBlock(blockPos);
-
-                            if (vecRotation != null) {
-                                RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, vecRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
-                                targetPlace.setVec3(vecRotation.getVec());
-                            }
-                        }
-                    }
-                }  
-            }
-        } else {
-            verusState = 0;
-            if (eventState == EventState.PRE) {
-                if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
-                        !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
-                    return;
-
-                findBlock(mode.equalsIgnoreCase("expand"));
-            }
+            findBlock(mode.equalsIgnoreCase("expand"));
         }
-
-        //XZReducer
-        mc.thePlayer.motionX *= xzMultiplier.get();
-        mc.thePlayer.motionZ *= xzMultiplier.get();
 
         if (targetPlace == null) {
             if (placeableDelay.get())
                 delayTimer.reset();
+        }
+
+        if (!towerActivation()) {
+            verusState = 0;
+            towerPlace = null;
+            return;
+        }
+
+        // Lock Rotation
+        if (rotationsValue.get() && keepRotationValue.get() && lockRotation != null)
+            RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, lockRotation, RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
+
+        mc.timer.timerSpeed = towerTimerValue.get();
+
+        if (placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) place(true);
+
+        if (eventState == EventState.PRE) {
+            towerPlace = null;
+            timer.update();
+
+            final boolean isHeldItemBlock = mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock;
+            if (InventoryUtils.findAutoBlockBlock() != -1 || isHeldItemBlock) {
+                launchY = (int)mc.thePlayer.posY;
+
+                if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
+                        mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
+                    move(event);
+
+                final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
+                if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
+                    if (search(blockPos, true) && rotationsValue.get()) {
+                        final VecRotation vecRotation = RotationUtils.faceBlock(blockPos);
+
+                        if (vecRotation != null) {
+                            RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, vecRotation.getRotation(), RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
+                            towerPlace.setVec3(vecRotation.getVec());
+                        }
+                    }
+                }
+            }  
         }
     }
 
@@ -738,14 +746,14 @@ public class Scaffold extends Module {
     /**
      * Place target block
      */
-    private void place() {
-        if (targetPlace == null) {
+    private void place(boolean towerActive) {
+        if ((towerActive ? towerPlace : targetPlace) == null) {
             if (placeableDelay.get())
                 delayTimer.reset();
             return;
         }
 
-        if (!towerActivation() && (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) targetPlace.getVec3().yCoord)))
+        if (!towerActivation() && (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || ((sameYValue.get() || (autoJumpValue.get() && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) (towerActive ? towerPlace : targetPlace).getVec3().yCoord)))
             return;
 
         int blockSlot = -1;
@@ -776,8 +784,8 @@ public class Scaffold extends Module {
             if (InventoryUtils.BLOCK_BLACKLIST.contains(block) || !block.isFullCube()) return;
         }
 
-        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, targetPlace.getBlockPos(),
-                targetPlace.getEnumFacing(), targetPlace.getVec3())) {
+        if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, (towerActive ? towerPlace : targetPlace).getBlockPos(),
+                (towerActive ? towerPlace : targetPlace).getEnumFacing(), (towerActive ? towerPlace : targetPlace).getVec3())) {
             delayTimer.reset();
             delay = (!placeableDelay.get() ? 0L : TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get()));
 
@@ -795,7 +803,7 @@ public class Scaffold extends Module {
         }
 
         // Reset
-        this.targetPlace = null;
+        this.(towerActive ? towerPlace : targetPlace) = null;
 
         if (!stayAutoBlock.get() && blockSlot >= 0 && !autoBlockMode.get().equalsIgnoreCase("Switch"))
             mc.getNetHandler().addToSendQueue(new C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem));
