@@ -652,24 +652,12 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
-        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
+        if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock || towerActivation()) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
             place();
-        }
-
-        if (eventState == EventState.PRE) {
-            if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
-                    !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
-                return;
-
-            findBlock(mode.equalsIgnoreCase("expand"));
         }
 
         if (towerActivation()) {
             // Tower stuffs (hopefully fixes some tower modes don't work properly)
-            if (placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) {
-                place();
-            }
-
             if (eventState == EventState.PRE) {
                 targetPlace = null;
                 timer.update();
@@ -697,6 +685,13 @@ public class Scaffold extends Module {
             }
         } else {
             verusState = 0;
+            if (eventState == EventState.PRE) {
+                if (!shouldPlace() || (!autoBlockMode.get().equalsIgnoreCase("Off") ? InventoryUtils.findAutoBlockBlock() == -1 : mc.thePlayer.getHeldItem() == null ||
+                        !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
+                    return;
+
+                findBlock(mode.equalsIgnoreCase("expand"));
+            }
         }
 
         //XZReducer
