@@ -61,6 +61,7 @@ public class Scaffold extends Module {
     private final ListValue towerModeValue = new ListValue("TowerMode", new String[] {
             "Jump", "Motion", "ConstantMotion", "MotionTP", "Packet", "Teleport", "AAC3.3.9", "AAC3.6.4", "Verus"
     }, "Motion", () -> { return towerEnabled.get(); });
+    private final ListValue towerPlaceModeValue = new ListValue("Tower-PlaceTiming", new String[]{"Pre", "Post"}, "Post");
     private final BoolValue stopWhenBlockAbove = new BoolValue("StopWhenBlockAbove", false, () -> { return towerEnabled.get(); });
     private final BoolValue onJumpValue = new BoolValue("OnJump", false, () -> { return towerEnabled.get(); });
     private final FloatValue towerTimerValue = new FloatValue("TowerTimer", 1F, 0.1F, 10F, () -> { return towerEnabled.get(); });
@@ -683,7 +684,7 @@ public class Scaffold extends Module {
 
         mc.timer.timerSpeed = towerTimerValue.get();
 
-        if (placeModeValue.get().equalsIgnoreCase(eventState.getStateName())) place(true);
+        if (towerPlaceModeValue.get().equalsIgnoreCase(eventState.getStateName())) place(true);
 
         if (eventState == EventState.PRE) {
             towerPlace = null;
