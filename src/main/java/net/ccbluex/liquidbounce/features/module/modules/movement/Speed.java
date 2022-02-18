@@ -89,7 +89,7 @@ public class Speed extends Module {
             new VerusHard()
     };
 
-    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan"/*, "Hypixel"*/, "Verus", "Custom", "Other"}, "NCP") {
+    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Hypixel", "Verus", "Custom", "Other"}, "NCP") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -155,8 +155,8 @@ public class Speed extends Module {
                 onEnable();
         }
     };
-/*
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "MiniPort", "YPort", "Stable"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
+
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -170,7 +170,7 @@ public class Speed extends Module {
                 onEnable();
         }
     };
-*/
+
     public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("other"); }) {
 
         @Override
@@ -320,9 +320,9 @@ public class Speed extends Module {
             case "Spartan":
             mode = "Spartan";
             break;
-            /*case "Hypixel":
+            case "Hypixel":
             mode = hypixelModeValue.get();
-            break;*/
+            break;
             case "Verus":
             mode = verusModeValue.get();
             break;
@@ -344,9 +344,9 @@ public class Speed extends Module {
             case "Spartan":
             mode = "SpartanYPort";
             break;
-            /*case "Hypixel":
+            case "Hypixel":
             mode = "Hypixel" + hypixelModeValue.get();
-            break;*/
+            break;
             case "Verus":
             mode = "Verus" + verusModeValue.get();
             break;
