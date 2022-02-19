@@ -753,10 +753,10 @@ public class Fly extends Module {
 
         if (mode.equalsIgnoreCase("watchdog")) {
             if (shouldFly) {
-                event.setBoundingBox(AxisAlignedBB.fromBounds(15.0D, 1.0D, 15.0D, -15.0D, -1.0D, -15.0D).offset(event.getX(), startY + 0.05D, event.getZ()));
+                event.setBoundingBox(AxisAlignedBB.fromBounds(15.0D, 1.0D, 15.0D, -15.0D, -1.0D, -15.0D).offset(event.getX(), event.getY() + 0.05D, event.getZ()));
             } else {
                 if (event.getY() >= startY - 1.0D) {
-                    event.setBoundingBox(AxisAlignedBB.fromBounds(15.0D, 1.0D, 15.0D, -15.0D, -1.0D, -15.0D).offset(event.getX(), startY - 1.0D, event.getZ()));
+                    event.setBoundingBox(AxisAlignedBB.fromBounds(15.0D, 1.0D, 15.0D, -15.0D, -1.0D, -15.0D).offset(event.getX(), startY + 0.05D, event.getZ()));
                 }
             }
         }

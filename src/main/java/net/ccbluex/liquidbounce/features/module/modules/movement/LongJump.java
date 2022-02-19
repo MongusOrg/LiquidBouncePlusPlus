@@ -381,19 +381,18 @@ public class LongJump extends Module {
                         mc.timer.timerSpeed = currentTimer;
                     }
                     if (ticks < redeskyTickValue.get()) {
-                        mc.thePlayer.motionY *= redeskyYMultiplier.get();
-                        mc.thePlayer.motionX *= redeskyXZMultiplier.get();
-                        mc.thePlayer.motionZ *= redeskyXZMultiplier.get();
-
                         mc.thePlayer.jump();
                     } else {
                         if (redeskyGlideAfterTicksValue.get()) {
                             mc.thePlayer.motionY += 0.03F;
                         }
                         if (redeskyTimerBoostValue.get() && currentTimer > redeskyTimerBoostEndValue.get()) {
-                            currentTimer -= 0.05F * redeskyTimerBoostSlowDownSpeedValue.get();
+                            currentTimer = Math.max(0.08F, currentTimer - 0.05F * redeskyTimerBoostSlowDownSpeedValue.get()); // zero-timer protection
                         }
                     }
+                    mc.thePlayer.motionY *= redeskyYMultiplier.get();
+                    mc.thePlayer.motionX *= redeskyXZMultiplier.get();
+                    mc.thePlayer.motionZ *= redeskyXZMultiplier.get();
                     ticks++;
                     break;
                 // copied????
