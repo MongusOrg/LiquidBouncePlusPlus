@@ -38,8 +38,8 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Random", "Sky", "CRainbow", "LiquidSlowly", "Fade", "Mixer"), "Custom")
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
-    private val shadowValue = BoolValue("Shadow", false)
-    private val shadowStrength = IntegerValue("Shadow-Strength", 1, 1, 30)
+    /*private val shadowValue = BoolValue("Shadow", false)
+    private val shadowStrength = IntegerValue("Shadow-Strength", 1, 1, 30)*/
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)

@@ -63,26 +63,26 @@ open class HUD : MinecraftInstance() {
      * Render all elements
      */
     fun render(designer: Boolean) {
-        elements.sortedBy { -it.info.priority }
-                .forEach {
-                    GL11.glPushMatrix()
-                    GL11.glTranslated(it.renderX, it.renderY, 0.0)
+        for (element in elements) {
+            GL11.glPushMatrix()
+            GL11.glTranslated(element.renderX, element.renderY, 0.0)
 
-                    if (!it.info.disableScale)
-                        GL11.glScalef(it.scale, it.scale, it.scale)
+            if (!element.info.disableScale && element.scale != 1F)
+                GL11.glScalef(element.scale, element.scale, element.scale)
 
-                    try {
-                        it.border = it.drawElement()
+            try {
+                element.border = element.drawElement()
 
-                        if (designer)
-                            it.border?.draw()
-                    } catch (ex: Exception) {
-                        ClientUtils.getLogger()
-                                .error("Something went wrong while drawing ${it.name} element in HUD.", ex)
-                    }
-                    GL11.glScalef(1f, 1f, 1f)
-                    GL11.glPopMatrix()
-                }
+                if (designer)
+                    element.border?.draw()
+            } catch (ex: Exception) {
+                ClientUtils.getLogger()
+                        .error("Something went wrong while drawing ${element.name} element in HUD.", ex)
+            }
+
+            GL11.glScalef(1f, 1f, 1f)
+            GL11.glPopMatrix()
+        }
     }
 
     /**
@@ -110,6 +110,7 @@ open class HUD : MinecraftInstance() {
                 element.drag = true
                 elements.remove(element)
                 elements.add(element)
+                elements.sortBy { -it.info.priority }
                 break
             }
         }
@@ -180,6 +181,7 @@ open class HUD : MinecraftInstance() {
      */
     fun addElement(element: Element): HUD {
         elements.add(element)
+        elements.sortBy { -it.info.priority }
         element.updateElement()
         return this
     }
@@ -190,6 +192,7 @@ open class HUD : MinecraftInstance() {
     fun removeElement(element: Element): HUD {
         element.destroyElement()
         elements.remove(element)
+        elements.sortBy { -it.info.priority }
         return this
     }
 
