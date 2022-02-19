@@ -677,11 +677,7 @@ public class Scaffold extends Module {
             towerPlace = null;
             return;
         }
-
-        // Lock Rotation
-        if (rotationsValue.get() && keepRotationValue.get() && lockRotation != null)
-            RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, lockRotation, RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
-
+        
         mc.timer.timerSpeed = towerTimerValue.get();
 
         if (towerPlaceModeValue.get().equalsIgnoreCase(eventState.getStateName())) place(true);

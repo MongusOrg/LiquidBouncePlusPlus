@@ -212,7 +212,7 @@ public class Speed extends Module {
 
     public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false, () -> { return typeValue.get().equalsIgnoreCase("other"); });
 
-    public final FloatValue glideStrengthValue = new FloatValue("GlideStrength", 0.03F, 0.01F, 0.1F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
+    public final FloatValue glideStrengthValue = new FloatValue("GlideStrength", 0.03F, 0F, 0.1F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
     public final FloatValue moveSpeedValue = new FloatValue("MoveSpeed", 1.47F, 1F, 1.7F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
     public final FloatValue jumpYValue = new FloatValue("JumpY", 0.42F, 0F, 1F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
     public final FloatValue baseStrengthValue = new FloatValue("BaseMultiplier", 1F, 0.5F, 1F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
