@@ -286,6 +286,10 @@ public class Fly extends Module {
                     mc.thePlayer.jump();
                 moveSpeed = 1;
                 break;
+            case "watchdog":
+                if (mc.thePlayer.onGround)
+                    mc.thePlayer.jump();
+                break;
         }
 
         startY = mc.thePlayer.posY;
