@@ -30,16 +30,22 @@ public class HypixelBoost extends SpeedMode {
 
     @Override
     public void onMove(MoveEvent event) {
+        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
+        if(speed == null) return;
+
         final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) return;
-        mc.timer.timerSpeed = 1F;
-        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava())) {
-            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed(), MovementUtils.getSpeed());
 
-            if (mc.thePlayer.onGround && !mc.gameSettings.keyBindJump.isKeyDown()) {
+        mc.timer.timerSpeed = 1F;
+        if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && !mc.gameSettings.keyBindJump.isKeyDown()) {
+            double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * speed.baseStrengthValue.get(), MovementUtils.getSpeed());
+
+            if (mc.thePlayer.onGround) {
                 mc.thePlayer.jump();
-                event.setY(mc.thePlayer.motionY = 0.4199999999);
-                moveSpeed *= 1.475;
+                event.setY(mc.thePlayer.motionY = speed.jumpYValue.get());
+                moveSpeed *= speed.moveSpeedValue.get();
+            } else if (speed.glideStrengthValue.get() > 0) {
+                event.setY(mc.thePlayer.motionY += speed.glideStrengthValue.get());
             }
             
             mc.timer.timerSpeed = Math.max(1F + Math.abs((float)mc.thePlayer.motionY) * 3F, 1F);
