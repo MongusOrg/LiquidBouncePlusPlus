@@ -510,7 +510,7 @@ class Target : Element() {
 
                     val name = convertedTarget.name
                     val health = convertedTarget.health
-                    val tWidth = (49F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font60.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(110F)
+                    val tWidth = (49F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font70.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(110F)
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
 
                     val floatX = renderX.toFloat()
@@ -529,7 +529,7 @@ class Target : Element() {
 
                     // name + health
                     Fonts.font40.drawString(name, floatX + 42F, floatY + 8F, -1, false)
-                    numberRenderer.renderChar(health, floatX + 42F, floatY + 25F, false, chillFontSpeed.get(), -1)
+                    numberRenderer.renderChar(health, floatX + 42F, floatY + 20F, false, chillFontSpeed.get(), -1)
                     GL11.glColor4f(1F, 1F, 1F, 1F)
                     
                     // head
@@ -537,7 +537,9 @@ class Target : Element() {
                         Stencil.write(false)
                         RenderUtils.fastRoundedRect(floatX + 7F, floatY + 8F, floatX + 37F, floatY + 38F, 10F)
                         Stencil.erase(true)
+                        GL11.glTranslated(renderX, renderY, 0.0)
                         drawHead(playerInfo.locationSkin, 7, 8, 30, 30)
+                        GL11.glTranslated(-renderX, -renderY, 0.0)
                         Stencil.dispose()
                     }
 
@@ -616,7 +618,7 @@ class Target : Element() {
             }
 
             val reFormat = deFormat.format(number.toDouble()) // string
-            val fontRend = if (small) Fonts.font40 else Fonts.font60
+            val fontRend = if (small) Fonts.font40 else Fonts.font70
             val delta = RenderUtils.deltaTime
             val scaledRes = ScaledResolution(mc)
 
@@ -625,7 +627,7 @@ class Target : Element() {
             var animX = 0F
 
             GL11.glEnable(3089)
-            RenderUtils.makeScissorBox(0F, initX, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat())
+            RenderUtils.makeScissorBox(0F, initY, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat())
             for (char in reFormat.toCharArray()) {
                 moveX[indexX] = AnimationUtils.animate(animX, moveX[indexX], fontSpeed * 0.025F * delta)
                 animX = moveX[indexX]
