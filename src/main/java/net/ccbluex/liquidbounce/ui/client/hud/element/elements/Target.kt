@@ -59,6 +59,7 @@ class Target : Element() {
     private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val chillFontSpeed = FloatValue("Chill-FontSpeed", 0.5F, 0.01F, 1F, { styleValue.get().equals("chill", true) })
+    private val chillHealthBarValue = BoolValue("Chill-Healthbar", false, { styleValue.get().equals("chill", true) })
     private val blurValue = BoolValue("Blur", false, { styleValue.get().equals("rise", true) })
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { styleValue.get().equals("rise", true) && blurValue.get() })
     private val tSlideAnim = BoolValue("TSlide-Animation", true, { !styleValue.get().equals("rise", true) })
@@ -523,14 +524,16 @@ class Target : Element() {
                     GL11.glPushMatrix()
 
                     // background
-                    RenderUtils.drawRoundedRect(floatX, floatY, floatX + tWidth, floatY + 46F, 10F, bgColor.rgb)
+                    RenderUtils.drawRoundedRect(floatX, floatY, floatX + tWidth, floatY + if (chillHealthBarValue.get()) 58F else 46F, 10F, bgColor.rgb)
                     GlStateManager.resetColor()
                     GL11.glColor4f(1F, 1F, 1F, 1F)
                     
                     // head
                     if (playerInfo != null) {
                         Stencil.write(false)
+                        GL11.glEnable(GL11.GL_BLEND)
                         RenderUtils.fastRoundedRect(floatX + 7F, floatY + 8F, floatX + 37F, floatY + 38F, 10F)
+                        GL11.glDisable(GL11.GL_BLEND)
                         Stencil.erase(true)
                         GL11.glTranslated(renderX, renderY, 0.0)
                         drawHead(playerInfo.locationSkin, 7, 8, 30, 30)
@@ -542,8 +545,22 @@ class Target : Element() {
                     GL11.glColor4f(1F, 1F, 1F, 1F)
 
                     // name + health
-                    Fonts.font40.drawString(name, floatX + 42F, floatY + 8F, -1, false)
-                    numberRenderer.renderChar(health, floatX + 42F, floatY + 20F, false, chillFontSpeed.get(), -1)
+                    Fonts.font40.drawString(name, floatX + 42F, floatY + 10F, -1, false)
+                    numberRenderer.renderChar(health, floatX + 42F, floatY + 21F, false, chillFontSpeed.get(), -1)
+
+                    GlStateManager.resetColor()
+                    GL11.glColor4f(1F, 1F, 1F, 1F)
+                    
+                    // health bar
+                    if (chillHealthBarValue.get()) {
+                        Stencil.write(false)
+                        GL11.glEnable(GL11.GL_BLEND)
+                        RenderUtils.fastRoundedRect(floatX + 7F, floatY + 43F, floatX + tWidth - 7F, floatY + 51F, 4F)
+                        GL11.glDisable(GL11.GL_BLEND)
+                        Stencil.erase(true)
+                        RenderUtils.drawRect(floatX + 7F, floatY + 43F, floatX + 7F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 14F), floatY + 51F, barColor.rgb)
+                        Stencil.dispose()
+                    }
 
                     GL11.glPopMatrix()
 
@@ -626,7 +643,7 @@ class Target : Element() {
             var animX = 0F
 
             GL11.glEnable(3089)
-            RenderUtils.makeScissorBox(0F, initY, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat())
+            RenderUtils.makeScissorBox(0F, initY, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat() * (2F / 3F))
             for (char in reFormat.toCharArray()) {
                 moveX[indexX] = AnimationUtils.animate(animX, moveX[indexX], fontSpeed * 0.025F * delta)
                 animX = moveX[indexX]
