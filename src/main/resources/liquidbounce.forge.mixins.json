@@ -3,6 +3,7 @@
   "package": "net.ccbluex.liquidbounce.injection.forge.mixins",
   "refmap": "liquidbounce.mixins.refmap.json",
   "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.7.11",
   "mixins": [
     "accessors.AbstractClientPlayerAccessor",
     "accessors.BlockAccessor",
@@ -154,6 +155,10 @@
     "network.MixinNetworkManager",
     "network.MixinNetworkPlayerInfo",
     "optimize.MixinEnumFacing",
+    "optimize.MixinBlock",
+    "optimize.MixinChunk",
+    "optimize.MixinWorld",
+    "optimize.MixinWorldManager",
     "packets.MixinC00Handshake",
     "packets.MixinS2EPacketCloseWindow",
     "render.MixinEffectRenderer",
@@ -176,5 +181,9 @@
     "resources.MixinSkinManager",
     "world.MixinWorld",
     "world.MixinWorldClient"
+  ],
+  "client": [
+    "optimize.MixinEntityFX",
+    "optimize.MixinRenderGlobal"
   ]
 }

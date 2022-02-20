@@ -42,6 +42,8 @@ class ModuleManager : Listenable {
 
         registerModules(
                 //AutoArmor::class.java,
+                Patcher::class.java,
+                Performance::class.java,
                 AutoPot::class.java,
                 AutoWeapon::class.java,
                 BowAimbot::class.java,
@@ -166,7 +168,6 @@ class ModuleManager : Listenable {
                 AntiHunger::class.java,
                 AirJump::class.java,
                 Freeze::class.java,
-                Patcher::class.java,
                 AntiCactus::class.java,
                 Eagle::class.java,
                 FastClimb::class.java,

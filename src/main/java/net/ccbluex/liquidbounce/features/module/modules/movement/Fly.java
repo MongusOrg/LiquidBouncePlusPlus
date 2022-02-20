@@ -197,7 +197,6 @@ public class Fly extends Module {
             return;
 
         noPacketModify = true;
-        shouldFly = false;
 
         verusTimer.reset();
         shouldFakeJump = false;
@@ -606,10 +605,6 @@ public class Fly extends Module {
 
         if(noPacketModify)
             return;
-
-        if (packet instanceof S08PacketPlayerPosLook && !shouldFly) {
-            shouldFly = true;
-        }
 
         if (packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
