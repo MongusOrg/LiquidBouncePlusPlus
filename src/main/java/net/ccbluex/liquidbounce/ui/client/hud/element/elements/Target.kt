@@ -556,6 +556,8 @@ class Target : Element() {
                     
                     // health bar
                     if (chillHealthBarValue.get()) {
+                        RenderUtils.drawRoundedRect(floatX + 7F, floatY + 43F, floatX + tWidth - 7F, floatY + 51F, 4F, barColor.darker().darker().darker().rgb)
+
                         Stencil.write(false)
                         GL11.glDisable(GL11.GL_TEXTURE_2D)
                         GL11.glEnable(GL11.GL_BLEND)
@@ -648,7 +650,7 @@ class Target : Element() {
             var animX = 0F
 
             GL11.glEnable(3089)
-            RenderUtils.makeScissorBox(0F, initY, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat() * (2F / 3F))
+            RenderUtils.makeScissorBox(0F, initY, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat() * (3F / 4F))
             for (char in reFormat.toCharArray()) {
                 moveX[indexX] = AnimationUtils.animate(animX, moveX[indexX], fontSpeed * 0.025F * delta)
                 animX = moveX[indexX]
