@@ -531,9 +531,12 @@ class Target : Element() {
                     // head
                     if (playerInfo != null) {
                         Stencil.write(false)
+                        GL11.glDisable(GL11.GL_TEXTURE_2D)
                         GL11.glEnable(GL11.GL_BLEND)
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
                         RenderUtils.fastRoundedRect(floatX + 7F, floatY + 8F, floatX + 37F, floatY + 38F, 10F)
                         GL11.glDisable(GL11.GL_BLEND)
+                        GL11.glEnable(GL11.GL_TEXTURE_2D)
                         Stencil.erase(true)
                         GL11.glTranslated(renderX, renderY, 0.0)
                         drawHead(playerInfo.locationSkin, 7, 8, 30, 30)
@@ -554,7 +557,9 @@ class Target : Element() {
                     // health bar
                     if (chillHealthBarValue.get()) {
                         Stencil.write(false)
+                        GL11.glDisable(GL11.GL_TEXTURE_2D)
                         GL11.glEnable(GL11.GL_BLEND)
+                        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
                         RenderUtils.fastRoundedRect(floatX + 7F, floatY + 43F, floatX + tWidth - 7F, floatY + 51F, 4F)
                         GL11.glDisable(GL11.GL_BLEND)
                         Stencil.erase(true)
