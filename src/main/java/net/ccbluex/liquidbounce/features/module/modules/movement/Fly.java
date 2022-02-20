@@ -73,8 +73,6 @@ public class Fly extends Module {
             // AAC
             "AAC5-Vanilla",
 
-            // Other
-            "Watchdog",
             "Jetpack",
             "KeepAlive",
             "Clip",
@@ -147,7 +145,7 @@ public class Fly extends Module {
     private int boostTicks, dmgCooldown = 0;
     private int verusJumpTimes = 0;
 
-    private boolean verusDmged, shouldActiveDmg, shouldFly = false;
+    private boolean verusDmged, shouldActiveDmg = false;
 
     private float lastYaw, lastPitch;
 
@@ -285,10 +283,6 @@ public class Fly extends Module {
                 if (mc.thePlayer.onGround)
                     mc.thePlayer.jump();
                 moveSpeed = 1;
-                break;
-            case "watchdog":
-                if (mc.thePlayer.onGround)
-                    mc.thePlayer.jump();
                 break;
         }
 
@@ -754,16 +748,6 @@ public class Fly extends Module {
             (verusDmgModeValue.get().equalsIgnoreCase("none") || verusDmged)))
             && event.getY() < mc.thePlayer.posY)
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY, event.getZ() + 1));
-
-        if (mode.equalsIgnoreCase("watchdog")) {
-            if (shouldFly) {
-                event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, mc.thePlayer.posY + 0.05D, event.getZ() + 1));
-            } else {
-                if (event.getY() >= startY - 1.0D) {
-                    event.setBoundingBox(AxisAlignedBB.fromBounds(15.0D, 1.0D, 15.0D, -15.0D, -1.0D, -15.0D).offset(event.getX(), startY - 1.0D, event.getZ()));
-                }
-            }
-        }
     }
 
     @EventTarget

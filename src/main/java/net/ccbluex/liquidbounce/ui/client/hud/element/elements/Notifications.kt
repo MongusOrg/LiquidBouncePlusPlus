@@ -41,6 +41,8 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
     private val newValue = BoolValue("New", true)
+    private val newAnimValue = BoolValue("UseNewAnim", true)
+    private val animationSpeed = FloatValue("Anim-Speed", 0.5F, 0.01F, 1F, { newAnimValue.get() })
     private val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgGreenValue = IntegerValue("Background-Red", 0, 0, 255)
     private val bgBlueValue = IntegerValue("Background-Red", 0, 0, 255)
@@ -64,9 +66,10 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         
         if (mc.currentScreen !is GuiHudDesigner || !notifications.isEmpty()) 
             for(i in notifications)
-                i.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
+                i.drawNotification(animationY, smoothYTransition.get(), newAnimValue.get(), animationSpeed.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
         else
-            exampleNotification.drawNotification(animationY, smoothYTransition.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat())
+            exampleNotification.drawNotification(animationY, smoothYTransition.get(), newAnimValue.get(), animationSpeed.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat())
+
         if (mc.currentScreen is GuiHudDesigner) {
             exampleNotification.fadeState = Notification.FadeState.STAY
             //exampleNotification.stayTimer.reset()
@@ -122,7 +125,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         IN,STAY,OUT,END
     }
 
-    fun drawNotification(animationY: Float, smooth: Boolean, backgroundColor: Color, side: Side, bar: Boolean, new: Boolean, blur: Boolean, strength: Float, originalX: Float, originalY: Float) {
+    fun drawNotification(animationY: Float, smooth: Boolean, newAnim: Boolean, animSpeed: Float, backgroundColor: Color, side: Side, bar: Boolean, new: Boolean, blur: Boolean, strength: Float, originalX: Float, originalY: Float) {
         val delta = RenderUtils.deltaTime
         val width = textLength.toFloat() + 8.0f
         
@@ -210,7 +213,10 @@ class Notification(message : String,type : Type, displayLength: Long) {
         when (fadeState) {
             FadeState.IN -> {
                 if (x < width) {
-                    x = AnimationUtils.easeOut(fadeStep, width) * width
+                    if (newAnim) 
+                        x = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(width, x, animSpeed * 0.025F * delta)
+                    else 
+                        x = AnimationUtils.easeOut(fadeStep, width) * width
                     fadeStep += delta / 4F
                 }
                 if (x >= width) {
@@ -233,7 +239,11 @@ class Notification(message : String,type : Type, displayLength: Long) {
             }
 
             FadeState.OUT -> if (x > 0) {
-                x = AnimationUtils.easeOut(fadeStep, width) * width
+                if (newAnim) 
+                    x = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(0F, x, animSpeed * 0.025F * delta)
+                else 
+                    x = AnimationUtils.easeOut(fadeStep, width) * width
+
                 fadeStep -= delta / 4F
             } else
                 fadeState = FadeState.END
