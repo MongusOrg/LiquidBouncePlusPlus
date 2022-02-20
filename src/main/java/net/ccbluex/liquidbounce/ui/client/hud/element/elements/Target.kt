@@ -510,7 +510,7 @@ class Target : Element() {
 
                     val name = convertedTarget.name
                     val health = convertedTarget.health
-                    val tWidth = (40F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font60.getStringWidth(tWidth)) + 16F).coerceAtLeast(120F)
+                    val tWidth = (40F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font60.getStringWidth(decimalFormat.format(health))) + 16F).coerceAtLeast(120F)
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
 
                     val floatX = renderX.toFloat()
@@ -546,7 +546,7 @@ class Target : Element() {
                     GL11.glPopMatrix()
 
                     GL11.glPushMatrix()
-                    numberRenderer.render(health, floatX + 16F + 40F, floatY + 28F, false, chillFontSpeed.get(), -1)
+                    numberRenderer.renderChar(health, floatX + 16F + 40F, floatY + 28F, false, chillFontSpeed.get(), -1)
                     GL11.glPopMatrix()
                    
                     // Health bar
@@ -614,7 +614,7 @@ class Target : Element() {
 
         private val deFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
 
-        fun renderChar(number: Float, initX: Double, initY: Double, shadow: Boolean, fontSpeed: Float, color: Int): Float {
+        fun renderChar(number: Float, initX: Float, initY: Float, shadow: Boolean, fontSpeed: Float, color: Int): Float {
             val reFormat = deFormat.format(number.toDouble()) // string
             val fontRend = if (small) Fonts.font40 else Fonts.font60
             val delta = RenderUtils.deltaTime
