@@ -597,7 +597,7 @@ class Target : Element() {
             "Slowly" -> Border(0F, 0F, 90F, 36F)
             "Rise" -> Border(0F, 0F, 90F, 55F)
             "Exhibition" -> Border(0F, 3F, 140F, 48F)
-            "Chill" -> Border(0F, 0F, 46F, 110F)
+            "Chill" -> Border(0F, 0F, 110F, 46F)
             else -> Border(0F, 0F, 120F, 36F)
         }
     
@@ -629,16 +629,15 @@ class Target : Element() {
 
         private val deFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
 
-        private var alreadyCalled = false
+        init {
+            for (i in 0..19) {
+                moveX[i] = 0F
+                moveY[i] = 0F
+            }
+        }
 
         fun renderChar(number: Float, initX: Float, initY: Float, shadow: Boolean, fontSpeed: Float, color: Int): Float {
-            if (!alreadyCalled) {
-                for (i in 0..19) {
-                    moveX[i] = 0F
-                    moveY[i] = 0F
-                }
-                alreadyCalled = true
-            }
+            
 
             val reFormat = deFormat.format(number.toDouble()) // string
             val fontRend = if (small) Fonts.font40 else Fonts.font72

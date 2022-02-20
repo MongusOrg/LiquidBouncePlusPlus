@@ -240,7 +240,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
 
             FadeState.OUT -> if (x > 0) {
                 if (newAnim) 
-                    x = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(0F, x, animSpeed * 0.025F * delta)
+                    x = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(-width, x, animSpeed * 0.025F * delta)
                 else 
                     x = AnimationUtils.easeOut(fadeStep, width) * width
 
