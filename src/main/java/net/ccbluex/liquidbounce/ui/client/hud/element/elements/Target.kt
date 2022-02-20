@@ -537,7 +537,7 @@ class Target : Element() {
                         Stencil.write(false)
                         RenderUtils.fastRoundedRect(floatX + 7F, floatY + 8F, floatX + 37F, floatY + 38F, 10F)
                         Stencil.erase(true)
-                        drawHead(7, 8, 30, 30)
+                        drawHead(playerInfo.locationSkin, 7, 8, 30, 30)
                         Stencil.dispose()
                     }
 
@@ -545,7 +545,7 @@ class Target : Element() {
                     GL11.glColor4f(1F, 1F, 1F, 1F)*/
 
                     GL11.glPopMatrix()
-                    
+
                     GL11.glPushMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
@@ -625,7 +625,7 @@ class Target : Element() {
             var animX = 0F
 
             GL11.glEnable(3089)
-            RenderUtils.makeScissorBox(0F, initX, scaledRes.getScaledWidth(), initY + fontRend.FONT_HEIGHT.toFloat())
+            RenderUtils.makeScissorBox(0F, initX, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat())
             for (char in reFormat.toCharArray()) {
                 moveX[indexX] = AnimationUtils.animate(animX, moveX[indexX], fontSpeed * 0.025F * delta)
                 animX = moveX[indexX]
