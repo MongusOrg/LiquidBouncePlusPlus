@@ -526,6 +526,8 @@ class Target : Element() {
                         GL11.glPopMatrix()
 
                         GL11.glPushMatrix()
+                        GlStateManager.resetColor()
+                        GL11.glColor4f(1F, 1F, 1F, 1F)
 
                         Stencil.write(false)
                         RenderUtils.fastRoundedRect(floatX + 6F, floatY + 6F, floatX + 46F, floatY + 46F, 8F)
@@ -544,8 +546,8 @@ class Target : Element() {
                     }
 
                     // Additional armor
-                    RenderUtils.drawRoundedRect(12F, 32F, 40F, 44F, 6F, bgColor.rgb)
-                    Fonts.font35.drawCenteredString(decimalFormat2.format(convertedTarget.getTotalArmorValue()), 26F, 34F, -1, false)
+                    /*RenderUtils.drawRoundedRect(12F, 32F, 40F, 44F, 6F, bgColor.rgb)
+                    Fonts.font35.drawCenteredString(decimalFormat2.format(convertedTarget.getTotalArmorValue()), 26F, 34F, -1, false)*/
 
                     // Name
                     Fonts.font40.drawString(name, 52F, 12F, -1, false)
@@ -563,12 +565,14 @@ class Target : Element() {
                    
                     // Health bar
                     Stencil.write(false)
-                    RenderUtils.fastRoundedRect(floatX + 6F, floatY + 52F + 4F, floatX + tWidth - 6F, floatY + 52F + 4F + 10F, 5F)
+                    RenderUtils.fastRoundedRect(floatX + 6F, floatY + 52F + 4F, floatX + tWidth, floatY + 52F + 4F + 10F, 5F)
                     Stencil.erase(true)
+                    GL11.glPushMatrix()
+                    GlStateManager.resetColor()
                     RenderUtils.drawRect(floatX + 6F, floatY + 52F + 4F, floatX + 6F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 16F), floatY + 52F + 4F + 10F, barColor.rgb)
+                    GL11.glPopMatrix()
                     Stencil.dispose()
 
-                    GlStateManager.resetColor()
                     GL11.glColor4f(1F, 1F, 1F, 1F)
 
                     GL11.glPushMatrix()

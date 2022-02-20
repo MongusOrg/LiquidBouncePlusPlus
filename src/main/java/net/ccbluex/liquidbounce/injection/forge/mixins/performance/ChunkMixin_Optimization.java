@@ -24,13 +24,4 @@ public class ChunkMixin_Optimization {
     private int patcher$subtractOneFromY(int y) {
         return y - 1;
     }
-
-    /**
-     * @author LlamaLad7
-     * @reason Optimization
-     */
-    @Overwrite
-    public IBlockState getBlockState(BlockPos pos) {
-        return ChunkHook.getBlockState((Chunk) (Object) this, pos);
-    }
 }

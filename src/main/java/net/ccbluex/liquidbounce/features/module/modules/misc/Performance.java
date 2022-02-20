@@ -5,7 +5,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.value.BoolValue;
 
-@ModuleInfo(name = "Performance", category = ModuleCategory.MISC, description = "Optimize functions and improve render performance.")
+@ModuleInfo(name = "Performance", category = ModuleCategory.MISC, description = "Optimize functions and improve render performance.", canEnable = false)
 public class Performance extends Module {
     public static BoolValue staticParticleColorValue = new BoolValue("StaticParticleColor", false);
     public static BoolValue fastEntityLightningValue = new BoolValue("FastEntityLightning", false);

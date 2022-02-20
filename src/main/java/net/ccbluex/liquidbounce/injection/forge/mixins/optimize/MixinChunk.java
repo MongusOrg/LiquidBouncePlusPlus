@@ -92,4 +92,34 @@ public abstract class MixinChunk implements IChunk {
             extendedBlockStorage.setExtBlocklightValue(n5, n2 & 0xF, n6, n4);
         }
     }
+
+    @Override
+    public IBlockState getBlockState(int n, int n2, int n3) {
+        if (this.worldObj.getWorldType() == WorldType.DEBUG_WORLD) {
+            IBlockState iBlockState = null;
+            if (n2 == 60) {
+                iBlockState = Blocks.barrier.getDefaultState();
+            }
+            if (n2 == 70) {
+                iBlockState = ChunkProviderDebug.func_177461_b(n, n3);
+            }
+            return iBlockState == null ? Blocks.air.getDefaultState() : iBlockState;
+        }
+        try {
+            ExtendedBlockStorage extendedBlockStorage;
+            if (n2 >= 0 && n2 >> 4 < this.storageArrays.length && (extendedBlockStorage = this.storageArrays[n2 >> 4]) != null) {
+                int n4 = n & 0xF;
+                int n5 = n2 & 0xF;
+                int n6 = n3 & 0xF;
+                return extendedBlockStorage.get(n4, n5, n6);
+            }
+            return Blocks.air.getDefaultState();
+        }
+        catch (Throwable throwable) {
+            CrashReport crashReport = CrashReport.makeCrashReport(throwable, "Getting block state");
+            CrashReportCategory crashReportCategory = crashReport.makeCategory("Block being got");
+            crashReportCategory.addCrashSectionCallable("Location", () -> CrashReportCategory.getCoordinateInfo(new BlockPos(n, n2, n3)));
+            throw new ReportedException(crashReport);
+        }
+    }
 }
