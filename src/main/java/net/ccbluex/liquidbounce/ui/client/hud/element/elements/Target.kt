@@ -510,7 +510,7 @@ class Target : Element() {
 
                     val name = convertedTarget.name
                     val health = convertedTarget.health
-                    val tWidth = (49F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font70.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(110F)
+                    val tWidth = (49F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font72.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(110F)
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
 
                     val floatX = renderX.toFloat()
@@ -521,15 +521,10 @@ class Target : Element() {
                     GL11.glPopMatrix()
 
                     GL11.glPushMatrix()
-                    GlStateManager.resetColor()
 
                     // background
                     RenderUtils.drawRoundedRect(floatX, floatY, floatX + tWidth, floatY + 46F, 10F, bgColor.rgb)
-                    GL11.glColor4f(1F, 1F, 1F, 1F)
-
-                    // name + health
-                    Fonts.font40.drawString(name, floatX + 42F, floatY + 8F, -1, false)
-                    numberRenderer.renderChar(health, floatX + 42F, floatY + 20F, false, chillFontSpeed.get(), -1)
+                    GlStateManager.resetColor()
                     GL11.glColor4f(1F, 1F, 1F, 1F)
                     
                     // head
@@ -543,8 +538,12 @@ class Target : Element() {
                         Stencil.dispose()
                     }
 
-                    /*GlStateManager.resetColor()
-                    GL11.glColor4f(1F, 1F, 1F, 1F)*/
+                    GlStateManager.resetColor()
+                    GL11.glColor4f(1F, 1F, 1F, 1F)
+
+                    // name + health
+                    Fonts.font40.drawString(name, floatX + 42F, floatY + 8F, -1, false)
+                    numberRenderer.renderChar(health, floatX + 42F, floatY + 20F, false, chillFontSpeed.get(), -1)
 
                     GL11.glPopMatrix()
 
@@ -574,7 +573,7 @@ class Target : Element() {
             "Slowly" -> Border(0F, 0F, 90F, 36F)
             "Rise" -> Border(0F, 0F, 90F, 55F)
             "Exhibition" -> Border(0F, 3F, 140F, 48F)
-            "Chill" -> Border(0F, 0F, 120F, 16F + 40F + 5F + 10F)
+            "Chill" -> Border(0F, 0F, 46F, 110F)
             else -> Border(0F, 0F, 120F, 36F)
         }
     
@@ -618,7 +617,7 @@ class Target : Element() {
             }
 
             val reFormat = deFormat.format(number.toDouble()) // string
-            val fontRend = if (small) Fonts.font40 else Fonts.font70
+            val fontRend = if (small) Fonts.font40 else Fonts.font72
             val delta = RenderUtils.deltaTime
             val scaledRes = ScaledResolution(mc)
 

@@ -32,8 +32,8 @@ public class Fonts {
     @FontDetails(fontName = "Roboto Medium", fontSize = 40)
     public static GameFontRenderer font40;
 
-    @FontDetails(fontName = "Roboto Medium", fontSize = 70)
-    public static GameFontRenderer font70;
+    @FontDetails(fontName = "Roboto Medium", fontSize = 72)
+    public static GameFontRenderer font72;
 
     @FontDetails(fontName = "Roboto Medium", fontSize = 30)
     public static GameFontRenderer fontSmall;
@@ -61,7 +61,7 @@ public class Fonts {
 
         font35 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 35));
         font40 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 40));
-        font70 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 70));
+        font72 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 72));
         fontSmall = new GameFontRenderer(getFont("Roboto-Medium.ttf", 30));
         fontSFUI35 = new GameFontRenderer(getFont("sfui.ttf", 35));
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
