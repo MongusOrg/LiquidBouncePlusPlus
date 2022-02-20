@@ -510,7 +510,7 @@ class Target : Element() {
 
                     val name = convertedTarget.name
                     val health = convertedTarget.health
-                    val tWidth = (40F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font60.getStringWidth(decimalFormat.format(health))) + 12F).coerceAtLeast(150F)
+                    val tWidth = (40F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font60.getStringWidth(decimalFormat.format(health))) + 18F).coerceAtLeast(150F)
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
 
                     val floatX = renderX.toFloat()
@@ -622,8 +622,8 @@ class Target : Element() {
     }
 
     private class CharRenderer(val small: Boolean) {
-        var moveY = floatArrayOf(20)
-        var moveX = floatArrayOf(20)
+        var moveY = FloatArray(20)
+        var moveX = FloatArray(20)
 
         private val numberList = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".")
 
