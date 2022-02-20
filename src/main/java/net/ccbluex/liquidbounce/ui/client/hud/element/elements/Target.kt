@@ -510,51 +510,66 @@ class Target : Element() {
 
                     val name = convertedTarget.name
                     val health = convertedTarget.health
-                    val tWidth = (40F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font60.getStringWidth(decimalFormat.format(health))) + 16F).coerceAtLeast(120F)
+                    val tWidth = (40F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font60.getStringWidth(decimalFormat.format(health))) + 12F).coerceAtLeast(150F)
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
 
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
 
                     // Background
-                    RenderUtils.drawRoundedRect(0F, 0F, tWidth, 16F + 40F + 5F + 10F, 6F, bgColor.rgb)
+                    RenderUtils.drawRoundedRect(0F, 0F, tWidth, 52F + 4F + 10F, 6F, bgColor.rgb)
+                    GL11.glColor4f(1F, 1F, 1F, 1F)
 
                     // Head
                     if (playerInfo != null) {
                         GL11.glScalef(1F, 1F, 1F)
                         GL11.glPopMatrix()
+
+                        GL11.glPushMatrix()
+
                         Stencil.write(false)
-                        RenderUtils.drawRoundedRect(floatX + 8F, floatY + 8F, floatX + 48F, floatY + 48F, 6F, -1)
+                        RenderUtils.fastRoundedRect(floatX + 6F, floatY + 6F, floatX + 46F, floatY + 46F, 8F)
                         Stencil.erase(true)
                         GL11.glTranslated(renderX, renderY, 0.0)
-                        drawHead(playerInfo.locationSkin, 8, 8, 40, 40)
+                        drawHead(playerInfo.locationSkin, 6, 6, 40, 40)
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         Stencil.dispose()
+
+                        GL11.glPopMatrix()
+                        GlStateManager.resetColor()
+
                         GL11.glPushMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
+                        GL11.glColor4f(1F, 1F, 1F, 1F)
                     }
 
                     // Additional armor
-                    RenderUtils.drawRoundedRect(18F, 32F, 38F, 44F, 6F, bgColor.rgb)
-                    Fonts.font35.drawCenteredString(decimalFormat2.format(convertedTarget.getTotalArmorValue()), 34F, 28F, -1, false)
+                    RenderUtils.drawRoundedRect(12F, 32F, 40F, 44F, 6F, bgColor.rgb)
+                    Fonts.font35.drawCenteredString(decimalFormat2.format(convertedTarget.getTotalArmorValue()), 26F, 34F, -1, false)
 
                     // Name
-                    Fonts.font40.drawString(name, 16F + 40F, 16F, -1, false)
+                    Fonts.font40.drawString(name, 52F, 12F, -1, false)
 
                     // Health font renderer
                     GL11.glScalef(1F, 1F, 1F)
                     GL11.glPopMatrix()
 
                     GL11.glPushMatrix()
-                    numberRenderer.renderChar(health, floatX + 16F + 40F, floatY + 28F, false, chillFontSpeed.get(), -1)
+                    numberRenderer.renderChar(health, floatX + 52F, floatY + 24F, false, chillFontSpeed.get(), -1)
                     GL11.glPopMatrix()
+
+                    GlStateManager.resetColor()
+                    GL11.glColor4f(1F, 1F, 1F, 1F)
                    
                     // Health bar
                     Stencil.write(false)
-                    RenderUtils.drawRoundedRect(floatX + 8F, floatY + 8F + 40F + 5F, floatX + tWidth - 8F, floatY + 8F + 40F + 5F + 10F, 4F, -1)
+                    RenderUtils.fastRoundedRect(floatX + 6F, floatY + 52F + 4F, floatX + tWidth - 6F, floatY + 52F + 4F + 10F, 5F)
                     Stencil.erase(true)
-                    RenderUtils.drawRect(floatX + 8F, floatY + 8F + 40F + 5F, floatX + 8F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 16F), floatY + 8F + 40F + 5F + 10F, barColor.rgb)
+                    RenderUtils.drawRect(floatX + 6F, floatY + 52F + 4F, floatX + 6F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 16F), floatY + 52F + 4F + 10F, barColor.rgb)
                     Stencil.dispose()
+
+                    GlStateManager.resetColor()
+                    GL11.glColor4f(1F, 1F, 1F, 1F)
 
                     GL11.glPushMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
@@ -607,14 +622,24 @@ class Target : Element() {
     }
 
     private class CharRenderer(val small: Boolean) {
-        var moveY = floatArrayOf(0F)
-        var moveX = floatArrayOf(0F)
+        var moveY = floatArrayOf(20)
+        var moveX = floatArrayOf(20)
 
         private val numberList = listOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".")
 
         private val deFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
 
+        private var alreadyCalled = false
+
         fun renderChar(number: Float, initX: Float, initY: Float, shadow: Boolean, fontSpeed: Float, color: Int): Float {
+            if (!alreadyCalled) {
+                for (i in 0..19) {
+                    moveX[i] = 0F
+                    moveY[i] = 0F
+                }
+                alreadyCalled = true
+            }
+
             val reFormat = deFormat.format(number.toDouble()) // string
             val fontRend = if (small) Fonts.font40 else Fonts.font60
             val delta = RenderUtils.deltaTime
@@ -626,7 +651,7 @@ class Target : Element() {
             GL11.glEnable(3089)
             RenderUtils.makeScissorBox(initX, initY, initX + fontRend.getStringWidth(reFormat), initY + fontRend.FONT_HEIGHT.toFloat())
             for (char in reFormat.toCharArray()) {
-                moveX[indexX] = AnimationUtils.animate(animX, if (moveX.size < indexX + 1) 0F else moveX[indexX], fontSpeed * 0.01F * delta)
+                moveX[indexX] = AnimationUtils.animate(animX, moveX[indexX], fontSpeed * 0.01F * delta)
                 animX = moveX[indexX]
 
                 val pos = numberList.indexOf("$char")
@@ -635,7 +660,7 @@ class Target : Element() {
                 val expectAnimMax = (fontRend.FONT_HEIGHT.toFloat() + 2F) * (pos + 2)
                 
                 if (pos >= 0) {
-                    moveY[indexY] = AnimationUtils.animate(expectAnim, if (moveY.size < indexY + 1) 0F else moveY[indexY], fontSpeed * 0.02F * delta)
+                    moveY[indexY] = AnimationUtils.animate(expectAnim, moveY[indexY], fontSpeed * 0.02F * delta)
 
                     GL11.glTranslatef(0F, initY - moveY[indexY], 0F)
                     numberList.forEachIndexed { index, num ->
