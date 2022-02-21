@@ -148,7 +148,7 @@ class Target : Element() {
         else if (progress > 1F)
             progress = 1F
 
-        if (progressChill < 0F)
+        if (progressChill < 0F || !chillFadingValue.get())
             progressChill = 0F
         else if (progressChill > 1F)
             progressChill = 1F
@@ -525,11 +525,18 @@ class Target : Element() {
                     val tWidth = (45F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font72.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(170F)
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
 
-                    val reColorBg = Color(bgColor.red / 255.0F, bgColor.green / 255.0F, bgColor.blue / 255.0F, bgColor.alpha / 255.0F * progressChill)
-                    val reColorBar = Color(barColor.red / 255.0F, barColor.green / 255.0F, barColor.blue / 255.0F, barColor.alpha / 255.0F * progressChill)
+                    val reColorBg = Color(bgColor.red / 255.0F, bgColor.green / 255.0F, bgColor.blue / 255.0F, bgColor.alpha / 255.0F * (1F - progressChill))
+                    val reColorBar = Color(barColor.red / 255.0F, barColor.green / 255.0F, barColor.blue / 255.0F, barColor.alpha / 255.0F * (1F - progressChill))
 
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
+
+                    val calcScaleX = (progressChill * (4F / (tWidth / 2F)))
+                    val calcScaleY = if (chillHealthBarValue.get()) (progressChill * (4F / 24F))
+                                    else (progressChill * (4F / 21F))
+                    val calcTranslateX = floatX + tWidth / 2F * calcScaleX
+                    val calcTranslateY = floatY + if (chillHealthBarValue.get()) (24F * (progressChill * (4F / 24F))) 
+                                                        else (21F * (progressChill * (4F / 21F)))
 
                     // translation/scaling
                     GL11.glScalef(1f, 1f, 1f)
@@ -539,15 +546,9 @@ class Target : Element() {
 
                     if (chillFadingValue.get()) {
                         GL11.glTranslatef(
-                            floatX + tWidth / 2F * (progressChill * (4F / (tWidth / 2F))), 
-                            floatY + if (chillHealthBarValue.get()) (24F * (progressChill * (4F / 24F))) 
-                                        else (21F * (progressChill * (4F / 21F))),
-                            0F)
+                            calcTranslateX, calcTranslateY, 0F)
                         GL11.glScalef(
-                            1F - (progressChill * (4F / (tWidth / 2F))), 
-                            1F - if (chillHealthBarValue.get()) (progressChill * (4F / 24F))
-                                    else (progressChill * (4F / 21F)), 
-                            1F - (progressChill * (4F / (tWidth / 2F))))
+                            1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
                     } else {
                         GL11.glTranslated(renderX, renderY, 0.0)
                         GL11.glScalef(1F, 1F, 1F)
@@ -586,23 +587,23 @@ class Target : Element() {
 
                     // name + health
                     Fonts.font40.drawString(name, 38F, 6F, -1, false)
-                    numberRenderer.renderChar(health, 42F, 17F, false, chillFontSpeed.get(), -1)
+                    numberRenderer.renderChar(health, calcTranslateX, calcTranslateY, 42F, 17F, calcScaleX, calcScaleY, false, chillFontSpeed.get(), -1)
 
                     GlStateManager.resetColor()
                     GL11.glColor4f(1F, 1F, 1F, 1F)
                     
                     // health bar
                     if (chillHealthBarValue.get()) {
-                        RenderUtils.drawRoundedRect(4F, 38F, tWidth - 4F, 44F, 4F, barColor.darker().darker().darker().rgb)
+                        RenderUtils.drawRoundedRect(4F, 38F, tWidth - 4F, 44F, 3F, reColorBar.darker().darker().darker().rgb)
 
                         Stencil.write(false)
                         GL11.glDisable(GL11.GL_TEXTURE_2D)
                         GL11.glEnable(GL11.GL_BLEND)
                         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-                        RenderUtils.fastRoundedRect(4F, 38F, tWidth - 4F, 44F, 4F)
+                        RenderUtils.fastRoundedRect(4F, 38F, tWidth - 4F, 44F, 3F)
                         GL11.glDisable(GL11.GL_BLEND)
                         Stencil.erase(true)
-                        RenderUtils.drawRect(4F, 38F, 4F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 8F), 44F, barColor.rgb)
+                        RenderUtils.drawRect(4F, 38F, 4F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 8F), 44F, reColorBar.rgb)
                         Stencil.dispose()
                     }
 
@@ -674,7 +675,7 @@ class Target : Element() {
             }
         }
 
-        fun renderChar(number: Float, initX: Float, initY: Float, shadow: Boolean, fontSpeed: Float, color: Int): Float {
+        fun renderChar(number: Float, orgX: Float, orgY: Float, initX: Float, initY: Float, scaleX: Float, scaleY: Float, shadow: Boolean, fontSpeed: Float, color: Int): Float {
             val reFormat = deFormat.format(number.toDouble()) // string
             val fontRend = if (small) Fonts.font40 else Fonts.font72
             val delta = RenderUtils.deltaTime
@@ -684,8 +685,10 @@ class Target : Element() {
             var indexY = 0
             var animX = 0F
 
+            val cutY = initY + fontRend.FONT_HEIGHT.toFloat() * (3F / 4F)
+
             GL11.glEnable(3089)
-            RenderUtils.makeScissorBox(0F, initY, scaledRes.getScaledWidth().toFloat(), initY + fontRend.FONT_HEIGHT.toFloat() * (3F / 4F))
+            RenderUtils.makeScissorBox(0F, orgY + initY + 4F * scaleY, scaledRes.getScaledWidth().toFloat(), orgY + cutY - 4F * scaleY)
             for (char in reFormat.toCharArray()) {
                 moveX[indexX] = AnimationUtils.animate(animX, moveX[indexX], fontSpeed * 0.025F * delta)
                 animX = moveX[indexX]
