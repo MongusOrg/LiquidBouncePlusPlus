@@ -153,14 +153,19 @@ class Target : Element() {
         else if (progressChill > 1F)
             progressChill = 1F
 
-        if (styleValue.get().equals("chill", true) && chillFadingValue.get()) {
-            if (actualTarget == null && target != null && progressChill >= 1F)
-                target = null
-        } else if (actualTarget == null && tSlideAnim.get()) {
-            if (progress >= 1F && target != null) 
-                target = null
-        } else 
-            target = actualTarget
+        if (styleValue.get().equals("chill", true)) {
+            if (actualTarget == null && chillFadingValue.get()) {
+                if (progressChill >= 1F && target != null) 
+                    target = null
+            } else 
+                target = actualTarget
+        } else {
+            if (actualTarget == null && tSlideAnim.get()) {
+                if (progress >= 1F && target != null) 
+                    target = null
+            } else 
+                target = actualTarget
+        }
 
         val animProgress = EaseUtils.easeInQuart(progress.toDouble())
         val tHeight = getTBorder().y2 - getTBorder().y
@@ -577,7 +582,7 @@ class Target : Element() {
                         GL11.glEnable(GL11.GL_TEXTURE_2D)
                         Stencil.erase(true)
                         //GL11.glTranslated(renderX, renderY, 0.0)
-                        drawHead(playerInfo.locationSkin, 4, 4, 30, 30, progressChill)
+                        drawHead(playerInfo.locationSkin, 4, 4, 30, 30, 1F - progressChill)
                         //GL11.glTranslated(-renderX, -renderY, 0.0)
                         Stencil.dispose()
                     }
@@ -587,7 +592,7 @@ class Target : Element() {
 
                     // name + health
                     Fonts.font40.drawString(name, 38F, 6F, -1, false)
-                    numberRenderer.renderChar(health, calcTranslateX, calcTranslateY, 42F, 17F, calcScaleX, calcScaleY, false, chillFontSpeed.get(), -1)
+                    numberRenderer.renderChar(health, calcTranslateX, calcTranslateY, 38F, 17F, calcScaleX, calcScaleY, false, chillFontSpeed.get(), -1)
 
                     GlStateManager.resetColor()
                     GL11.glColor4f(1F, 1F, 1F, 1F)
