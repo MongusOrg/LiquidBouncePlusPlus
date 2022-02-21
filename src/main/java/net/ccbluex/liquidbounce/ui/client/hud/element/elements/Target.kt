@@ -527,11 +527,12 @@ class Target : Element() {
 
                     val name = convertedTarget.name
                     val health = convertedTarget.health
-                    val tWidth = (45F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font72.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(170F)
+                    val tWidth = (45F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font72.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(150F)
                     val playerInfo = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID)
 
                     val reColorBg = Color(bgColor.red / 255.0F, bgColor.green / 255.0F, bgColor.blue / 255.0F, bgColor.alpha / 255.0F * (1F - progressChill))
                     val reColorBar = Color(barColor.red / 255.0F, barColor.green / 255.0F, barColor.blue / 255.0F, barColor.alpha / 255.0F * (1F - progressChill))
+                    val reColorText = Color(1F, 1F, 1F, 1F - progressChill)
 
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
@@ -591,8 +592,8 @@ class Target : Element() {
                     GL11.glColor4f(1F, 1F, 1F, 1F)
 
                     // name + health
-                    Fonts.font40.drawString(name, 38F, 6F, -1, false)
-                    numberRenderer.renderChar(health, calcTranslateX, calcTranslateY, 38F, 17F, calcScaleX, calcScaleY, false, chillFontSpeed.get(), -1)
+                    Fonts.font40.drawString(name, 38F, 6F, reColorText.rgb, false)
+                    numberRenderer.renderChar(health, calcTranslateX, calcTranslateY, 38F, 17F, calcScaleX, calcScaleY, false, chillFontSpeed.get(), reColorText.rgb)
 
                     GlStateManager.resetColor()
                     GL11.glColor4f(1F, 1F, 1F, 1F)
