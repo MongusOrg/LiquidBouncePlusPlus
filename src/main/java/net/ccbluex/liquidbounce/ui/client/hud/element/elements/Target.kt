@@ -141,7 +141,7 @@ class Target : Element() {
         val borderColor = Color(borderColorRedValue.get(), borderColorGreenValue.get(), borderColorBlueValue.get(), borderColorAlphaValue.get())
 
         progress += 0.0025F * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F
-        progressChill += 0.005F * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F
+        progressChill += 0.0075F * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F
 
         if (progress < 0F)
             progress = 0F
@@ -693,7 +693,7 @@ class Target : Element() {
             val cutY = initY + fontRend.FONT_HEIGHT.toFloat() * (3F / 4F)
 
             GL11.glEnable(3089)
-            RenderUtils.makeScissorBox(0F, orgY + initY + 4F * scaleY, scaledRes.getScaledWidth().toFloat(), orgY + cutY - 4F * scaleY)
+            RenderUtils.makeScissorBox(0F, orgY + initY - 4F * scaleY, scaledRes.getScaledWidth().toFloat(), orgY + cutY - 4F * scaleY)
             for (char in reFormat.toCharArray()) {
                 moveX[indexX] = AnimationUtils.animate(animX, moveX[indexX], fontSpeed * 0.025F * delta)
                 animX = moveX[indexX]
