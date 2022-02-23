@@ -37,7 +37,7 @@ import net.minecraft.util.*;
 
 @ModuleInfo(name = "NoFall", spacedName = "No Fall", description = "Prevents you from taking fall damage.", category = ModuleCategory.PLAYER)
 public class NoFall extends Module {
-    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "NewPacket", "MLG" , "AAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "Spartan", "CubeCraft" , "Hypixel", "NewHypixel", "Damage", "Edit", "Verus"}, "SpoofGround");
+    public final ListValue modeValue = new ListValue("Mode", new String[]{"SpoofGround", "NoGround", "Packet", "NewPacket", "MLG" , "AAC", "LAAC", "AAC3.3.11", "AAC3.3.15", "Spartan", "CubeCraft" , "Hypixel", "NoPacket", "Watchdog", "Damage", "Edit", "Verus"}, "SpoofGround");
     private final FloatValue minFallDistance = new FloatValue("MinMLGHeight", 5F, 2F, 50F);
     private final BoolValue voidCheck = new BoolValue("Void-Check", true);
 
@@ -48,10 +48,12 @@ public class NoFall extends Module {
     private VecRotation currentMlgRotation;
     private int currentMlgItemIndex;
     private BlockPos currentMlgBlock;
+    private int tick = 0;
 
     @Override
     public void onEnable() {
         shouldSpoof = false;
+        tick = 0;
     }
 
     @EventTarget(ignoreCondition = true)
@@ -139,7 +141,7 @@ public class NoFall extends Module {
                     spartanTimer.reset();
                 }
                 break;
-            case "verus": {
+            case "verus":
                 if(mc.thePlayer.fallDistance - mc.thePlayer.motionY > 3) {
                     mc.thePlayer.motionY = 0.0;
                     mc.thePlayer.fallDistance = 0.0f;
@@ -147,7 +149,16 @@ public class NoFall extends Module {
                     mc.thePlayer.motionZ *= 0.25;
                     shouldSpoof = true;
                 }
-            }
+                break;
+            case "watchdog":
+                double offset = 2.5D;
+                if (!mc.thePlayer.onGround && mc.thePlayer.fallDistance - tick * offset >= 0.0D) {
+                    PacketUtils.sendPacketNoEvent(new C03PacketPlayer(true));
+                    tick++;
+                } else if (mc.thePlayer.onGround)
+                    tick = 1;
+
+                break;
         }
     }
 
@@ -171,7 +182,7 @@ public class NoFall extends Module {
                     && mc.thePlayer != null && mc.thePlayer.fallDistance > 1.5)
                 playerPacket.onGround = mc.thePlayer.ticksExisted % 2 == 0;
 
-            if (mode.equalsIgnoreCase("Hypixel")
+            if (mode.equalsIgnoreCase("NoPacket")
                     && mc.thePlayer != null && mc.thePlayer.fallDistance > 2) {
                 if (mc.thePlayer.ticksExisted % 2 == 0) {
                     playerPacket.onGround = true;

@@ -53,6 +53,7 @@ public class Fly extends Module {
             // NCP
             "NCP",
             "OldNCP",
+            "Watchdog",
 
             // FunCraft
             "FunCraft",
@@ -142,7 +143,7 @@ public class Fly extends Module {
 
     private boolean wasDead;
 
-    private int boostTicks, dmgCooldown = 0;
+    private int boostTicks, dmgCooldown, wdState = 0;
     private int verusJumpTimes = 0;
 
     private boolean verusDmged, shouldActiveDmg = false;
@@ -219,6 +220,7 @@ public class Fly extends Module {
         verusDmged = false;
 
         moveSpeed = 0;
+        wdState = 0;
 
         switch (mode.toLowerCase()) {
             case "ncp":
@@ -282,6 +284,11 @@ public class Fly extends Module {
                 if (mc.thePlayer.onGround)
                     mc.thePlayer.jump();
                 moveSpeed = 1;
+                break;
+            case "watchdog":
+                if (mc.thePlayer.onGround)
+                    mc.thePlayer.jump();
+                wdState = 1;
                 break;
         }
 
@@ -546,28 +553,44 @@ public class Fly extends Module {
                 if (mc.thePlayer.onGround)
                     mc.thePlayer.jump();
                 break;
+            case "watchdog":
+                if (wdState == 3) {
+                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.9F);
+                    mc.thePlayer.motionY = 0;
+                }
+                break;
         }
     }
 
     @EventTarget // drew
     public void onMotion(final MotionEvent event) {
-        if (!modeValue.get().equalsIgnoreCase("FunCraft") || mc.thePlayer == null) return;
-        
-        event.setOnGround(true);
-        if (!MovementUtils.isMoving())
-            moveSpeed = 0.25;
-        if (moveSpeed > 0.25) {
-            moveSpeed -= moveSpeed / 159.0;
-        }
-        if (event.getEventState() == EventState.PRE) {
-            mc.thePlayer.capabilities.isFlying = false;
-            mc.thePlayer.motionY = 0;
-            mc.thePlayer.motionX = 0;
-            mc.thePlayer.motionZ = 0;
+        if (mc.thePlayer == null) return;
 
-            MovementUtils.strafe((float)moveSpeed);
-            mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8e-6, mc.thePlayer.posZ);
-        }
+        switch (modeValue.get().toLowerCase()) {
+            case "funcraft":
+                event.setOnGround(true);
+                if (!MovementUtils.isMoving())
+                    moveSpeed = 0.25;
+                if (moveSpeed > 0.25) {
+                    moveSpeed -= moveSpeed / 159.0;
+                }
+                if (event.getEventState() == EventState.PRE) {
+                    mc.thePlayer.capabilities.isFlying = false;
+                    mc.thePlayer.motionY = 0;
+                    mc.thePlayer.motionX = 0;
+                    mc.thePlayer.motionZ = 0;
+
+                    MovementUtils.strafe((float)moveSpeed);
+                    mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8e-6, mc.thePlayer.posZ);
+                }
+                break;
+            case "watchdog":
+                if (event.getEventState() == EventState.PRE && wdState == 1 && mc.thePlayer.onGround) {
+                    event.setX(event.getX() - 0.5);
+                    wdState = 2;
+                }
+                break;
+        }  
     }
 
     @EventTarget
@@ -605,6 +628,9 @@ public class Fly extends Module {
 
         if(noPacketModify)
             return;
+
+        if (packet instanceof S08PacketPlayerPosLook && wdState == 2)
+            wdState = 3;
 
         if (packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
@@ -723,6 +749,10 @@ public class Fly extends Module {
                     }
                 }
                 break;
+            case "watchdog":
+                if (wdState <= 1)
+                    event.zeroXZ();
+                break;
         }
     }
 
@@ -749,7 +779,7 @@ public class Fly extends Module {
     public void onJump(final JumpEvent e) {
         final String mode = modeValue.get();
 
-        if (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("FunCraft") && moveSpeed > 0))
+        if (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("FunCraft") && moveSpeed > 0) || (mode.equalsIgnoreCase("watchdog") && wdState >= 1))
             e.cancelEvent();
     }
 
@@ -757,7 +787,7 @@ public class Fly extends Module {
     public void onStep(final StepEvent e) {
         final String mode = modeValue.get();
 
-        if (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("FunCraft"))
+        if (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("FunCraft") || (mode.equalsIgnoreCase("watchdog") && wdState > 2))
             e.setStepHeight(0F);
     }
 

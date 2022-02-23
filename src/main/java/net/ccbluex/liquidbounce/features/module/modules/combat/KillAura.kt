@@ -786,11 +786,9 @@ class KillAura : Module() {
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
         val modify = disabler.canModifyRotation
 
-        var defRotation = getTargetRotation(entity) ?: return false
+        if (modify) return true // just ignore then
 
-        if (modify) {
-            defRotation = Rotation(disabler.customYaw, defRotation.pitch)
-        }
+        var defRotation = getTargetRotation(entity) ?: return false
 
         if (silentRotationValue.get()) {
             RotationUtils.setTargetRotation(defRotation, if (aacValue.get() && !rotations.get().equals("Spin", ignoreCase = true)) 15 else 0)
