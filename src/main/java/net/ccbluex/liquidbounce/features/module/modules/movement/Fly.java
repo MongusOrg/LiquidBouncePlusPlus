@@ -555,8 +555,8 @@ public class Fly extends Module {
                 break;
             case "watchdog":
                 if (wdState == 3) {
-                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.9F);
                     mc.thePlayer.motionY = 0;
+                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.9F);
                 }
                 break;
         }
@@ -629,8 +629,10 @@ public class Fly extends Module {
         if(noPacketModify)
             return;
 
-        if (packet instanceof S08PacketPlayerPosLook && wdState == 2)
+        if (packet instanceof S08PacketPlayerPosLook && wdState == 2) {
             wdState = 3;
+            LiquidBounce.hud.addNotification(new Notification("Activated fly.", Notification.Type.SUCCESS));
+        }
 
         if (packet instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) packet;
@@ -750,8 +752,10 @@ public class Fly extends Module {
                 }
                 break;
             case "watchdog":
-                if (wdState <= 1)
+                if (wdState <= 2)
                     event.zeroXZ();
+                else
+                    event.setY(0);
                 break;
         }
     }
