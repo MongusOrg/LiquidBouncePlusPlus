@@ -559,7 +559,7 @@ public class Fly extends Module {
                 if (wdState == 3) {
                     mc.timer.timerSpeed = wdTimerValue.get();
                     mc.thePlayer.motionY = 0;
-                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.9F);
+                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.8F);
                 } else {
                     mc.timer.timerSpeed = 1;
                 }
