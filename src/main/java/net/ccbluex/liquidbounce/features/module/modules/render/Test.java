@@ -25,7 +25,7 @@ public class Test extends Module {
         // testing only
         GLOW_SHADER.startDraw(event.getPartialTicks());
         ESP.renderNameTags = false;
-        RenderUtils.drawRect(100, 100, 300, 200, 1F);
+        RenderUtils.drawRect(100, 100, 300, 200, 1);
         ESP.renderNameTags = true;
         GLOW_SHADER.stopDraw(Color.black, 2F, 1F);
     }
