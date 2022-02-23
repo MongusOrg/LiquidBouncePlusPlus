@@ -180,7 +180,8 @@ class ModuleManager : Listenable {
                 PacketFixer::class.java,
                 AutoPlay::class.java,
                 AutoKit::class.java,
-                AntiBan::class.java
+                AntiBan::class.java,
+                Test::class.java
         )
 
         registerModule(Fucker)
