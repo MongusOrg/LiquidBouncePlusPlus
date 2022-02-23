@@ -92,6 +92,8 @@ public class Fly extends Module {
 
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
 
+    private final FloatValue wdTimerValue = new FloatValue("WD-Timer", 2F, 1F, 5F, () -> { return modeValue.get().equalsIgnoreCase("watchdog"); });
+
     // Verus
     private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Jump"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verus"); });
     private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual", () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
@@ -555,8 +557,11 @@ public class Fly extends Module {
                 break;
             case "watchdog":
                 if (wdState == 3) {
+                    mc.timer.timerSpeed = wdTimerValue.get();
                     mc.thePlayer.motionY = 0;
                     MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.9F);
+                } else {
+                    mc.timer.timerSpeed = 1;
                 }
                 break;
         }
@@ -586,7 +591,7 @@ public class Fly extends Module {
                 break;
             case "watchdog":
                 if (event.getEventState() == EventState.PRE && wdState == 1 && mc.thePlayer.onGround) {
-                    event.setX(event.getX() - 0.5);
+                    event.setY(event.getY() - 0.5);
                     wdState = 2;
                 }
                 break;
@@ -754,8 +759,6 @@ public class Fly extends Module {
             case "watchdog":
                 if (wdState <= 2)
                     event.zeroXZ();
-                else
-                    event.setY(0);
                 break;
         }
     }
