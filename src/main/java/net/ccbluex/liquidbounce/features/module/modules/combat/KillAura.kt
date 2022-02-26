@@ -914,7 +914,7 @@ class KillAura : Module() {
             return
 
         if (!abThruWallValue.get() && interactEntity is EntityLivingBase) {
-            val entityLB = interactEntity as entityLB
+            val entityLB = interactEntity as EntityLivingBase
             if (!entityLB.canEntityBeSeen(mc.thePlayer!!)) {
                 fakeBlock = true
                 return
