@@ -38,7 +38,6 @@ public final class ServerUtils extends MinecraftInstance {
     }
 
     public static boolean isHypixelLobby() {
-		if (!getRemoteIp().toLowerCase().contains("hypixel")) return false;
 		String target = "CLICK TO PLAY";
 		for (Entity entity : mc.theWorld.loadedEntityList) {
 			if (entity.getName().startsWith("§e§l")) {

@@ -128,6 +128,7 @@ public class Fly extends Module {
     private double startY;
 
     private final MSTimer groundTimer = new MSTimer();
+    private final MSTimer boostTimer = new MSTimer();
     
     private final TickTimer spartanTimer = new TickTimer();
     private final TickTimer verusTimer = new TickTimer();
@@ -540,6 +541,15 @@ public class Fly extends Module {
                     wdState++;
 
                 if (wdState == 4) {
+                    if (!boostTimer.hasTimePassed(500L))
+                        mc.timer.timerSpeed = 1.4F;
+                    else if (!boostTimer.hasTimePassed(800L))
+                        mc.timer.timerSpeed = 1.3F;
+                    else if (!boostTimer.hasTimePassed(1000L))
+                        mc.timer.timerSpeed = 1.2F;
+                    else
+                        mc.timer.timerSpeed = 1F;
+
                     mc.thePlayer.motionY = 0.0001D;
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
                 }
@@ -614,7 +624,12 @@ public class Fly extends Module {
 
         if (packet instanceof S08PacketPlayerPosLook && wdState == 3) {
             wdState = 4;
-            LiquidBounce.hud.addNotification(new Notification("Activated fly.", Notification.Type.SUCCESS));
+            if (boostTimer.hasTimePassed(8000L)) {
+                LiquidBounce.hud.addNotification(new Notification("Enabled boost.", Notification.Type.SUCCESS));
+                boostTimer.reset();
+            } else {
+                LiquidBounce.hud.addNotification(new Notification("Disabled boost to prevent flagging.", Notification.Type.WARNING));
+            }
         }
 
         if (packet instanceof C03PacketPlayer) {
