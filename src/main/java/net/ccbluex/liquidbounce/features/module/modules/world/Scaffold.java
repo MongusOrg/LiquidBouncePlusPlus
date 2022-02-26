@@ -1088,6 +1088,17 @@ public class Scaffold extends Module {
         return true;
     }
 
+    @EventTarget
+	public void onTick(TickEvent event) {
+        if (mc.thePlayer == null) return;
+
+		for (int i = 0; i < 8; i++) {
+			if (mc.thePlayer.inventory.mainInventory[i] != null
+					&& mc.thePlayer.inventory.mainInventory[i].stackSize <= 0)
+				mc.thePlayer.inventory.mainInventory[i] = null;
+		}
+	}
+
     /**
      * @return hotbar blocks amount
      */

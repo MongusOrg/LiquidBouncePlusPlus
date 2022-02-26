@@ -52,7 +52,7 @@ class FastUse : Module() {
         if (usingItem is ItemFood || usingItem is ItemBucketMilk || usingItem is ItemPotion) {
             when (modeValue.get().toLowerCase()) {
                 "instant" -> {
-                    repeat(35) {
+                    repeat(32) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
                     }
 
