@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.utils.render.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
+import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.ccbluex.liquidbounce.ui.font.Fonts
@@ -257,14 +258,14 @@ class Notification(message : String, type : Type, displayLength: Long) {
                 //notification bar xd
                 GlStateManager.resetColor()
                 if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
-                    RenderUtils.drawRoundedRect(kek, -y, kek + toolong, -6F - y, 0F, 3F, 3F, 0F, when(type) {
+                    RenderUtils.customRounded(kek, -y, kek + toolong, -6F - y, 0F, 3F, 3F, 0F, when(type) {
                         Type.SUCCESS -> Color(80, 255, 80).rgb
                         Type.ERROR -> Color(255, 80, 80).rgb
                         Type.INFO -> Color(255, 255, 255).rgb
                         Type.WARNING -> Color(255, 255, 0).rgb
                     })
                 } else if (fadeState == FadeState.IN) {
-                    RenderUtils.drawRoundedRect(kek, -y, kek + dist, -6F - y, 0F, 3F, 3F, 0F, when(type) {
+                    RenderUtils.customRounded(kek, -y, kek + dist, -6F - y, 0F, 3F, 3F, 0F, when(type) {
                         Type.SUCCESS -> Color(80, 255, 80).rgb
                         Type.ERROR -> Color(255, 80, 80).rgb
                         Type.INFO -> Color(255, 255, 255).rgb
