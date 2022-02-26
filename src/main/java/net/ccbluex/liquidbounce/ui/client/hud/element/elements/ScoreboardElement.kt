@@ -80,8 +80,10 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val garbageTimer = MSTimer()
 
     override fun updateElement() {
-        if (garbageTimer.hasTimePassed(60000L))
+        if (garbageTimer.hasTimePassed(60000L)) {
             cachedDomains.clear() // prevent memory leak
+            garbageTimer.reset()
+        }
     }
 
     /**
@@ -214,7 +216,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                 if (cachedDomains.contains(stripped)) {
                     name = hud.domainValue.get()
                     changed = true
-                } else if (ServerUtils.isHypixelDomain(stripped)) {
+                }/* else if (ServerUtils.isHypixelDomain(stripped)) {
                     name = hud.domainValue.get()
                     changed = true
                     cachedDomains.add(stripped)
@@ -226,7 +228,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                             cachedDomains.add(stripped)
                             break;
                         }
-                    }
+                    }*/
             }
             
             if (changed) {

@@ -251,6 +251,8 @@ class Notification(message : String, type : Type, displayLength: Long) {
                     GL11.glTranslatef(originalX, originalY, 0F)
                 } 
 
+                GlStateManager.enableAlpha()
+
                 Stencil.write(true)
                 RenderUtils.drawRoundedRect(-x + 8 + textLength, -y, kek, -28F - y, 3F, backgroundColor.rgb)
                 Stencil.erase(true)
@@ -258,14 +260,14 @@ class Notification(message : String, type : Type, displayLength: Long) {
                 //notification bar xd
                 GlStateManager.resetColor()
                 if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
-                    RenderUtils.customRounded(kek, -y, kek + toolong, -6F - y, 0F, 3F, 3F, 0F, when(type) {
+                    RenderUtils.drawRoundedRect(kek, -y, kek + toolong, -4F - y, 2F, when(type) {
                         Type.SUCCESS -> Color(80, 255, 80).rgb
                         Type.ERROR -> Color(255, 80, 80).rgb
                         Type.INFO -> Color(255, 255, 255).rgb
                         Type.WARNING -> Color(255, 255, 0).rgb
                     })
                 } else if (fadeState == FadeState.IN) {
-                    RenderUtils.customRounded(kek, -y, kek + dist, -6F - y, 0F, 3F, 3F, 0F, when(type) {
+                    RenderUtils.drawRoundedRect(kek, -y, kek + dist, -4F - y, 2F, when(type) {
                         Type.SUCCESS -> Color(80, 255, 80).rgb
                         Type.ERROR -> Color(255, 80, 80).rgb
                         Type.INFO -> Color(255, 255, 255).rgb
@@ -274,7 +276,7 @@ class Notification(message : String, type : Type, displayLength: Long) {
                 }
 
                 GlStateManager.resetColor()
-                Fonts.font40.drawString(message, -x + 2, -19F - y, -1)
+                Fonts.font40.drawString(message, -x + 2, -20F - y, -1)
                 Stencil.dispose()
             }
         }
