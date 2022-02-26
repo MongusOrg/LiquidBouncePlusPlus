@@ -539,10 +539,10 @@ class Target : Element() {
 
                     val calcScaleX = (progressChill * (4F / (tWidth / 2F)))
                     val calcScaleY = if (chillHealthBarValue.get()) (progressChill * (4F / 24F))
-                                    else (progressChill * (4F / 21F))
+                                    else (progressChill * (4F / 19F))
                     val calcTranslateX = floatX + tWidth / 2F * calcScaleX
                     val calcTranslateY = floatY + if (chillHealthBarValue.get()) (24F * (progressChill * (4F / 24F))) 
-                                                        else (21F * (progressChill * (4F / 21F)))
+                                                        else (19F * (progressChill * (4F / 19F)))
 
                     // translation/scaling
                     GL11.glScalef(1f, 1f, 1f)
@@ -568,7 +568,7 @@ class Target : Element() {
                      */
 
                     // background
-                    RenderUtils.drawRoundedRect(0F, 0F, tWidth, if (chillHealthBarValue.get()) 48F else 42F, 7F, reColorBg.rgb)
+                    RenderUtils.drawRoundedRect(0F, 0F, tWidth, if (chillHealthBarValue.get()) 48F else 38F, 7F, reColorBg.rgb)
                     GlStateManager.resetColor()
                     GL11.glColor4f(1F, 1F, 1F, 1F)
                     

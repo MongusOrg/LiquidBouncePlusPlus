@@ -731,7 +731,7 @@ public class Fly extends Module {
                 }
                 break;
             case "watchdog":
-                if (wdState <= 2)
+                if (wdState < 4)
                     event.zeroXZ();
                 break;
         }
