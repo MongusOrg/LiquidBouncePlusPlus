@@ -542,7 +542,7 @@ public class Fly extends Module {
                 }
 
                 if (wdState == 1 && wdTick == 3)
-                    wdState++
+                    wdState++;
 
                 if (wdState == 4) {
                     mc.thePlayer.motionY = 0.0001D;
