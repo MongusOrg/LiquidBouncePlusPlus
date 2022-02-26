@@ -63,7 +63,6 @@ public class Fly extends Module {
 
             // Verus
             "Verus",
-            //"VerusFloat",
             "VerusLowHop",
 
             // Spartan
@@ -91,8 +90,6 @@ public class Fly extends Module {
     private final BoolValue groundSpoofValue = new BoolValue("GroundSpoof", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
 
     private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
-
-    private final FloatValue wdTimerValue = new FloatValue("WD-Timer", 2F, 1F, 5F, () -> { return modeValue.get().equalsIgnoreCase("watchdog"); });
 
     // Verus
     private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Jump"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verus"); });
@@ -125,7 +122,6 @@ public class Fly extends Module {
 
     // Visuals
     private final BoolValue markValue = new BoolValue("Mark", true);
-    //private final BoolValue debugValue = new BoolValue("Debug", false, () -> { return modeValue.get().equalsIgnoreCase("verusfloat"); });
 
     private BlockPos lastPosition;
 
@@ -145,8 +141,9 @@ public class Fly extends Module {
 
     private boolean wasDead;
 
-    private int boostTicks, dmgCooldown, wdState = 0;
+    private int boostTicks, dmgCooldown = 0;
     private int verusJumpTimes = 0;
+    private int wdState, wdTick = 0;
 
     private boolean verusDmged, shouldActiveDmg = false;
 
@@ -223,6 +220,7 @@ public class Fly extends Module {
 
         moveSpeed = 0;
         wdState = 0;
+        wdTick = 0;
 
         switch (mode.toLowerCase()) {
             case "ncp":
@@ -310,7 +308,7 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
 
-        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus") && !mode.equalsIgnoreCase("Jump")) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
+        if ((!mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus") && !mode.equalsIgnoreCase("Jump") && !mode.equalsIgnoreCase("creative")) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
             mc.thePlayer.motionZ = 0;
@@ -456,24 +454,6 @@ public class Fly extends Module {
                     mc.thePlayer.movementInput.moveStrafe = 0F;
                 }
                 break;
-            /*case "verusfloat": // flagging idk why
-                if (!mc.thePlayer.onGround || !MovementUtils.isMoving()) {
-                    shouldActive = false;
-                    verusTimer.reset();
-                    break; // ignore
-                }
-                
-                shouldActive = true;
-                if (verusTimer.hasTimePassed(4)) {
-                    shouldFakeJump = true;
-                    MovementUtils.strafe((float)MovementUtils.getBaseMoveSpeed());
-                    verusTimer.reset();
-                } else {
-                    shouldFakeJump = false;
-                    MovementUtils.strafe(MovementUtils.getSpeed() - MovementUtils.getSpeed() / 64.0F);
-                }
-                verusTimer.update();
-                break;*/
             case "creative":
                 mc.thePlayer.capabilities.isFlying = true;
 
@@ -556,12 +536,17 @@ public class Fly extends Module {
                     mc.thePlayer.jump();
                 break;
             case "watchdog":
-                if (wdState == 3) {
-                    mc.timer.timerSpeed = wdTimerValue.get();
-                    mc.thePlayer.motionY = 0;
-                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.8F);
-                } else {
-                    mc.timer.timerSpeed = 1;
+                if (wdState == 0) {
+                    mc.thePlayer.motionY = 0.1D;
+                    wdState++;
+                }
+
+                if (wdState == 1 && wdTick == 3)
+                    wdState++
+
+                if (wdState == 4) {
+                    mc.thePlayer.motionY = 0.0001D;
+                    MovementUtils.strafe(MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D));
                 }
                 break;
         }
@@ -590,10 +575,8 @@ public class Fly extends Module {
                 }
                 break;
             case "watchdog":
-                if (event.getEventState() == EventState.PRE && wdState == 1 && mc.thePlayer.onGround) {
-                    event.setY(event.getY() - 0.5);
-                    wdState = 2;
-                }
+                if (event.getEventState() == EventState.PRE)
+                    wdTick++;
                 break;
         }  
     }
@@ -634,8 +617,8 @@ public class Fly extends Module {
         if(noPacketModify)
             return;
 
-        if (packet instanceof S08PacketPlayerPosLook && wdState == 2) {
-            wdState = 3;
+        if (packet instanceof S08PacketPlayerPosLook && wdState == 3) {
+            wdState = 4;
             LiquidBounce.hud.addNotification(new Notification("Activated fly.", Notification.Type.SUCCESS));
         }
 
@@ -660,15 +643,6 @@ public class Fly extends Module {
                     sendAAC5Packets();
             }
 
-            /*if (mode.equalsIgnoreCase("VerusFloat") && packetPlayer.isMoving() && shouldActive) {
-                if (shouldFakeJump) {
-                    packetPlayer.onGround = false;
-                } else {
-                    packetPlayer.onGround = true;
-                }
-                if (debugValue.get()) ClientUtils.displayChatMessage("onGround: " + packetPlayer.onGround + ", last:" + lastOnGround);
-            }*/
-
             if (mode.equalsIgnoreCase("clip") && clipGroundSpoof.get())
                 packetPlayer.onGround = true;
 
@@ -677,6 +651,11 @@ public class Fly extends Module {
 
             if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
                 packetPlayer.onGround = false;
+            }
+
+            if (mode.equalsIgnoreCase("watchdog") && wdState == 2) {
+                packetPlayer.y -= 0.187;
+                stage++;
             }
         }
     }
@@ -773,7 +752,7 @@ public class Fly extends Module {
             event.setBoundingBox(AxisAlignedBB.fromBounds(event.getX(), event.getY(), event.getZ(), event.getX() + 1, startY, event.getZ() + 1));
         }
 
-        if (event.getBlock() instanceof BlockAir && ((mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking())/* || mode.equalsIgnoreCase("verusfloat")*/ || mode.equalsIgnoreCase("veruslowhop")))
+        if (event.getBlock() instanceof BlockAir && ((mode.equalsIgnoreCase("collide") && !mc.thePlayer.isSneaking()) || mode.equalsIgnoreCase("veruslowhop")))
             event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getX(), event.getY(), event.getZ()));
 
         if (event.getBlock() instanceof BlockAir && (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Verus") && 

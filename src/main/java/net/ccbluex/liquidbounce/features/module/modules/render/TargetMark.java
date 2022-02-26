@@ -260,4 +260,9 @@ public class TargetMark extends Module {
 		return (x < 0.5) ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
 	}
 
+	@Override
+	public String getTag() {
+		return modeValue.get();
+	}
+
 }

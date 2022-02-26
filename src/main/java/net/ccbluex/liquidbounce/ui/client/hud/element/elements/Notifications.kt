@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.LiquidBounce.hud
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
+import net.ccbluex.liquidbounce.value.ListValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
@@ -20,10 +21,8 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.utils.render.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
-
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
@@ -37,10 +36,9 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
                     side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
 
     private val smoothYTransition = BoolValue("Smooth-YTransition", true)
-    private val barValue = BoolValue("Bar", true)
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
-    private val newValue = BoolValue("New", true)
+    private val styleValue = ListValue("Style", arrayOf("Compact", "Full", "New"), "Compact")
     private val newAnimValue = BoolValue("UseNewAnim", true)
     private val animationSpeed = FloatValue("Anim-Speed", 0.5F, 0.01F, 1F, { newAnimValue.get() })
     private val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
@@ -66,23 +64,50 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         
         if (mc.currentScreen !is GuiHudDesigner || !notifications.isEmpty()) 
             for(i in notifications)
-                i.drawNotification(animationY, smoothYTransition.get(), newAnimValue.get(), animationSpeed.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat()).also { /**if (!i.stayTimer.hasTimePassed(i.displayTime))*/ animationY += if (newValue.get()) (if (side.vertical == Side.Vertical.DOWN) 20 else -20) else (if (side.vertical == Side.Vertical.DOWN) 30 else -30) }
+                i.drawNotification(
+                animationY, 
+                smoothYTransition.get(), 
+                newAnimValue.get(), 
+                animationSpeed.get(), 
+                bgColor, side, 
+                styleValue.get(), 
+                blurValue.get(), 
+                blurStrength.get(), 
+                renderX.toFloat(), 
+                renderY.toFloat())
+                    .also { animationY += when (styleValue.get().toLowerCase()) {
+                        "compact" -> 20
+                        "full" -> 30
+                        else -> 30
+                    } * if (side.vertical == Side.Vertical.DOWN) 1F else -1F}
         else
-            exampleNotification.drawNotification(animationY, smoothYTransition.get(), newAnimValue.get(), animationSpeed.get(), bgColor, side, barValue.get(), newValue.get(), blurValue.get(), blurStrength.get(), renderX.toFloat(), renderY.toFloat())
+            exampleNotification.drawNotification(
+                animationY, 
+                smoothYTransition.get(), 
+                newAnimValue.get(), 
+                animationSpeed.get(), 
+                bgColor, side, 
+                styleValue.get(), 
+                blurValue.get(), 
+                blurStrength.get(), 
+                renderX.toFloat(), 
+                renderY.toFloat())
 
         if (mc.currentScreen is GuiHudDesigner) {
             exampleNotification.fadeState = Notification.FadeState.STAY
             //exampleNotification.stayTimer.reset()
             exampleNotification.x = exampleNotification.textLength + 8F
+            if (exampleNotification.stayTimer.hasTimePassed(exampleNotification.displayTime)) 
+                exampleNotification.stayTimer.reset()
 
-            return if (newValue.get()) Border(-102F, -48F, 0F, -30F) else Border(-130F, -58F, 0F, -30F)
+            return if (styleValue.get().equals("compact")) Border(-102F, -48F, 0F, -30F) else Border(-130F, -58F, 0F, -30F)
         }
 
         return null
     }
 
 }
-class Notification(message : String,type : Type, displayLength: Long) {
+class Notification(message : String, type : Type, displayLength: Long) {
     private val notifyDir = "liquidbounce+/notification/"
     private val imgSuccess = ResourceLocation("${notifyDir}checkmark.png")
     private val imgError = ResourceLocation("${notifyDir}error.png")
@@ -125,7 +150,7 @@ class Notification(message : String,type : Type, displayLength: Long) {
         IN,STAY,OUT,END
     }
 
-    fun drawNotification(animationY: Float, smooth: Boolean, newAnim: Boolean, animSpeed: Float, backgroundColor: Color, side: Side, bar: Boolean, new: Boolean, blur: Boolean, strength: Float, originalX: Float, originalY: Float) {
+    fun drawNotification(animationY: Float, smooth: Boolean, newAnim: Boolean, animSpeed: Float, backgroundColor: Color, side: Side, style: String, blur: Boolean, strength: Float, originalX: Float, originalY: Float) {
         val delta = RenderUtils.deltaTime
         val width = textLength.toFloat() + 8.0f
         
@@ -140,76 +165,119 @@ class Notification(message : String,type : Type, displayLength: Long) {
 
         var y = firstY
 
-        if (new) {
-            GlStateManager.resetColor()
-            if (blur) {
-                GL11.glTranslatef(-originalX, -originalY, 0F)
-                GL11.glPushMatrix()
-                BlurUtils.blurAreaRounded(originalX + -x - 5F, originalY + -18F - y, originalX + -x + 8F + textLength, originalY + -y, 3F, strength)
-                GL11.glPopMatrix()
-                GL11.glTranslatef(originalX, originalY, 0F)
-            } 
+        when (style.toLowerCase()) {
+            "compact" -> {
+                GlStateManager.resetColor()
+                if (blur) {
+                    GL11.glTranslatef(-originalX, -originalY, 0F)
+                    GL11.glPushMatrix()
+                    BlurUtils.blurAreaRounded(originalX + -x - 5F, originalY + -18F - y, originalX + -x + 8F + textLength, originalY + -y, 3F, strength)
+                    GL11.glPopMatrix()
+                    GL11.glTranslatef(originalX, originalY, 0F)
+                } 
 
-            RenderUtils.customRounded(-x + 8F + textLength, -y, -x - 2F, -18F - y, 0F, 3F, 3F, 0F, backgroundColor.rgb)
-            RenderUtils.customRounded(-x - 2F, -y, -x - 5F, -18F - y, 3F, 0F, 0F, 3F, when(type) {
-                    Type.SUCCESS -> Color(80, 255, 80).rgb
-                    Type.ERROR -> Color(255, 80, 80).rgb
-                    Type.INFO -> Color(255, 255, 255).rgb
-                    Type.WARNING -> Color(255, 255, 0).rgb
-                })  
+                RenderUtils.customRounded(-x + 8F + textLength, -y, -x - 2F, -18F - y, 0F, 3F, 3F, 0F, backgroundColor.rgb)
+                RenderUtils.customRounded(-x - 2F, -y, -x - 5F, -18F - y, 3F, 0F, 0F, 3F, when(type) {
+                        Type.SUCCESS -> Color(80, 255, 80).rgb
+                        Type.ERROR -> Color(255, 80, 80).rgb
+                        Type.INFO -> Color(255, 255, 255).rgb
+                        Type.WARNING -> Color(255, 255, 0).rgb
+                    })  
 
-            GlStateManager.resetColor()
-            Fonts.font40.drawString(message, -x + 3, -13F - y, -1)
-        } else {
-            //bg
-            GlStateManager.resetColor()
-            if (blur) {
-                GL11.glTranslatef(-originalX, -originalY, 0F)
-                GL11.glPushMatrix()
-                BlurUtils.blurArea(originalX + -x - 1 - 26F, originalY + -28F - y, originalX + -x + 8 + textLength, originalY + -y, strength)
-                GL11.glPopMatrix()
-                GL11.glTranslatef(originalX, originalY, 0F)
-            } 
-
-            RenderUtils.drawRect(-x + 8 + textLength, -y, -x - 1 - 26F, -28F - y, backgroundColor.rgb)
-
-            GL11.glPushMatrix()
-            GlStateManager.disableAlpha()
-            RenderUtils.drawImage2(when (type) {
-                Type.SUCCESS -> imgSuccess
-                Type.ERROR -> imgError
-                Type.WARNING -> imgWarning
-                Type.INFO -> imgInfo
-            }, -x - 1 - 26F, -27F - y, 26, 26)
-            GlStateManager.enableAlpha()
-            GL11.glPopMatrix()
-
-            val dist = (x + 1 + 26F) - (x - 8 - textLength)
-
-            val kek = -x - 1 - 26F
-
-            //notification bar xd
-            GlStateManager.resetColor()
-            if (bar) if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
-                RenderUtils.drawRect(kek, -y, kek + (dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())), -1F - y, when(type) {
-                    Type.SUCCESS -> Color(80, 255, 80).rgb
-                    Type.ERROR -> Color(255, 80, 80).rgb
-                    Type.INFO -> Color(255, 255, 255).rgb
-                    Type.WARNING -> Color(255, 255, 0).rgb
-                })
-            } else if (fadeState == FadeState.IN) {
-                RenderUtils.drawRect(kek, -y, kek + dist, -1F - y, when(type) {
-                    Type.SUCCESS -> Color(80, 255, 80).rgb
-                    Type.ERROR -> Color(255, 80, 80).rgb
-                    Type.INFO -> Color(255, 255, 255).rgb
-                    Type.WARNING -> Color(255, 255, 0).rgb
-                })
+                GlStateManager.resetColor()
+                Fonts.font40.drawString(message, -x + 3, -13F - y, -1)
             }
-            
-            GlStateManager.resetColor()
-            Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
+            "full" -> {
+                val dist = (x + 1 + 26F) - (x - 8 - textLength)
+                val kek = -x - 1 - 26F
+
+                GlStateManager.resetColor()
+                if (blur) {
+                    GL11.glTranslatef(-originalX, -originalY, 0F)
+                    GL11.glPushMatrix()
+                    BlurUtils.blurArea(originalX + kek, originalY + -28F - y, originalX + -x + 8 + textLength, originalY + -y, strength)
+                    GL11.glPopMatrix()
+                    GL11.glTranslatef(originalX, originalY, 0F)
+                } 
+
+                RenderUtils.drawRect(-x + 8 + textLength, -y, kek, -28F - y, backgroundColor.rgb)
+
+                GL11.glPushMatrix()
+                GlStateManager.disableAlpha()
+                RenderUtils.drawImage2(when (type) {
+                    Type.SUCCESS -> imgSuccess
+                    Type.ERROR -> imgError
+                    Type.WARNING -> imgWarning
+                    Type.INFO -> imgInfo
+                }, kek, -27F - y, 26, 26)
+                GlStateManager.enableAlpha()
+                GL11.glPopMatrix()
+
+
+                //notification bar xd
+                GlStateManager.resetColor()
+                if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
+                    RenderUtils.drawRect(kek, -y, kek + (dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())), -1F - y, when(type) {
+                        Type.SUCCESS -> Color(80, 255, 80).rgb
+                        Type.ERROR -> Color(255, 80, 80).rgb
+                        Type.INFO -> Color(255, 255, 255).rgb
+                        Type.WARNING -> Color(255, 255, 0).rgb
+                    })
+                } else if (fadeState == FadeState.IN) {
+                    RenderUtils.drawRect(kek, -y, kek + dist, -1F - y, when(type) {
+                        Type.SUCCESS -> Color(80, 255, 80).rgb
+                        Type.ERROR -> Color(255, 80, 80).rgb
+                        Type.INFO -> Color(255, 255, 255).rgb
+                        Type.WARNING -> Color(255, 255, 0).rgb
+                    })
+                }
+
+                GlStateManager.resetColor()
+                Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
+            }
+            "new" -> {
+                val dist = (x + 1) - (x - 8 - textLength)
+                val kek = -x - 1
+
+                val toolong = dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())
+
+                GlStateManager.resetColor()
+                if (blur) {
+                    GL11.glTranslatef(-originalX, -originalY, 0F)
+                    GL11.glPushMatrix()
+                    BlurUtils.blurAreaRounded(originalX + kek, originalY + -28F - y, originalX + -x + 8 + textLength, originalY + -y, 3F, strength)
+                    GL11.glPopMatrix()
+                    GL11.glTranslatef(originalX, originalY, 0F)
+                } 
+
+                Stencil.write(true)
+                RenderUtils.drawRoundedRect(-x + 8 + textLength, -y, kek, -28F - y, 3F, backgroundColor.rgb)
+                Stencil.erase(true)
+
+                //notification bar xd
+                GlStateManager.resetColor()
+                if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
+                    RenderUtils.drawRoundedRect(kek, -y, kek + toolong, -6F - y, 0F, 3F, 3F, 0F, when(type) {
+                        Type.SUCCESS -> Color(80, 255, 80).rgb
+                        Type.ERROR -> Color(255, 80, 80).rgb
+                        Type.INFO -> Color(255, 255, 255).rgb
+                        Type.WARNING -> Color(255, 255, 0).rgb
+                    })
+                } else if (fadeState == FadeState.IN) {
+                    RenderUtils.drawRoundedRect(kek, -y, kek + dist, -6F - y, 0F, 3F, 3F, 0F, when(type) {
+                        Type.SUCCESS -> Color(80, 255, 80).rgb
+                        Type.ERROR -> Color(255, 80, 80).rgb
+                        Type.INFO -> Color(255, 255, 255).rgb
+                        Type.WARNING -> Color(255, 255, 0).rgb
+                    })
+                }
+
+                GlStateManager.resetColor()
+                Fonts.font40.drawString(message, -x + 2, -19F - y, -1)
+                Stencil.dispose()
+            }
         }
-        
+
         when (fadeState) {
             FadeState.IN -> {
                 if (x < width) {
