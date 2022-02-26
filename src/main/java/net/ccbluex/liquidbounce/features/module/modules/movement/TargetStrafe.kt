@@ -120,10 +120,10 @@ class TargetStrafe : Module() {
 
     private fun maximizeSpeed(ent: EntityLivingBase, speed: Double, range: Float): Double {
         mc.thePlayer ?: return 0.0
-        val dist = mc.thePlayer.getDistanceToEntity(ent).toDouble()
-        val maxDist = (range * range).coerceAtMost(radius.get() * radius.get() - 0.25f).toDouble() - (dist * dist)
+        /*val dist = mc.thePlayer.getDistanceToEntity(ent).toDouble()
+        val maxDist = (range * range).coerceAtMost(radius.get() * radius.get() - 0.25f).toDouble() - (dist * dist)*/
 
-        return speed.coerceIn(0.0, maxDist)
+        return speed.coerceIn(0.0, /*maxDist*/range.toDouble())
     }
 
     val keyMode: Boolean

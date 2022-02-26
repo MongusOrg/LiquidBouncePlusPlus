@@ -101,7 +101,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
             if (exampleNotification.stayTimer.hasTimePassed(exampleNotification.displayTime)) 
                 exampleNotification.stayTimer.reset()
 
-            return if (styleValue.get().equals("compact")) Border(-102F, -48F, 0F, -30F) else Border(-130F, -58F, 0F, -30F)
+            return if (styleValue.get().equals("compact", true)) Border(-102F, -48F, 0F, -30F) else Border(-130F, -58F, 0F, -30F)
         }
 
         return null
@@ -237,8 +237,8 @@ class Notification(message : String, type : Type, displayLength: Long) {
                 Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
             }
             "new" -> {
-                val dist = (x + 1) - (x - 8 - textLength)
-                val kek = -x - 1
+                val dist = (x + 1 + 26F) - (x - 8 - textLength)
+                val kek = -x - 1 - 26F
 
                 val toolong = dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())
 
@@ -251,33 +251,39 @@ class Notification(message : String, type : Type, displayLength: Long) {
                     GL11.glTranslatef(originalX, originalY, 0F)
                 } 
 
+                GL11.glPushMatrix()
+                GlStateManager.disableAlpha()
+                RenderUtils.drawImage2(when (type) {
+                    Type.SUCCESS -> imgSuccess
+                    Type.ERROR -> imgError
+                    Type.WARNING -> imgWarning
+                    Type.INFO -> imgInfo
+                }, kek, -27F - y, 26, 26)
                 GlStateManager.enableAlpha()
+                GL11.glPopMatrix()
 
                 Stencil.write(true)
                 RenderUtils.drawRoundedRect(-x + 8 + textLength, -y, kek, -28F - y, 3F, backgroundColor.rgb)
                 Stencil.erase(true)
 
-                //notification bar xd
                 GlStateManager.resetColor()
-                if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime)) {
-                    RenderUtils.drawRoundedRect(kek, -y, kek + toolong, -4F - y, 2F, when(type) {
-                        Type.SUCCESS -> Color(80, 255, 80).rgb
-                        Type.ERROR -> Color(255, 80, 80).rgb
-                        Type.INFO -> Color(255, 255, 255).rgb
-                        Type.WARNING -> Color(255, 255, 0).rgb
+                if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime))
+                    RenderUtils.newDrawRect(kek, -y, kek + toolong, -28F - y, when(type) {
+                        Type.SUCCESS -> Color(80, 255, 80, backgroundColor.alpha / 2).rgb
+                        Type.ERROR -> Color(255, 80, 80, backgroundColor.alpha / 2).rgb
+                        Type.INFO -> Color(255, 255, 255, backgroundColor.alpha / 2).rgb
+                        Type.WARNING -> Color(255, 255, 0, backgroundColor.alpha / 2).rgb
                     })
-                } else if (fadeState == FadeState.IN) {
-                    RenderUtils.drawRoundedRect(kek, -y, kek + dist, -4F - y, 2F, when(type) {
-                        Type.SUCCESS -> Color(80, 255, 80).rgb
-                        Type.ERROR -> Color(255, 80, 80).rgb
-                        Type.INFO -> Color(255, 255, 255).rgb
-                        Type.WARNING -> Color(255, 255, 0).rgb
+                else if (fadeState == FadeState.IN)
+                    RenderUtils.newDrawRect(kek, -y, kek + dist, -28F - y, when(type) {
+                        Type.SUCCESS -> Color(80, 255, 80, backgroundColor.alpha / 2).rgb
+                        Type.ERROR -> Color(255, 80, 80, backgroundColor.alpha / 2).rgb
+                        Type.INFO -> Color(255, 255, 255, backgroundColor.alpha / 2).rgb
+                        Type.WARNING -> Color(255, 255, 0, backgroundColor.alpha / 2).rgb
                     })
-                }
 
-                GlStateManager.resetColor()
-                Fonts.font40.drawString(message, -x + 2, -20F - y, -1)
                 Stencil.dispose()
+                Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
             }
         }
 

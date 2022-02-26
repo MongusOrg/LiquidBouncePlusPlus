@@ -126,6 +126,7 @@ class KillAura : Module() {
     ), "None")
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true, { !autoBlockModeValue.get().equals("None", true) })
     private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false, { !autoBlockModeValue.get().equals("None", true) })
+    private val abThruWallValue = BoolValue("AutoBlockThroughWalls", false, { !autoBlockModeValue.get().equals("None", true) })
 
     // smart autoblock stuff
     private val smartAutoBlockValue = BoolValue("SmartAutoBlock", false, { !autoBlockModeValue.get().equals("None", true) }) // thanks czech
@@ -243,6 +244,7 @@ class KillAura : Module() {
     // Fake block status
     var blockingStatus = false
     var verusBlocking = false
+    var fakeBlock = false
 
     var smartBlocking = false
     private val canSmartBlock: Boolean
@@ -911,6 +913,14 @@ class KillAura : Module() {
         if (!canSmartBlock || autoBlockModeValue.get().equals("none", true) || !(blockRate.get() > 0 && Random().nextInt(100) <= blockRate.get()))
             return
 
+        if (!abThruWallValue.get() && interactEntity is EntityLivingBase) {
+            val entityLB = interactEntity as entityLB
+            if (!entityLB.canEntityBeSeen(mc.thePlayer!!)) {
+                fakeBlock = true
+                return
+            }
+        }
+
         if (autoBlockModeValue.get().equals("ncp", true)) {
             mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
             blockingStatus = true
@@ -957,12 +967,14 @@ class KillAura : Module() {
      * Stop blocking
      */
     private fun stopBlocking() {
+        fakeBlock = false
+
         if (blockingStatus) {
             if (autoBlockModeValue.get().equals("oldhypixel", true))
                 mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(1.0, 1.0, 1.0), EnumFacing.DOWN))
             else
                 mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
-
+            
             blockingStatus = false
         }
     }

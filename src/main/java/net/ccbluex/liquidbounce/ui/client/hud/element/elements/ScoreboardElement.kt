@@ -80,7 +80,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val garbageTimer = MSTimer()
 
     override fun updateElement() {
-        if (garbageTimer.hasTimePassed(60000L)) {
+        if (garbageTimer.hasTimePassed(30000L)) {
             cachedDomains.clear() // prevent memory leak
             garbageTimer.reset()
         }

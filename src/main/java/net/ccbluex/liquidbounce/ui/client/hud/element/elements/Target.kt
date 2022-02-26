@@ -56,7 +56,7 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "NewFlux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val chillFontSpeed = FloatValue("Chill-FontSpeed", 0.5F, 0.01F, 1F, { styleValue.get().equals("chill", true) })
     private val chillHealthBarValue = BoolValue("Chill-Healthbar", true, { styleValue.get().equals("chill", true) })
@@ -298,8 +298,8 @@ class Target : Element() {
                 // without the new rise update i would never think of recreating this Targethud lol
                 "Rise" -> {
                     val font = Fonts.fontSFUI40
-                    val name = "Name ${convertedTarget.name}"
-                    val info = "Distance ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))} Hurt ${convertedTarget.hurtTime}"
+                    val name = "Name: ${convertedTarget.name}"
+                    val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}"// Hurt ${convertedTarget.hurtTime}"
 
                     easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
@@ -372,18 +372,18 @@ class Target : Element() {
                     // no gradient: RenderUtils.drawRect(5F, 40F, 5F + barWidth, 50F, barColor.rgb)
 
                     when (colorModeValue.get().toLowerCase()) {
-                        "custom" -> RenderUtils.drawRect(5F, 43F, 5F + barWidth, 47F, barColor.rgb)
-                        "health" -> RenderUtils.drawRect(5F, 43F, 5F + barWidth, 47F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
+                        "custom" -> RenderUtils.drawRect(5F, 42F, 5F + barWidth, 48F, barColor.rgb)
+                        "health" -> RenderUtils.drawRect(5F, 42F, 5F + barWidth, 48F, BlendUtils.getHealthColor(easingHealth, convertedTarget.maxHealth).rgb) // da animation
                         else -> { //perform the for-loop gradient trick.
                             GL11.glPushMatrix()
                             GL11.glScalef(1f, 1f, 1f)
-                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat() * scale, 0F, 5F * scale + renderX.toFloat() * scale + barWidth * scale, 47F * scale + renderY.toFloat() * scale)
+                            RenderUtils.makeScissorBox(5F * scale + renderX.toFloat() * scale, 0F, 5F * scale + renderX.toFloat() * scale + barWidth * scale, 48F * scale + renderY.toFloat() * scale)
                             GL11.glEnable(3089)
                             //GL11.glScalef(scale, scale, scale)
                             for (i in 0..(gradientAmountValue.get()-1)) {
                                 val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                                 val barEnd = (i + 1).toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
-                                RenderUtils.drawGradientSideways(5.0 + barStart, 43.0, 5.0 + barEnd, 47.0, 
+                                RenderUtils.drawGradientSideways(5.0 + barStart, 42.0, 5.0 + barEnd, 48.0, 
                                 when (colorModeValue.get()) {
                                     "Rainbow" -> RenderUtils.getRainbowOpaque(mixerSecondsValue.get(), saturationValue.get(), brightnessValue.get(), i * distanceValue.get())
                                     "Sky" -> RenderUtils.SkyRainbow(i * distanceValue.get(), saturationValue.get(), brightnessValue.get())
@@ -410,6 +410,8 @@ class Target : Element() {
 
                     font.drawString(healthName, 10F + barWidth, 41F, -1)
                 }
+
+                // TODO new flux targethud
 
                 "Exhibition" -> {
                     val font = exhiFontValue.get()

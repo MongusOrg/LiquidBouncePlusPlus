@@ -351,12 +351,12 @@ public abstract class MixinItemRenderer {
 
             boolean canBlockEverything = LiquidBounce.moduleManager.getModule(Animations.class).getState() && Animations.blockEverything.get() && killAura.getTarget() != null 
                             && (itemToRender.getItem() instanceof ItemBucketMilk || itemToRender.getItem() instanceof ItemFood 
-                                || itemToRender.getItem() instanceof ItemPotion || itemToRender.getItem().equals(Items.stick));
+                                || itemToRender.getItem() instanceof ItemPotion || itemToRender.getItem() instanceof ItemAxe || itemToRender.getItem().equals(Items.stick));
 
             if (this.itemToRender.getItem() instanceof net.minecraft.item.ItemMap) {
                 this.renderItemMap(abstractclientplayer, f2, f, f1);
             } else if (abstractclientplayer.getItemInUseCount() > 0 
-                        || (itemToRender.getItem() instanceof ItemSword && killAura.getBlockingStatus())
+                        || (itemToRender.getItem() instanceof ItemSword && (killAura.getBlockingStatus() || killAura.getFakeBlock()))
                         || (itemToRender.getItem() instanceof ItemSword && LiquidBounce.moduleManager.getModule(Animations.class).getState() 
                             && Animations.fakeBlock.get() && killAura.getTarget() != null) || canBlockEverything) {
 
