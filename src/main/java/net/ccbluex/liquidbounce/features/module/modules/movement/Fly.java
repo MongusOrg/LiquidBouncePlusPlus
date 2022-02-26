@@ -546,7 +546,7 @@ public class Fly extends Module {
 
                 if (wdState == 4) {
                     mc.thePlayer.motionY = 0.0001D;
-                    MovementUtils.strafe(MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D));
+                    MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
                 }
                 break;
         }
@@ -655,7 +655,7 @@ public class Fly extends Module {
 
             if (mode.equalsIgnoreCase("watchdog") && wdState == 2) {
                 packetPlayer.y -= 0.187;
-                stage++;
+                wdState++;
             }
         }
     }
