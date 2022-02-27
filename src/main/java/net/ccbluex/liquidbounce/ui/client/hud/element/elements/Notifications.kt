@@ -251,17 +251,6 @@ class Notification(message : String, type : Type, displayLength: Long) {
                     GL11.glTranslatef(originalX, originalY, 0F)
                 } 
 
-                GL11.glPushMatrix()
-                GlStateManager.disableAlpha()
-                RenderUtils.drawImage2(when (type) {
-                    Type.SUCCESS -> imgSuccess
-                    Type.ERROR -> imgError
-                    Type.WARNING -> imgWarning
-                    Type.INFO -> imgInfo
-                }, kek, -27F - y, 26, 26)
-                GlStateManager.enableAlpha()
-                GL11.glPopMatrix()
-
                 Stencil.write(true)
                 RenderUtils.drawRoundedRect(-x + 8 + textLength, -y, kek, -28F - y, 3F, backgroundColor.rgb)
                 Stencil.erase(true)
@@ -283,6 +272,20 @@ class Notification(message : String, type : Type, displayLength: Long) {
                     })
 
                 Stencil.dispose()
+
+                GL11.glPushMatrix()
+                GlStateManager.disableAlpha()
+                GlStateManager.resetColor()
+                GL11.glColor4f(1F, 1F, 1F, 1F)
+                RenderUtils.drawImage2(when (type) {
+                    Type.SUCCESS -> imgSuccess
+                    Type.ERROR -> imgError
+                    Type.WARNING -> imgWarning
+                    Type.INFO -> imgInfo
+                }, kek, -27F - y, 26, 26)
+                GlStateManager.enableAlpha()
+                GL11.glPopMatrix()
+                
                 Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
             }
         }

@@ -201,6 +201,8 @@ public class Speed extends Module {
         }
     };
 
+    public final BoolValue modifySprint = new BoolValue("ModifySprinting", false);
+
     public final FloatValue verusTimer = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { return getModeName().equalsIgnoreCase("verushard"); });
 
     public final FloatValue customSpeedValue = new FloatValue("CustomSpeed", 1.0F, 0.2F, 10F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
@@ -230,7 +232,7 @@ public class Speed extends Module {
         if(mc.thePlayer.isSneaking())
             return;
 
-        if(MovementUtils.isMoving())
+        if(MovementUtils.isMoving() && modifySprint.get())
             mc.thePlayer.setSprinting(!getModeName().equalsIgnoreCase("verushard"));
 
         final SpeedMode speedMode = getMode();
@@ -244,7 +246,7 @@ public class Speed extends Module {
         if(mc.thePlayer.isSneaking() || event.getEventState() != EventState.PRE)
             return;
 
-        if(MovementUtils.isMoving())
+        if(MovementUtils.isMoving() && modifySprint.get())
             mc.thePlayer.setSprinting(!getModeName().equalsIgnoreCase("verushard"));
 
         final SpeedMode speedMode = getMode();

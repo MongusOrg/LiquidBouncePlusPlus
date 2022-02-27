@@ -325,7 +325,7 @@ class Target : Element() {
                     }
 
                     if (riseParticle.get()) {
-                        if (convertedTarget.hurtTime > convertedTarget.maxHurtTime / 2) {
+                        if (convertedTarget.hurtTime > (convertedTarget.maxHurtTime * 0.9).toInt()) {
                             if (!gotDamaged) {
                                 var parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
                                 var distParticle = particleRange.get()
