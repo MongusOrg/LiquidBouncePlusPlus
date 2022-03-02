@@ -125,13 +125,13 @@ class KillAura : Module() {
     private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("None", "Packet", "AfterTick", "NCP", "OldHypixel"
     ), "None")
 
-    private val displayAutoBlockSettings = BoolValue("Display-AB-Settings", false, { !autoBlockModeValue.get().equals("None", true) })
+    private val displayAutoBlockSettings = BoolValue("Open-AutoBlock-Settings", false, { !autoBlockModeValue.get().equals("None", true) })
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true, { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() })
     private val verusAutoBlockValue = BoolValue("VerusAutoBlock", false, { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() })
     private val abThruWallValue = BoolValue("AutoBlockThroughWalls", false, { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() })
 
     // smart autoblock stuff
-    private val smartAutoBlockValue = BoolValue("SmartAutoBlock", false, { !autoBlockModeValue.get().equals("None", true) }) // thanks czech
+    private val smartAutoBlockValue = BoolValue("SmartAutoBlock", false, { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() }) // thanks czech
     private val smartABItemValue = BoolValue("SmartAutoBlock-ItemCheck", true, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })
     private val smartABFacingValue = BoolValue("SmartAutoBlock-FacingCheck", true, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })
     private val smartABRangeValue = FloatValue("SmartAB-Range", 3.5F, 3F, 8F, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })

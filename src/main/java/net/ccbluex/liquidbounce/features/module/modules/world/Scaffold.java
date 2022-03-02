@@ -512,7 +512,7 @@ public class Scaffold extends Module {
         //Auto Jump thingy
         if (shouldGoDown) launchY = (int) mc.thePlayer.posY - 1;
         else if (!sameYValue.get()) {
-            if ((!autoJumpValue.get() && !smartSpeedValue.get()) || GameSettings.isKeyDown(mc.gameSettings.keyBindJump) || mc.thePlayer.posY < launchY) launchY = (int) mc.thePlayer.posY;
+            if ((!autoJumpValue.get() && !(smartSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState())) || GameSettings.isKeyDown(mc.gameSettings.keyBindJump) || mc.thePlayer.posY < launchY) launchY = (int) mc.thePlayer.posY;
             if (autoJumpValue.get() && MovementUtils.isMoving() && mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
                 mc.thePlayer.jump();
                 mc.thePlayer.jumpTicks = 10;
@@ -716,7 +716,7 @@ public class Scaffold extends Module {
     private void findBlock(final boolean expand) {
         final BlockPos blockPosition = shouldGoDown ? (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 0.6D, mc.thePlayer.posZ)
                 : new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 0.6, mc.thePlayer.posZ).down()) :
-                (!towerActivation() && (sameYValue.get() || ((autoJumpValue.get() || smartSpeedValue.get()) && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? (new BlockPos(mc.thePlayer.posX, launchY - 1, mc.thePlayer.posZ)) :
+                (!towerActivation() && (sameYValue.get() || ((autoJumpValue.get() || (smartSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState())) && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? (new BlockPos(mc.thePlayer.posX, launchY - 1, mc.thePlayer.posZ)) :
                 (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? new BlockPos(mc.thePlayer)
                         : new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ).down()));
 
@@ -751,7 +751,7 @@ public class Scaffold extends Module {
             return;
         }
 
-        if (!towerActivation() && (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || ((sameYValue.get() || ((autoJumpValue.get() || smartSpeedValue.get()) && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) (towerActive ? towerPlace : targetPlace).getVec3().yCoord)))
+        if (!towerActivation() && (!delayTimer.hasTimePassed(delay) || (smartDelay.get() && mc.rightClickDelayTimer > 0) || ((sameYValue.get() || ((autoJumpValue.get() || (smartSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState())) && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY - 1 != (int) (towerActive ? towerPlace : targetPlace).getVec3().yCoord)))
             return;
 
         int blockSlot = -1;
@@ -969,7 +969,7 @@ public class Scaffold extends Module {
             return;
 
         for (int i = 0; i < ((modeValue.get().equalsIgnoreCase("Expand") && !towerActivation()) ? expandLengthValue.get() + 1 : 2); i++) {
-            final BlockPos blockPos = new BlockPos(mc.thePlayer.posX + (mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0), !towerActivation() && (sameYValue.get() || ((autoJumpValue.get() || smartSpeedValue.get()) && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? launchY - 1 : (mc.thePlayer.posY - (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? 0D : 1.0D) - (shouldGoDown ? 1D : 0)), mc.thePlayer.posZ + (mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0));
+            final BlockPos blockPos = new BlockPos(mc.thePlayer.posX + (mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0), !towerActivation() && (sameYValue.get() || ((autoJumpValue.get() || (smartSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState())) && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? launchY - 1 : (mc.thePlayer.posY - (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? 0D : 1.0D) - (shouldGoDown ? 1D : 0)), mc.thePlayer.posZ + (mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0));
             final PlaceInfo placeInfo = PlaceInfo.get(blockPos);
 
             if (BlockUtils.isReplaceable(blockPos) && placeInfo != null) {
