@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.modules.misc.Teams
 import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
+import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.PacketUtils
@@ -207,6 +208,7 @@ class KillAura : Module() {
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50, { targetModeValue.get().equals("multi", true) })
 
     // idk
+    private val noScaffValue = BoolValue("NoScaffold", true)
     private val debugValue = BoolValue("Debug", false)
 
     // Visuals
@@ -567,6 +569,9 @@ class KillAura : Module() {
     private fun runAttack() {
         target ?: return
         currentTarget ?: return
+
+        if (noScaffValue.get() && LiquidBounce.moduleManager[Scaffold::class.java]!!.state)
+            return
 
         // Settings
         val failRate = failRateValue.get()

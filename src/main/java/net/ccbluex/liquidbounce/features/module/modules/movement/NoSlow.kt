@@ -40,7 +40,8 @@ class NoSlow : Module() {
     private val bowStrafeMultiplier = FloatValue("BowStrafeMultiplier", 1.0F, 0.2F, 1.0F)
     private val customOnGround = BoolValue("CustomOnGround", false, { modeValue.get().equals("custom", true) })
     private val customDelayValue = IntegerValue("CustomDelay", 60, 10, 200, { modeValue.get().equals("custom", true) })
-    private val ignoreAura = BoolValue("IgnoreAura", true, { modeValue.get().equals("watchdog", true) })
+    private val sendPacketValue = BoolValue("SendPacket", true, { modeValue.get().equals("watchdog", true) })
+    private val debugValue = BoolValue("Debug", false, { modeValue.get().equals("watchdog", true) })
 
     // Soulsand
     val soulsandValue = BoolValue("Soulsand", true)
@@ -83,6 +84,10 @@ class NoSlow : Module() {
     fun onPacket(event: PacketEvent) {
         if (modeValue.get().equals("watchdog", true) && event.packet is S30PacketWindowItems && (mc.thePlayer.isUsingItem() || mc.thePlayer.isBlocking())) {
             event.cancelEvent()
+            if (sendPacketValue.get())
+                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
+
+            debug("detected reset item packet")
         }
     }
 
@@ -94,8 +99,8 @@ class NoSlow : Module() {
         val heldItem = mc.thePlayer.heldItem
         val killAura = LiquidBounce.moduleManager[KillAura::class.java] as KillAura
 
-        if(modeValue.get().equals("aac5", true) || modeValue.get().equals("watchdog", true)) {
-            if (event.eventState == EventState.POST && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking() || ((modeValue.get().equals("aac5", true) || !ignoreAura.get()) && killAura.blockingStatus))) {
+        if(modeValue.get().equals("aac5", true)) {
+            if (event.eventState == EventState.POST && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking() || killAura.blockingStatus)) {
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0f, 0f, 0f))
             }
         } else {
