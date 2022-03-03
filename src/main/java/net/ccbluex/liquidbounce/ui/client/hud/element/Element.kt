@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.ui.client.hud.element
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.Value
+import net.minecraft.entity.Entity
 import net.minecraft.client.gui.ScaledResolution
 import kotlin.math.max
 import kotlin.math.min
@@ -129,6 +130,11 @@ abstract class Element(var x: Double = 2.0, var y: Double = 2.0, scale: Float = 
      * Called when key pressed
      */
     open fun handleKey(c: Char, keyCode: Int) {}
+
+    /**
+     * Called when damage sound received
+     */
+    open fun handleAttackSound(ent: Entity) {}
 
 }
 
