@@ -73,7 +73,9 @@ public class BanChecker extends Module {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
-                            LiquidBounce.hud.addNotification(new Notification("An error has occurred.", Notification.Type.ERROR, 1000L));
+                            
+                            if (LiquidBounce.moduleManager.getModule(BanChecker.class).getState() && alertValue.get() && mc.thePlayer != null && (!serverCheckValue.get() || isOnHypixel()))
+                                LiquidBounce.hud.addNotification(new Notification("An error has occurred.", Notification.Type.ERROR, 1000L));
                         }
                         checkTimer.reset();
                     }

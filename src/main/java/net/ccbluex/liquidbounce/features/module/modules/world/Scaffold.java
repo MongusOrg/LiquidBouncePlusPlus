@@ -665,7 +665,7 @@ public class Scaffold extends Module {
                     !(mc.thePlayer.getHeldItem().getItem() instanceof ItemBlock)))
                 return;
 
-            findBlock(mode.equalsIgnoreCase("expand"));
+            findBlock(mode.equalsIgnoreCase("expand") && !towerActivation());
         }
 
         if (targetPlace == null) {

@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils
+import net.ccbluex.liquidbounce.utils.timer.MSTimer
 //import net.minecraft.network.play.server.S02PacketChat
 import net.minecraft.network.play.server.S14PacketEntity
 import net.minecraft.network.play.server.S1DPacketEntityEffect
@@ -26,14 +27,44 @@ class AntiBan : Module() {
 
     private var obStaffs = "none"
     private var detected = false
+    private var timeOut = false
+    private var msTimer = MSTimer()
+    private var onCount = 0
+    private var totalCount = 0
 
     override fun onInitialize() {
         thread {
             try {
-                obStaffs = HttpUtils.get("${LiquidBounce.CLIENT_CLOUD}/staffs.txt")
-                println("[Staff list] " + obStaffs)
+                obStaffs = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
+                if (obStaffs.equals("checking", true)) {
+                    timeOut = true
+                    println("[Staff list] still checking")
+                } else {
+                    timeOut = false
+                    println("[Staff list] " + obStaffs)
+                }
+                msTimer.reset()
             } catch (e: Exception) {
                 // ignore fr fr
+            }
+        }
+
+        thread {
+            while (true) {
+                if (msTimer.hasTimePassed(if (timeOut) 15000L else 80000L)) {
+                    obStaffs = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
+                    if (obStaffs.equals("checking", true)) {
+                        timeOut = true
+                    } else {
+                        timeOut = false
+
+                        var counter = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/").split("\n")
+                        onCount = counter[0]
+                        totalCount = counter[1]
+                    }
+
+                    msTimer.reset()
+                }
             }
         }
     }
@@ -74,4 +105,7 @@ class AntiBan : Module() {
             }
         }
     }
+
+    override val tag: String
+        get() = if (obStaffs.equals("checking", true)) "Checking" else "${onCount}/${totalCount}"
 }
