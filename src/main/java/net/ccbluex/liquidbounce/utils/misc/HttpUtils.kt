@@ -71,11 +71,11 @@ object HttpUtils {
     fun getHttps(url: String): String {
         val httpConnection = URL(url).openConnection() as HttpsURLConnection
 
-        httpConnection.requestMethod = method
+        httpConnection.requestMethod = "GET"
         httpConnection.connectTimeout = 2000
         httpConnection.readTimeout = 10000
 
-        httpConnection.setRequestProperty("User-Agent", agent)
+        httpConnection.setRequestProperty("User-Agent", DEFAULT_AGENT)
 
         httpConnection.instanceFollowRedirects = true
         httpConnection.doOutput = true
