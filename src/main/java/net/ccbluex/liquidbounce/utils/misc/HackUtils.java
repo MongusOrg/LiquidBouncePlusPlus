@@ -39,9 +39,7 @@ public class HackUtils {
 
 	   	}
 		};
-
-		verifier = connection.getHostnameVerifier();
-
+		
 		SSLContext sc = SSLContext.getInstance("SSL");
 		sc.init(null, trustAllCerts, new java.security.SecureRandom());
 		connection.setSSLSocketFactory(sc.getSocketFactory());
