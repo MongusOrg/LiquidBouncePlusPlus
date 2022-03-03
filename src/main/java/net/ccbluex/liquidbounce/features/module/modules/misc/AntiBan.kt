@@ -25,7 +25,7 @@ import kotlin.concurrent.thread
 @ModuleInfo(name = "AntiBan", spacedName = "Anti Ban", description = "Anti staff on BlocksMC. Automatically leaves a map if detected known staffs.", category = ModuleCategory.MISC)
 class AntiBan : Module() {
 
-    private var obStaffs = "none"
+    private var obStaffs = "_"
     private var detected = false
     private var timeOut = false
     private var msTimer = MSTimer()
@@ -35,11 +35,12 @@ class AntiBan : Module() {
     override fun onInitialize() {
         thread {
             try {
-                obStaffs = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
-                if (obStaffs.equals("checking", true)) {
+                val obStaff = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
+                if (obStaff.equals("checking", true)) {
                     timeOut = true
                     println("[Staff list] still checking")
                 } else {
+                    obStaffs = obStaff
                     timeOut = false
                     println("[Staff list] " + obStaffs)
                 }
@@ -52,15 +53,21 @@ class AntiBan : Module() {
         thread {
             while (true) {
                 if (msTimer.hasTimePassed(if (timeOut) 15000L else 80000L)) {
-                    obStaffs = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
-                    if (obStaffs.equals("checking", true)) {
+                    val obStaff = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
+                    if (obStaff.equals("checking", true)) {
                         timeOut = true
                     } else {
                         timeOut = false
+                        obStaffs = obStaff
 
                         var counter = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/").split("\n")
-                        onCount = counter[0]
-                        totalCount = counter[1]
+                        try {
+                            onCount = counter[0].toInt()
+                            totalCount = counter[1].toInt()
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                            if (state) LiquidBounce.hud.addNotification(Notification("An error has occurred while trying to collect data.", Notification.Type.ERROR))
+                        }
                     }
 
                     msTimer.reset()
@@ -107,5 +114,5 @@ class AntiBan : Module() {
     }
 
     override val tag: String
-        get() = if (obStaffs.equals("checking", true)) "Checking" else "${onCount}/${totalCount}"
+        get() = if (timeOut) "Checking" else "${onCount}/${totalCount}"
 }
