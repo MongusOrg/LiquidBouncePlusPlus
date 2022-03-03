@@ -11,6 +11,8 @@ import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.HttpsURLConnection
 
 /**
  * LiquidBounce Hacked Client
@@ -22,6 +24,7 @@ import java.net.URL
 object HttpUtils {
 
     private const val DEFAULT_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0"
+    private var lastHV: HostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier()
 
     init {
         HttpURLConnection.setFollowRedirects(true)
@@ -62,6 +65,25 @@ object HttpUtils {
     @Throws(IOException::class)
     @JvmStatic
     fun get(url: String) = request(url, "GET")
+
+    @Throws(IOException::class)
+    @JvmStatic
+    fun getHttps(url: String): String {
+        val httpConnection = URL(url).openConnection() as HttpsURLConnection
+
+        httpConnection.requestMethod = method
+        httpConnection.connectTimeout = 2000
+        httpConnection.readTimeout = 10000
+
+        httpConnection.setRequestProperty("User-Agent", agent)
+
+        httpConnection.instanceFollowRedirects = true
+        httpConnection.doOutput = true
+
+        HackUtils.fixConnection(httpConnection)
+
+        return httpConnection.inputStream.reader().readText()
+    }
 
     @Throws(IOException::class)
     @JvmStatic

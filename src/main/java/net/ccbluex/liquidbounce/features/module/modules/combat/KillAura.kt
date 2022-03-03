@@ -570,9 +570,6 @@ class KillAura : Module() {
         target ?: return
         currentTarget ?: return
 
-        if (noScaffValue.get() && LiquidBounce.moduleManager[Scaffold::class.java]!!.state)
-            return
-
         // Settings
         val failRate = failRateValue.get()
         val swing = swingValue.get()
@@ -991,7 +988,8 @@ class KillAura : Module() {
      */
     private val cancelRun: Boolean
         get() = mc.thePlayer.isSpectator || !isAlive(mc.thePlayer)
-                || LiquidBounce.moduleManager[Blink::class.java]!!.state || LiquidBounce.moduleManager[FreeCam::class.java]!!.state
+                || LiquidBounce.moduleManager[Blink::class.java]!!.state || LiquidBounce.moduleManager[FreeCam::class.java]!!.state || 
+                (noScaffValue.get() && LiquidBounce.moduleManager[Scaffold::class.java]!!.state)
 
     /**
      * Check if [entity] is alive

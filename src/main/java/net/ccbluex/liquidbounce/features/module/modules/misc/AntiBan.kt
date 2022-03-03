@@ -35,7 +35,7 @@ class AntiBan : Module() {
     override fun onInitialize() {
         thread {
             try {
-                val obStaff = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
+                val obStaff = HttpUtils.getHttps("https://add-my-brain.exit-scammed.repl.co/staff/")
                 if (obStaff.equals("checking", true)) {
                     timeOut = true
                     println("[Staff list] still checking")
@@ -46,21 +46,21 @@ class AntiBan : Module() {
                 }
                 msTimer.reset()
             } catch (e: Exception) {
-                // ignore fr fr
+                e.printStackTrace()
             }
         }
 
         thread {
             while (true) {
                 if (msTimer.hasTimePassed(if (timeOut) 15000L else 80000L)) {
-                    val obStaff = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/")
-                    if (obStaff.equals("checking", true)) {
+                    val obStaff = HttpUtils.getHttps("https://add-my-brain.exit-scammed.repl.co/staff/")
+                    if (obStaff.contains("checking", true)) {
                         timeOut = true
                     } else {
                         timeOut = false
                         obStaffs = obStaff
 
-                        var counter = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/").split("\n")
+                        var counter = HttpUtils.getHttps("https://add-my-brain.exit-scammed.repl.co/").split("\n")
                         try {
                             onCount = counter[0].toInt()
                             totalCount = counter[1].toInt()
@@ -70,6 +70,7 @@ class AntiBan : Module() {
                         }
                     }
 
+                    println("[Staff list] ok")
                     msTimer.reset()
                 }
             }
