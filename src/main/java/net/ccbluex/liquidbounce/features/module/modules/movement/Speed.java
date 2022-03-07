@@ -66,6 +66,7 @@ public class Speed extends Module {
             // Hypixel
             new HypixelBoost(),
             new HypixelStable(),
+            new HypixelHop(),
 
             // Spartan
             new SpartanYPort(),
@@ -156,7 +157,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable", "Hop"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -251,8 +252,10 @@ public class Speed extends Module {
 
         final SpeedMode speedMode = getMode();
 
-        if(speedMode != null)
+        if(speedMode != null) {
+            speedMode.onMotion(event);
             speedMode.onMotion();
+        }
     }
 
     @EventTarget

@@ -57,6 +57,8 @@ class InvManager : Module() {
         }
     }
 
+    private val eventModeValue = ListValue("OnEvent", arrayOf("Update", "MotionPre", "MotionPost"), "Update")
+
     // Inventory options
     private val invOpenValue = BoolValue("InvOpen", false)
     private val invSpoof = BoolValue("InvSpoof", true)
@@ -131,6 +133,17 @@ class InvManager : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
+        if (eventModeValue.get().equals("update", true))
+            performManager()
+    }
+
+    @EventTarget
+    fun onMotion(event: MotionEvent) {
+        if (eventModeValue.get().equals("motion${event.eventState.stateName}", true))
+            performManager()
+    }
+
+    fun performManager() {
         if (!InventoryUtils.CLICK_TIMER.hasTimePassed(delay) ||
                 noMoveValue.get() && MovementUtils.isMoving() ||
                 mc.thePlayer.openContainer != null && mc.thePlayer.openContainer.windowId != 0)

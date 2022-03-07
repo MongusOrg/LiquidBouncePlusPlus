@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
@@ -91,6 +92,13 @@ open class HUD : MinecraftInstance() {
     fun update() {
         for (element in elements)
             element.updateElement()
+    }
+
+    fun handleDamage(ent: EntityPlayer) {
+        for (element in elements) {
+            if (element.info.retrieveDamage)
+                element.handleDamage(ent)
+        }
     }
 
     /**

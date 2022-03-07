@@ -10,8 +10,21 @@ import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.potion.Potion;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public final class MovementUtils extends MinecraftInstance {
+
+    public static final List<Double> frictionValues = new ArrayList<>();
+    public static double calculateFriction(final double moveSpeed, final double lastDist, final double baseMoveSpeedRef) {
+        frictionValues.clear();
+        frictionValues.add(lastDist - lastDist / 159.9999985);
+        frictionValues.add(lastDist - (moveSpeed - lastDist) / 33.3);
+        final double materialFriction = mc.thePlayer.isInWater() ? 0.8899999856948853 : (mc.thePlayer.isInLava() ? 0.5350000262260437 : 0.9800000190734863);
+        frictionValues.add(lastDist - baseMoveSpeedRef * (1.0 - materialFriction));
+        return Collections.min((Collection<? extends Double>)frictionValues);
+    }
 
     public static float getSpeed() {
         return (float) getSpeed(mc.thePlayer.motionX, mc.thePlayer.motionZ);

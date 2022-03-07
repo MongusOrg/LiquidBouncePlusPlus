@@ -6,9 +6,7 @@
 package net.ccbluex.liquidbounce.features.module.modules.world
 
 import net.ccbluex.liquidbounce.LiquidBounce
-import net.ccbluex.liquidbounce.event.EventTarget
-import net.ccbluex.liquidbounce.event.PacketEvent
-import net.ccbluex.liquidbounce.event.Render3DEvent
+import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
@@ -17,7 +15,9 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.utils.timer.TimeUtils
 import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.ListValue
 import net.ccbluex.liquidbounce.value.IntegerValue
+import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.inventory.Slot
 import net.minecraft.item.Item
@@ -54,6 +54,8 @@ class ChestStealer : Module() {
             nextDelay = TimeUtils.randomDelay(get(), maxDelayValue.get())
         }
     }
+
+    private val eventModeValue = ListValue("OnEvent", arrayOf("Render3D", "Update", "MotionPre", "MotionPost"), "Render3D")
 
     private val takeRandomizedValue = BoolValue("TakeRandomized", false)
     private val onlyItemsValue = BoolValue("OnlyItems", false)
@@ -104,6 +106,27 @@ class ChestStealer : Module() {
     fun onRender3D(event: Render3DEvent?) {
         val screen = mc.currentScreen
 
+        if (eventModeValue.get().equals("render3d", true))
+            performStealer(screen)
+    }
+
+    @EventTarget
+    fun onUpdate(event: UpdateEvent) {
+        val screen = mc.currentScreen
+
+        if (eventModeValue.get().equals("update", true))
+            performStealer(screen)
+    }
+
+    @EventTarget
+    fun onMotion(event: MotionEvent) {
+        val screen = mc.currentScreen
+
+        if (eventModeValue.get().equals("motion${event.eventState.stateName}", true))
+            performStealer(screen)
+    }
+
+    fun performStealer(screen: GuiScreen) {
         if (once && screen !is GuiChest) {
             // prevent a bug where the chest suddenly closed while not finishing stealing items inside, leaving cheststealer turned on alone.
             state = false

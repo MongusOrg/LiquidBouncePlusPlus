@@ -50,7 +50,7 @@ import kotlin.math.pow
 /**
  * A target hud
  */
-@ElementInfo(name = "Target", disableScale = true)
+@ElementInfo(name = "Target", disableScale = true, retrieveDamage = true)
 class Target : Element() {
 
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
@@ -305,7 +305,7 @@ class Target : Element() {
 
                     val healthName = decimalFormat2.format(easingHealth).toString()
 
-                    val length = font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F
+                    val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(160F)
 
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
