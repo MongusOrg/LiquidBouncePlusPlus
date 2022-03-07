@@ -325,8 +325,7 @@ class Target : Element() {
                     }
 
                     if (riseParticle.get()) {
-                        if (convertedTarget.hurtTime > (convertedTarget.maxHurtTime * 0.5).toInt()) {
-                            if (!gotDamaged) {
+                        if (gotDamaged) {
                                 var parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
                                 var distParticle = particleRange.get()
                                 for (j in 0..(generateAmountValue.get())) {
@@ -334,9 +333,6 @@ class Target : Element() {
                                     parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
                                 }
 
-                                gotDamaged = true
-                            }
-                        } else if (gotDamaged) {
                             gotDamaged = false
                         }
 
@@ -635,6 +631,11 @@ class Target : Element() {
 
         lastTarget = target
         return getTBorder()
+    }
+
+    override fun handleDamage(ent: EntityPlayer) {
+        if (target != null && ent == target)
+            gotDamaged = true
     }
 
     private fun getTBorder(): Border = when (styleValue.get()) {
