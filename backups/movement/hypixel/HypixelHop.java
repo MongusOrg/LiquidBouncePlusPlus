@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.event.MotionEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
+import net.minecraft.potion.Potion;
 
 public class HypixelHop extends SpeedMode {
 
@@ -23,25 +24,33 @@ public class HypixelHop extends SpeedMode {
     private double lastDist = 0.0;
 
     @Override
-    public void onMotion(MotionEvent eventMotion) {
+    public void onUpdate() {
+        
+    }
+    
+    @Override
+    public void onMotion() {
+        double xDist = mc.thePlayer.posX - mc.thePlayer.prevPosX;
+        double zDist = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
+        lastDist = Math.sqrt(xDist * xDist + zDist * zDist);
+    }
+
+    @Override
+    public void onMove(MoveEvent event) {
         final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
         if(speed == null) return;
 
         final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) return;
 
-        double xDist = mc.thePlayer.posX - mc.thePlayer.prevPosX;
-        double zDist = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
-        lastDist = Math.sqrt(xDist * xDist + zDist * zDist);
-
-        double lastSpeed = (mc.thePlayer.fallDistance < 0.1D && !this.skipAccelerate && eventMotion.getY() < 0.1D) ? MovementUtils.applyFriction(Math.max(MovementUtils.getSpeed(), speed.moveSpeedValue.get()), lastDist, MovementUtils.getBaseMoveSpeed() * speed.baseStrengthValue.get()) : Math.max(MovementUtils.getSpeed(), speed.moveSpeedValue.get());
+        double lastSpeed = (mc.thePlayer.fallDistance < 0.1D && !this.skipAccelerate && event.getY() < 0.1D) ? MovementUtils.applyFriction(Math.max(MovementUtils.getSpeed(), speed.moveSpeedValue.get()), lastDist, MovementUtils.getBaseMoveSpeed() * speed.baseStrengthValue.get()) : Math.max(MovementUtils.getSpeed(), speed.moveSpeedValue.get());
         if (mc.thePlayer.onGround)
             if (this.mc.thePlayer.isCollidedHorizontally) {
                 this.skipAccelerate = true;
-                eventMotion.setY(MovementUtils.getJumpBoostModifier(speed.jumpYValue.get()));
+                event.setY(MovementUtils.getJumpBoostModifier(speed.jumpYValue.get()));
             } else {
                 this.skipAccelerate = false;
-                eventMotion.setY(0.0724D);
+                event.setY(0.0724D);
                 if (!this.mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
                     lastSpeed = 0.12D;
                 } else if (this.mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier() == 0) {
@@ -52,20 +61,5 @@ public class HypixelHop extends SpeedMode {
             }
 
         if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, lastSpeed); else MovementUtils.setSpeed(event, lastSpeed);
-    }
-
-    @Override
-    public void onUpdate() {
-        
-    }
-    
-    @Override
-    public void onMotion() {
-        
-    }
-
-    @Override
-    public void onMove(MoveEvent event) {
-        
     }
 }

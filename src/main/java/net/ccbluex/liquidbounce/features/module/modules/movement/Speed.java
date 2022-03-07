@@ -66,7 +66,7 @@ public class Speed extends Module {
             // Hypixel
             new HypixelBoost(),
             new HypixelStable(),
-            new HypixelHop(),
+            //new HypixelHop(),
 
             // Spartan
             new SpartanYPort(),
