@@ -25,7 +25,7 @@ public class Lightning extends Module {
     public void onPacket(PacketEvent event){
         if(event.getPacket() instanceof S2CPacketSpawnGlobalEntity && ((S2CPacketSpawnGlobalEntity) event.getPacket()).func_149053_g() == 1){
             S2CPacketSpawnGlobalEntity entity = ((S2CPacketSpawnGlobalEntity) event.getPacket());
-            final int distance = (int) mc.thePlayer.getDistance(entity.func_149051_d(), entity.func_149050_e(), entity.func_149049_f());
+            final int distance = (int) mc.thePlayer.getDistance(entity.func_149051_d(), mc.thePlayer.getEntityBoundingBox().minY, entity.func_149049_f()); // used player posY instead
 
             if (chatValue.get()) 
                 ClientUtils.displayChatMessage("§7[§6§lLightning§7] §fDetected lightning at §a" + entity.func_149051_d() + " " + entity.func_149050_e() + " " + entity.func_149049_f() + " §7(" + distance + " blocks away)");

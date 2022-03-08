@@ -88,7 +88,8 @@ class NoSlow : Module() {
             if (sendPacketValue.get())
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
 
-            ClientUtils.displayChatMessage("detected reset item packet")
+            if (debugValue.get())
+                ClientUtils.displayChatMessage("detected reset item packet")
         }
     }
 
