@@ -85,8 +85,6 @@ class NoSlow : Module() {
     fun onPacket(event: PacketEvent) {
         if (modeValue.get().equals("watchdog", true) && event.packet is S30PacketWindowItems && (mc.thePlayer.isUsingItem() || mc.thePlayer.isBlocking())) {
             event.cancelEvent()
-            if (sendPacketValue.get())
-                mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.inventory.getCurrentItem()))
 
             if (debugValue.get())
                 ClientUtils.displayChatMessage("detected reset item packet")
@@ -124,6 +122,16 @@ class NoSlow : Module() {
 
                 "ncp" -> {
                     sendPacket(event,true,true,false,0,false)
+                }
+
+                "watchdog" -> {
+                    if (sendPacketValue.get() && !killAura.blockingStatus) {
+                        if (mc.thePlayer.ticksExisted % 2 == 0) {
+                            sendPacket(event, true, false, false, 0, false)
+                        } else {
+                            sendPacket(event, false, true, false, 0, false, true)
+                        }
+                    }
                 }
 
                 "oldwatchdog" -> {

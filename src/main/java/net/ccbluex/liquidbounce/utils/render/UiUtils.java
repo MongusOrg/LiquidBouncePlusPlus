@@ -241,22 +241,58 @@ public class UiUtils
 		fastShadowRoundedRect(x, y, x2, y2, rad, width, color.getRed() / 255.0F, color.getGreen() / 255.0F, color.getBlue() / 255.0F, color.getAlpha() / 255.0F);
 	}
 
-	 public static void drawRect(double x, double y, double x2, double y2, int color) {
-		 glEnable(GL_BLEND);
-		 glDisable(GL_TEXTURE_2D);
-		 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		 glEnable(GL_LINE_SMOOTH);
-		 glPushMatrix();
-		 RenderUtils.glColor(new Color(color));
-		 glBegin(GL_QUADS);
-		 glVertex2d(x2, y);
-		 glVertex2d(x, y);
-		 glVertex2d(x, y2);
-		 glVertex2d(x2, y2);
-		 glEnd();
-		 glPopMatrix();
-		 glEnable(GL_TEXTURE_2D);
-		 glDisable(GL_BLEND);
-		 glDisable(GL_LINE_SMOOTH);
-	  }
+	public static void drawRect(double x, double y, double x2, double y2, int color) {
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_LINE_SMOOTH);
+		glPushMatrix();
+		RenderUtils.glColor(new Color(color));
+		glBegin(GL_QUADS);
+		glVertex2d(x2, y);
+		glVertex2d(x, y);
+		glVertex2d(x, y2);
+		glVertex2d(x2, y2);
+		glEnd();
+		glPopMatrix();
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glDisable(GL_LINE_SMOOTH);
+	}
+
+	public static void drawBorder(float x, float y, float x2, float y2, float strength, int color) {
+		glEnable(GL_BLEND);
+		glDisable(GL_TEXTURE_2D);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_LINE_SMOOTH);
+		glPushMatrix();
+		RenderUtils.glColor(new Color(color));
+		glBegin(GL_QUADS);
+
+		glVertex2f(x - strength, y - strength);
+		glVertex2f(x2 + strength, y - strength);
+		glVertex2f(x2 + strength, y + strength);
+		glVertex2f(x - strength, y + strength);
+
+		glVertex2f(x - strength, y2 - strength);
+		glVertex2f(x2 + strength, y2 - strength);
+		glVertex2f(x2 + strength, y2 + strength);
+		glVertex2f(x - strength, y2 + strength);
+
+		glVertex2f(x - strength, y + strength);
+		glVertex2f(x + strength, y + strength);
+		glVertex2f(x + strength, y2 - strength);
+		glVertex2f(x - strength, y2 - strength);
+
+		glVertex2f(x2 - strength, y + strength);
+		glVertex2f(x2 + strength, y + strength);
+		glVertex2f(x2 + strength, y2 - strength);
+		glVertex2f(x2 - strength, y2 - strength);
+
+		glEnd();
+		glPopMatrix();
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_BLEND);
+		glDisable(GL_LINE_SMOOTH);
+	}
 }

@@ -56,7 +56,7 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "NewFlux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val chillFontSpeed = FloatValue("Chill-FontSpeed", 0.5F, 0.01F, 1F, { styleValue.get().equals("chill", true) })
     private val chillHealthBarValue = BoolValue("Chill-Healthbar", true, { styleValue.get().equals("chill", true) })
@@ -428,7 +428,7 @@ class Target : Element() {
                     RenderUtils.drawRect(45F, 14F, 45F + barLength, 17F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).rgb)
 
                     for (i in 0..9) {
-                        RenderUtils.drawBorder(45F + i * 6F, 14F, 45F + (i + 1F) * 6F, 17F, 0.25F, Color.black.rgb)
+                        UiUtils.drawBorder(45F + i * 6F, 14F, 45F + (i + 1F) * 6F, 17F, 0.25F, Color.black.rgb)
                     }
 
                     GL11.glPushMatrix()
