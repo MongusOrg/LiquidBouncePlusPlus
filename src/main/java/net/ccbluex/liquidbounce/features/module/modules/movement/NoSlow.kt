@@ -110,9 +110,9 @@ class NoSlow : Module() {
             when(modeValue.get().toLowerCase()) {
                 "aac" -> {
                     if(mc.thePlayer.ticksExisted % 3 == 0) {
-                        sendPacket(event, true , false, false, 0, false)
+                        sendPacket(event, true, false, false, 0, false)
                     } else {
-                        sendPacket(event, false , true, false, 0, false)
+                        sendPacket(event, false, true, false, 0, false)
                     }
                 }
 
@@ -126,10 +126,10 @@ class NoSlow : Module() {
 
                 "watchdog" -> {
                     if (sendPacketValue.get() && !killAura.blockingStatus) {
-                        if (mc.thePlayer.ticksExisted % 2 == 0) {
+                        if (mc.thePlayer.ticksExisted % 3 == 0) {
                             sendPacket(event, true, false, false, 0, false)
                         } else {
-                            sendPacket(event, false, true, false, 0, false, true)
+                            sendPacket(event, false, true, false, 0, false)
                         }
                     }
                 }
@@ -147,10 +147,6 @@ class NoSlow : Module() {
                         mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(-1, -1, -1), EnumFacing.DOWN))
                     else
                         mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
-                }
-
-                "aac5" -> {
-                    sendPacket(event,true,true,true,200,false)
                 }
             }
         }

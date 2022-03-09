@@ -27,13 +27,17 @@ class AntiBan : Module() {
 
     private var obStaffs = "_"
     private var detected = false
-    private var timeOut = false
-    private var msTimer = MSTimer()
-    private var onCount = 0
+    //private var timeOut = false
+    //private var msTimer = MSTimer()
+    //private var onCount = 0
     private var totalCount = 0
 
     override fun onInitialize() {
-        thread {
+        obStaffs = HttpUtils.get("${LiquidBounce.CLIENT_CLOUD}/staffs.txt")
+        totalCount = obStaffs.filter { it.isWhitespace() }.count()
+
+        println("[Staff list] ${obStaffs}")
+        /*thread {
             try {
                 val obStaff = HttpUtils.get("http://add-my-brain.exit-scammed.repl.co/staff/")
                 if (obStaff.equals("checking", true)) {
@@ -74,7 +78,7 @@ class AntiBan : Module() {
                     msTimer.reset()
                 }
             }
-        }
+        }*/
     }
 
     override fun onEnable() {
@@ -115,5 +119,5 @@ class AntiBan : Module() {
     }
 
     override val tag: String
-        get() = if (timeOut) "Checking" else "${onCount}/${totalCount}"
+        get() = "${totalCount}"
 }

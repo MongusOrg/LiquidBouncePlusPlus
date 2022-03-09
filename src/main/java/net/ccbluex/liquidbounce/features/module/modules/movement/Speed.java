@@ -157,7 +157,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable", "Hop"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -215,10 +215,14 @@ public class Speed extends Module {
 
     public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false, () -> { return typeValue.get().equalsIgnoreCase("other"); });
 
+    public final BoolValue sendJumpValue = new BoolValue("SendJump", true, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
+    public final BoolValue recalcValue = new BoolValue("ReCalculate", true, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && sendJumpValue.get()); });
     public final FloatValue glideStrengthValue = new FloatValue("GlideStrength", 0.03F, 0F, 0.05F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
     public final FloatValue moveSpeedValue = new FloatValue("MoveSpeed", 1.47F, 1F, 1.7F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
     public final FloatValue jumpYValue = new FloatValue("JumpY", 0.42F, 0F, 1F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
     public final FloatValue baseStrengthValue = new FloatValue("BaseMultiplier", 1F, 0.5F, 1F, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
+    public final FloatValue baseTimerValue = new FloatValue("BaseTimer", 1.5F, 1F, 3F, () -> { return getModeName().equalsIgnoreCase("hypixelboost"); });
+    public final FloatValue baseMTimerValue = new FloatValue("BaseMultiplierTimer", 1F, 0F, 3F, () -> { return getModeName().equalsIgnoreCase("hypixelboost"); });
     public final BoolValue bypassWarning = new BoolValue("BypassWarning", true, () -> { return typeValue.get().equalsIgnoreCase("hypixel"); });
     
 

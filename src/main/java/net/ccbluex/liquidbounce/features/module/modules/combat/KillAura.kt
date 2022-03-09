@@ -123,8 +123,7 @@ class KillAura : Module() {
     private val keepSprintValue = BoolValue("KeepSprint", true)
 
     // AutoBlock
-    private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("None", "Packet", "AfterTick", "NCP", "OldHypixel"
-    ), "None")
+    private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("None", "Packet", "AfterTick", "NCP", "OldHypixel", "Watchdog"), "None")
 
     private val displayAutoBlockSettings = BoolValue("Open-AutoBlock-Settings", false, { !autoBlockModeValue.get().equals("None", true) })
     private val interactAutoBlockValue = BoolValue("InteractAutoBlock", true, { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() })
@@ -295,6 +294,12 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onMotion(event: MotionEvent) {
+        if (event.eventState == EventState.PRE) {
+            if (autoBlockModeValue.get().equals("watchdog", true)) {
+                stopBlocking()
+                update()
+            }
+        }
 
         if (event.eventState == EventState.POST) {
             target ?: return
@@ -304,11 +309,11 @@ class KillAura : Module() {
             updateHitable()
 
             // AutoBlock
-            if (autoBlockModeValue.get().equals("AfterTick", true) && canBlock)
+            if ((autoBlockModeValue.get().equals("AfterTick", true) || autoBlockModeValue.get().equals("watchdog", true)) && canBlock)
                 startBlocking(currentTarget!!, hitable)
         }
 
-        if (rotationStrafeValue.get().equals("Off", true))
+        if (rotationStrafeValue.get().equals("Off", true) && !autoBlockModeValue.get().equals("watchdog", true))
             update()
     }
 
@@ -319,13 +324,18 @@ class KillAura : Module() {
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
         val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!! as TargetStrafe
-        if (!targetStrafe.state && rotationStrafeValue.get().equals("Off", true))
+        if (targetStrafe.canStrafe) {
+            event.cancelEvent()
+            return
+        }
+
+        if (rotationStrafeValue.get().equals("Off", true) || autoBlockModeValue.get().equals("watchdog", true))
             return
 
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {
-            if (targetStrafe.canStrafe) {
+            /*if (targetStrafe.canStrafe) {
                 val (yaw) = RotationUtils.targetRotation ?: return
                 var strafe = event.strafe
                 var forward = event.forward
@@ -351,7 +361,7 @@ class KillAura : Module() {
                 }
                 event.cancelEvent()
             }
-            else when (rotationStrafeValue.get().toLowerCase()) {
+            else */when (rotationStrafeValue.get().toLowerCase()) {
                 "strict" -> {
                     val (yaw) = RotationUtils.targetRotation ?: return
                     var strafe = event.strafe
@@ -931,7 +941,7 @@ class KillAura : Module() {
             return
         }
 
-        if (autoBlockModeValue.get().equals("oldhypixel", true)) {
+        if (autoBlockModeValue.get().equals("oldhypixel", true) || autoBlockModeValue.get().equals("watchdog", true)) {
             mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0.0f, 0.0f, 0.0f))
             blockingStatus = true
             return

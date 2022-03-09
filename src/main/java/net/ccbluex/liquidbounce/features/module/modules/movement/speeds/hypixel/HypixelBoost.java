@@ -41,14 +41,15 @@ public class HypixelBoost extends SpeedMode {
             double moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * speed.baseStrengthValue.get(), MovementUtils.getSpeed());
 
             if (mc.thePlayer.onGround) {
-                mc.thePlayer.jump();
+                if (speed.sendJumpValue.get()) mc.thePlayer.jump();
+                if (speed.recalcValue.get()) moveSpeed = Math.max(MovementUtils.getBaseMoveSpeed() * speed.baseStrengthValue.get(), MovementUtils.getSpeed());
                 event.setY(MovementUtils.getJumpBoostModifier(mc.thePlayer.motionY = (mc.thePlayer.isCollidedHorizontally ? 0.42 : speed.jumpYValue.get())));
                 moveSpeed *= speed.moveSpeedValue.get();
             } else if (speed.glideStrengthValue.get() > 0 && event.getY() < 0) {
                 event.setY(mc.thePlayer.motionY += speed.glideStrengthValue.get());
             }
             
-            mc.timer.timerSpeed = Math.max(1.25F + Math.abs((float)mc.thePlayer.motionY) * 1F, 1F);
+            mc.timer.timerSpeed = Math.max(speed.baseTimerValue.get() + Math.abs((float)mc.thePlayer.motionY) * speed.baseMTimerValue.get(), 1F);
             
             if (targetStrafe.getCanStrafe()) targetStrafe.strafe(event, moveSpeed); else MovementUtils.setSpeed(event, moveSpeed);
         } 
