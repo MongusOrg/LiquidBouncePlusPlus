@@ -307,9 +307,10 @@ class KillAura : Module() {
 
             // Update hitable
             updateHitable()
+            if (autoBlockModeValue.get().equals("watchdog", true)) updateKA()
 
             // AutoBlock
-            if ((autoBlockModeValue.get().equals("AfterTick", true) || autoBlockModeValue.get().equals("watchdog", true)) && canBlock)
+            if (autoBlockModeValue.get().equals("AfterTick", true) && canBlock)
                 startBlocking(currentTarget!!, hitable)
         }
 
@@ -460,7 +461,8 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        updateKA()
+        if (!autoBlockModeValue.get().equals("watchdog", true)) 
+            updateKA()
 
         smartBlocking = false
         if (smartAutoBlockValue.get() && target != null) {
