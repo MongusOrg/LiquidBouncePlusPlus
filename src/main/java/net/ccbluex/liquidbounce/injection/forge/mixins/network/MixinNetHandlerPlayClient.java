@@ -180,7 +180,8 @@ public abstract class MixinNetHandlerPlayClient {
 
     @Inject(method = "handleAnimation", at = @At("HEAD"))
     public void handleDamagePacket(S0BPacketAnimation packetIn, CallbackInfo callbackInfo) {
-        if (packetIn.getAnimationType() == 1) {
+        if (packetIn.getAnimationType() == 1 || packetIn.getAnimationType() == 4 || packetIn.getAnimationType() == 5) {
+            System.out.println("[Hit]");
             Entity entity = this.clientWorldController.getEntityByID(packetIn.getEntityID());
             if (entity != null && entity instanceof EntityPlayer) {
                 LiquidBounce.hud.handleDamage((EntityPlayer) entity);

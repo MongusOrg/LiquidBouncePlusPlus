@@ -305,7 +305,7 @@ class Target : Element() {
 
                     val healthName = decimalFormat2.format(easingHealth).toString()
 
-                    val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(160F)
+                    val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
 
                     val floatX = renderX.toFloat()
                     val floatY = renderY.toFloat()
@@ -326,12 +326,12 @@ class Target : Element() {
 
                     if (riseParticle.get()) {
                         if (gotDamaged) {
-                                var parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
-                                var distParticle = particleRange.get()
-                                for (j in 0..(generateAmountValue.get())) {
-                                    particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.5F, 1.0F) else 0F), RandomUtils.nextFloat(-distParticle, distParticle), RandomUtils.nextFloat(-distParticle, distParticle), parSize))
-                                    parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
-                                }
+                            var parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
+                            val distParticle = particleRange.get()
+                            for (j in 0..(generateAmountValue.get())) {
+                                particleList.add(Particle(BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf<Color>(Color.white, barColor), if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.5F, 1.0F) else 0F), RandomUtils.nextFloat(-distParticle, distParticle), RandomUtils.nextFloat(-distParticle, distParticle), parSize))
+                                parSize = RandomUtils.nextFloat(minParticleSize.get(), maxParticleSize.get())
+                            }
 
                             gotDamaged = false
                         }
@@ -428,7 +428,7 @@ class Target : Element() {
                     RenderUtils.drawRect(45F, 14F, 45F + barLength, 17F, BlendUtils.getHealthColor(convertedTarget.health, convertedTarget.maxHealth).rgb)
 
                     for (i in 0..9) {
-                        UiUtils.drawBorder(45F + i * 6F, 14F, 45F + (i + 1F) * 6F, 17F, 0.25F, Color.black.rgb)
+                       RenderUtils.drawBorder(45F + i * 6F, 14F, 45F + (i + 1F) * 6F, 17F, 0.25F, Color.black.rgb)
                     }
 
                     GL11.glPushMatrix()
