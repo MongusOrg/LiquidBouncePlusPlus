@@ -320,7 +320,7 @@ class KillAura : Module() {
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
         val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!! as TargetStrafe
-        if (rotationStrafeValue.get().equals("Off", true) && !targetStrafe.canStrafe)
+        if (rotationStrafeValue.get().equals("Off", true) && !targetStrafe.state)
             return
 
         update()
