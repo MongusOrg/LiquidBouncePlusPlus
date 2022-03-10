@@ -126,10 +126,10 @@ class NoSlow : Module() {
 
                 "watchdog" -> {
                     if (sendPacketValue.get() && !killAura.blockingStatus) {
-                        if (mc.thePlayer.ticksExisted % 3 == 0) {
+                        if (mc.thePlayer.ticksExisted % 2 == 0) {
                             sendPacket(event, true, false, false, 0, false)
                         } else {
-                            sendPacket(event, false, true, false, 0, false)
+                            sendPacket(event, false, true, false, 0, false, true)
                         }
                     }
                 }

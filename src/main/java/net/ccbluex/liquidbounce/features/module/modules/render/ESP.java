@@ -80,7 +80,6 @@ public class ESP extends Module {
 
 		boolean real2d = mode.equalsIgnoreCase("real2d");
 
-		//<editor-fold desc="Real2D-Setup">
 		if (real2d) {
 			GL11.glPushAttrib(GL11.GL_ENABLE_BIT);
 
@@ -103,7 +102,6 @@ public class ESP extends Module {
 
 			GL11.glLineWidth(1.0f);
 		}
-		//</editor-fold>
 
 		for (final Entity entity : mc.theWorld.loadedEntityList) {
 			if (entity != null && entity != mc.thePlayer && EntityUtils.isSelected(entity, false) && RenderUtils.isInViewFrustrum(entity)) {
