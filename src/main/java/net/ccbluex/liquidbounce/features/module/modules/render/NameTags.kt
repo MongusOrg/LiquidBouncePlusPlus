@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.GlStateManager.*
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.potion.Potion
+import net.minecraft.potion.PotionEffect
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
@@ -174,7 +175,7 @@ class NameTags : Module() {
         }
 
         if (potionValue.get() && entity is EntityPlayer) {
-            val potions = entity.getActivePotionEffects().filter(Potion::hasStatusIcon) as Collection<Potion>
+            val potions = (entity.getActivePotionEffects() as Collection<PotionEffect>).map { Potion.potionTypes[it.getPotionID()] }.filter { is.hasStatusIcon() }
             if (!potions.isEmpty()) {
                 color(1.0F, 1.0F, 1.0F, 1.0F)
                 disableLighting()
@@ -188,7 +189,7 @@ class NameTags : Module() {
                     mc.getTextureManager().bindTexture(inventoryBackground)
 
                     val i1 = potion.getStatusIconIndex()
-                    RenderUtils.drawTexturedModalRect(minX + index * 20, -42, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18)
+                    drawTexturedModalRect(minX + index * 20, -42, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18)
                     index++
                 }
 
