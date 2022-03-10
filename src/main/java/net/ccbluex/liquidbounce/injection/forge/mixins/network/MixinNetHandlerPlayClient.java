@@ -33,7 +33,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.PacketThreadUtil;
 import net.minecraft.network.play.client.C17PacketCustomPayload;
 import net.minecraft.network.play.client.C19PacketResourcePackStatus;
-import net.minecraft.network.play.server.S0BPacketAnimation;
+import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
 import net.minecraft.network.play.server.S01PacketJoinGame;
 import net.minecraft.network.play.server.S02PacketChat;
@@ -178,11 +178,10 @@ public abstract class MixinNetHandlerPlayClient {
             LiquidBounce.eventManager.callEvent(new EntityMovementEvent(entity));
     }
 
-    @Inject(method = "handleAnimation", at = @At("HEAD"))
-    public void handleDamagePacket(S0BPacketAnimation packetIn, CallbackInfo callbackInfo) {
-        if (packetIn.getAnimationType() == 1 || packetIn.getAnimationType() == 4 || packetIn.getAnimationType() == 5) {
-            System.out.println("[Hit]");
-            Entity entity = this.clientWorldController.getEntityByID(packetIn.getEntityID());
+    @Inject(method = "handleEntityStatus", at = @At("HEAD"))
+    public void handleDamagePacket(S19PacketEntityStatus packetIn, CallbackInfo callbackInfo) {
+        if (packetIn.getOpCode() == 2) {
+            Entity entity = packetIn.getEntity(this.clientWorldController);
             if (entity != null && entity instanceof EntityPlayer) {
                 LiquidBounce.hud.handleDamage((EntityPlayer) entity);
             }
