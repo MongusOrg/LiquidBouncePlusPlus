@@ -6,8 +6,7 @@
 package net.ccbluex.liquidbounce.features.module.modules.combat
 
 import net.ccbluex.liquidbounce.LiquidBounce
-import net.ccbluex.liquidbounce.event.EventTarget
-import net.ccbluex.liquidbounce.event.MotionEvent
+import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
@@ -78,10 +77,10 @@ class AutoPot : Module() {
     fun onMotionPost(event: MotionEvent) {
         if (event.eventState == EventState.POST) {
             if (throwing && mc.currentScreen !is GuiContainer && throwTimer.hasTimePassed(delayValue.get().toLong())) {
-                mc.netHandler.addToSendQueue(C09PacketHeldItemChange(pot - 36))
+                mc.netHandler.addToSendQueue(C09PacketHeldItemChange(potIndex - 36))
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.heldItem))
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
-                pot = -1
+                potIndex = -1
                 throwing = false
             }
 
@@ -142,7 +141,7 @@ class AutoPot : Module() {
 
         val itemPotion = stack.item as ItemPotion
 
-        if (mc.thePlayer.health < healthValue.get() && regen.get()) {
+        if (mc.thePlayer.health < healthValue.get() && regenValue.get()) {
             for (potionEffect in itemPotion.getEffects(stack))
                 if (potionEffect.potionID == Potion.heal.id)
                     return true
@@ -151,7 +150,7 @@ class AutoPot : Module() {
                 for (potionEffect in itemPotion.getEffects(stack))
                     if (potionEffect.potionID == Potion.regeneration.id) return true
 
-        } else if (utility.get()) {
+        } else if (utilityValue.get()) {
             for (potionEffect in itemPotion.getEffects(stack)) {
                 if (isUsefulPotion(potionEffect.potionID)) return true
             }
