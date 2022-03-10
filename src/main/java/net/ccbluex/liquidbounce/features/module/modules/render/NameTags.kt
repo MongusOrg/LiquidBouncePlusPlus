@@ -185,16 +185,18 @@ class NameTags : Module() {
                 val minX = (potions.size * -20) / 2
 
                 var index = 0
+                
+                glPushMatrix()
+                enableRescaleNormal()
                 for (potion in potions) {
                     color(1.0F, 1.0F, 1.0F, 1.0F)
                     mc.getTextureManager().bindTexture(inventoryBackground)
-
                     val i1 = potion.getStatusIconIndex()
-
-                    mc.renderItem.zLevel = -147F + 50F
-                    drawTexturedModalRect(minX + index * 20, if (armorValue.get()) -42 else -22, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18, mc.renderItem.zLevel)
+                    drawTexturedModalRect(minX + index * 20, if (armorValue.get()) -42 else -22, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18, 0F)
                     index++
                 }
+                disableRescaleNormal()
+                glPopMatrix()
 
                 enableAlpha()
                 disableBlend()

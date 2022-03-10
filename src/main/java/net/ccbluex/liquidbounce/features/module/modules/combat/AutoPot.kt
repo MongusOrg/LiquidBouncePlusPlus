@@ -10,6 +10,7 @@ import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
+import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.InventoryUtils
 import net.ccbluex.liquidbounce.utils.Rotation
 import net.ccbluex.liquidbounce.utils.RotationUtils
@@ -42,6 +43,7 @@ class AutoPot : Module() {
     private val spoofDelayValue = IntegerValue("InvDelay", 500, 500, 5000, { spoofInvValue.get() })
     private val regenValue = BoolValue("Heal", true)
     private val utilityValue = BoolValue("Utility", true)
+    private val debugValue = BoolValue("Debug", true)
 
     private var throwing = false
     private var potIndex = -1
@@ -50,17 +52,26 @@ class AutoPot : Module() {
     private var throwTimer = MSTimer()
     private var invTimer = MSTimer()
 
-    @EventTarget(priority = 1)
+    private fun debug(s: String) {
+        if (debugValue.get())
+            ClientUtils.displayChatMessage(s)
+    }
+
+    @EventTarget
     fun onMotion(event: MotionEvent) {
         if (event.eventState == EventState.PRE) {
-            if (throwing && mc.currentScreen !is GuiContainer) {
+            val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)!! as KillAura
+
+            if (throwing && mc.currentScreen !is GuiContainer && (!killAura.state || killAura.target == null)) {
                 if (!throwTimer.hasTimePassed(delayValue.get().toLong())) return
 
-                if (mc.thePlayer.onGround && modeValue.get().equals("jump", true)) 
+                if (mc.thePlayer.onGround && modeValue.get().equals("jump", true)) {
                     mc.thePlayer.jump()
+                    debug("jumped")
+                }
 
-                if (mc.thePlayer.onGround && modeValue.get().equals("floor", true) ||
-                        !mc.thePlayer.onGround && modeValue.get().equals("jump", true)) 
+                if ((mc.thePlayer.onGround && modeValue.get().equals("floor", true)) ||
+                        (!mc.thePlayer.onGround && modeValue.get().equals("jump", true)))
                 {
                     if (RotationUtils.targetRotation != null)
                         RotationUtils.setTargetRotation(Rotation(RotationUtils.targetRotation.yaw, 90F))
@@ -68,6 +79,7 @@ class AutoPot : Module() {
                         RotationUtils.setTargetRotation(Rotation(event.yaw, 90F))
 
                     event.pitch = 90F
+                    debug("set rotation")
                 }
             }
         }
@@ -85,6 +97,13 @@ class AutoPot : Module() {
             }
 
             val potion = findPotion(36, 45)
+            if (!throwing && potion != -1) {
+                throwing = true
+                potIndex = potion
+                throwTimer.reset()
+
+                debug("found pot, queueing")
+            }
 
             if (spoofInvValue.get() && !throwing && mc.currentScreen !is GuiContainer) {
                 val invPotion = findPotion(9, 36)
@@ -95,6 +114,8 @@ class AutoPot : Module() {
                             mc.playerController.windowClick(0, invPotion, 0, 1, mc.thePlayer)
                             mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
                             invTimer.reset()
+
+                            debug("moved pot")
                             return
                         } else {
                             for (i in 36 until 45) {
@@ -107,6 +128,8 @@ class AutoPot : Module() {
                                 mc.playerController.windowClick(0, i, 0, 0, mc.thePlayer)
                                 mc.netHandler.addToSendQueue(C0DPacketCloseWindow())
                                 invTimer.reset()
+
+                                debug("moved pot")
                                 break
                             }
                         }
@@ -114,12 +137,6 @@ class AutoPot : Module() {
                 }
             } else {
                 invTimer.reset()
-            }
-
-            if (!throwing && potion != -1) {
-                throwing = true
-                potIndex = potion
-                throwTimer.reset()
             }
         }
     }
@@ -141,7 +158,7 @@ class AutoPot : Module() {
 
         val itemPotion = stack.item as ItemPotion
 
-        if (mc.thePlayer.health < healthValue.get() && regenValue.get()) {
+        if (mc.thePlayer.health / mc.thePlayer.maxHealth * 100F < healthValue.get() && regenValue.get()) {
             for (potionEffect in itemPotion.getEffects(stack))
                 if (potionEffect.potionID == Potion.heal.id)
                     return true
@@ -167,5 +184,8 @@ class AutoPot : Module() {
         }
         return !mc.thePlayer.isPotionActive(id)
     }
+
+    private val tag: String
+        get() = "${decimalFormat.format(mc.thePlayer.maxHealth * (healthValue.get() / 100F))} HP, ${modeValue.get()}"
 
 }
