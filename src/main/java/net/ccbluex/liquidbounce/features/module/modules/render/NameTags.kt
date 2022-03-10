@@ -24,6 +24,7 @@ import net.ccbluex.liquidbounce.value.FontValue
 import net.minecraft.client.renderer.GlStateManager.*
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 import kotlin.math.roundToInt
@@ -35,6 +36,7 @@ class NameTags : Module() {
     private val pingValue = BoolValue("Ping", true)
     private val distanceValue = BoolValue("Distance", false)
     private val armorValue = BoolValue("Armor", true)
+    private val potionValue = BoolValue("Potions", true)
     private val clearNamesValue = BoolValue("ClearNames", false)
     private val fontValue = FontValue("Font", Fonts.font40)
     private val borderValue = BoolValue("Border", true)
@@ -47,6 +49,8 @@ class NameTags : Module() {
     private val borderColorBlueValue = IntegerValue("Border-B", 0, 0, 255)
     private val borderColorAlphaValue = IntegerValue("Border-Alpha", 0, 0, 255)
     private val scaleValue = FloatValue("Scale", 1F, 1F, 4F)
+
+    private val inventoryBackground = ResourceLocation("textures/gui/container/inventory.png")
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
@@ -145,7 +149,7 @@ class NameTags : Module() {
             quickDrawRect(-width - 2F, -2F, width + 4F, fontRenderer.FONT_HEIGHT + 2F + if (healthBarValue.get()) 2F else 0F, bgColor.rgb)
 
         if (healthBarValue.get())
-            quickDrawRect(-width - 2F, fontRenderer.FONT_HEIGHT + 3F, -width - 2F + (dist * (entity.health.toFloat() / entity.maxHealth.toFloat()).coerceIn(0F, entity.maxHealth.toFloat())), fontRenderer.FONT_HEIGHT + 4F, Color(10, 255, 10).rgb)
+            quickDrawRect(-width - 2F, fontRenderer.FONT_HEIGHT + 3F, -width - 2F + (dist * (entity.health.toFloat() / entity.maxHealth.toFloat()).coerceIn(0F, 1F)), fontRenderer.FONT_HEIGHT + 4F, Color(10, 255, 10).rgb)
 
         glEnable(GL_TEXTURE_2D)
 
@@ -166,6 +170,25 @@ class NameTags : Module() {
             enableAlpha()
             disableBlend()
             enableTexture2D()
+        }
+
+        if (potionValue.get() && entity is EntityPlayer) {
+            val potions = entity.getActivePotionEffects().filter { it.hasStatusIcon() }
+            if (!potions.isEmpty()) {
+                color(1.0F, 1.0F, 1.0F, 1.0F)
+                disableLighting()
+                enableTexture2D()
+
+                val minX = (potions.size * -20) / 2
+
+                potions.forEachIndexed { index, potion ->
+                    color(1.0F, 1.0F, 1.0F, 1.0F)
+                    mc.getTextureManager().bindTexture(inventoryBackground)
+
+                    val i1 = potion.getStatusIconIndex()
+                    this.drawTexturedModalRect(minX + index * 20, -42, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18)
+                }
+            }
         }
 
         // Pop
