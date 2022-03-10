@@ -186,6 +186,22 @@ class KillAura : Module() {
         }
     }
 
+    private val randomCenterValue = BoolValue("RandomCenter", false)
+    private val randomCenterNewValue = BoolValue("NewCalc", true, { randomCenterValue.get() })
+    private val minRand: FloatValue = object : FloatValue("MinMultiply", 0.8f, 0f, 2f, { randomCenterValue.get() }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = maxRand.get()
+            if (v < newValue) set(v)
+        }
+    }
+    private val maxRand: FloatValue = object : FloatValue("MaxMultiply", 0.8f, 0f, 2f, { randomCenterValue.get() }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = minRand.get()
+            if (v > newValue) set(v)
+        }
+    }
+    private val outborderValue = BoolValue("Outborder", false)
+
     // Bypass
     private val failRateValue = FloatValue("FailRate", 0f, 0f, 100f)
     private val fakeSwingValue = BoolValue("FakeSwing", true)

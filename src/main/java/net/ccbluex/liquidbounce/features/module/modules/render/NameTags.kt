@@ -24,6 +24,7 @@ import net.ccbluex.liquidbounce.value.FontValue
 import net.minecraft.client.renderer.GlStateManager.*
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.potion.PotionEffect
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import java.awt.Color
@@ -173,7 +174,7 @@ class NameTags : Module() {
         }
 
         if (potionValue.get() && entity is EntityPlayer) {
-            val potions = entity.getActivePotionEffects().filter { it.hasStatusIcon() }
+            val potions = entity.getActivePotionEffects().filter(it.hasStatusIcon()) as Collection<PotionEffect>
             if (!potions.isEmpty()) {
                 color(1.0F, 1.0F, 1.0F, 1.0F)
                 disableLighting()
