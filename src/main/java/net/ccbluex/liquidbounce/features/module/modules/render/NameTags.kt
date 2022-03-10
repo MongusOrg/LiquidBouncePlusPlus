@@ -190,7 +190,9 @@ class NameTags : Module() {
                     mc.getTextureManager().bindTexture(inventoryBackground)
 
                     val i1 = potion.getStatusIconIndex()
-                    drawTexturedModalRect(minX + index * 20, -42, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18)
+
+                    mc.renderItem.zLevel = -147F
+                    drawTexturedModalRect(minX + index * 20, if (armorValue.get()) -42 else -22, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18, mc.renderItem.zLevel)
                     index++
                 }
 
