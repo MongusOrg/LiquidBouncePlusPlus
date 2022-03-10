@@ -174,7 +174,7 @@ class NameTags : Module() {
         }
 
         if (potionValue.get() && entity is EntityPlayer) {
-            val potions = entity.getActivePotionEffects().filter(it.hasStatusIcon()) as Collection<PotionEffect>
+            val potions = entity.getActivePotionEffects().filter(PotionEffect::hasStatusIcon) as Collection<PotionEffect>
             if (!potions.isEmpty()) {
                 color(1.0F, 1.0F, 1.0F, 1.0F)
                 disableLighting()
@@ -182,12 +182,14 @@ class NameTags : Module() {
 
                 val minX = (potions.size * -20) / 2
 
-                potions.forEachIndexed { index, potion ->
+                var index = 0
+                for (potion in potions) {
                     color(1.0F, 1.0F, 1.0F, 1.0F)
                     mc.getTextureManager().bindTexture(inventoryBackground)
 
                     val i1 = potion.getStatusIconIndex()
-                    this.drawTexturedModalRect(minX + index * 20, -42, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18)
+                    RenderUtils.drawTexturedModalRect(minX + index * 20, -42, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18)
+                    index++
                 }
             }
         }
