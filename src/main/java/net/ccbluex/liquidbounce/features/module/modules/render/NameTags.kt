@@ -17,6 +17,7 @@ import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils.quickDrawBorderedRect
 import net.ccbluex.liquidbounce.utils.render.RenderUtils.quickDrawRect
+import net.ccbluex.liquidbounce.utils.render.RenderUtils.drawTexturedModalRect
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
@@ -175,7 +176,7 @@ class NameTags : Module() {
         }
 
         if (potionValue.get() && entity is EntityPlayer) {
-            val potions = (entity.getActivePotionEffects() as Collection<PotionEffect>).map { Potion.potionTypes[it.getPotionID()] }.filter { is.hasStatusIcon() }
+            val potions = (entity.getActivePotionEffects() as Collection<PotionEffect>).map { Potion.potionTypes[it.getPotionID()] }.filter { it.hasStatusIcon() }
             if (!potions.isEmpty()) {
                 color(1.0F, 1.0F, 1.0F, 1.0F)
                 disableLighting()
