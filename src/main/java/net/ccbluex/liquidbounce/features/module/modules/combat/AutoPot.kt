@@ -185,7 +185,7 @@ class AutoPot : Module() {
         return !mc.thePlayer.isPotionActive(id)
     }
 
-    private val tag: String
+    override val tag: String
         get() = "${decimalFormat.format(mc.thePlayer.maxHealth * (healthValue.get() / 100F))} HP, ${modeValue.get()}"
 
 }
