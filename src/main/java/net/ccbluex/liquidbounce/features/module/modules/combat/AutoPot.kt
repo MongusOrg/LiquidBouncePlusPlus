@@ -186,6 +186,6 @@ class AutoPot : Module() {
     }
 
     override val tag: String
-        get() = "${decimalFormat.format(mc.thePlayer.maxHealth * (healthValue.get() / 100F))} HP, ${modeValue.get()}"
+        get() = "${if (modeValue.get().equals("jump", true)) "Jump Only" else "Floor"}"
 
 }
