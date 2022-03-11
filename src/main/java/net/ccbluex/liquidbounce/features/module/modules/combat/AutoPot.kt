@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.InventoryUtils
 import net.ccbluex.liquidbounce.utils.Rotation
@@ -40,24 +41,33 @@ class AutoPot : Module() {
 
     private val healthValue = FloatValue("HP", 75F, 0F, 100F)
     private val delayValue = IntegerValue("Delay", 500, 500, 5000)
+    private val resetDelayValue = IntegerValue("ResetDelay", 10000, 1000, 10000)
     private val spoofInvValue = BoolValue("InvSpoof", false)
     private val spoofDelayValue = IntegerValue("InvDelay", 500, 500, 5000, { spoofInvValue.get() })
     private val regenValue = BoolValue("Heal", true)
     private val utilityValue = BoolValue("Utility", true)
-    private val debugValue = BoolValue("Debug", true)
+    private val debugValue = BoolValue("Debug", false)
+    private val notifyValue = BoolValue("Notification", true)
 
     private var throwing = false
     private var potIndex = -1
 
-    private val decimalFormat = DecimalFormat("##.#", DecimalFormatSymbols(Locale.ENGLISH))
     private var throwTimer = MSTimer()
+    private var resetTimer = MSTimer()
     private var invTimer = MSTimer()
 
     private var queuedEffects = arrayListOf<Int>()
 
+    override fun onEnable() {
+        throwTimer.reset()
+        resetTimer.reset()
+        invTimer.reset()
+        queuedEffects.clear()
+    }
+
     private fun debug(s: String) {
         if (debugValue.get())
-            ClientUtils.displayChatMessage(s)
+            ClientUtils.displayChatMessage("[AutoPot] $s")
     }
 
     @EventTarget(priority = 1)
@@ -71,12 +81,20 @@ class AutoPot : Module() {
                 for (pID in queuedEffects)
                     if (mc.thePlayer.isPotionActive(pID)) {
                         queueDeleteList.add(pID)
+                        if (notifyValue.get())
+                            LiquidBounce.hud.addNotification(Notification("Potted ${I18n.format(Potion.potionTypes[pID].getName(), arrayOf<Object>())}.", Notification.Type.INFO))
                         debug("${pID} removed due to effect detected")
                     }
 
                 if (queueDeleteList.size > 0)
                     for (delID in queueDeleteList)
                         queuedEffects.remove(delID)
+
+                if (resetTimer.hasTimePassed(resetDelayValue.get().toLong())) {
+                    resetTimer.reset()
+                    queuedEffects.clear()
+                    debug("cleared queue")
+                }
             }
 
             val potion = findPotion(36, 45)
@@ -120,7 +138,6 @@ class AutoPot : Module() {
                 mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
                 potIndex = -1
                 throwing = false
-
                 debug("thrown")
             }
 
