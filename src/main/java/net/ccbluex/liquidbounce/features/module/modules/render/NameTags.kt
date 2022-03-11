@@ -167,7 +167,7 @@ class NameTags : Module() {
                     continue
 
                 mc.renderItem.zLevel = -147F
-                mc.renderItem.renderItemAndEffectIntoGUI(entity.getEquipmentInSlot(index), -50 + index * 20, -22)
+                mc.renderItem.renderItemAndEffectIntoGUI(entity.getEquipmentInSlot(index), -50 + index * 20, if (potionValue.get()) -42 else -22)
             }
 
             enableAlpha()
@@ -192,12 +192,13 @@ class NameTags : Module() {
                     color(1.0F, 1.0F, 1.0F, 1.0F)
                     mc.getTextureManager().bindTexture(inventoryBackground)
                     val i1 = potion.getStatusIconIndex()
-                    drawTexturedModalRect(minX + index * 20, if (armorValue.get()) -42 else -22, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18, 0F)
+                    drawTexturedModalRect(minX + index * 20, -22, 0 + i1 % 8 * 18, 198 + i1 / 8 * 18, 18, 18, 0F)
                     index++
                 }
                 disableRescaleNormal()
                 glPopMatrix()
 
+                enableLighting()
                 enableAlpha()
                 disableBlend()
                 enableTexture2D()

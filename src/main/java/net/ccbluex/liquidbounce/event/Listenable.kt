@@ -13,8 +13,8 @@ interface Listenable {
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
 @kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
-annotation class EventTarget(val ignoreCondition: Boolean = false)
+annotation class EventTarget(val ignoreCondition: Boolean = false, val priority: Int = 0)
 
-internal class EventHook(val eventClass: Listenable, val method: Method, eventTarget: EventTarget) {
+internal class EventHook(val eventClass: Listenable, val method: Method, val priority: Int = 0, eventTarget: EventTarget) {
     val isIgnoreCondition = eventTarget.ignoreCondition
 }
