@@ -198,7 +198,6 @@ class NameTags : Module() {
                 disableRescaleNormal()
                 glPopMatrix()
 
-                enableLighting()
                 enableAlpha()
                 disableBlend()
                 enableTexture2D()

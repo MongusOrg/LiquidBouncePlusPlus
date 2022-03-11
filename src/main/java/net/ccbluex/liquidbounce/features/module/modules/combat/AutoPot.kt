@@ -66,6 +66,28 @@ class AutoPot : Module() {
             val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)!! as KillAura
             val scaffold = LiquidBounce.moduleManager.getModule(Scaffold::class.java)!! as Scaffold
 
+            if (!queuedEffects.isEmpty()) {
+                val queueDeleteList = arrayListOf<Int>()
+                for (pID in queuedEffects)
+                    if (mc.thePlayer.isPotionActive(pID)) {
+                        queueDeleteList.add(pID)
+                        debug("${pID} removed due to effect detected")
+                    }
+
+                if (queueDeleteList.size > 0)
+                    for (delID in queueDeleteList)
+                        queuedEffects.remove(delID)
+            }
+
+            val potion = findPotion(36, 45)
+            if (!throwing && potion != -1 && mc.currentScreen !is GuiContainer) {
+                throwing = true
+                potIndex = potion
+                throwTimer.reset()
+
+                debug("found pot, queueing")
+            }
+
             if (throwing && mc.currentScreen !is GuiContainer && (!killAura.state || killAura.target == null) && !scaffold.state) {
                 if (!throwTimer.hasTimePassed(delayValue.get().toLong())) return
 
@@ -100,28 +122,6 @@ class AutoPot : Module() {
                 throwing = false
 
                 debug("thrown")
-            }
-
-            if (!queuedEffects.isEmpty()) {
-                val queueDeleteList = arrayListOf<Int>()
-                for (pID in queuedEffects)
-                    if (mc.thePlayer.isPotionActive(pID)) {
-                        queueDeleteList.add(pID)
-                        debug("${pID} removed due to effect detected")
-                    }
-
-                if (queueDeleteList.size > 0)
-                    for (delID in queueDeleteList)
-                        queuedEffects.remove(delID)
-            }
-
-            val potion = findPotion(36, 45)
-            if (!throwing && potion != -1) {
-                throwing = true
-                potIndex = potion
-                throwTimer.reset()
-
-                debug("found pot, queueing")
             }
 
             if (spoofInvValue.get() && !throwing && mc.currentScreen !is GuiContainer) {
