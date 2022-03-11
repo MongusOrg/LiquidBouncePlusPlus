@@ -161,23 +161,12 @@ class NameTags : Module() {
 
         AWTFontRenderer.assumeNonVolatile = false
 
-        if (armorValue.get() && entity is EntityPlayer) {
-            for (index in 0..4) {
-                if (entity.getEquipmentInSlot(index) == null)
-                    continue
-
-                mc.renderItem.zLevel = -147F
-                mc.renderItem.renderItemAndEffectIntoGUI(entity.getEquipmentInSlot(index), -50 + index * 20, if (potionValue.get()) -42 else -22)
-            }
-
-            enableAlpha()
-            disableBlend()
-            enableTexture2D()
-        }
-
+        var foundPotion = false
         if (potionValue.get() && entity is EntityPlayer) {
             val potions = (entity.getActivePotionEffects() as Collection<PotionEffect>).map { Potion.potionTypes[it.getPotionID()] }.filter { it.hasStatusIcon() }
             if (!potions.isEmpty()) {
+                foundPotion = true
+
                 color(1.0F, 1.0F, 1.0F, 1.0F)
                 disableLighting()
                 enableTexture2D()
@@ -202,6 +191,20 @@ class NameTags : Module() {
                 disableBlend()
                 enableTexture2D()
             }
+        }
+
+        if (armorValue.get() && entity is EntityPlayer) {
+            for (index in 0..4) {
+                if (entity.getEquipmentInSlot(index) == null)
+                    continue
+
+                mc.renderItem.zLevel = -147F
+                mc.renderItem.renderItemAndEffectIntoGUI(entity.getEquipmentInSlot(index), -50 + index * 20, if (potionValue.get() && foundPotion) -42 else -22)
+            }
+
+            enableAlpha()
+            disableBlend()
+            enableTexture2D()
         }
 
         // Pop
