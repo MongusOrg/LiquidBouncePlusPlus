@@ -98,15 +98,16 @@ class AutoPot : Module() {
                 }
             }
 
-            val potion = findPotion(36, 45)
-            if (!throwing && potion != -1 && mc.currentScreen !is GuiContainer) {
-                throwing = true
-                potIndex = potion
-                throwTimer.reset()
-
-                debug("found pot, queueing")
+            if (!throwing && mc.currentScreen !is GuiContainer) {
+                val potion = findPotion(36, 45)
+                if (potion != -1) {
+                    throwing = true
+                    potIndex = potion
+                    throwTimer.reset()
+                    debug("found pot, queueing")
+                }
             }
-
+            
             if (throwing && mc.currentScreen !is GuiContainer && (!killAura.state || killAura.target == null) && !scaffold.state) {
                 if (!throwTimer.hasTimePassed(delayValue.get().toLong())) return
 

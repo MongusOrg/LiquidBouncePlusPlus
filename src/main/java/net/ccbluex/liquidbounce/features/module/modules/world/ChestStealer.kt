@@ -104,7 +104,7 @@ class ChestStealer : Module() {
 
     @EventTarget
     fun onRender3D(event: Render3DEvent?) {
-        val screen = mc.currentScreen
+        val screen = mc.currentScreen ?: return
 
         if (eventModeValue.get().equals("render3d", true))
             performStealer(screen)
@@ -112,7 +112,7 @@ class ChestStealer : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        val screen = mc.currentScreen
+        val screen = mc.currentScreen ?: return
 
         if (eventModeValue.get().equals("update", true))
             performStealer(screen)
@@ -120,7 +120,7 @@ class ChestStealer : Module() {
 
     @EventTarget
     fun onMotion(event: MotionEvent) {
-        val screen = mc.currentScreen
+        val screen = mc.currentScreen ?: return
 
         if (eventModeValue.get().equals("motion${event.eventState.stateName}", true))
             performStealer(screen)
