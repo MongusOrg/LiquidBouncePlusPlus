@@ -105,12 +105,12 @@ class AutoPot : Module() {
             if (!queuedEffects.isEmpty()) {
                 val queueDeleteList = arrayListOf<Int>()
                 for (pID in queuedEffects)
-                    if (mc.thePlayer.isPotionActive(id)) {
+                    if (mc.thePlayer.isPotionActive(pID)) {
                         queueDeleteList.add(pID)
                         debug("${pID} removed due to effect detected")
                     }
 
-                if (queueDeleteLists.size > 0)
+                if (queueDeleteList.size > 0)
                     for (delID in queueDeleteList)
                         queuedEffects.remove(delID)
             }
