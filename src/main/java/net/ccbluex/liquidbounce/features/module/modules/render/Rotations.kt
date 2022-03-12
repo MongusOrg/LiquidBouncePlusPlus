@@ -28,7 +28,7 @@ class Rotations : Module() {
     private var playerYaw: Float? = null
     private var noEvent: Boolean = false
 
-    private lateinit var fakePlayer: EntityOtherPlayerMP?
+    private var fakePlayer: EntityOtherPlayerMP? = null
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
@@ -38,7 +38,7 @@ class Rotations : Module() {
             
             if (modeValue.get().equals("chams", true) && mc.thePlayer != null && mc.theWorld != null && mc.thePlayer.getGameProfile() != null) {
                 if (fakePlayer == null) {
-                    fakePlayer = EntityOtherPlayerMP(mc.thePlayer, mc.thePlayer.getGameProfile())
+                    fakePlayer = EntityOtherPlayerMP(mc.theWorld, mc.thePlayer.getGameProfile())
                     fakePlayer.copyLocationAndAnglesFrom(mc.thePlayer)
                     fakePlayer.rotationYaw = RotationUtils.serverRotation.yaw
                     fakePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
