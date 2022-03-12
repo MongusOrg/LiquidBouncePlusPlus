@@ -6,9 +6,7 @@
 package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.LiquidBounce
-import net.ccbluex.liquidbounce.event.EventTarget
-import net.ccbluex.liquidbounce.event.PacketEvent
-import net.ccbluex.liquidbounce.event.Render3DEvent
+import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
@@ -18,25 +16,49 @@ import net.ccbluex.liquidbounce.features.module.modules.exploit.Disabler
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly
 import net.ccbluex.liquidbounce.features.module.modules.world.*
 import net.ccbluex.liquidbounce.utils.RotationUtils
-import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.ListValue
+import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.network.play.client.C03PacketPlayer
 
 @ModuleInfo(name = "Rotations", description = "Allows you to see server-sided head and body rotations.", category = ModuleCategory.RENDER)
 class Rotations : Module() {
 
-    private val bodyValue = BoolValue("Body", true)
+    val modeValue = ListValue("Mode", arrayOf("Chams", "Head", "Body"), "Chams")
 
     private var playerYaw: Float? = null
+    private var noEvent: Boolean = false
+
+    private lateinit var fakePlayer: EntityOtherPlayerMP?
 
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
-        if (RotationUtils.serverRotation != null && !bodyValue.get())
-            mc.thePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
+        if (RotationUtils.serverRotation != null) {
+            if (modeValue.get().equals("head", true))
+                mc.thePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
+            
+            if (modeValue.get().equals("chams", true) && mc.thePlayer != null && mc.theWorld != null && mc.thePlayer.getGameProfile() != null) {
+                if (fakePlayer == null) {
+                    fakePlayer = EntityOtherPlayerMP(mc.thePlayer, mc.thePlayer.getGameProfile())
+                    fakePlayer.copyLocationAndAnglesFrom(mc.thePlayer)
+                    fakePlayer.rotationYaw = RotationUtils.serverRotation.yaw
+                    fakePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
+                    fakePlayer.renderYawOffset = fakePlayer.rotationYawHead
+                    fakePlayer.rotationPitch = RotationUtils.serverRotation.pitch
+                    mc.theWorld.addEntityToWorld(-72749, fakePlayer)
+                }
+                mc.getRenderManager().renderEntityStatic(fakePlayer!!, event.partialTicks, true)
+            }
+        }
     }
 
     @EventTarget
+    fun onWorld(event: WorldEvent) {
+        fakePlayer = null
+    }
+
+    @EventTarget(priority = 1)
     fun onPacket(event: PacketEvent) {
-        if (!bodyValue.get() || !shouldRotate() || mc.thePlayer == null)
+        if (!modeValue.get().equals("body", true) || !shouldRotate() || mc.thePlayer == null)
             return
 
         val packet = event.packet

@@ -92,7 +92,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         boolean visible = !entitylivingbaseIn.isInvisible();
         final TrueSight trueSight = (TrueSight) LiquidBounce.moduleManager.getModule(TrueSight.class);
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
-        boolean chamsFlag = chams.getState() && chams.getTargetsValue().get() && !chams.getLegacyMode().get() && EntityUtils.isSelected(entitylivingbaseIn, false);
+        boolean chamsFlag = entitylivingbaseIn.getEntityId() == -72749 || (chams.getState() && chams.getTargetsValue().get() && !chams.getLegacyMode().get() && EntityUtils.isSelected(entitylivingbaseIn, false));
         boolean semiVisible = !visible && (!entitylivingbaseIn.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) || (trueSight.getState() && trueSight.getEntitiesValue().get()));
 
         if(visible || semiVisible) {
