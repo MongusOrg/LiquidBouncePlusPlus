@@ -49,7 +49,7 @@ class Rotations : Module() {
                 fakePlayer!!.setInvisible(false)
                 mc.getRenderManager().renderEntityStatic(fakePlayer!!, event.partialTicks, true)
                 fakePlayer!!.setInvisible(true)
-                fakePlayer.posY = -10000
+                fakePlayer!!.posY = -10000.0
             }
         }
     }
