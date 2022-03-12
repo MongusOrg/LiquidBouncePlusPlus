@@ -42,7 +42,7 @@ class Rotations : Module() {
                     fakeplayer.copyLocationAndAnglesFrom(mc.thePlayer)
                     fakeplayer.rotationYaw = RotationUtils.serverRotation.yaw
                     fakeplayer.rotationYawHead = RotationUtils.serverRotation.yaw
-                    fakeplayer.renderYawOffset = fakePlayer.rotationYawHead
+                    fakeplayer.renderYawOffset = fakeplayer.rotationYawHead
                     fakeplayer.rotationPitch = RotationUtils.serverRotation.pitch
                     fakePlayer = fakeplayer
                     mc.theWorld.addEntityToWorld(-72749, fakePlayer)
