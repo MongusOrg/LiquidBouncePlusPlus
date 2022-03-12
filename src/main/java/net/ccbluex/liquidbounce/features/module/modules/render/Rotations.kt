@@ -47,7 +47,9 @@ class Rotations : Module() {
                     fakePlayer = fakeplayer
                     mc.theWorld.addEntityToWorld(-72749, fakePlayer)
                 }
+                fakePlayer!!.setInvisible(false)
                 mc.getRenderManager().renderEntityStatic(fakePlayer!!, event.partialTicks, true)
+                fakePlayer!!.setInvisible(true)
             }
         }
     }
