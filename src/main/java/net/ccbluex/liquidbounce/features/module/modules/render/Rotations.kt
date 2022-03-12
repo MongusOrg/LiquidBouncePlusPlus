@@ -36,20 +36,20 @@ class Rotations : Module() {
             if (modeValue.get().equals("head", true))
                 mc.thePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
             
-            if (modeValue.get().equals("chams", true) && mc.thePlayer != null && mc.theWorld != null && mc.thePlayer.getGameProfile() != null) {
+            if (modeValue.get().equals("chams", true) && shouldRotate() && mc.thePlayer != null && mc.theWorld != null && mc.thePlayer.getGameProfile() != null) {
                 if (fakePlayer == null) {
-                    val fakeplayer: EntityOtherPlayerMP = EntityOtherPlayerMP(mc.theWorld, mc.thePlayer.getGameProfile())
-                    fakeplayer.copyLocationAndAnglesFrom(mc.thePlayer)
-                    fakeplayer.rotationYaw = RotationUtils.serverRotation.yaw
-                    fakeplayer.rotationYawHead = RotationUtils.serverRotation.yaw
-                    fakeplayer.renderYawOffset = fakeplayer.rotationYawHead
-                    fakeplayer.rotationPitch = RotationUtils.serverRotation.pitch
-                    fakePlayer = fakeplayer
+                    fakePlayer = EntityOtherPlayerMP(mc.theWorld, mc.thePlayer.getGameProfile())
                     mc.theWorld.addEntityToWorld(-72749, fakePlayer)
                 }
+                fakePlayer!!.copyLocationAndAnglesFrom(mc.thePlayer)
+                fakePlayer!!.rotationYaw = RotationUtils.serverRotation.yaw
+                fakePlayer!!.rotationYawHead = RotationUtils.serverRotation.yaw
+                fakePlayer!!.renderYawOffset = fakePlayer!!.rotationYawHead
+                fakePlayer!!.rotationPitch = RotationUtils.serverRotation.pitch
                 fakePlayer!!.setInvisible(false)
                 mc.getRenderManager().renderEntityStatic(fakePlayer!!, event.partialTicks, true)
                 fakePlayer!!.setInvisible(true)
+                fakePlayer.posY = -10000
             }
         }
     }
