@@ -18,6 +18,7 @@ import net.ccbluex.liquidbounce.features.module.modules.world.*
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.client.entity.EntityOtherPlayerMP
+import net.minecraft.client.renderer.GlStateManager.*
 import net.minecraft.network.play.client.C03PacketPlayer
 
 @ModuleInfo(name = "Rotations", description = "Allows you to see server-sided head and body rotations.", category = ModuleCategory.RENDER)
@@ -28,8 +29,6 @@ class Rotations : Module() {
     private var playerYaw: Float? = null
     private var noEvent: Boolean = false
 
-    private var fakePlayer: EntityOtherPlayerMP? = null
-
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
         if (RotationUtils.serverRotation != null) {
@@ -37,26 +36,26 @@ class Rotations : Module() {
                 mc.thePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
             
             if (modeValue.get().equals("chams", true) && shouldRotate() && mc.thePlayer != null && mc.theWorld != null && mc.thePlayer.getGameProfile() != null) {
-                if (fakePlayer == null) {
-                    fakePlayer = EntityOtherPlayerMP(mc.theWorld, mc.thePlayer.getGameProfile())
-                    mc.theWorld.addEntityToWorld(-72749, fakePlayer)
-                }
-                fakePlayer!!.copyLocationAndAnglesFrom(mc.thePlayer)
-                fakePlayer!!.rotationYaw = RotationUtils.serverRotation.yaw
-                fakePlayer!!.rotationYawHead = RotationUtils.serverRotation.yaw
-                fakePlayer!!.renderYawOffset = fakePlayer!!.rotationYawHead
-                fakePlayer!!.rotationPitch = RotationUtils.serverRotation.pitch
-                fakePlayer!!.setInvisible(false)
-                mc.getRenderManager().renderEntityStatic(fakePlayer!!, event.partialTicks, true)
-                fakePlayer!!.setInvisible(true)
-                fakePlayer!!.posY = -10000.0
+                val fakePlayer = EntityOtherPlayerMP(mc.theWorld, mc.thePlayer.getGameProfile())
+                fakePlayer.entityId = -72749
+                fakePlayer.posX = mc.thePlayer.posX
+                fakePlayer.posY = mc.thePlayer.posY
+                fakePlayer.posZ = mc.thePlayer.posZ
+                fakePlayer.rotationYaw = RotationUtils.serverRotation.yaw
+                fakePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
+                fakePlayer.renderYawOffset = fakePlayer.rotationYawHead
+                fakePlayer.rotationPitch = RotationUtils.serverRotation.pitch
+                
+                enableBlend()
+                tryBlendFuncSeparate(770, 771, 1, 0)
+                mc.getRenderManager().renderEntityStatic(fakePlayer, event.partialTicks, false)
+                disableBlend()
+                enableAlpha()
+                enableDepth()
+                disableLighting()
+                enableTexture2D()
             }
         }
-    }
-
-    @EventTarget
-    fun onWorld(event: WorldEvent) {
-        fakePlayer = null
     }
 
     @EventTarget(priority = 1)
@@ -80,7 +79,7 @@ class Rotations : Module() {
 
     private fun shouldRotate(): Boolean {
         val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
-        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
+        val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java) as Disabler
         return getState(Scaffold::class.java) ||
                 (getState(KillAura::class.java) && killAura.target != null) ||
                 (getState(Disabler::class.java) && disabler.canRenderInto3D) ||
