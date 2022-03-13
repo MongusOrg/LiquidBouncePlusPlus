@@ -45,7 +45,7 @@ public class MixinModelBiped {
             if (LiquidBounce.moduleManager.getModule(SpinBot.class).getState()) {
                 this.bipedHead.rotateAngleX = SpinBot.pitch / (180F / (float) Math.PI);
             }
-            else if (rotationModule.getState() && !rotationModule.getModeValue().get().equalsIgnoreCase("chams") && RotationUtils.serverRotation != null) {
+            else if (rotationModule.getState() && RotationUtils.serverRotation != null) {
                 this.bipedHead.rotateAngleX = RotationUtils.serverRotation.getPitch() / (180F / (float) Math.PI);
             }
         }

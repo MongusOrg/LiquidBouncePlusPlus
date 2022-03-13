@@ -8,9 +8,7 @@
 package net.ccbluex.liquidbounce.features.module.modules.render;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
-import net.ccbluex.liquidbounce.event.EventTarget;
-import net.ccbluex.liquidbounce.event.MotionEvent;
-import net.ccbluex.liquidbounce.event.Render3DEvent;
+import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.Module;
@@ -42,6 +40,7 @@ public class TargetMark extends Module {
 	private final FloatValue jelloAlphaValue = new FloatValue("JelloEndAlphaPercent", 0.4F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
 	private final FloatValue jelloWidthValue = new FloatValue("JelloCircleWidth", 3F, 0.01F, 5F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
 	private final FloatValue jelloGradientHeightValue = new FloatValue("JelloGradientHeight", 3F, 1F, 8F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
+	private final FloatValue jelloFadeSpeedValue = new FloatValue("JelloFadeSpeed", 0.1F, 0.01F, 0.5F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
@@ -68,9 +67,9 @@ public class TargetMark extends Module {
     }
 
 	@EventTarget
-	public void onMotion(MotionEvent event) {
+	public void onTick(TickEvent event) {
 		if (modeValue.get().equalsIgnoreCase("jello") && !aura.getTargetModeValue().get().equalsIgnoreCase("multi"))
-            al = AnimationUtils.changer(al, (aura.getTarget() != null ? 0.1F : -0.1F), 0F, colorAlphaValue.get() / 255.0F);
+            al = AnimationUtils.changer(al, (aura.getTarget() != null ? jelloFadeSpeedValue.get() : -jelloFadeSpeedValue.get()), 0F, colorAlphaValue.get() / 255.0F);
 	}
 	
 	@EventTarget
