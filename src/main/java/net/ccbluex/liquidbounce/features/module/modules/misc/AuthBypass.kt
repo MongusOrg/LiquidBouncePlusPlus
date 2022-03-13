@@ -2,6 +2,8 @@
  * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ *
+ * This code was taken from UnlegitMC/FDPClient, modified. Please credit them and us when using this code in your repository.
  */
 package net.ccbluex.liquidbounce.features.module.modules.misc
 
@@ -27,10 +29,6 @@ import net.minecraft.network.play.server.S2FPacketSetSlot
 import org.apache.commons.io.IOUtils
 import java.util.*
 
-/***
- * @author liulihaocai
- * FILHO DA PUTA CLIENT SKIDDED 2012 BYEPASS?!??!
- */
 @ModuleInfo(name = "AuthBypass", spacedName = "Auth Bypass", description = "Bypass auth when join server.", category = ModuleCategory.MISC)
 class AuthBypass : Module(){
     private val delayValue=IntegerValue("Delay",1500,100,5000)

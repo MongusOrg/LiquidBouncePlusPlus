@@ -135,10 +135,11 @@ public class AntiVoid extends Module {
                     mc.thePlayer.moveForward
                 );
 
-                if (fallingPlayer != null 
-                    && fallingPlayer.findCollision(maxFindRangeValue.get()) != null
-                    && fallingPlayer.findCollision(maxFindRangeValue.get()).getPos() != null) 
-                    detectedLocation = fallingPlayer.findCollision(maxFindRangeValue.get()).getPos();
+                try {
+                    if (fallingPlayer != null) detectedLocation = fallingPlayer.findCollision(maxFindRangeValue.get()).getPos();
+                } catch (Exception e) {
+                    // do nothing. i hate errors
+                }
 
                 if (detectedLocation != null && Math.abs(mc.thePlayer.posY - detectedLocation.getY()) +
                     mc.thePlayer.fallDistance <= maxFallDistSimulateValue.get()) {

@@ -43,7 +43,6 @@ public class AutoHypixel extends Module {
     private final IntegerValue delayValue = new IntegerValue("Delay", 0, 0, 5000);
     private final BoolValue autoGGValue = new BoolValue("Auto-GG", true);
     private final TextValue ggMessageValue = new TextValue("GG-Message", "gOoD GaMe", () -> { return autoGGValue.get(); });
-    private final BoolValue antiAtlasValue = new BoolValue("Anti-Atlas", true);
     private final BoolValue checkValue = new BoolValue("CheckGameMode", true);
     private final BoolValue renderValue = new BoolValue("Render", true);
     private final ListValue modeValue = new ListValue("Mode", new String[]{"Solo", "Teams", "Ranked", "Mega"}, "Solo");
@@ -59,22 +58,22 @@ public class AutoHypixel extends Module {
     private float posY = -20F;
 
     private final String[] strings = new String[]{
-        "1st Killer - ", 
-        "1st Place - ", 
-        "You died! Want to play again? Click here!",
-        "You won! Want to play again? Click here!",
-        " - Damage Dealt - ",
-        "1st - ",
-        "Winning Team - ",
-        "Winners: ", 
-        "Winner: ", 
-        "Winning Team: ", 
+        "1st Killer -", 
+        "1st Place -", 
+        "died! Want to play again? Click here!",
+        "won! Want to play again? Click here!",
+        "- Damage Dealt -",
+        "1st -",
+        "Winning Team -",
+        "Winners:", 
+        "Winner:", 
+        "Winning Team:", 
         " win the game!", 
-        "1st Place: ", 
+        "1st Place:", 
         "Last team standing!", 
         "Winner #1 (", 
         "Top Survivors", 
-        "Winners - "};
+        "Winners -"};
 
     @Override
     public void onEnable() {
@@ -111,15 +110,6 @@ public class AutoHypixel extends Module {
     @EventTarget
     public void onMotion(MotionEvent event) {
         if ((!checkValue.get() || gameMode.toLowerCase().contains("skywars")) && shouldChangeGame && timer.hasTimePassed(delayValue.get())) {
-            if (antiAtlasValue.get()) {
-                for (EntityPlayer entity : (List<EntityPlayer>) mc.theWorld.playerEntities) {
-                    if (entity == null && (mc.thePlayer.ticksExisted % 10 == 0 || entity == mc.thePlayer)) continue;
-                    if (!LiquidBounce.moduleManager.getModule(AntiBot.class).getState() || !AntiBot.isBot(entity)) {
-                        mc.thePlayer.sendChatMessage("/wdr " + entity.getName() + (useOtherWord ? " ka,speed,velocity" : " aimbot,safewalk"));
-                        useOtherWord = !useOtherWord;
-                    }
-                }
-            }
             mc.thePlayer.sendChatMessage("/play "+modeValue.get().toLowerCase()+(modeValue.get().equalsIgnoreCase("ranked")?"_normal":modeValue.get().equalsIgnoreCase("mega")?"_"+megaValue.get().toLowerCase():"_"+soloTeamsValue.get().toLowerCase()));
             shouldChangeGame = false;
         }
@@ -134,7 +124,7 @@ public class AutoHypixel extends Module {
                 for (String s : strings)
                     if (chat.getChatComponent().getUnformattedText().contains(s)) {
                         //LiquidBounce.hud.addNotification(new Notification("Attempting to send you to the next game in "+dFormat.format((double)delayValue.get()/1000D)+"s.",1000L));
-                        if (autoGGValue.get() && chat.getChatComponent().getUnformattedText().contains(strings[3])) mc.thePlayer.sendChatMessage("GG");
+                        if (autoGGValue.get() && chat.getChatComponent().getUnformattedText().contains(strings[3])) mc.thePlayer.sendChatMessage(ggMessageValue.get());
                         shouldChangeGame = true;
                         break;
                     }

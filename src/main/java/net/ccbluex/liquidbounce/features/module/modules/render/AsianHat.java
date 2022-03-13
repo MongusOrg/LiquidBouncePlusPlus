@@ -46,7 +46,7 @@ public class AsianHat extends Module {
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
-    private final IntegerValue spaceValue = new IntegerValue("Color-Space", 0, 0, 200);
+    private final IntegerValue spaceValue = new IntegerValue("Color-Space", 0, 0, 100);
     private final BoolValue noFirstPerson = new BoolValue("NoFirstPerson", true);
     private final BoolValue hatBorder = new BoolValue("HatBorder", true);
     //private final BoolValue hatRotation = new BoolValue("HatRotation", true);
