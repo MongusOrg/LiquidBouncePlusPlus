@@ -214,6 +214,8 @@ class InvManager : Module() {
                 InventoryHelper.closePacket()
 
             delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
+            if (delay == 0L || InventoryUtils.CLICK_TIMER.hasTimePassed(delay))
+                break // prevent infinite loop, resulting in frozen state
         }
     }
 

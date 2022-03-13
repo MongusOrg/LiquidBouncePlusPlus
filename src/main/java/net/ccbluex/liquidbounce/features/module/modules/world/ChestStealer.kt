@@ -155,6 +155,7 @@ class ChestStealer : Module() {
 
             // Randomized
             if (takeRandomizedValue.get()) {
+                var noLoop = false
                 do {
                     val items = mutableListOf<Slot>()
 
@@ -169,7 +170,9 @@ class ChestStealer : Module() {
                     val slot = items[randomSlot]
 
                     move(screen, slot)
-                } while (delayTimer.hasTimePassed(nextDelay) && items.isNotEmpty())
+                    if (nextDelay == 0L || delayTimer.hasTimePassed(nextDelay))
+                        noLoop = true
+                } while (delayTimer.hasTimePassed(nextDelay) && items.isNotEmpty() && !noLoop)
                 return
             }
 
