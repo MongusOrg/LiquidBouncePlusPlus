@@ -80,7 +80,7 @@ class AntiBan : Module() {
             }
         }
         if (packet is S0BPacketAnimation) {
-            val entity = mc.theWorld.getEntityByID(packet.entityId)
+            val entity = mc.theWorld.getEntityByID(packet.getEntityID())
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
                     LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
