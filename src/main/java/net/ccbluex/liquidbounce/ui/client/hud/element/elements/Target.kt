@@ -325,7 +325,7 @@ class Target : Element() {
                                 GL11.glTranslated(-renderX, -renderY, 0.0)
                                 GL11.glPushMatrix()
                                 Stencil.write(true)
-                                RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, bgColor.rgb)
+                                RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
                                 Stencil.erase(false)
                                 ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat())
                                 RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
