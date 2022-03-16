@@ -121,6 +121,8 @@ public class Fly extends Module {
     private final BoolValue clipCollisionCheck = new BoolValue("Clip-CollisionCheck", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
     private final BoolValue clipNoMove = new BoolValue("Clip-NoMove", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
 
+    private final BoolValue pulsiveTroll = new BoolValue("PulsiveTroll", true, () -> { return modeValue.get().equalsIgnoreCase("watchdogtest"); });
+
     // Visuals
     private final BoolValue fakeDmgValue = new BoolValue("FakeDamage", true);
     private final BoolValue bobbingValue = new BoolValue("Bobbing", true);
@@ -619,7 +621,15 @@ public class Fly extends Module {
                 if (event.getEventState() == EventState.PRE)
                     wdTick++;
                 break;
+            case "watchdogtest":
+                if (event.getEventState() == EventState.POST && pulsiveTroll.get() && alreadyClipped && mc.thePlayer.ticksExisted % 2 == 0) 
+                    mc.getNetHandler().addToSendQueue(new C0CPacketInput(coerceAtMost(mc.thePlayer.moveStrafing, 0.98F), coerceAtMost(mc.thePlayer.moveForward, 0.98F), mc.thePlayer.movementInput.jump, mc.thePlayer.movementInput.sneak));
+                break;
         }  
+    }
+
+    public float coerceAtMost(double value, double max) {
+        return (float) Math.min(value, max);
     }
 
     @EventTarget
