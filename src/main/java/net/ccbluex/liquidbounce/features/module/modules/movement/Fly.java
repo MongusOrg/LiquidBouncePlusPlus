@@ -294,7 +294,7 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (mc.thePlayer.onGround)
-                    mc.thePlayer.setPositionAndUpdate(x, y - 0.245, z);
+                    mc.thePlayer.setPosition(x, y + 0.08, z);
                 break;
         }
 
@@ -552,11 +552,11 @@ public class Fly extends Module {
 
                 if (wdState == 4) {
                     if (!boostTimer.hasTimePassed(500L))
-                        mc.timer.timerSpeed = 2.5F;
+                        mc.timer.timerSpeed = 1.6F;
                     else if (!boostTimer.hasTimePassed(800L))
-                        mc.timer.timerSpeed = 1.7F;
+                        mc.timer.timerSpeed = 1.4F;
                     else if (!boostTimer.hasTimePassed(1000L))
-                        mc.timer.timerSpeed = 1.25F;
+                        mc.timer.timerSpeed = 1.2F;
                     else
                         mc.timer.timerSpeed = 1F;
 
@@ -567,12 +567,12 @@ public class Fly extends Module {
             case "watchdogtest":
                 if (alreadyFlagged) {
                     mc.timer.timerSpeed = 0.8F;
-                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.7F);
+                    MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.78D : 0.74D)));
                 }
                 else if (alreadyClipped) {
-                    mc.timer.timerSpeed = 2F;
+                    mc.timer.timerSpeed = 1.4F;
                     mc.thePlayer.motionY = 0.0001D;
-                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.8F);
+                    MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
                 } 
                 break;
         }
@@ -703,11 +703,11 @@ public class Fly extends Module {
 
             if (mode.equalsIgnoreCase("WatchdogTest")) {
                 if (alreadyFlagged) {
-                    packetPlayer.y -= 1.0;
+                    packetPlayer.y += 1.0;
                     packetPlayer.onGround = false;
                     packetPlayer.rotating = false;
                     alreadyFlagged = false;
-                } else if (alreadyClipped && mc.thePlayer.ticksExisted % 5 != 0)
+                } else if (alreadyClipped && mc.thePlayer.ticksExisted % 2 != 0)
                     event.cancelEvent();
             }
         }

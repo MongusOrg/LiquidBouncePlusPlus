@@ -64,6 +64,7 @@ public class Scaffold extends Module {
     private final ListValue towerPlaceModeValue = new ListValue("Tower-PlaceTiming", new String[]{"Pre", "Post"}, "Post");
     private final BoolValue stopWhenBlockAbove = new BoolValue("StopWhenBlockAbove", false, () -> { return towerEnabled.get(); });
     private final BoolValue onJumpValue = new BoolValue("OnJump", false, () -> { return towerEnabled.get(); });
+    private final BoolValue noMoveOnlyValue = new BoolValue("NoMove", true, () -> { return towerEnabled.get() && !onJumpValue.get(); });
     private final FloatValue towerTimerValue = new FloatValue("TowerTimer", 1F, 0.1F, 10F, () -> { return towerEnabled.get(); });
 
     // Jump mode
@@ -187,8 +188,8 @@ public class Scaffold extends Module {
 
     // Safety
     private final BoolValue sameYValue = new BoolValue("SameY", false, () -> { return !towerEnabled.get(); });
-    private final BoolValue autoJumpValue = new BoolValue("AutoJump", false, () -> { return !towerEnabled.get(); });
-    private final BoolValue smartSpeedValue = new BoolValue("SmartSpeed", false, () -> { return !towerEnabled.get(); });
+    private final BoolValue autoJumpValue = new BoolValue("AutoJump", false, () -> { return !isTowerOnly(); });
+    private final BoolValue smartSpeedValue = new BoolValue("SmartSpeed", false, () -> { return !isTowerOnly(); });
     private final BoolValue safeWalkValue = new BoolValue("SafeWalk", true);
     private final BoolValue airSafeValue = new BoolValue("AirSafe", false, () -> { return safeWalkValue.get(); });
     private final BoolValue autoDisableSpeedValue = new BoolValue("AutoDisable-Speed", true);
@@ -252,7 +253,7 @@ public class Scaffold extends Module {
     }
 
     public boolean towerActivation() {
-        return towerEnabled.get() && (!onJumpValue.get() || mc.gameSettings.keyBindJump.isKeyDown());
+        return towerEnabled.get() && (!onJumpValue.get() || mc.gameSettings.keyBindJump.isKeyDown()) && (!noMoveOnlyValue.get() || !MovementUtils.isMoving());
     }
 
     /**
@@ -408,6 +409,7 @@ public class Scaffold extends Module {
         if (towerActivation()) {
             shouldGoDown = false;
             mc.gameSettings.keyBindSneak.pressed = false;
+            mc.thePlayer.setSprinting(false);
             return;
         }
 
@@ -861,7 +863,7 @@ public class Scaffold extends Module {
 
     @EventTarget
     public void onJump(final JumpEvent event) {
-        if (towerEnabled.get())
+        if (towerActivation())
             event.cancelEvent();
     }
 
