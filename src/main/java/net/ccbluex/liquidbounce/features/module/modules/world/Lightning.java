@@ -16,7 +16,7 @@ import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.value.BoolValue;
 import net.minecraft.network.play.server.S2CPacketSpawnGlobalEntity;
 
-@ModuleInfo(name = "Lightning", description = "check lightning spawn", category = ModuleCategory.WORLD)
+@ModuleInfo(name = "Lightning", description = "Checks for lightning spawn and notify you.", category = ModuleCategory.WORLD)
 public class Lightning extends Module {
     public final BoolValue chatValue = new BoolValue("Chat", true);
     public final BoolValue notifValue = new BoolValue("Notification", false);

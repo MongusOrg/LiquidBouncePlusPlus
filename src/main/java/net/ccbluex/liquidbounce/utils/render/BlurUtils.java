@@ -25,9 +25,7 @@ public class BlurUtils {
     private static Minecraft mc = Minecraft.getMinecraft();
 
     private static ShaderGroup shaderGroup;
-    private static Framebuffer frbuffer;
-
-    private static Framebuffer framebuffer, frameBuffer;
+    private static Framebuffer frbuffer, framebuffer;
 
     private static int lastFactor;
     private static int lastWidth;
@@ -41,7 +39,6 @@ public class BlurUtils {
 
     private static float lastStrength = 5F;
 
-    //private static ResourceLocation blurShader = new ResourceLocation("liquidbounce+/mahiro.json");
     private static ResourceLocation blurShader = new ResourceLocation("shaders/post/blurArea.json");
 
     public static void init() {
@@ -54,14 +51,6 @@ public class BlurUtils {
             e.printStackTrace();
         }
     }
-
-    /*private static void setValues(float strength) {
-        if (strength == lastStrength) return;
-        lastStrength = strength;
-        for (int i = 0; i < 2; i++) {
-            shaderGroup.listShaders.get(i).getShaderManager().getShaderUniform("Radius").set(strength);
-        }
-    }*/
 
     private static void setValues(float strength, float x, float y, float w, float h, float width, float height) {
         if (strength == lastStrength && lastX == x && lastY == y && lastW == w && lastH == h) return;
@@ -77,76 +66,7 @@ public class BlurUtils {
             shaderGroup.listShaders.get(i).getShaderManager().getShaderUniform("BlurCoord").set(w, h);
         }
     }
-/*
-    public static void downscale(boolean start, int strength) {
-        ScaledResolution scaledResolution = new ScaledResolution(mc);
-        final int scaleFactor = scaledResolution.getScaleFactor();
-        final int width = scaledResolution.getScaledWidth();
-        final int height = scaledResolution.getScaledHeight();
 
-        if (frameBuffer == null) {
-            frameBuffer = new Framebuffer(mc.displayWidth / strength, mc.displayHeight / strength, true);
-            frameBuffer.setFramebufferColor(0, 0, 0, 0);
-            frameBuffer.setFramebufferFilter(GL11.GL_LINEAR);
-        }
-
-        if (sizeHasChanged(scaleFactor, width, height) || strength != lastWeight) {
-            frameBuffer.createBindFramebuffer(mc.displayWidth / strength, mc.displayHeight / strength);
-            frameBuffer.setFramebufferColor(0, 0, 0, 0);
-            frameBuffer.setFramebufferFilter(GL11.GL_LINEAR);
-        }
-        
-        lastFactor = scaleFactor;
-        lastWidth = width;
-        lastHeight = height;
-        lastWeight = strength;
-
-        if (start) {
-            frameBuffer.framebufferClear();
-            frameBuffer.bindFramebuffer(false);
-        } else {
-            frameBuffer.unbindFramebuffer();
-            mc.getFramebuffer().bindFramebuffer(true);
-            //frameBuffer.bindFramebuffer(true);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(770, 771);
-            GlStateManager.pushMatrix();
-            GlStateManager.pushAttrib();
-            if (OpenGlHelper.isFramebufferEnabled())
-            {
-                GlStateManager.disableDepth();
-                GlStateManager.depthMask(false);
-                GlStateManager.colorMask(true, true, true, false);
-                GlStateManager.enableTexture2D();
-                GlStateManager.disableLighting();
-                GlStateManager.disableAlpha();
-
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                frameBuffer.bindFramebufferTexture();
-                float f = (float)width;
-                float f1 = (float)height;
-                float f2 = (float)frameBuffer.framebufferWidth / (float)frameBuffer.framebufferTextureWidth;
-                float f3 = (float)frameBuffer.framebufferHeight / (float)frameBuffer.framebufferTextureHeight;
-                Tessellator tessellator = Tessellator.getInstance();
-                WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-                worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-                worldrenderer.pos(0.0D, (double)f1, 0.0D).tex(0.0D, 0.0D).color(255, 255, 255, 255).endVertex();
-                worldrenderer.pos((double)f, (double)f1, 0.0D).tex((double)f2, 0.0D).color(255, 255, 255, 255).endVertex();
-                worldrenderer.pos((double)f, 0.0D, 0.0D).tex((double)f2, (double)f3).color(255, 255, 255, 255).endVertex();
-                worldrenderer.pos(0.0D, 0.0D, 0.0D).tex(0.0D, (double)f3).color(255, 255, 255, 255).endVertex();
-                tessellator.draw();
-                frameBuffer.unbindFramebufferTexture();
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
-                GlStateManager.colorMask(true, true, true, true);
-                GlStateManager.enableAlpha();
-            }
-            GlStateManager.popAttrib();
-            GlStateManager.popMatrix();
-            GlStateManager.disableBlend();
-        }
-    }
-*/
     public static void blurArea(float x, float y, float x2, float y2, float blurStrength) {
         if (!OpenGlHelper.isFramebufferEnabled()) return;
 
@@ -227,36 +147,6 @@ public class BlurUtils {
 
         GlStateManager.enableAlpha();
     }
-
-    /*public static void preCustomBlur(float blurStrength) {
-        if (!OpenGlHelper.isFramebufferEnabled()) return;
-
-        ScaledResolution scaledResolution = new ScaledResolution(mc);
-        final int scaleFactor = scaledResolution.getScaleFactor();
-        final int width = scaledResolution.getScaledWidth();
-        final int height = scaledResolution.getScaledHeight();
-
-        if (sizeHasChanged(scaleFactor, width, height) || framebuffer == null || frbuffer == null || shaderGroup == null) {
-            init();
-        }
-
-        lastFactor = scaleFactor;
-        lastWidth = width;
-        lastHeight = height;
-
-        setValues(blurStrength);
-
-        framebuffer.bindFramebuffer(true);
-        shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks);
-
-        mc.getFramebuffer().bindFramebuffer(true);
-
-        GlStateManager.pushMatrix();
-        Stencil.write(false);
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-    }*/
 
     public static void preCustomBlur(float blurStrength, float x, float y, float x2, float y2, boolean renderClipLayer) {
         if (!OpenGlHelper.isFramebufferEnabled()) return;

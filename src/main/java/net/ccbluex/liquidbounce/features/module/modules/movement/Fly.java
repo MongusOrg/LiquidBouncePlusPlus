@@ -122,6 +122,9 @@ public class Fly extends Module {
     private final BoolValue clipNoMove = new BoolValue("Clip-NoMove", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
 
     // Visuals
+    private final BoolValue fakeDmgValue = new BoolValue("FakeDamage", true);
+    private final BoolValue bobbingValue = new BoolValue("Bobbing", true);
+    private final FloatValue bobbingAmountValue = new FloatValue("BobbingAmount", 0.2F, 0F, 1F, () -> { return bobbingValue.get(); });
     private final BoolValue markValue = new BoolValue("Mark", true);
 
     private BlockPos lastPosition;
@@ -300,6 +303,12 @@ public class Fly extends Module {
 
         startY = mc.thePlayer.posY;
         noPacketModify = false;
+
+        if (!mode.equalsIgnoreCase("watchdog") && !mode.equalsIgnoreCase("watchdogtest") 
+            && !mode.equalsIgnoreCase("bugspartan") && !mode.equalsIgnoreCase("verus") && !mode.equalsIgnoreCase("damage") 
+            && fakeDmgValue.get()) {
+            mc.thePlayer.handleStatusUpdate((byte) 2);
+        }
         super.onEnable();
     }
 
@@ -582,6 +591,11 @@ public class Fly extends Module {
     public void onMotion(final MotionEvent event) {
         if (mc.thePlayer == null) return;
 
+        if (bobbingValue.get()) {
+            mc.thePlayer.cameraYaw = bobbingAmountValue.get();
+            mc.thePlayer.prevCameraYaw = bobbingAmountValue.get();
+        }
+
         switch (modeValue.get().toLowerCase()) {
             case "funcraft":
                 event.setOnGround(true);
@@ -651,12 +665,18 @@ public class Fly extends Module {
             } else {
                 LiquidBounce.hud.addNotification(new Notification("Disabled boost to prevent flagging.", Notification.Type.WARNING));
             }
+
+            if (fakeDmgValue.get() && mc.thePlayer != null)
+                mc.thePlayer.handleStatusUpdate((byte) 2);
         }
 
         if (mode.equalsIgnoreCase("WatchdogTest") && packet instanceof S08PacketPlayerPosLook) {
             if (!alreadyClipped) {
                 alreadyClipped = true;
                 LiquidBounce.hud.addNotification(new Notification("Activated.", Notification.Type.SUCCESS));
+
+                if (fakeDmgValue.get() && mc.thePlayer != null)
+                    mc.thePlayer.handleStatusUpdate((byte) 2);
             } else if (!alreadyFlagged) {
                 final S08PacketPlayerPosLook s08 = (S08PacketPlayerPosLook) packet;
                 alreadyFlagged = true;

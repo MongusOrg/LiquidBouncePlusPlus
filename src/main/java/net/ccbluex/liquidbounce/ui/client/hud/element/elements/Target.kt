@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.EaseUtils
+import net.ccbluex.liquidbounce.utils.render.ShadowUtils
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.UiUtils
@@ -319,7 +320,16 @@ class Target : Element() {
                     }
 
                     if (riseShadow.get()) {
-                        UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
+                        if (!riseShadowLegacy.get()) {
+                            Stencil.write(true)
+                            RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
+                            Stencil.erase(false)
+                            ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat())
+                            RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
+                            ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat())
+                            Stencil.dispose()
+                        } else
+                            UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
                     } else {
                         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                     }
