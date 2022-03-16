@@ -54,6 +54,7 @@ public class Fly extends Module {
             "NCP",
             "OldNCP",
             "Watchdog",
+            "WatchdogTest",
 
             // FunCraft
             "FunCraft",
@@ -129,11 +130,13 @@ public class Fly extends Module {
 
     private final MSTimer groundTimer = new MSTimer();
     private final MSTimer boostTimer = new MSTimer();
+    private final MSTimer wdTimer = new MSTimer();
     
     private final TickTimer spartanTimer = new TickTimer();
     private final TickTimer verusTimer = new TickTimer();
 
-    private boolean shouldFakeJump = false, shouldActive = false;
+    private boolean shouldFakeJump, shouldActive = false;
+    private boolean alreadyClipped, alreadyFlagged = false;
 
     private boolean noPacketModify;
 
@@ -202,6 +205,9 @@ public class Fly extends Module {
         verusTimer.reset();
         shouldFakeJump = false;
         shouldActive = true;
+        
+        alreadyFlagged = false;
+        alreadyClipped = false;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -554,6 +560,17 @@ public class Fly extends Module {
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
                 }
                 break;
+            case "watchdogtest":
+                if (alreadyFlagged) {
+                    mc.timer.timerSpeed = 0.8F;
+                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.7F);
+                }
+                else if (alreadyClipped) {
+                    mc.timer.timerSpeed = 2F;
+                    mc.thePlayer.motionY = 1e-10;
+                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed());
+                } 
+                break;
         }
     }
 
@@ -622,13 +639,25 @@ public class Fly extends Module {
         if(noPacketModify)
             return;
 
-        if (packet instanceof S08PacketPlayerPosLook && wdState == 3) {
+        if (packet instanceof S08PacketPlayerPosLook && mode.equalsIgnoreCase("watchdog") && wdState == 3) {
             wdState = 4;
             if (boostTimer.hasTimePassed(8000L)) {
                 LiquidBounce.hud.addNotification(new Notification("Enabled boost.", Notification.Type.SUCCESS));
                 boostTimer.reset();
             } else {
                 LiquidBounce.hud.addNotification(new Notification("Disabled boost to prevent flagging.", Notification.Type.WARNING));
+            }
+        }
+
+        if (mode.equalsIgnoreCase("WatchdogTest") && packet instanceof S08PacketPlayerPosLook) {
+            if (!alreadyClipped) {
+                alreadyClipped = true;
+                LiquidBounce.hud.addNotification(new Notification("Activated.", Notification.Type.SUCCESS));
+            } else if (!alreadyFlagged) {
+                final S08PacketPlayerPosLook s08 = (S08PacketPlayerPosLook) packet;
+                alreadyFlagged = true;
+                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(s08.getX(), s08.getY(), s08.getZ(), s08.getYaw(), s08.getPitch(), true));
+                LiquidBounce.hud.addNotification(new Notification("Flagged.", Notification.Type.INFO));
             }
         }
 
@@ -666,6 +695,19 @@ public class Fly extends Module {
             if (mode.equalsIgnoreCase("watchdog") && wdState == 2) {
                 packetPlayer.y -= 0.187;
                 wdState++;
+            }
+
+            if (mode.equalsIgnoreCase("WatchdogTest")) {
+                if (!alreadyClipped) {
+                    packetPlayer.y -= RandomUtils.nextDouble(0.15, 0.2);
+                    packetPlayer.onGround = true;
+                } else if (alreadyFlagged) {
+                    packetPlayer.y -= 1.0;
+                    packetPlayer.onGround = false;
+                    packetPlayer.rotating = false;
+                    alreadyFlagged = false;
+                } else if (mc.thePlayer.ticksExisted % 5 != 0)
+                    event.cancelEvent();
             }
         }
     }
