@@ -299,7 +299,7 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (mc.thePlayer.onGround)
-                    mc.thePlayer.setPosition(x, y - 0.085, z);
+                    mc.thePlayer.setPosition(x, y - 0.031, z);
                 break;
         }
 
