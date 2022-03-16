@@ -61,6 +61,7 @@ class InvManager : Module() {
     private val invOpenValue = BoolValue("InvOpen", false)
     private val invSpoof = BoolValue("InvSpoof", true)
     private val invSpoofOld = BoolValue("InvSpoof-Old", false, { invSpoof.get() })
+    private val spoofDelayValue = IntegerValue("SpoofDelay", 500, 0, 5000, { invSpoof.get() && !invSpoofOld.get() })
 
     // Others
     private val armorsValue = BoolValue("WearArmors", true)

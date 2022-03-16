@@ -722,7 +722,9 @@ public class Fly extends Module {
             }
 
             if (mode.equalsIgnoreCase("WatchdogTest")) {
-                if (alreadyFlagged) {
+                if (!alreadyClipped)
+                    packetPlayer.y -= 0.225;
+                else if (alreadyFlagged) {
                     packetPlayer.y += 1.0;
                     packetPlayer.onGround = false;
                     packetPlayer.rotating = false;

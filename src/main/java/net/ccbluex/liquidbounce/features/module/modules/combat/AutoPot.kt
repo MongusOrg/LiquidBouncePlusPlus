@@ -57,13 +57,10 @@ class AutoPot : Module() {
     private var resetTimer = MSTimer()
     private var invTimer = MSTimer()
 
-    private var queuedEffects = arrayListOf<Int>()
-
     override fun onEnable() {
         throwTimer.reset()
         resetTimer.reset()
         invTimer.reset()
-        queuedEffects.clear()
     }
 
     private fun debug(s: String) {
@@ -77,37 +74,6 @@ class AutoPot : Module() {
             val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java)!! as KillAura
             val scaffold = LiquidBounce.moduleManager.getModule(Scaffold::class.java)!! as Scaffold
 
-            if (!queuedEffects.isEmpty()) {
-                val queueDeleteList = arrayListOf<Int>()
-                for (pID in queuedEffects)
-                    if (mc.thePlayer.isPotionActive(pID)) {
-                        queueDeleteList.add(pID)
-                        if (notifyValue.get())
-                            LiquidBounce.hud.addNotification(Notification("Potted ${I18n.format(Potion.potionTypes[pID].getName(), arrayOf<Object>())}.", Notification.Type.INFO))
-                        debug("${pID} removed due to effect detected")
-                    }
-
-                if (queueDeleteList.size > 0)
-                    for (delID in queueDeleteList)
-                        queuedEffects.remove(delID)
-
-                if (resetTimer.hasTimePassed(resetDelayValue.get().toLong())) {
-                    resetTimer.reset()
-                    queuedEffects.clear()
-                    debug("cleared queue")
-                }
-            }
-
-            if (!throwing && mc.currentScreen !is GuiContainer) {
-                val potion = findPotion(36, 45)
-                if (potion != -1) {
-                    throwing = true
-                    potIndex = potion
-                    throwTimer.reset()
-                    debug("found pot, queueing")
-                }
-            }
-            
             if (throwing && mc.currentScreen !is GuiContainer && (!killAura.state || killAura.target == null) && !scaffold.state) {
                 if (!throwTimer.hasTimePassed(delayValue.get().toLong())) return
 
@@ -141,6 +107,16 @@ class AutoPot : Module() {
                 potIndex = -1
                 throwing = false
                 debug("thrown")
+            }
+
+            if (!throwing && mc.currentScreen !is GuiContainer) {
+                val potion = findPotion(36, 45)
+                if (potion != -1) {
+                    throwing = true
+                    potIndex = potion
+                    throwTimer.reset()
+                    debug("found pot, queueing")
+                }
             }
 
             if (spoofInvValue.get() && !throwing && mc.currentScreen !is GuiContainer) {
@@ -201,22 +177,16 @@ class AutoPot : Module() {
                 if (potionEffect.potionID == Potion.heal.id)
                     return true
 
-            if (!mc.thePlayer.isPotionActive(Potion.regeneration) && !queuedEffects.contains(Potion.regeneration.id))
+            if (!mc.thePlayer.isPotionActive(Potion.regeneration))
                 for (potionEffect in itemPotion.getEffects(stack)) {
-                    if (potionEffect.potionID == Potion.regeneration.id) {
-                        queuedEffects.add(Potion.regeneration.id)
-                        debug("${Potion.regeneration.id} added to queue.")
+                    if (potionEffect.potionID == Potion.regeneration.id)
                         return true
-                    }
                 }
 
         } else if (utilityValue.get()) {
             for (potionEffect in itemPotion.getEffects(stack)) {
-                if (isUsefulPotion(potionEffect.potionID)) {
-                    queuedEffects.add(potionEffect.potionID)
-                    debug("${potionEffect.potionID} added to queue.")
+                if (isUsefulPotion(potionEffect.potionID))
                     return true
-                }
             }
         }
 
@@ -229,7 +199,7 @@ class AutoPot : Module() {
             || id == Potion.digSlowdown.id || id == Potion.moveSlowdown.id || id == Potion.weakness.id) {
             return false
         }
-        return !mc.thePlayer.isPotionActive(id) && !queuedEffects.contains(id)
+        return !mc.thePlayer.isPotionActive(id)
     }
 
     override val tag: String

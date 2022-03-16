@@ -155,9 +155,9 @@ public class NoFall extends Module {
                 if (!mc.thePlayer.onGround && mc.thePlayer.fallDistance - tick * offset >= 0.0D) {
                     PacketUtils.sendPacketNoEvent(new C03PacketPlayer(true));
                     tick++;
-                } else if (mc.thePlayer.onGround)
+                } else if (mc.thePlayer.onGround) {
                     tick = 1;
-
+                }
                 break;
         }
     }

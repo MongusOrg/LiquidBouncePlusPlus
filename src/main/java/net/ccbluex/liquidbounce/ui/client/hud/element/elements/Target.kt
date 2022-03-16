@@ -321,13 +321,20 @@ class Target : Element() {
 
                     if (riseShadow.get()) {
                         if (!riseShadowLegacy.get()) {
-                            Stencil.write(true)
-                            RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
-                            Stencil.erase(false)
-                            ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat())
-                            RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
-                            ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat())
-                            Stencil.dispose()
+                            if (blurValue.get()) {
+                                GL11.glTranslated(-renderX, -renderY, 0.0)
+                                GL11.glPushMatrix()
+                                Stencil.write(true)
+                                RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, bgColor.rgb)
+                                Stencil.erase(false)
+                                ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat())
+                                RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
+                                ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat())
+                                Stencil.dispose()
+                                GL11.glPopMatrix()
+                                GL11.glTranslated(renderX, renderY, 0.0)
+                            }
+                            
                         } else
                             UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
                     } else {
