@@ -324,10 +324,7 @@ class Target : Element() {
                             GL11.glTranslated(-renderX, -renderY, 0.0)
                             GL11.glPushMatrix()
                             ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat())
-                            RenderUtils.drawRoundedRect(floatX - shadowStrengthValue.get().toFloat(), 
-                                        floatY - shadowStrengthValue.get().toFloat(), 
-                                        floatX + 10F + length + shadowStrengthValue.get().toFloat(), 
-                                        floatY + 55F + shadowStrengthValue.get().toFloat(), 3F, bgColor.rgb)
+                            RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
                             ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat())
                             GL11.glPopMatrix()
                             GL11.glTranslated(renderX, renderY, 0.0)
@@ -367,9 +364,9 @@ class Target : Element() {
                     if (riseShadow.get() && !riseShadowLegacy.get() && convertedTarget.hurtTime > 0) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
-                        ShadowUtils.processShadow(true, 4F)
-                        RenderUtils.drawRect(floatX + 12F, floatY + 12F, floatX + 28F, floatY + 28F, Color(1F, 0.4F, 0.4F, scaleHT).rgb)
-                        ShadowUtils.processShadow(false, 4F)
+                        ShadowUtils.processShadow(true, scaleHT * 4F)
+                        RenderUtils.drawRect(floatX + 10F, floatY + 10F, floatX + 30F, floatY + 30F, Color(1F, 0.4F, 0.4F, 1F).rgb)
+                        ShadowUtils.processShadow(false, scaleHT * 4F)
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
