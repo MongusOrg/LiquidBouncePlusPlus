@@ -297,7 +297,7 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (mc.thePlayer.onGround)
-                    mc.thePlayer.setPosition(x, y - 0.1865, z);
+                    mc.thePlayer.setPosition(x, y - 0.085, z);
                 break;
         }
 
@@ -576,7 +576,8 @@ public class Fly extends Module {
             case "watchdogtest":
                 if (alreadyFlagged) {
                     mc.timer.timerSpeed = 1F;
-                    MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.78D : 0.74D)));
+                    mc.thePlayer.motionY = 0.0001D;
+                    MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.8D : 0.75D)));
                 }
                 else if (alreadyClipped) {
                     mc.timer.timerSpeed = 1.5F;
