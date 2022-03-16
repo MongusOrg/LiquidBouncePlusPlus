@@ -203,7 +203,9 @@ public class AntiVoid extends Module {
 
         if (setBackModeValue.get().equalsIgnoreCase("Edit") && shouldEdit && event.getPacket() instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) event.getPacket();
-            packetPlayer.y += 100D;
+            packetPlayer.y += 25D;
+            packetPlayer.x += 1.025D;
+            packetPlayer.z += 1.025D;
             shouldEdit = false;
         }
     }

@@ -297,7 +297,7 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (mc.thePlayer.onGround)
-                    mc.thePlayer.setPosition(x, y + 0.08, z);
+                    mc.thePlayer.setPosition(x, y - 0.1865, z);
                 break;
         }
 
@@ -722,12 +722,10 @@ public class Fly extends Module {
 
             if (mode.equalsIgnoreCase("WatchdogTest")) {
                 if (!alreadyClipped)
-                    packetPlayer.y -= 0.225;
+                    packetPlayer.y -= 0.187;
                 else if (mc.thePlayer.ticksExisted % 5 == 0) {
-                    packetPlayer.y -= 0.055;
+                    packetPlayer.y -= 0.001;
                     packetPlayer.onGround = false;
-                    packetPlayer.rotating = false;
-                    alreadyFlagged = false;
                 }
             }
         }
