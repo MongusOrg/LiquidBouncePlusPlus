@@ -575,11 +575,11 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (alreadyFlagged) {
-                    mc.timer.timerSpeed = 0.8F;
+                    mc.timer.timerSpeed = 1F;
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.78D : 0.74D)));
                 }
                 else if (alreadyClipped) {
-                    mc.timer.timerSpeed = 1.4F;
+                    mc.timer.timerSpeed = 1.5F;
                     mc.thePlayer.motionY = 0.0001D;
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
                 } 
@@ -680,7 +680,6 @@ public class Fly extends Module {
             } else if (!alreadyFlagged) {
                 final S08PacketPlayerPosLook s08 = (S08PacketPlayerPosLook) packet;
                 alreadyFlagged = true;
-                PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(s08.getX(), s08.getY(), s08.getZ(), s08.getYaw(), s08.getPitch(), true));
                 LiquidBounce.hud.addNotification(new Notification("Flagged.", Notification.Type.INFO));
             }
         }
@@ -724,13 +723,12 @@ public class Fly extends Module {
             if (mode.equalsIgnoreCase("WatchdogTest")) {
                 if (!alreadyClipped)
                     packetPlayer.y -= 0.225;
-                else if (alreadyFlagged) {
-                    packetPlayer.y += 1.0;
+                else if (mc.thePlayer.ticksExisted % 5 == 0) {
+                    packetPlayer.y -= 0.055;
                     packetPlayer.onGround = false;
                     packetPlayer.rotating = false;
                     alreadyFlagged = false;
-                } else if (alreadyClipped && mc.thePlayer.ticksExisted % 2 != 0)
-                    event.cancelEvent();
+                }
             }
         }
     }
