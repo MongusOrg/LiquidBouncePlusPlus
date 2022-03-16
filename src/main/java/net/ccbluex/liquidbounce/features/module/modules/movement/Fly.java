@@ -292,6 +292,10 @@ public class Fly extends Module {
                     mc.thePlayer.jump();
                 moveSpeed = 1;
                 break;
+            case "watchdogtest":
+                if (mc.thePlayer.onGround)
+                    mc.thePlayer.setPositionAndUpdate(x, y - 0.245, z);
+                break;
         }
 
         startY = mc.thePlayer.posY;
@@ -548,11 +552,11 @@ public class Fly extends Module {
 
                 if (wdState == 4) {
                     if (!boostTimer.hasTimePassed(500L))
-                        mc.timer.timerSpeed = 1.4F;
+                        mc.timer.timerSpeed = 2.5F;
                     else if (!boostTimer.hasTimePassed(800L))
-                        mc.timer.timerSpeed = 1.3F;
+                        mc.timer.timerSpeed = 1.7F;
                     else if (!boostTimer.hasTimePassed(1000L))
-                        mc.timer.timerSpeed = 1.2F;
+                        mc.timer.timerSpeed = 1.25F;
                     else
                         mc.timer.timerSpeed = 1F;
 
@@ -567,8 +571,8 @@ public class Fly extends Module {
                 }
                 else if (alreadyClipped) {
                     mc.timer.timerSpeed = 2F;
-                    mc.thePlayer.motionY = 1e-10;
-                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed());
+                    mc.thePlayer.motionY = 0.0001D;
+                    MovementUtils.strafe((float) MovementUtils.getBaseMoveSpeed() * 0.8F);
                 } 
                 break;
         }
@@ -698,15 +702,12 @@ public class Fly extends Module {
             }
 
             if (mode.equalsIgnoreCase("WatchdogTest")) {
-                if (!alreadyClipped) {
-                    packetPlayer.y -= RandomUtils.nextDouble(0.15, 0.2);
-                    packetPlayer.onGround = true;
-                } else if (alreadyFlagged) {
+                if (alreadyFlagged) {
                     packetPlayer.y -= 1.0;
                     packetPlayer.onGround = false;
                     packetPlayer.rotating = false;
                     alreadyFlagged = false;
-                } else if (mc.thePlayer.ticksExisted % 5 != 0)
+                } else if (alreadyClipped && mc.thePlayer.ticksExisted % 5 != 0)
                     event.cancelEvent();
             }
         }
@@ -791,6 +792,10 @@ public class Fly extends Module {
                 if (wdState < 4)
                     event.zeroXZ();
                 break;
+            case "watchdogtest":
+                if (!alreadyClipped)
+                    event.zeroXZ();
+                break;
         }
     }
 
@@ -817,7 +822,7 @@ public class Fly extends Module {
     public void onJump(final JumpEvent e) {
         final String mode = modeValue.get();
 
-        if (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("FunCraft") && moveSpeed > 0) || (mode.equalsIgnoreCase("watchdog") && wdState >= 1))
+        if (mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("FunCraft") && moveSpeed > 0) || (mode.equalsIgnoreCase("watchdog") && wdState >= 1) || mode.equalsIgnoreCase("watchdogtest"))
             e.cancelEvent();
     }
 
@@ -825,7 +830,7 @@ public class Fly extends Module {
     public void onStep(final StepEvent e) {
         final String mode = modeValue.get();
 
-        if (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("FunCraft") || (mode.equalsIgnoreCase("watchdog") && wdState > 2))
+        if (mode.equalsIgnoreCase("Rewinside") || mode.equalsIgnoreCase("FunCraft") || (mode.equalsIgnoreCase("watchdog") && wdState > 2) || mode.equalsIgnoreCase("watchdogtest"))
             e.setStepHeight(0F);
     }
 
