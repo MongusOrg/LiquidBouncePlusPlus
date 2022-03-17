@@ -44,7 +44,7 @@ public class TargetMark extends Module {
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
-	public static final FloatValue moveMarkValue = new FloatValue("MoveMarkY", 0.6F, 0F, 2F, () -> { return modeValue.get().equalsIgnoreCase("default"); });
+	public final FloatValue moveMarkValue = new FloatValue("MoveMarkY", 0.6F, 0F, 2F, () -> { return modeValue.get().equalsIgnoreCase("default"); });
 	private final FloatValue thicknessValue = new FloatValue("Thickness", 1F, 0.1F, 5F, () -> { return modeValue.get().equalsIgnoreCase("tracers"); });
    	private final BoolValue colorTeam = new BoolValue("Team", false);
 

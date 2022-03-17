@@ -123,6 +123,7 @@ public class Fly extends Module {
     private final BoolValue clipNoMove = new BoolValue("Clip-NoMove", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
 
     private final BoolValue fakeSprintingValue = new BoolValue("FakeSprinting", true, () -> { return modeValue.get().toLowerCase().contains("watchdog"); });
+    private final BoolValue fakeNoMoveValue = new BoolValue("FakeNoMove", true, () -> { return modeValue.get().toLowerCase().contains("watchdog"); });
     private final BoolValue pulsiveTroll = new BoolValue("PulsiveTroll", true, () -> { return modeValue.get().equalsIgnoreCase("watchdogtest"); });
 
     // Visuals
@@ -143,7 +144,6 @@ public class Fly extends Module {
     private final TickTimer verusTimer = new TickTimer();
 
     private boolean shouldFakeJump, shouldActive = false;
-    private boolean alreadyClipped, alreadyFlagged = false;
 
     private boolean noPacketModify;
 
@@ -212,9 +212,6 @@ public class Fly extends Module {
         verusTimer.reset();
         shouldFakeJump = false;
         shouldActive = true;
-        
-        alreadyFlagged = false;
-        alreadyClipped = false;
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -578,12 +575,12 @@ public class Fly extends Module {
                 }
                 break;
             case "watchdogtest":
-                if (alreadyFlagged) {
+                if (wdState == 3) {
                     mc.timer.timerSpeed = 1F;
                     mc.thePlayer.motionY = 0.0001D;
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.8D : 0.75D)));
                 }
-                else if (alreadyClipped) {
+                else if (wdState == 2) {
                     mc.timer.timerSpeed = 1.2F;
                     mc.thePlayer.motionY = 0.0001D;
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
@@ -690,15 +687,14 @@ public class Fly extends Module {
         }
 
         if (mode.equalsIgnoreCase("WatchdogTest") && packet instanceof S08PacketPlayerPosLook) {
-            if (!alreadyClipped) {
-                alreadyClipped = true;
+            if (wdState == 1) {
+                wdState = 2;
                 LiquidBounce.hud.addNotification(new Notification("Activated.", Notification.Type.SUCCESS));
 
                 if (fakeDmgValue.get() && mc.thePlayer != null)
                     mc.thePlayer.handleStatusUpdate((byte) 2);
-            } else if (!alreadyFlagged) {
-                final S08PacketPlayerPosLook s08 = (S08PacketPlayerPosLook) packet;
-                alreadyFlagged = true;
+            } else if (wdState == 2) {
+                wdState = 3;
                 LiquidBounce.hud.addNotification(new Notification("Flagged.", Notification.Type.INFO));
             }
         }
@@ -734,17 +730,28 @@ public class Fly extends Module {
                 packetPlayer.onGround = false;
             }
 
-            if (mode.equalsIgnoreCase("watchdog") && wdState == 2) {
-                packetPlayer.y -= 0.187;
-                wdState++;
+            if (mode.equalsIgnoreCase("watchdog")) {
+                if (wdState == 2) {
+                    packetPlayer.y -= 0.187;
+                    wdState++;
+                }
+                if (wdState > 3) {
+                    if (fakeNoMoveValue.get())
+                        packetPlayer.isMoving = false;
+                }
             }
 
-            if (mode.equalsIgnoreCase("WatchdogTest")) {
-                if (!alreadyClipped)
+            if (mode.equalsIgnoreCase("watchdogtest")) {
+                if (wdState == 0 && packetPlayer.onGround) {
                     packetPlayer.y -= 0.187;
-                else if (mc.thePlayer.ticksExisted % 15 == 0) {
-                    packetPlayer.y += 0.001;
-                    packetPlayer.onGround = true;
+                    wdState = 1;
+                } else {
+                    if (mc.thePlayer.ticksExisted % 15 == 0) {
+                        packetPlayer.y += 0.001;
+                        packetPlayer.onGround = true;
+                    }
+                    if (fakeNoMoveValue.get())
+                        packetPlayer.isMoving = false;
                 }
             }
         }
@@ -830,7 +837,7 @@ public class Fly extends Module {
                     event.zeroXZ();
                 break;
             case "watchdogtest":
-                if (!alreadyClipped)
+                if (wdState < 2)
                     event.zeroXZ();
                 break;
         }

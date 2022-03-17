@@ -683,6 +683,10 @@ public final class RenderUtils extends MinecraftInstance {
         final RenderManager renderManager = mc.getRenderManager();
         final Timer timer = mc.timer;
 
+        TargetMark targetMark = (TargetMark) LiquidBounce.moduleManager.getModule(TargetMark.class);
+        if (targetMark == null)
+            return;
+
         final double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * timer.renderPartialTicks
                 - renderManager.renderPosX;
         final double y = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * timer.renderPartialTicks
@@ -692,7 +696,7 @@ public final class RenderUtils extends MinecraftInstance {
 
         final AxisAlignedBB axisAlignedBB = entity.getEntityBoundingBox()
                 .offset(-entity.posX, -entity.posY, -entity.posZ)
-                .offset(x, y - TargetMark.moveMarkValue.get(), z);
+                .offset(x, y - targetMark.moveMarkValue.get(), z);
 
         drawAxisAlignedBB(
                 new AxisAlignedBB(axisAlignedBB.minX, axisAlignedBB.maxY + 0.2, axisAlignedBB.minZ, axisAlignedBB.maxX, axisAlignedBB.maxY + 0.26, axisAlignedBB.maxZ),
