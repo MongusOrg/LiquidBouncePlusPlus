@@ -1,3 +1,8 @@
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ */
 package net.ccbluex.liquidbounce.utils.render;
 
 import net.minecraft.client.Minecraft;
@@ -34,7 +39,7 @@ public class ShadowUtils {
             initialFB.setFramebufferColor(0, 0, 0, 0);
             initialFB.setFramebufferFilter(GL_LINEAR);
             mainShader = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), initialFB, blurDirectory);
-            mainShader.createBindFramebuffers(w * f , h * f);
+            mainShader.createBindFramebuffers(mc.displayWidth, mc.displayHeight);
             frameBuffer = mainShader.mainFramebuffer;
             blackBuffer = mainShader.getFramebufferRaw("braindead");
 
