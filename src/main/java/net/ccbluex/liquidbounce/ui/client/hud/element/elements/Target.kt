@@ -365,7 +365,7 @@ class Target : Element() {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
                         ShadowUtils.processShadow(true, scaleHT * 4F)
-                        RenderUtils.newDrawRect(floatX + 5F + 15F * (scaleHT * 0.2F), floatY + 5F + 15F * (scaleHT * 0.2F), floatX + 35F - 15F * (scaleHT * 0.2F), floatY + 35F - 15F * (scaleHT * 0.2F), Color(255, 10, 10).rgb)
+                        RenderUtils.newDrawRect(floatX + 5F, floatY + 5F, floatX + 35F, floatY + 35F, Color(255, 0, 0).rgb)
                         ShadowUtils.processShadow(false, scaleHT * 4F)
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
