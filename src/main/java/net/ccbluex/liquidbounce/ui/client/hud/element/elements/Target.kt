@@ -315,7 +315,12 @@ class Target : Element() {
                     if (blurValue.get()) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
-                        BlurUtils.blurAreaRounded(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, blurStrength.get())
+
+                        if (riseShadow.get() && !riseShadowLegacy.get())
+                            BlurUtils.blurArea(floatX, floatY, floatX + 10F + length, floatY + 55F, blurStrength.get())
+                        else
+                            BlurUtils.blurAreaRounded(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, blurStrength.get())
+
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
@@ -329,7 +334,7 @@ class Target : Element() {
                             ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat())
                             GL11.glPopMatrix()
                             GL11.glTranslated(renderX, renderY, 0.0)
-                            RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
+                            //RenderUtils.originalRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                         } else
                             UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
                     } else {

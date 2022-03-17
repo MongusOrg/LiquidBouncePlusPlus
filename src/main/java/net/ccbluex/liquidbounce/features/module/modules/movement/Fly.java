@@ -298,7 +298,7 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (mc.thePlayer.onGround)
-                    mc.thePlayer.setPosition(x, y + 0.0003, z);
+                    mc.thePlayer.setPosition(x, y - 0.03, z);
                 break;
         }
 
@@ -581,7 +581,7 @@ public class Fly extends Module {
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.8D : 0.75D)));
                 }
                 else if (wdState == 2) {
-                    mc.timer.timerSpeed = 1.2F;
+                    mc.timer.timerSpeed = 1.5F;
                     mc.thePlayer.motionY = 0.0001D;
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
                 } 
@@ -747,7 +747,7 @@ public class Fly extends Module {
                     wdState = 1;
                 } else {
                     if (mc.thePlayer.ticksExisted % 15 == 0) {
-                        packetPlayer.y += 0.001;
+                        packetPlayer.y += 0.01;
                         packetPlayer.onGround = true;
                     }
                     if (fakeNoMoveValue.get())
