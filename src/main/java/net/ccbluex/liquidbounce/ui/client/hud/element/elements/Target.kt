@@ -323,10 +323,10 @@ class Target : Element() {
                         if (!riseShadowLegacy.get()) {
                             GL11.glTranslated(-renderX, -renderY, 0.0)
                             GL11.glPushMatrix()
-                            ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat())
+                            ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat(), floatX, floatY, floatX + 10F + length, floatY + 55F)
                             ShadowUtils.setShadowPosition(floatX, floatY, floatX + 10F + length, floatY + 55F)
                             RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
-                            ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat())
+                            ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat(), floatX, floatY, floatX + 10F + length, floatY + 55F)
                             GL11.glPopMatrix()
                             GL11.glTranslated(renderX, renderY, 0.0)
                         } else
@@ -365,10 +365,10 @@ class Target : Element() {
                     if (riseShadow.get() && !riseShadowLegacy.get() && convertedTarget.hurtTime > 0) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
-                        ShadowUtils.processShadow(true, scaleHT * 4F)
+                        ShadowUtils.processShadow(true, scaleHT * 4F, floatX + 5F, floatY + 5F, floatX + 35F, floatY + 35F)
                         ShadowUtils.setShadowPosition(floatX + 5F, floatY + 5F, floatX + 35F, floatY + 35F)
                         RenderUtils.newDrawRect(floatX + 5F, floatY + 5F, floatX + 35F, floatY + 35F, Color(255, 0, 0).rgb)
-                        ShadowUtils.processShadow(false, scaleHT * 4F)
+                        ShadowUtils.processShadow(false, scaleHT * 4F, floatX + 5F, floatY + 5F, floatX + 35F, floatY + 35F)
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }

@@ -13,7 +13,7 @@ uniform vec2 ShadowWH;
 uniform float Radius;
 
 void main() {
-    if (texCoord.x / oneTexel.x >= ShadowCoord.x - (Radius * 2) && texCoord.y / oneTexel.y >= ShadowCoord.y - (Radius * 2) && texCoord.x / oneTexel.x <= ShadowWH.x + (Radius * 2) && texCoord.y / oneTexel.y <= ShadowWH.y + (Radius * 2)) {
+    if (texCoord.x / oneTexel.x >= ShadowCoord.x * 2 - (Radius * 2) && texCoord.y / oneTexel.y >= ShadowCoord.y * 2 - (Radius * 2) && texCoord.x / oneTexel.x <= ShadowWH.x * 2 + (Radius * 2) && texCoord.y / oneTexel.y <= ShadowWH.y * 2 + (Radius * 2)) {
         vec3 blurred = vec3(.0);
         float totalAlpha = 0.0;
         float roughCalc = Radius * 2.0 + 1.0;
@@ -23,5 +23,5 @@ void main() {
             totalAlpha += mainTexture.a;
         }   
         gl_FragColor = vec4(blurred, totalAlpha / roughCalc);
-    }
+    } else discard;
 } // i think i fixed the shader, big thanks to https://stackoverflow.com/questions/35476142/gaussian-blur-handle-with-alpha-transparency
