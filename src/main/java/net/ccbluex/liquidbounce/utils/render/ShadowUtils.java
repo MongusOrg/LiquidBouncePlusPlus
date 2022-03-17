@@ -30,7 +30,7 @@ public class ShadowUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ResourceLocation blurDirectory = new ResourceLocation("liquidbounce+/shadow.json");
 
-    public static void initBlur(final ScaledResolution sc, float strength, float x, float y, float x2, float y2) throws IOException {
+    public static void initBlur(final ScaledResolution sc, float strength) throws IOException {
         int w = sc.getScaledWidth();
         int h = sc.getScaledHeight();
         int f = sc.getScaleFactor();
@@ -48,11 +48,6 @@ public class ShadowUtils {
         lastWidth = w;
         lastHeight = h;
 
-        setShadowStrength(strength);
-        setShadowPosition(x * f, y * f, x2 * f, y2 * f);
-    }
-
-    public static void setShadowStrength(float strength) {
         if (strength != lastStrength) {
             lastStrength = strength;
             for (int i = 0; i < 2; i++) {
@@ -61,35 +56,12 @@ public class ShadowUtils {
         }
     }
     
-    public static void setShadowPosition(float x, float y, float x2, float y2) {
-        if (x > x2) {
-            float z = x;
-            x = x2;
-            x2 = z;
-        }
-        if (y > y2) {
-            float z = y;
-            y = y2;
-            y2 = z;
-        }
-        if (x != lastX || y != lastY || x2 != lastW || y2 != lastH) {
-            lastX = x;
-            lastY = y;
-            lastW = x2;
-            lastH = y2;
-            for (int i = 0; i < 2; i++) {
-                mainShader.listShaders.get(i).getShaderManager().getShaderUniform("ShadowCoord").set(x, y);
-                mainShader.listShaders.get(i).getShaderManager().getShaderUniform("ShadowWH").set(x2, y2);
-            }
-        }
-    }
-
-    public static void processShadow(boolean begin, float strength, float x, float y, float x2, float y2) throws IOException {
+    public static void processShadow(boolean begin, float strength) throws IOException {
         if (!OpenGlHelper.isFramebufferEnabled())
             return;
 
         final ScaledResolution sc = new ScaledResolution(mc);
-        initBlur(sc, strength, x, y, x2, y2);
+        initBlur(sc, strength);
 
         if (begin) {
             mc.getFramebuffer().unbindFramebuffer();

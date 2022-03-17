@@ -14,14 +14,6 @@
                     "values": [ 1.0, 0.0 ]
                 },
                 {
-                    "name": "ShadowCoord",
-                    "values": [ 0.0, 0.0 ]
-                },
-                {
-                    "name": "ShadowWH",
-                    "values": [ 0.0, 0.0 ]
-                },
-                {
                     "name": "Radius",
                     "values": [ 2.0 ]
                 }
@@ -35,14 +27,6 @@
                 {
                     "name": "BlurDir",
                     "values": [ 0.0, 1.0 ]
-                },
-                {
-                    "name": "ShadowCoord",
-                    "values": [ 0.0, 0.0 ]
-                },
-                {
-                    "name": "ShadowWH",
-                    "values": [ 0.0, 0.0 ]
                 },
                 {
                     "name": "Radius",

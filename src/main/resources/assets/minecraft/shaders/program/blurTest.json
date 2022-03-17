@@ -15,8 +15,6 @@
         { "name": "InSize",      "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
         { "name": "OutSize",     "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
         { "name": "BlurDir",     "type": "float",     "count": 2,  "values": [ 1.0, 1.0 ] },
-        { "name": "ShadowCoord", "type": "float",     "count": 2,  "values": [ 0.0, 0.0 ] },
-        { "name": "ShadowWH",    "type": "float",     "count": 2,  "values": [ 0.0, 0.0 ] },
         { "name": "Radius",      "type": "float",     "count": 1,  "values": [ 5.0 ] }
     ]
 }
