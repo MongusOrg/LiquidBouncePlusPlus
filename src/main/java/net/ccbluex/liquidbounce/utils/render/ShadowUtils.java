@@ -26,7 +26,6 @@ public class ShadowUtils {
     private static Framebuffer initialFB, frameBuffer, blackBuffer;
     private static ShaderGroup mainShader = null;
     private static float lastWidth = 0, lastHeight = 0, lastStrength = 0;
-    private static float lastX = 0, lastY = 0, lastW = 0, lastH = 0;
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ResourceLocation blurDirectory = new ResourceLocation("liquidbounce+/shadow.json");
 
@@ -42,9 +41,8 @@ public class ShadowUtils {
             mainShader.createBindFramebuffers(w * f, h * f);
             frameBuffer = mainShader.mainFramebuffer;
             blackBuffer = mainShader.getFramebufferRaw("braindead");
-
-            
         }
+
         lastWidth = w;
         lastHeight = h;
 
@@ -55,7 +53,7 @@ public class ShadowUtils {
             }
         }
     }
-    
+
     public static void processShadow(boolean begin, float strength) throws IOException {
         if (!OpenGlHelper.isFramebufferEnabled())
             return;
@@ -68,13 +66,10 @@ public class ShadowUtils {
             initialFB.framebufferClear();
             blackBuffer.framebufferClear();
             initialFB.bindFramebuffer(true);
-            //glEnable(GL_FRAMEBUFFER_SRGB);
-            //GlStateManager.blendFunc(770, 771);
         } else {
             frameBuffer.bindFramebuffer(true);
             mainShader.loadShaderGroup(mc.timer.renderPartialTicks);
             mc.getFramebuffer().bindFramebuffer(true);
-            //glDisable(GL_FRAMEBUFFER_SRGB);
             // Variables
             float f = (float)sc.getScaledWidth();
             float f1 = (float)sc.getScaledHeight();
@@ -94,9 +89,6 @@ public class ShadowUtils {
             GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
-            //glEnable(GL_ALPHA_TEST);
-            //glAlphaFunc(GL_GREATER, 0.2F);
-
             blackBuffer.bindFramebufferTexture();
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -109,8 +101,6 @@ public class ShadowUtils {
             worldrenderer.pos(0.0D, 0.0D, 0.0D).tex(0.0D, f3).color(255, 255, 255, 255).endVertex();
             tessellator.draw();
             blackBuffer.unbindFramebufferTexture();
-
-            //glDisable(GL_ALPHA_TEST);
 
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
