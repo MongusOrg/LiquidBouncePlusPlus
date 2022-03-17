@@ -621,7 +621,7 @@ public class Fly extends Module {
                     wdTick++;
                 break;
             case "watchdogtest":
-                if (event.getEventState() == EventState.POST && pulsiveTroll.get() && alreadyClipped && mc.thePlayer.ticksExisted % 2 == 0) 
+                if (event.getEventState() == EventState.POST && pulsiveTroll.get() && wdState >= 2 && mc.thePlayer.ticksExisted % 2 == 0) 
                     mc.getNetHandler().addToSendQueue(new C0CPacketInput(coerceAtMost(mc.thePlayer.moveStrafing, 0.98F), coerceAtMost(mc.thePlayer.moveForward, 0.98F), mc.thePlayer.movementInput.jump, mc.thePlayer.movementInput.sneak));
                 break;
         }  
@@ -737,7 +737,7 @@ public class Fly extends Module {
                 }
                 if (wdState > 3) {
                     if (fakeNoMoveValue.get())
-                        packetPlayer.isMoving = false;
+                        packetPlayer.setMoving(false);
                 }
             }
 
@@ -751,7 +751,7 @@ public class Fly extends Module {
                         packetPlayer.onGround = true;
                     }
                     if (fakeNoMoveValue.get())
-                        packetPlayer.isMoving = false;
+                        packetPlayer.setMoving(false);
                 }
             }
         }
