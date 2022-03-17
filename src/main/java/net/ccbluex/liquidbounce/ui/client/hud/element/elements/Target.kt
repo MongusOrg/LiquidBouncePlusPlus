@@ -68,6 +68,7 @@ class Target : Element() {
     private val showUrselfWhenChatOpen = BoolValue("DisplayWhenChat", true)
     private val riseShadow = BoolValue("Rise-Shadow", true, { styleValue.get().equals("rise", true) })
     private val riseShadowLegacy = BoolValue("Rise-Shadow-Legacy", true, { styleValue.get().equals("rise", true) })
+    private val riseShadowHead = BoolValue("Rise-Shadow-Head", true, { styleValue.get().equals("rise", true) })
     private val shadowStrengthValue = IntegerValue("Rise-Shadow-Strength", 4, 1, 40, { styleValue.get().equals("rise", true) })
     private val riseParticle = BoolValue("Rise-Particle", true, { styleValue.get().equals("rise", true) })
     private val riseParticleFade = BoolValue("Rise-Particle-Fade", true, { styleValue.get().equals("rise", true) && riseParticle.get() })
@@ -323,11 +324,21 @@ class Target : Element() {
                         if (!riseShadowLegacy.get()) {
                             GL11.glTranslated(-renderX, -renderY, 0.0)
                             GL11.glPushMatrix()
+                            Stencil.write(false)
+                            GlStateManager.disableTexture2D()
+                            GlStateManager.enableBlend()
+                            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+                            RenderUtils.fastRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F)
+                            GlStateManager.disableBlend()
+                            GlStateManager.enableTexture2D()
+                            Stencil.erase(false)
                             ShadowUtils.processShadow(true, shadowStrengthValue.get().toFloat())
                             RenderUtils.drawRoundedRect(floatX, floatY, floatX + 10F + length, floatY + 55F, 3F, bgColor.rgb)
                             ShadowUtils.processShadow(false, shadowStrengthValue.get().toFloat())
+                            Stencil.dispose()
                             GL11.glPopMatrix()
                             GL11.glTranslated(renderX, renderY, 0.0)
+                            RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 3F, bgColor.rgb)
                         } else
                             UiUtils.fastShadowRoundedRect(0F, 0F, 10F + length, 55F, 3F, shadowStrengthValue.get().toFloat(), bgColor)
                     } else {
@@ -361,12 +372,12 @@ class Target : Element() {
 
                     val scaleHT = (convertedTarget.hurtTime.toFloat() / convertedTarget.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
 
-                    if (riseShadow.get() && !riseShadowLegacy.get() && convertedTarget.hurtTime > 0) {
+                    if (riseShadow.get() && !riseShadowLegacy.get() && riseShadowHead.get() && convertedTarget.hurtTime > 0) {
                         GL11.glTranslated(-renderX, -renderY, 0.0)
                         GL11.glPushMatrix()
-                        ShadowUtils.processShadow(true, scaleHT * 5F)
-                        RenderUtils.newDrawRect(floatX + 5F, floatY + 5F, floatX + 35F, floatY + 35F, Color(255, 0, 0).rgb)
-                        ShadowUtils.processShadow(false, scaleHT * 4F)
+                        ShadowUtils.processShadow(true, scaleHT * 9F)
+                        RenderUtils.newDrawRect(floatX + 5F + 15F * (scaleHT * 0.2F), floatY + 5F + 15F * (scaleHT * 0.2F), floatX + 35F - 15F * (scaleHT * 0.2F), floatY + 35F - 15F * (scaleHT * 0.2F), Color(255, 0, 0).rgb)
+                        ShadowUtils.processShadow(false, scaleHT * 9F)
                         GL11.glPopMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                     }
