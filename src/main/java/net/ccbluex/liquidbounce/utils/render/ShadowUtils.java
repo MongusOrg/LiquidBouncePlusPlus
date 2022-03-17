@@ -30,7 +30,7 @@ public class ShadowUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ResourceLocation blurDirectory = new ResourceLocation("liquidbounce+/shadow.json");
 
-    public static void initBlur(final ScaledResolution sc) throws IOException {
+    public static void initBlur(final ScaledResolution sc, float strength, float x, float y, float x2, float y2) throws IOException {
         int w = sc.getScaledWidth();
         int h = sc.getScaledHeight();
         int f = sc.getScaleFactor();
@@ -39,7 +39,7 @@ public class ShadowUtils {
             initialFB.setFramebufferColor(0, 0, 0, 0);
             initialFB.setFramebufferFilter(GL_LINEAR);
             mainShader = new ShaderGroup(mc.getTextureManager(), mc.getResourceManager(), initialFB, blurDirectory);
-            mainShader.createBindFramebuffers(mc.displayWidth, mc.displayHeight);
+            mainShader.createBindFramebuffers(w * f, h * f);
             frameBuffer = mainShader.mainFramebuffer;
             blackBuffer = mainShader.getFramebufferRaw("braindead");
 
@@ -47,6 +47,9 @@ public class ShadowUtils {
         }
         lastWidth = w;
         lastHeight = h;
+
+        setShadowStrength(strength);
+        setShadowPosition(x * f, y * f, x2 * f, y2 * f);
     }
 
     public static void setShadowStrength(float strength) {
@@ -86,10 +89,7 @@ public class ShadowUtils {
             return;
 
         final ScaledResolution sc = new ScaledResolution(mc);
-        initBlur(sc);
-
-        setShadowStrength(strength);
-        setShadowPosition(x, y, x2, y2);
+        initBlur(sc, strength, x, y, x2, y2);
 
         if (begin) {
             mc.getFramebuffer().unbindFramebuffer();
