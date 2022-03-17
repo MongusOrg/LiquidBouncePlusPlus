@@ -21,6 +21,7 @@ public class ShadowUtils {
     private static Framebuffer initialFB, frameBuffer, blackBuffer;
     private static ShaderGroup mainShader = null;
     private static float lastWidth = 0, lastHeight = 0, lastStrength = 0;
+    private static float lastX = 0, lastY = 0, lastW = 0, lastH = 0;
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ResourceLocation blurDirectory = new ResourceLocation("liquidbounce+/shadow.json");
 
@@ -48,6 +49,19 @@ public class ShadowUtils {
             lastStrength = strength;
             for (int i = 0; i < 2; i++) {
                 mainShader.listShaders.get(i).getShaderManager().getShaderUniform("Radius").set(strength);
+            }
+        }
+    }
+    
+    public static void setShadowPosition(float x, float y, float x2, float y2) {
+        if (x != lastX || y != lastY || x2 != lastW || y2 != lastH) {
+            lastX = x;
+            lastY = y;
+            lastW = x2;
+            lastH = y2;
+            for (int i = 0; i < 2; i++) {
+                mainShader.listShaders.get(i).getShaderManager().getShaderUniform("ShadowCoord").set(x, y);
+                mainShader.listShaders.get(i).getShaderManager().getShaderUniform("ShadowWH").set(x2, y2);
             }
         }
     }
@@ -113,6 +127,7 @@ public class ShadowUtils {
             GlStateManager.disableBlend();
             GlStateManager.enableAlpha();
             GlStateManager.enableDepth();
+            GlStateManager.depthMask(true);
             GlStateManager.enableTexture2D();
             GlStateManager.popMatrix();
 
