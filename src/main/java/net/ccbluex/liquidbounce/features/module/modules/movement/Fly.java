@@ -86,6 +86,7 @@ public class Fly extends Module {
         return (modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("damage") || modeValue.get().equalsIgnoreCase("pearl") || modeValue.get().equalsIgnoreCase("aac5-vanilla") || modeValue.get().equalsIgnoreCase("bugspartan") || modeValue.get().equalsIgnoreCase("keepalive") || modeValue.get().equalsIgnoreCase("derp"));
     });
     private final FloatValue vanillaVSpeedValue = new FloatValue("V-Speed", 2F, 0F, 5F, () -> { return modeValue.get().equalsIgnoreCase("motion"); });
+    private final FloatValue vanillaMotionYValue = new FloatValue("Y-Motion", 0F, -1F, 1F, () -> { return modeValue.get().equalsIgnoreCase("motion"); });
     private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
 
     private final BoolValue groundSpoofValue = new BoolValue("GroundSpoof", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
@@ -121,6 +122,7 @@ public class Fly extends Module {
     private final BoolValue clipCollisionCheck = new BoolValue("Clip-CollisionCheck", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
     private final BoolValue clipNoMove = new BoolValue("Clip-NoMove", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
 
+    private final BoolValue fakeSprintingValue = new BoolValue("FakeSprinting", true, () -> { return modeValue.get().toLowerCase().contains("watchdog"); });
     private final BoolValue pulsiveTroll = new BoolValue("PulsiveTroll", true, () -> { return modeValue.get().equalsIgnoreCase("watchdogtest"); });
 
     // Visuals
@@ -299,7 +301,7 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (mc.thePlayer.onGround)
-                    mc.thePlayer.setPosition(x, y - 0.031, z);
+                    mc.thePlayer.setPosition(x, y + 0.0003, z);
                 break;
         }
 
@@ -358,7 +360,7 @@ public class Fly extends Module {
         switch (modeValue.get().toLowerCase()) {
             case "motion":
                 mc.thePlayer.capabilities.isFlying = false;
-                mc.thePlayer.motionY = 0;
+                mc.thePlayer.motionY = vanillaMotionYValue.get();
                 mc.thePlayer.motionX = 0;
                 mc.thePlayer.motionZ = 0;
                 if (mc.gameSettings.keyBindJump.isKeyDown())
@@ -582,7 +584,7 @@ public class Fly extends Module {
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.8D : 0.75D)));
                 }
                 else if (alreadyClipped) {
-                    mc.timer.timerSpeed = 1.5F;
+                    mc.timer.timerSpeed = 1.2F;
                     mc.thePlayer.motionY = 0.0001D;
                     MovementUtils.strafe((float) (MovementUtils.getBaseMoveSpeed() * (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 0.81D : 0.77D)));
                 } 
@@ -630,6 +632,12 @@ public class Fly extends Module {
 
     public float coerceAtMost(double value, double max) {
         return (float) Math.min(value, max);
+    }
+
+    @EventTarget
+    public void onAction(final ActionEvent event) {
+        if (modeValue.get().toLowerCase().contains("watchdog") && fakeSprintingValue.get())
+            event.setSprinting(false);
     }
 
     @EventTarget
@@ -734,9 +742,9 @@ public class Fly extends Module {
             if (mode.equalsIgnoreCase("WatchdogTest")) {
                 if (!alreadyClipped)
                     packetPlayer.y -= 0.187;
-                else if (mc.thePlayer.ticksExisted % 5 == 0) {
-                    packetPlayer.y -= 0.001;
-                    packetPlayer.onGround = false;
+                else if (mc.thePlayer.ticksExisted % 15 == 0) {
+                    packetPlayer.y += 0.001;
+                    packetPlayer.onGround = true;
                 }
             }
         }

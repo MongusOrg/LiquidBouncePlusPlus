@@ -6,8 +6,8 @@
 package net.ccbluex.liquidbounce.utils.render;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
+import net.ccbluex.liquidbounce.features.module.modules.render.TargetMark;
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.MinecraftInstance;
@@ -679,14 +679,9 @@ public final class RenderUtils extends MinecraftInstance {
         drawAxisAlignedBB(new AxisAlignedBB(size, renderY + 0.02D, size, -size, renderY, -size), color);
     }
 
-    public static void  drawPlatform(final Entity entity, final Color color) {
+    public static void drawPlatform(final Entity entity, final Color color) {
         final RenderManager renderManager = mc.getRenderManager();
         final Timer timer = mc.timer;
-
-         KillAura killaura = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
-         if(killaura == null){
-             return;
-         }
 
         final double x = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * timer.renderPartialTicks
                 - renderManager.renderPosX;
@@ -697,7 +692,7 @@ public final class RenderUtils extends MinecraftInstance {
 
         final AxisAlignedBB axisAlignedBB = entity.getEntityBoundingBox()
                 .offset(-entity.posX, -entity.posY, -entity.posZ)
-                .offset(x, y - killaura.getMoveMarkValue().get(), z);
+                .offset(x, y - TargetMark.moveMarkValue.get(), z);
 
         drawAxisAlignedBB(
                 new AxisAlignedBB(axisAlignedBB.minX, axisAlignedBB.maxY + 0.2, axisAlignedBB.minZ, axisAlignedBB.maxX, axisAlignedBB.maxY + 0.26, axisAlignedBB.maxZ),

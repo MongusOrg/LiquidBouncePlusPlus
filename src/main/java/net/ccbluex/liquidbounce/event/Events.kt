@@ -52,7 +52,7 @@ class ClientShutdownEvent : Event()
 data class EntityMovementEvent(val movedEntity: Entity) : Event()
 
 /**
- * Called when update da model lol
+ * Called when a model updates
  */
 class UpdateModelEvent(val player: EntityPlayer, val model: ModelPlayer) : Event()
 
@@ -78,6 +78,14 @@ class KeyEvent(val key: Int) : Event()
 class MotionEvent(var x: Double, var y: Double, var z: Double, var yaw: Float, var pitch: Float, var onGround: Boolean) : Event() {
     var eventState: EventState = EventState.PRE
 }
+
+/**
+ * Called when player sprints or sneaks, after pre-motion event
+ *
+ * @param sprinting player's sprint state
+ * @param sneaking player's sneak state
+ */
+class ActionEvent(var sprinting: Boolean, var sneaking: Boolean) : Event()
 
 /**
  * Called in "onLivingUpdate" when the player is using a use item.

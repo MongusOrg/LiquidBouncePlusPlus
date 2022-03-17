@@ -15,7 +15,7 @@ import net.ccbluex.liquidbounce.features.module.modules.misc.AntiDesync;
 import net.ccbluex.liquidbounce.features.module.modules.movement.GuiMove;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
-//import net.ccbluex.liquidbounce.features.module.modules.movement.Sneak;
+import net.ccbluex.liquidbounce.features.module.modules.movement.Sneak;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
@@ -154,10 +154,13 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             LiquidBounce.eventManager.callEvent(event);
 
             final GuiMove inventoryMove = (GuiMove) LiquidBounce.moduleManager.getModule(GuiMove.class);
-            //final Sneak sneak = (Sneak) LiquidBounce.moduleManager.getModule(Sneak.class);
-            final boolean fakeSprint = (inventoryMove.getState() && inventoryMove.getAacAdditionProValue().get()) || LiquidBounce.moduleManager.getModule(AntiHunger.class).getState()/* || (sneak.getState() && (!MovementUtils.isMoving() || !sneak.stopMoveValue.get()) && sneak.modeValue.get().equalsIgnoreCase("MineSecure"))*/;
+            final Sneak sneak = (Sneak) LiquidBounce.moduleManager.getModule(Sneak.class);
+            final boolean fakeSprint = (inventoryMove.getState() && inventoryMove.getAacAdditionProValue().get()) || LiquidBounce.moduleManager.getModule(AntiHunger.class).getState() || (sneak.getState() && (!MovementUtils.isMoving() || !sneak.stopMoveValue.get()) && sneak.modeValue.get().equalsIgnoreCase("MineSecure"));
 
-            boolean sprinting = this.isSprinting() && !fakeSprint;
+            ActionEvent actionEvent = new ActionEvent(this.isSprinting() && !fakeSprint, this.isSneaking());
+
+            boolean sprinting = actionEvent.getSprinting();
+            boolean sneaking = actionEvent.getSneaking();
 
             if (sprinting != this.serverSprintState) {
                 if (sprinting)
@@ -168,9 +171,7 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
                 this.serverSprintState = sprinting;
             }
 
-            boolean sneaking = this.isSneaking();
-
-            if (sneaking != this.serverSneakState/* && (!sneak.getState() || sneak.modeValue.get().equalsIgnoreCase("Legit"))*/) {
+            if (sneaking != this.serverSneakState && (!sneak.getState() || sneak.modeValue.get().equalsIgnoreCase("Legit"))) {
                 if (sneaking)
                     this.sendQueue.addToSendQueue(new C0BPacketEntityAction((EntityPlayerSP) (Object) this, C0BPacketEntityAction.Action.START_SNEAKING));
                 else

@@ -41,7 +41,6 @@ class ModuleManager : Listenable {
         ClientUtils.getLogger().info("[ModuleManager] Loading modules...")
 
         registerModules(
-                //AutoArmor::class.java,
                 Patcher::class.java,
                 Performance::class.java,
                 AutoPot::class.java,
@@ -67,10 +66,10 @@ class ModuleManager : Listenable {
                 AntiBot::class.java,
                 ChestStealer::class.java,
                 Scaffold::class.java,
-                //Tower::class.java,
                 FastBreak::class.java,
                 FastPlace::class.java,
                 ESP::class.java,
+                Sneak::class.java,
                 Speed::class.java,
                 Tracers::class.java,
                 NameTags::class.java,
@@ -145,7 +144,6 @@ class ModuleManager : Listenable {
                 AutoDisable::class.java,
                 Crosshair::class.java,
                 VehicleOneHit::class.java,
-                //BetterFPS::class.java,
                 SpinBot::class.java,
                 MultiActions::class.java,
                 AntiVoid::class.java,

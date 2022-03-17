@@ -214,7 +214,6 @@ class KillAura : Module() {
     private val debugValue = BoolValue("Debug", false)
 
     // Visuals
-    val moveMarkValue = FloatValue("MoveMark", 0F, 0F, 2F)
     private val circleValue = BoolValue("Circle", true)
     private val accuracyValue = IntegerValue("Accuracy", 59, 0, 59, { circleValue.get() })
     private val fakeSharpValue = BoolValue("FakeSharp", true)
