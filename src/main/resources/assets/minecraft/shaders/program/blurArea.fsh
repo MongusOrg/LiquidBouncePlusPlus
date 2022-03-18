@@ -76,6 +76,8 @@ vec4 BlurH (sampler2D source, vec2 size, vec2 uv, float radius) {
 }
 
 void main() {
-    vec4 blurred = BlurH(DiffuseSampler, oneTexel, texCoord, Radius);
-    gl_FragColor = blurred;
+    if (texCoord.x / oneTexel.x >= (BlurXY.x * 2) - (Radius * 2) && texCoord.y / oneTexel.y >= (BlurXY.y * 2) - (Radius * 2) && texCoord.x / oneTexel.x <= ((BlurCoord.x + BlurXY.x) * 2) + (Radius * 2) && texCoord.y / oneTexel.y <= ((BlurCoord.y + BlurXY.y) * 2) + (Radius * 2)) {
+        vec4 blurred = BlurH(DiffuseSampler, oneTexel, texCoord, Radius);
+        gl_FragColor = blurred;
+    } // might improve performance
 }

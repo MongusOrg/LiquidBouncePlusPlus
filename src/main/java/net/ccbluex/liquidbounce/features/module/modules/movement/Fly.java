@@ -298,7 +298,7 @@ public class Fly extends Module {
                 break;
             case "watchdogtest":
                 if (mc.thePlayer.onGround)
-                    mc.thePlayer.setPosition(x, y - 0.03, z);
+                    mc.thePlayer.setPosition(x, y + 0.1, z);
                 break;
         }
 
@@ -746,10 +746,7 @@ public class Fly extends Module {
                     packetPlayer.y -= 0.187;
                     wdState = 1;
                 } else {
-                    if (mc.thePlayer.ticksExisted % 15 == 0) {
-                        packetPlayer.y += 0.01;
-                        packetPlayer.onGround = true;
-                    }
+                    packetPlayer.y = startY;
                     if (fakeNoMoveValue.get())
                         packetPlayer.setMoving(false);
                 }

@@ -38,7 +38,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class AntiVoid extends Module {
 
     public final ListValue voidDetectionAlgorithm = new ListValue("Detect-Method", new String[]{"Collision", "Predict"}, "Collision");
-    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Position", "Edit"}, "Teleport");
+    public final ListValue setBackModeValue = new ListValue("SetBack-Mode", new String[]{"Teleport", "FlyFlag", "IllegalPacket", "IllegalTeleport", "StopMotion", "Position", "Edit", "SpoofBack"}, "Teleport");
     public final IntegerValue maxFallDistSimulateValue = new IntegerValue("Predict-CheckFallDistance", 255, 0, 255, () -> { return voidDetectionAlgorithm.get().equalsIgnoreCase("predict"); });
     public final IntegerValue maxFindRangeValue = new IntegerValue("Predict-MaxFindRange", 60, 0, 255, () -> { return voidDetectionAlgorithm.get().equalsIgnoreCase("predict"); });
     public final IntegerValue illegalDupeValue = new IntegerValue("Illegal-Dupe", 1, 1, 5, () -> { return setBackModeValue.get().toLowerCase().contains("illegal"); });
@@ -46,7 +46,7 @@ public class AntiVoid extends Module {
     public final BoolValue resetFallDistanceValue = new BoolValue("Reset-FallDistance", true);
     public final BoolValue renderTraceValue = new BoolValue("Render-Trace", true);
     public final BoolValue scaffoldValue = new BoolValue("AutoScaffold", true);
-    //public final BoolValue towerValue = new BoolValue("AutoTower", true);
+    public final BoolValue noFlyValue = new BoolValue("NoFly", true);
 
     private BlockPos detectedLocation = BlockPos.ORIGIN;
     private double lastX = 0; 
@@ -59,7 +59,7 @@ public class AntiVoid extends Module {
 
     @EventTarget
     public void onUpdate(UpdateEvent event) {
-        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+        if (noFlyValue.get() && LiquidBounce.moduleManager.getModule(Fly.class).getState())
             return;
 
         detectedLocation = null;
@@ -99,6 +99,7 @@ public class AntiVoid extends Module {
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextDouble(6D, 10D), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         break;
                     case "Edit":
+                    case "SpoofBack":
                         shouldEdit = true;
                         break;
                     }
@@ -171,6 +172,7 @@ public class AntiVoid extends Module {
                         PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextDouble(6D, 10D), mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
                         break;
                     case "Edit":
+                    case "SpoofBack":
                         shouldEdit = true;
                         break;
                     }
@@ -195,7 +197,7 @@ public class AntiVoid extends Module {
 
     @EventTarget
     public void onPacket(PacketEvent event) {
-        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+        if (noFlyValue.get() && LiquidBounce.moduleManager.getModule(Fly.class).getState())
             return;
             
         if (setBackModeValue.get().equalsIgnoreCase("StopMotion") && event.getPacket() instanceof S08PacketPlayerPosLook)
@@ -203,16 +205,23 @@ public class AntiVoid extends Module {
 
         if (setBackModeValue.get().equalsIgnoreCase("Edit") && shouldEdit && event.getPacket() instanceof C03PacketPlayer) {
             final C03PacketPlayer packetPlayer = (C03PacketPlayer) event.getPacket();
-            packetPlayer.y += 25D;
-            packetPlayer.x += 1.025D;
-            packetPlayer.z += 1.025D;
+            packetPlayer.y += 100D;
+            shouldEdit = false;
+        }
+
+        if (setBackModeValue.get().equalsIgnoreCase("SpoofBack") && shouldEdit && event.getPacket() instanceof C03PacketPlayer) {
+            final C03PacketPlayer packetPlayer = (C03PacketPlayer) event.getPacket();
+            packetPlayer.x = lastX;
+            packetPlayer.y = lastY;
+            packetPlayer.z = lastZ;
+            packetPlayer.setMoving(false);
             shouldEdit = false;
         }
     }
 
     @EventTarget
     public void onMove(MoveEvent event) {
-        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+        if (noFlyValue.get() && LiquidBounce.moduleManager.getModule(Fly.class).getState())
             return;
 
         if (setBackModeValue.get().equalsIgnoreCase("StopMotion") && shouldStopMotion) {
@@ -222,7 +231,7 @@ public class AntiVoid extends Module {
 
     @EventTarget
     public void onRender3D(Render3DEvent event) {
-        if (LiquidBounce.moduleManager.getModule(Fly.class).getState())
+        if (noFlyValue.get() && LiquidBounce.moduleManager.getModule(Fly.class).getState())
             return;
             
         if (shouldRender) synchronized (positions) {
