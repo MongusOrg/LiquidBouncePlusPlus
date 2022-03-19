@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.entity.EntityLivingBase
+import net.minecraft.network.play.client.C02PacketUseEntity
 import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook
@@ -78,13 +79,13 @@ class TeleportAura : Module() {
 
     @EventTarget(priority = 1)
     fun onUpdate(event: UpdateEvent) {
-        if ((noKillAuraValue.get() && auraMod.target != null) || !clickTimer.hasTimePassed(attackDelay) || (waitForCurrentTargetValue.get() && thread != null && thread!!.isAlive)) return
+        if ((noKillAuraValue.get() && auraMod.target != null) || !clickTimer.hasTimePassed(attackDelay)) return
 
         if (thread == null || !thread!!.isAlive) {
             tpVectors.clear()
             clickTimer.reset()
             thread = Thread { runAttack() }
-            thread.start()
+            thread!!.start()
         } else
             clickTimer.reset()
     }
@@ -120,7 +121,9 @@ class TeleportAura : Module() {
 
             tpVectors = path
 
-            path.forEach { point -> mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) }
+            path.forEach { point -> 
+                mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) 
+            }
 
             when (swingValue.get().toLowerCase()) {
                 "normal" -> mc.thePlayer.swingItem()
@@ -129,7 +132,9 @@ class TeleportAura : Module() {
 
             mc.netHandler.addToSendQueue(C02PacketUseEntity(it, C02PacketUseEntity.Action.ATTACK))
 
-            path.reversed().forEach { point -> mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) }
+            path.reversed().forEach { point -> 
+                mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) 
+            }
         }
     }
 
