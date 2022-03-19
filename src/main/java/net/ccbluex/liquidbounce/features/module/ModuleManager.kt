@@ -179,7 +179,8 @@ class ModuleManager : Listenable {
                 AutoPlay::class.java,
                 AutoKit::class.java,
                 AntiBan::class.java,
-                NoInvClose::class.java
+                NoInvClose::class.java,
+                TeleportAura::class.java
         )
 
         registerModule(Fucker)
