@@ -26,6 +26,8 @@ public final class ServerUtils extends MinecraftInstance {
     }
 
     public static String getRemoteIp() {
+        if (mc.theWorld == null) return "Undefined";
+
         String serverIp = "Singleplayer";
 
         if (mc.theWorld.isRemote) {
@@ -38,6 +40,8 @@ public final class ServerUtils extends MinecraftInstance {
     }
 
     public static boolean isHypixelLobby() {
+        if (mc.theWorld == null) return false;
+
 		String target = "CLICK TO PLAY";
 		for (Entity entity : mc.theWorld.loadedEntityList) {
 			if (entity.getName().startsWith("§e§l")) {

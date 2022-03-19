@@ -7,6 +7,7 @@ package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
+import net.ccbluex.liquidbounce.features.module.modules.combat.TeleportAura
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
@@ -125,8 +126,10 @@ class Target : Element() {
 
     override fun drawElement(): Border {
         val kaTarget = (LiquidBounce.moduleManager[KillAura::class.java] as KillAura).target
+        val taTarget = (LiquidBounce.moduleManager[TeleportAura::class.java] as TeleportAura).lastTarget
 
-        val actualTarget = if (kaTarget is EntityPlayer) kaTarget 
+        val actualTarget = if (kaTarget != null && kaTarget is EntityPlayer) kaTarget 
+                            else if (taTarget != null &&  taTarget is EntityPlayer) taTarget
                             else if ((mc.currentScreen is GuiChat && showUrselfWhenChatOpen.get()) || mc.currentScreen is GuiHudDesigner) mc.thePlayer 
                             else null
 

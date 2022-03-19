@@ -40,9 +40,9 @@ class TeleportAura : Module() {
      */
     private val apsValue = IntegerValue("APS", 1, 1, 10)
     private val maxTargetsValue = IntegerValue("MaxTargets", 2, 1, 8)
-    private val rangeValue = IntegerValue("Range", 80, 10, 100)
+    private val rangeValue = IntegerValue("Range", 80, 10, 200)
     private val maxMoveDistValue = FloatValue("MaxMoveSpeed", 8F, 2F, 15F)
-    private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Packet")
+    private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val noPureC03Value = BoolValue("NoStandingPackets", true)
     private val noKillAuraValue = BoolValue("NoKillAura", true)
     private val renderValue = ListValue("Render", arrayOf("Box", "Lines", "None"), "Box")
@@ -55,22 +55,26 @@ class TeleportAura : Module() {
     private var tpVectors = arrayListOf<Vec3>()
     private var thread: Thread? = null
 
+    var lastTarget: EntityLivingBase? = null
+
     private lateinit var auraMod: KillAura
 
     private val attackDelay: Long
         get() = 1000L / apsValue.get().toLong()
 
     override val tag: String
-        get() = "${apsValue.get()} aps, ${rangeValue.get()}m"
+        get() = "APS ${apsValue.get()}, ${rangeValue.get()}m"
 
     override fun onEnable() {
         clickTimer.reset()
         tpVectors.clear()
+        lastTarget = null
     }
 
     override fun onDisable() {
         clickTimer.reset()
         tpVectors.clear()
+        lastTarget = null
     }
 
     override fun onInitialize() {
@@ -105,7 +109,12 @@ class TeleportAura : Module() {
                 entityCount++
             }
 
-        if (targets.isEmpty()) return
+        if (targets.isEmpty()) {
+            lastTarget = null
+            return
+        } else if (targets.size == 1) {
+            lastTarget = targets[0]
+        }
 
         // Sort targets by priority
         when (priorityValue.get().toLowerCase()) {
@@ -135,6 +144,8 @@ class TeleportAura : Module() {
                 mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) 
             }
         }
+
+        tpVectors.clear()
     }
 
     @EventTarget
@@ -170,51 +181,55 @@ class TeleportAura : Module() {
             GL11.glLoadIdentity()
             mc.entityRenderer.setupCameraTransform(mc.timer.renderPartialTicks, 2)
             RenderUtils.glColor(Color.WHITE)
-            GL11.glLineWidth(2F)
+            GL11.glLineWidth(1F)
 
             if (renderValue.get().equals("lines", true))
                 GL11.glBegin(GL11.GL_LINE_STRIP)
 
-            for (vec in tpVectors) {
-                val x = vec.xCoord - renderPosX
-                val y = vec.yCoord - renderPosY
-                val z = vec.zCoord - renderPosZ
-                val width = 0.3
-                val height = mc.thePlayer.getEyeHeight().toDouble()
+            try { 
+                for (vec in tpVectors) {
+                    val x = vec.xCoord - renderPosX
+                    val y = vec.yCoord - renderPosY
+                    val z = vec.zCoord - renderPosZ
+                    val width = 0.3
+                    val height = mc.thePlayer.getEyeHeight().toDouble()
 
-                when (renderValue.get().toLowerCase()) {
-                    "box" -> {
-                        GL11.glBegin(GL11.GL_LINE_STRIP)
-                        GL11.glVertex3d(x - width, y, z - width)
-                        GL11.glVertex3d(x - width, y, z - width)
-                        GL11.glVertex3d(x - width, y + height, z - width)
-                        GL11.glVertex3d(x + width, y + height, z - width)
-                        GL11.glVertex3d(x + width, y, z - width)
-                        GL11.glVertex3d(x - width, y, z - width)
-                        GL11.glVertex3d(x - width, y, z + width)
-                        GL11.glEnd()
+                    when (renderValue.get().toLowerCase()) {
+                        "box" -> {
+                            GL11.glBegin(GL11.GL_LINE_STRIP)
+                            GL11.glVertex3d(x - width, y, z - width)
+                            GL11.glVertex3d(x - width, y, z - width)
+                            GL11.glVertex3d(x - width, y + height, z - width)
+                            GL11.glVertex3d(x + width, y + height, z - width)
+                            GL11.glVertex3d(x + width, y, z - width)
+                            GL11.glVertex3d(x - width, y, z - width)
+                            GL11.glVertex3d(x - width, y, z + width)
+                            GL11.glEnd()
 
-                        GL11.glBegin(GL11.GL_LINE_STRIP)
-                        GL11.glVertex3d(x + width, y, z + width)
-                        GL11.glVertex3d(x + width, y + height, z + width)
-                        GL11.glVertex3d(x - width, y + height, z + width)
-                        GL11.glVertex3d(x - width, y, z + width)
-                        GL11.glVertex3d(x + width, y, z + width)
-                        GL11.glVertex3d(x + width, y, z - width)
-                        GL11.glEnd()
+                            GL11.glBegin(GL11.GL_LINE_STRIP)
+                            GL11.glVertex3d(x + width, y, z + width)
+                            GL11.glVertex3d(x + width, y + height, z + width)
+                            GL11.glVertex3d(x - width, y + height, z + width)
+                            GL11.glVertex3d(x - width, y, z + width)
+                            GL11.glVertex3d(x + width, y, z + width)
+                            GL11.glVertex3d(x + width, y, z - width)
+                            GL11.glEnd()
 
-                        GL11.glBegin(GL11.GL_LINE_STRIP)
-                        GL11.glVertex3d(x + width, y + height, z + width)
-                        GL11.glVertex3d(x + width, y + height, z - width)
-                        GL11.glEnd()
+                            GL11.glBegin(GL11.GL_LINE_STRIP)
+                            GL11.glVertex3d(x + width, y + height, z + width)
+                            GL11.glVertex3d(x + width, y + height, z - width)
+                            GL11.glEnd()
 
-                        GL11.glBegin(GL11.GL_LINE_STRIP)
-                        GL11.glVertex3d(x - width, y + height, z + width)
-                        GL11.glVertex3d(x - width, y + height, z - width)
-                        GL11.glEnd()
+                            GL11.glBegin(GL11.GL_LINE_STRIP)
+                            GL11.glVertex3d(x - width, y + height, z + width)
+                            GL11.glVertex3d(x - width, y + height, z - width)
+                            GL11.glEnd()
+                        }
+                        "lines" -> GL11.glVertex3d(x, y, z)
                     }
-                    "lines" -> GL11.glVertex3d(x, y, z)
                 }
+            } catch (e: Exception) {
+                // ignore, concurrent modification error
             }
 
             if (renderValue.get().equals("lines", true))
