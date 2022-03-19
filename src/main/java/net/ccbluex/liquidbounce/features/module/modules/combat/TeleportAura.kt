@@ -116,7 +116,7 @@ class TeleportAura : Module() {
         targets.forEach {
             if (mc.thePlayer == null || mc.theWorld == null) return
 
-            val path = PathUtils.findTeleportPath(mc.thePlayer, it, maxMoveDistValue.get())
+            val path = PathUtils.findTeleportPath(mc.thePlayer, it, maxMoveDistValue.get().toDouble())
 
             tpVectors = path
 

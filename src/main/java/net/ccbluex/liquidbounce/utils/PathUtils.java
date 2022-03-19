@@ -13,6 +13,75 @@ import java.util.List;
 
 public final class PathUtils extends MinecraftInstance {
 
+    public static List<Vec3> findTeleportPath(EntityLivingBase current, EntityLivingBase target, final double dashDistance) {
+        double curX = current.posX;
+        double curY = current.posY;
+        double curZ = current.posZ;
+        double tpX = target.posX;
+        double tpY = target.posY;
+        double tpZ = target.posZ;
+
+        Vec3 topFrom = new Vec3(curX,curY,curZ);
+        Vec3 to = new Vec3(tpX,tpY,tpZ);
+
+        if (!canPassThrow(new BlockPos(topFrom))) {
+            topFrom = topFrom.addVector(0, 1, 0);
+        }
+        AStarCustomPathFinder pathfinder = new AStarCustomPathFinder(topFrom, to);
+        pathfinder.compute();
+
+        int i = 0;
+        Vec3 lastLoc = null;
+        Vec3 lastDashLoc = null;
+        ArrayList<Vec3> path = new ArrayList<>();
+        ArrayList<Vec3> pathFinderPath = pathfinder.getPath();
+        for (Vec3 pathElm : pathFinderPath) {
+            if (i == 0 || i == pathFinderPath.size() - 1) {
+                if (lastLoc != null) {
+                    path.add(lastLoc.addVector(0.5, 0, 0.5));
+                }
+                path.add(pathElm.addVector(0.5, 0, 0.5));
+                lastDashLoc = pathElm;
+            } else {
+                boolean canContinue = true;
+                if (pathElm.squareDistanceTo(lastDashLoc) > dashDistance * dashDistance) {
+                    canContinue = false;
+                } else {
+                    double smallX = Math.min(lastDashLoc.xCoord, pathElm.xCoord);
+                    double smallY = Math.min(lastDashLoc.yCoord, pathElm.yCoord);
+                    double smallZ = Math.min(lastDashLoc.zCoord, pathElm.zCoord);
+                    double bigX = Math.max(lastDashLoc.xCoord, pathElm.xCoord);
+                    double bigY = Math.max(lastDashLoc.yCoord, pathElm.yCoord);
+                    double bigZ = Math.max(lastDashLoc.zCoord, pathElm.zCoord);
+                    cordsLoop:
+                    for (int x = (int) smallX; x <= bigX; x++) {
+                        for (int y = (int) smallY; y <= bigY; y++) {
+                            for (int z = (int) smallZ; z <= bigZ; z++) {
+                                if (!AStarCustomPathFinder.checkPositionValidity(x, y, z, false)) {
+                                    canContinue = false;
+                                    break cordsLoop;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (!canContinue) {
+                    path.add(lastLoc.addVector(0.5, 0, 0.5));
+                    lastDashLoc = lastLoc;
+                }
+            }
+            lastLoc = pathElm;
+            i++;
+        }
+
+        return path;
+    }
+
+    private static boolean canPassThrow(BlockPos pos) {
+        Block block = Minecraft.getMinecraft().theWorld.getBlockState(new net.minecraft.util.BlockPos(pos.getX(), pos.getY(), pos.getZ())).getBlock();
+        return block.getMaterial() == Material.air || block.getMaterial() == Material.plants || block.getMaterial() == Material.vine || block == Blocks.ladder || block == Blocks.water || block == Blocks.flowing_water || block == Blocks.wall_sign || block == Blocks.standing_sign;
+    }
+
     public static List<Vector3d> findBlinkPath(final double tpX, final double tpY, final double tpZ) {
         final List<Vector3d> positions = new ArrayList<>();
 
