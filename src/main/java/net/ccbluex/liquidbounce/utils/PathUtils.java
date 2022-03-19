@@ -5,7 +5,13 @@
  */
 package net.ccbluex.liquidbounce.utils;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 
 import javax.vecmath.Vector3d;
 import java.util.ArrayList;
@@ -13,7 +19,7 @@ import java.util.List;
 
 public final class PathUtils extends MinecraftInstance {
 
-    public static List<Vec3> findTeleportPath(EntityLivingBase current, EntityLivingBase target, final double dashDistance) {
+    public static ArrayList<Vec3> findTeleportPath(EntityLivingBase current, EntityLivingBase target, final double dashDistance) {
         double curX = current.posX;
         double curY = current.posY;
         double curZ = current.posZ;

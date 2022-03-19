@@ -119,9 +119,8 @@ class TeleportAura : Module() {
 
             val path = PathUtils.findTeleportPath(mc.thePlayer, it, maxMoveDistValue.get().toDouble())
 
-            tpVectors = path
-
             path.forEach { point -> 
+                tpVectors.add(point)
                 mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) 
             }
 
