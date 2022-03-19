@@ -3,7 +3,7 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  *
- * Parts of this code are based on InfiniteAura module from UnlegitMc/FDPClient.
+ * Parts of this code are based on InfiniteAura module from UnlegitMC/FDPClient.
  */
 package net.ccbluex.liquidbounce.features.module.modules.combat
 
@@ -63,7 +63,7 @@ class TeleportAura : Module() {
         get() = 1000L / apsValue.get().toLong()
 
     override val tag: String
-        get() = "APS ${apsValue.get()}, ${rangeValue.get()}m"
+        get() = "APS ${apsValue.get()}, Range ${rangeValue.get()}"
 
     override fun onEnable() {
         clickTimer.reset()
@@ -112,8 +112,6 @@ class TeleportAura : Module() {
         if (targets.isEmpty()) {
             lastTarget = null
             return
-        } else if (targets.size == 1) {
-            lastTarget = targets[0]
         }
 
         // Sort targets by priority
@@ -133,6 +131,8 @@ class TeleportAura : Module() {
                 mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) 
             }
 
+            lastTarget = it
+
             when (swingValue.get().toLowerCase()) {
                 "normal" -> mc.thePlayer.swingItem()
                 "packet" -> mc.netHandler.addToSendQueue(C0APacketAnimation())
@@ -144,8 +144,6 @@ class TeleportAura : Module() {
                 mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) 
             }
         }
-
-        tpVectors.clear()
     }
 
     @EventTarget
