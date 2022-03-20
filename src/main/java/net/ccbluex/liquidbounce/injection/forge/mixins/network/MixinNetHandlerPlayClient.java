@@ -145,7 +145,7 @@ public abstract class MixinNetHandlerPlayClient {
                 ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §6Resourcepack exploit detected.");
                 ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §7Exploit target directory: §r" + url);
 
-                throw new IllegalStateException(url, "Invalid levelstorage resourcepack path");
+                throw new IllegalStateException("Invalid levelstorage resourcepack path");
             }
         } catch (final URISyntaxException e) {
             ClientUtils.getLogger().error("Failed to handle resource pack", e);

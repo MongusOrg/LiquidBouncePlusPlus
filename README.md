@@ -10,7 +10,7 @@ Guilded: https://guilded.gg/CCBlueX
 
 Discord: https://discord.io/LiquidBouncePlus
 
-## Third-party mods also included in this build:
+## Big thanks to these repositories for their mods/plugins:
 - [FlorianMichael/ViaForge](https://github.com/FlorianMichael/ViaForge/)
 - [Sk1erLLC/Patcher](https://github.com/Sk1erLLC/Patcher/)
 
