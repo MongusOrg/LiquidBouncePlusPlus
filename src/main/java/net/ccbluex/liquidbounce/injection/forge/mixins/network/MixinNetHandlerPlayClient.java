@@ -133,7 +133,7 @@ public abstract class MixinNetHandlerPlayClient {
                 File file1 = new File(this.gameController.mcDataDir, "saves");
                 File file2 = new File(file1, s2);
 
-                if (file2.isFile() && !url.toLowerCase().contains("liquidbounce") {
+                if (file2.isFile() && !url.toLowerCase().contains("liquidbounce")) {
                     netManager.sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.ACCEPTED)); // perform like vanilla
                     netManager.sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.SUCCESSFULLY_LOADED));
                 } else {
