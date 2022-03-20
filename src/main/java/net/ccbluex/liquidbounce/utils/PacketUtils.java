@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class PacketUtils extends MinecraftInstance implements Listenable {
 
-    private static int inBound, outBound = 0;
+    public static int inBound, outBound = 0;
     public static int avgInBound, avgOutBound = 0;
 
     private static ArrayList<Packet<INetHandlerPlayServer>> packets = new ArrayList<Packet<INetHandlerPlayServer>>();

@@ -206,12 +206,18 @@ public class Speed extends Module {
 
     public final FloatValue verusTimer = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { return getModeName().equalsIgnoreCase("verushard"); });
 
-    public final FloatValue customSpeedValue = new FloatValue("CustomSpeed", 1.0F, 0.2F, 10F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final FloatValue customYValue = new FloatValue("CustomY", 0F, 0F, 4F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final FloatValue customTimerValue = new FloatValue("CustomTimer", 1F, 0.1F, 2F, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final BoolValue customStrafeValue = new BoolValue("CustomStrafe", true, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final FloatValue speedValue = new FloatValue("CustomSpeed", 1.6f, 0.2f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final FloatValue launchSpeedValue = new FloatValue("CustomLaunchSpeed", 1.6f, 0.2f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final FloatValue addYMotionValue = new FloatValue("CustomAddYMotion", 0f, 0f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final FloatValue yValue = new FloatValue("CustomY", 0f, 0f, 4f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final FloatValue upTimerValue = new FloatValue("CustomUpTimer", 1f, 0.1f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final FloatValue downTimerValue = new FloatValue("CustomDownTimer", 1f, 0.1f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final ListValue strafeValue = new ListValue("CustomStrafe", arrayOf("Strafe", "Boost", "Plus", "PlusOnlyUp", "Non-Strafe"), "Boost", () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final IntegerValue groundStay = new IntegerValue("CustomGroundStay", 0, 0, 10, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final BoolValue groundResetXZValue = new BoolValue("CustomGroundResetXZ", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final BoolValue resetXZValue = new BoolValue("CustomResetXZ", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final BoolValue resetYValue = new BoolValue("CustomResetY", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final BoolValue doLaunchSpeedValue = new BoolValue("CustomDoLaunchSpeed", true, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
 
     public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false, () -> { return typeValue.get().equalsIgnoreCase("other"); });
 

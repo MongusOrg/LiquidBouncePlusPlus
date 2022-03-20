@@ -141,6 +141,7 @@ class TeleportAura : Module() {
             mc.netHandler.addToSendQueue(C02PacketUseEntity(it, C02PacketUseEntity.Action.ATTACK))
 
             path.reversed().forEach { point -> 
+                if (renderValue.get().equals("lines", true)) tpVectors.add(point)
                 mc.netHandler.addToSendQueue(C04PacketPlayerPosition(point.xCoord, point.yCoord, point.zCoord, true)) 
             }
         }

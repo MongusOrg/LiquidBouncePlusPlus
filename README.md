@@ -6,13 +6,13 @@ Website: https://liquidbounce.net \
 Forum: https://forums.ccbluex.net \
 YouTube: https://youtube.com/CCBlueX \
 Twitter: https://twitter.com/CCBlueX \
-Discord: https://discord.io/LiquidBouncePlus (3rd party link)
+Guilded: https://guilded.gg/CCBlueX
+
+Discord: https://discord.io/LiquidBouncePlus
 
 ## Third-party mods also included in this build:
 - [FlorianMichael/ViaForge](https://github.com/FlorianMichael/ViaForge/)
 - [Sk1erLLC/Patcher](https://github.com/Sk1erLLC/Patcher/)
-- [UnlegitMC/FDPClient](https://github.com/UnlegitMC/FDPClient/) for AAC5 bypasses.
-- [Pokechu22/WorldDownloader](https://github.com/Pokechu22/WorldDownloader/) (contact me on Discord: why dont#0425 for legal actions.)
 
 ## Issues
 If you notice any bugs or missing features, you can let us know by opening an issue [here](https://github.com/WYSI-Foundation/LiquidBouncePlus/issues).

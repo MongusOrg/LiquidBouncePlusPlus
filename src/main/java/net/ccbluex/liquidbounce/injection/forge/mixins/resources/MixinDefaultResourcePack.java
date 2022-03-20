@@ -18,16 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(DefaultResourcePack.class)
 public class MixinDefaultResourcePack {
-/*
+
     @Shadow
     public static final Set<String> defaultResourceDomains = ImmutableSet
-			.<String> of("minecraft", "realms", "wdl");
-*/
-    //private static final Set wdl_defaultResourceDomains = ImmutableSet.of("minecraft", "realms", "wdl");
-/*
-    @Overwrite
-    public Set getResourceDomains() {
-        return wdl_defaultResourceDomains;
-    }
-*/
+			.<String> of("minecraft", "realms");
+            
 }

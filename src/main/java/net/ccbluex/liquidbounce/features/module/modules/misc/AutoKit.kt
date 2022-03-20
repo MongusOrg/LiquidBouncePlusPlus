@@ -18,6 +18,7 @@ import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.utils.timer.TickTimer
 import net.ccbluex.liquidbounce.value.BoolValue
+import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.TextValue
 import net.minecraft.event.ClickEvent
 import net.minecraft.network.play.client.*
@@ -34,7 +35,13 @@ class AutoKit : Module() {
     private val kitNameValue = TextValue("Kit-Name", "Armorer")
 
     // for easier selection
-    private val editMode = BoolValue("Edit-Mode", false)
+    private val kitTimeOutValue = IntegerValue("Timeout-After", 40, 40, 100)
+    private val editMode: BoolValue = object : BoolValue("Edit-Mode", false) {
+        override fun onChanged(oldValue: Boolean, newValue: Boolean) {
+            if (newValue)
+                LiquidBounce.hud.addNotification("Change default kit by right clicking the kit selector and select.")
+        }
+    }
     private val debugValue = BoolValue("Debug", false)
 
     private var clickStage = 0
@@ -73,7 +80,7 @@ class AutoKit : Module() {
 
         if (clickStage == 2) {
             timeoutTimer.update()
-            if (timeoutTimer.hasTimePassed(40)) {
+            if (timeoutTimer.hasTimePassed(kitTimeOutValue.get())) {
                 // close the things and notify
                 clickStage = 0
                 listening = false

@@ -50,6 +50,19 @@ public final class MovementUtils extends MinecraftInstance {
         return false;
     }
 
+    public static void accelerate() {
+        accelerate(getSpeed());
+    }
+
+    public static void accelerate(final float speed) {
+        if(!isMoving())
+            return;
+
+        final double yaw = getDirection();
+        mc.thePlayer.motionX += -Math.sin(yaw) * speed;
+        mc.thePlayer.motionZ += Math.cos(yaw) * speed;
+    }
+
     public static void strafe() {
         strafe(getSpeed());
     }

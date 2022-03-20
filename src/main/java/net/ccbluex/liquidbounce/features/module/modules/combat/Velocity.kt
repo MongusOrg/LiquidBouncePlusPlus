@@ -174,7 +174,7 @@ class Velocity : Module() {
                     reverseHurt = false
                 }
             }
-            // stuff i add almost useless
+            
             "aac" -> if (velocityInput && velocityTimer.hasTimePassed(50)) {
                 mc.thePlayer.motionX *= horizontalValue.get()
                 mc.thePlayer.motionZ *= horizontalValue.get()
@@ -301,11 +301,11 @@ class Velocity : Module() {
                 "phase" -> mc.thePlayer.setPositionAndUpdate(mc.thePlayer.posX, mc.thePlayer.posY + phaseOffsetValue.get().toDouble(), mc.thePlayer.posZ)
 
                 "legit" -> {
-                    pos=BlockPos(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ)
+                    pos = BlockPos(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ)
                 }
             }
         }
-        //since LiquidBounce base doesn't support explosion velocity packets
+
         if (packet is S27PacketExplosion) {
             mc.thePlayer.motionX = mc.thePlayer.motionX + packet.func_149149_c() * (horizontalExplosionValue.get())
             mc.thePlayer.motionY = mc.thePlayer.motionY + packet.func_149144_d() * (verticalExplosionValue.get())

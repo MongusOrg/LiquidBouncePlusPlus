@@ -48,7 +48,7 @@ class Criticals : Module() {
 
     @EventTarget
     fun onAttack(event: AttackEvent) {
-        if (onlyAuraValue.get() && !LiquidBounce.moduleManager[KillAura::class.java]!!.state) return
+        if (onlyAuraValue.get() && !LiquidBounce.moduleManager[KillAura::class.java]!!.state && !LiquidBounce.moduleManager[TeleportAura::class.java]!!.state) return
 
         if (event.targetEntity is EntityLivingBase) {
             val entity = event.targetEntity
@@ -61,8 +61,6 @@ class Criticals : Module() {
             val x = mc.thePlayer.posX
             val y = mc.thePlayer.posY
             val z = mc.thePlayer.posZ
-
-
 
             when (modeValue.get().toLowerCase()) {
                 "newpacket" -> {

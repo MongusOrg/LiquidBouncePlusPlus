@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.PacketUtils
+import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.TextValue
@@ -70,9 +71,10 @@ class AutoLogin : Module() {
 		if (mc.thePlayer == null)
 			return
 
-    	if (event.packet is S45PacketTitle) {
-    		val s45 = event.packet as S45PacketTitle
-			val messageOrigin = s45.getMessage() ?: return
+		val packet = event.packet
+
+    	if (packet is S45PacketTitle) {
+			val messageOrigin = packet.getMessage() ?: return
     		var message : String = messageOrigin.getUnformattedText()
 
     		if (message.contains(loginRegex.get(), true))
@@ -82,9 +84,8 @@ class AutoLogin : Module() {
     			sendRegister(regCmd.get().replace("%p", password.get(), true))
     	}
 
-    	if (event.packet is S02PacketChat) {
-    		val s02 = event.packet as S02PacketChat
-    		var message : String = s02.getChatComponent().getUnformattedText()
+    	if (packet is S02PacketChat) {
+    		var message : String = packet.getChatComponent().getUnformattedText()
 
     		if (message.contains(loginRegex.get(), true))
     			sendLogin(loginCmd.get().replace("%p", password.get(), true))

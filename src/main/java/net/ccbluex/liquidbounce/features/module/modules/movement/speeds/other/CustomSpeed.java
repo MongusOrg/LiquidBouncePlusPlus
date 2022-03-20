@@ -17,25 +17,58 @@ public class CustomSpeed extends SpeedMode {
         super("Custom");
     }
 
+    private int groundTick = 0;
+
     @Override
     public void onMotion() {
         final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
 
         if(speed == null)
             return;
-        if(MovementUtils.isMoving()) {
-            mc.timer.timerSpeed = speed.customTimerValue.get();
+        
+        if (MovementUtils.isMoving()) {
+            if (mc.thePlayer.motionY > 0) {
+                mc.timer.timerSpeed = speed.customUpTimerValue.get();
+            } else {
+                mc.timer.timerSpeed = speed.customDownTimerValue.get();
+            }
+        }
 
-            if(mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
-                mc.thePlayer.jump();
-                mc.thePlayer.jumpTicks = 10;
-                mc.thePlayer.motionX *= speed.customSpeedValue.get();
-                mc.thePlayer.motionZ *= speed.customSpeedValue.get();
-                mc.thePlayer.motionY = speed.customYValue.get();
-            }else if(speed.customStrafeValue.get())
-                MovementUtils.strafe();
-        }else if(speed.customStrafeValue.get())
-            mc.thePlayer.motionX = mc.thePlayer.motionZ = 0D;
+        if (mc.thePlayer.onGround) {
+            if (groundTick >= speed.groundStay.get()) {
+                if (speed.doLaunchSpeedValue.get()) {
+                    MovementUtils.strafe(speed.customLaunchValue.get());
+                }
+                if (speed.customYValue.get() != 0f) {
+                    mc.thePlayer.motionY = (double) speed.customYValue.get();
+                }
+            } else if (speed.groundResetXZValue.get()) {
+                mc.thePlayer.motionX = 0.0;
+                mc.thePlayer.motionZ = 0.0;
+            }
+
+            groundTick++;
+        } else {
+            groundTick = 0;
+            switch (speed.customStrafeValue.get().toLowerCase()) {
+                case "strafe":
+                    MovementUtils.strafe(speed.customSpeedValue.get());
+                break;
+                case "boost":
+                    MovementUtils.strafe();
+                break;
+                case "plus":
+                    MovementUtils.accelerate(speed.customSpeedValue.get() * 0.1f);
+                break;
+                case "plusonlyup":
+                    if (mc.thePlayer.motionY > 0) {
+                        MovementUtils.accelerate(speed.customSpeedValue.get() * 0.1f);
+                    }
+                default:
+                    MovementUtils.strafe();
+            }
+            mc.thePlayer.motionY += speed.customAddYValue.get() * 0.03;
+        }
     }
 
     @Override

@@ -34,17 +34,25 @@ class PackSpoofer : Module() {
                 if ("http" != scheme && "https" != scheme && !isLevelProtocol)
                     throw URISyntaxException(url, "Wrong protocol")
 
-                if (isLevelProtocol && (url.contains("..") || !url.endsWith("/resources.zip")))
-                    throw URISyntaxException(url, "Invalid levelstorage resourcepack path")
+                if (isLevelProtocol && (url.contains("..") || !url.endsWith(".zip"))) {
+                    val s2 = url.substring("level://".length)
+                    val file1 = File(mc.mcDataDir, "saves")
+                    val file2 = File(file1, s2)
+
+                    if (!file2.isFile() || url.contains("liquidbounce", true))
+                        throw URISyntaxException(url, "Invalid levelstorage resourcepack path")
+                }
 
                 mc.netHandler.addToSendQueue(C19PacketResourcePackStatus(packet.hash,
-                        C19PacketResourcePackStatus.Action.ACCEPTED))
+                    C19PacketResourcePackStatus.Action.ACCEPTED))
                 mc.netHandler.addToSendQueue(C19PacketResourcePackStatus(packet.hash,
-                        C19PacketResourcePackStatus.Action.SUCCESSFULLY_LOADED))
+                    C19PacketResourcePackStatus.Action.SUCCESSFULLY_LOADED))
             } catch (e: URISyntaxException) {
                 ClientUtils.getLogger().error("Failed to handle resource pack", e)
                 mc.netHandler.addToSendQueue(C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD))
             }
+
+            event.cancelEvent()
         }
     }
 
