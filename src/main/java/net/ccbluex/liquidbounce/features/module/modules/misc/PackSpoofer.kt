@@ -15,6 +15,7 @@ import net.minecraft.network.play.client.C19PacketResourcePackStatus
 import net.minecraft.network.play.server.S48PacketResourcePackSend
 import java.net.URI
 import java.net.URISyntaxException
+import java.io.File
 
 @ModuleInfo(name = "PackSpoofer", spacedName = "Pack Spoofer", description = "Prevents servers from forcing you to download their resource pack.", category = ModuleCategory.MISC)
 class PackSpoofer : Module() {

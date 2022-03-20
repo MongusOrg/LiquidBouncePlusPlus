@@ -39,7 +39,7 @@ class AutoKit : Module() {
     private val editMode: BoolValue = object : BoolValue("Edit-Mode", false) {
         override fun onChanged(oldValue: Boolean, newValue: Boolean) {
             if (newValue)
-                LiquidBounce.hud.addNotification("Change default kit by right clicking the kit selector and select.")
+                LiquidBounce.hud.addNotification(Notification("Change default kit by right clicking the kit selector and select.", Notification.Type.INFO))
         }
     }
     private val debugValue = BoolValue("Debug", false)

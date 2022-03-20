@@ -41,7 +41,7 @@ class AntiBan : Module() {
                 if (obStaffs.contains("checking", true)) {
                     println("[AntiBan] Server is checking, recheck after 20 seconds.")
                     thread {
-                        while (!update.hasTimePassed(20000L)) {}
+                        while (!updater.hasTimePassed(20000L)) {}
 
                         obStaffs = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/") + " "
                         totalCount = obStaffs.filter { it.isWhitespace() }.count()
