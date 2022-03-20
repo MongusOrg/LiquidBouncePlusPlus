@@ -32,30 +32,9 @@ class AntiBan : Module() {
 
     override fun onInitialize() {
         thread {
-            try {
-                obStaffs = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/") + " " //HttpUtils.get("${LiquidBounce.CLIENT_CLOUD}/staffs.txt")
-                totalCount = obStaffs.filter { it.isWhitespace() }.count()
-
-                updater.reset()
-
-                if (obStaffs.contains("checking", true)) {
-                    println("[AntiBan] Server is checking, recheck after 20 seconds.")
-                    thread {
-                        while (!updater.hasTimePassed(20000L)) {}
-
-                        obStaffs = HttpUtils.get("https://add-my-brain.exit-scammed.repl.co/staff/") + " "
-                        totalCount = obStaffs.filter { it.isWhitespace() }.count()
-                        println("[Staff list] ${obStaffs}")
-                    }
-                } else println("[Staff list] ${obStaffs}")
-            } catch (e: Exception) {
-                e.printStackTrace()
-                println("[AntiBan] Failed to get information from the main server, switching to fallback.")
-
-                obStaffs = HttpUtils.get("${LiquidBounce.CLIENT_CLOUD}/staffs.txt") + " "
-                totalCount = obStaffs.filter { it.isWhitespace() }.count()
-                println("[Staff list] ${obStaffs}")
-            }
+            obStaffs = HttpUtils.get("${LiquidBounce.CLIENT_CLOUD}/staffs.txt")
+            totalCount = obStaffs.filter { it.isWhitespace() }.count()
+            println("[Staff list] ${obStaffs}")
         }
     }
 

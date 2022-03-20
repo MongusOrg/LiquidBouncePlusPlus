@@ -81,7 +81,7 @@ class TeleportAura : Module() {
         auraMod = LiquidBounce.moduleManager.getModule(KillAura::class.java)!! as KillAura
     }
 
-    @EventTarget(priority = 1)
+    @EventTarget
     fun onUpdate(event: UpdateEvent) {
         if ((noKillAuraValue.get() && auraMod.target != null) || !clickTimer.hasTimePassed(attackDelay)) return
 
@@ -95,7 +95,7 @@ class TeleportAura : Module() {
     }
 
     private fun runAttack() {
-        if (mc.thePlayer == null || mc.theWorld == null) return
+        if ((noKillAuraValue.get() && auraMod.target != null) || mc.thePlayer == null || mc.theWorld == null) return
 
         val targets = arrayListOf<EntityLivingBase>()
         var entityCount = 0
@@ -125,6 +125,8 @@ class TeleportAura : Module() {
             if (mc.thePlayer == null || mc.theWorld == null) return
 
             val path = PathUtils.findTeleportPath(mc.thePlayer, it, maxMoveDistValue.get().toDouble())
+
+            if (noKillAuraValue.get() && auraMod.target != null) return
 
             path.forEach { point -> 
                 tpVectors.add(point)

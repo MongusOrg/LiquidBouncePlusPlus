@@ -109,7 +109,7 @@ public class Fly extends Module {
     private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
     private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
     private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
-    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise"}, "Original", () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); }); // Original is from UnlegitMC/FDPClient.
+    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise", "Other"}, "Original", () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); }); // Original is from UnlegitMC/FDPClient.
     private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
 
     // Hypixel glide
@@ -759,9 +759,9 @@ public class Fly extends Module {
     private void sendAAC5Packets(){
         float yaw = mc.thePlayer.rotationYaw;
         float pitch = mc.thePlayer.rotationPitch;
-        for(C03PacketPlayer packet : aac5C03List){
+        for (C03PacketPlayer packet : aac5C03List) {
             PacketUtils.sendPacketNoEvent(packet);
-            if(packet.isMoving()){
+            if (packet.isMoving()) {
                 if (packet.getRotating()) {
                     yaw = packet.yaw;
                     pitch = packet.pitch;
@@ -782,6 +782,15 @@ public class Fly extends Module {
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
                         } else {
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, -1e+159, packet.z+10, yaw, pitch, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
+                        }
+                        break;
+                    case "Other":
+                        if (aac5UseC04Packet.get()) {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x, 1.7976931348623157E+308, packet.z, true));
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(packet.x,packet.y,packet.z, true));
+                        } else {
+                            PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x, 1.7976931348623157E+308, packet.z, yaw, pitch, true));
                             PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(packet.x,packet.y,packet.z, yaw, pitch, true));
                         }
                         break;

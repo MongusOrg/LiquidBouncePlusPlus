@@ -43,7 +43,7 @@ class ModuleManager : Listenable {
         registerModules(
                 Patcher::class.java,
                 Performance::class.java,
-                AutoPot::class.java,
+                //AutoPot::class.java,
                 AutoWeapon::class.java,
                 BowAimbot::class.java,
                 Aimbot::class.java,
