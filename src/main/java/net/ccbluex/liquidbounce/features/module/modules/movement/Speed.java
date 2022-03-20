@@ -213,7 +213,7 @@ public class Speed extends Module {
     public final FloatValue yValue = new FloatValue("CustomY", 0f, 0f, 4f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final FloatValue upTimerValue = new FloatValue("CustomUpTimer", 1f, 0.1f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final FloatValue downTimerValue = new FloatValue("CustomDownTimer", 1f, 0.1f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final ListValue strafeValue = new ListValue("CustomStrafe", arrayOf("Strafe", "Boost", "Plus", "PlusOnlyUp", "Non-Strafe"), "Boost", () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final ListValue strafeValue = new ListValue("CustomStrafe", new String[] {"Strafe", "Boost", "Plus", "PlusOnlyUp", "Non-Strafe"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final IntegerValue groundStay = new IntegerValue("CustomGroundStay", 0, 0, 10, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final BoolValue groundResetXZValue = new BoolValue("CustomGroundResetXZ", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
     public final BoolValue resetXZValue = new BoolValue("CustomResetXZ", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });

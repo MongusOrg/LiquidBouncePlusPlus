@@ -22,10 +22,10 @@ public class CustomSpeed extends SpeedMode {
     private int groundTick = 0;
 
     @Override
-    public void onMotion(MotionEvent event) {
+    public void onMotion(MotionEvent eventMotion) {
         final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
 
-        if(speed == null || event.getEventState() != EventState.PRE)
+        if(speed == null || eventMotion.getEventState() != EventState.PRE)
             return;
         
         if (MovementUtils.isMoving()) {
@@ -93,6 +93,11 @@ public class CustomSpeed extends SpeedMode {
     @Override
     public void onUpdate() {
 
+    }
+
+    @Override
+    public void onMotion() {
+        
     }
 
     @Override

@@ -8,6 +8,7 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.network;
 import io.netty.buffer.Unpooled;
 import java.util.UUID;
 import java.util.List;
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import net.ccbluex.liquidbounce.LiquidBounce;
