@@ -23,8 +23,6 @@ import java.util.Objects;
 @Mixin(SkinManager.class)
 public class MixinSkinManager {
 
-    public static HashMap emptyHashMap = new HashMap<>();
-
     @Inject(method = "loadSkinFromCache", cancellable = true, at = @At("HEAD"))
     private void injectSkinProtect(GameProfile gameProfile, CallbackInfoReturnable<Map<MinecraftProfileTexture.Type, MinecraftProfileTexture>> cir) {
         if (gameProfile == null)
@@ -34,7 +32,7 @@ public class MixinSkinManager {
 
         if (nameProtect.getState() && nameProtect.skinProtectValue.get()) {
             if (nameProtect.allPlayersValue.get() || Objects.equals(gameProfile.getId(), Minecraft.getMinecraft().getSession().getProfile().getId())) {
-                cir.setReturnValue(emptyHashMap);
+                cir.setReturnValue(new HashMap<>());
                 cir.cancel();
             }
         }
