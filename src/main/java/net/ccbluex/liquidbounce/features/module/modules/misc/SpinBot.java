@@ -16,11 +16,11 @@ public class SpinBot extends Module
 {
     public final ListValue yawMode = new ListValue("Yaw", new String[] { "Static", "Offset", "Random", "Jitter", "Spin", "Off" }, "Offset");
     public final ListValue pitchMode = new ListValue("Pitch", new String[] { "Static", "Offset", "Random", "Jitter", "Off" }, "Offset");
-    private final IntegerValue YawSet = new IntegerValue("YawSet", 0, -180, 180);
-    private final IntegerValue PitchSet = new IntegerValue("PitchSet", 0, -180, 180);
-    private final IntegerValue YawJitterTimer = new IntegerValue("YawJitterTimer", 1, 1, 40);
-    private final IntegerValue PitchJitterTimer = new IntegerValue("PitchJitterTimer", 1, 1, 40);
-    private final IntegerValue YawSpin = new IntegerValue("YawSpin", 5, -50, 50);
+    private final IntegerValue YawSet = new IntegerValue("YawSet", 0, -180, 180, "°");
+    private final IntegerValue PitchSet = new IntegerValue("PitchSet", 0, -180, 180, "°");
+    private final IntegerValue YawJitterTimer = new IntegerValue("YawJitterTimer", 1, 1, 40, " tick");
+    private final IntegerValue PitchJitterTimer = new IntegerValue("PitchJitterTimer", 1, 1, 40, " tick");
+    private final IntegerValue YawSpin = new IntegerValue("YawSpin", 5, -50, 50, "°");
 
     public static float pitch;
     public static float lastSpin;

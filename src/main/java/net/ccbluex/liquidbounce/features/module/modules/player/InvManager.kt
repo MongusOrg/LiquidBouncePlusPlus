@@ -41,14 +41,14 @@ class InvManager : Module() {
      */
 
     // Delay
-    private val maxDelayValue: IntegerValue = object : IntegerValue("MaxDelay", 600, 0, 1000) {
+    private val maxDelayValue: IntegerValue = object : IntegerValue("MaxDelay", 600, 0, 1000, "ms") {
         override fun onChanged(oldValue: Int, newValue: Int) {
             val minCPS = minDelayValue.get()
             if (minCPS > newValue) set(minCPS)
         }
     }
 
-    private val minDelayValue: IntegerValue = object : IntegerValue("MinDelay", 400, 0, 1000) {
+    private val minDelayValue: IntegerValue = object : IntegerValue("MinDelay", 400, 0, 1000, "ms") {
         override fun onChanged(oldValue: Int, newValue: Int) {
             val maxDelay = maxDelayValue.get()
             if (maxDelay < newValue) set(maxDelay)
@@ -68,7 +68,7 @@ class InvManager : Module() {
     private val hotbarValue = BoolValue("Hotbar", true)
     private val randomSlotValue = BoolValue("RandomSlot", false)
     private val sortValue = BoolValue("Sort", true)
-    private val itemDelayValue = IntegerValue("ItemDelay", 0, 0, 5000)
+    private val itemDelayValue = IntegerValue("ItemDelay", 0, 0, 5000, "ms")
     private val ignoreVehiclesValue = BoolValue("IgnoreVehicles", false)
     private val onlyPositivePotionValue = BoolValue("OnlyPositivePotion", false)
 

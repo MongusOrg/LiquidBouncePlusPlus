@@ -29,7 +29,7 @@ public class BanChecker extends Module {
 
     public final BoolValue alertValue = new BoolValue("Alert", true);
     public final BoolValue serverCheckValue = new BoolValue("ServerCheck", true);
-    public final IntegerValue alertTimeValue = new IntegerValue("Alert-Time", 10, 1, 50);
+    public final IntegerValue alertTimeValue = new IntegerValue("Alert-Time", 10, 1, 50, " seconds");
 
     public static int WATCHDOG_BAN_LAST_MIN = 0;
     public static int LAST_TOTAL_STAFF = -1;

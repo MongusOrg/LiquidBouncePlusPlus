@@ -26,14 +26,12 @@ import net.minecraft.util.EnumFacing
 @ModuleInfo(name = "FastClimb", spacedName = "Fast Climb", description = "Allows you to climb up ladders and vines faster.", category = ModuleCategory.MOVEMENT)
 class FastClimb : Module() {
 
-    //dev ccbluex should add down fastladder.
     val modeValue = ListValue("Mode",
             arrayOf("Vanilla", "Clip", "AAC3.0.0", "AAC3.0.5", "SAAC3.1.2", "AAC3.1.2", "Spartan", "Negativity", "Horizon1.4.6", "HiveMC"), "Vanilla")
     private val upSpeedValue = FloatValue("UpSpeed", 0.2872F, 0.01F, 10F)
-    //add down speed. (since dev doesn't do it)
     private val downSpeedValue = FloatValue("DownSpeed", 0.2872F, 0.01F, 10F)
-    private val timerValue = FloatValue("Timer", 2F, 0.1F, 10F)
-    private val spartanTimerBoostValue = BoolValue("spartanTimerBoost", false)
+    private val timerValue = FloatValue("Timer", 2F, 0.1F, 10F, "x")
+    private val spartanTimerBoostValue = BoolValue("SpartanTimerBoost", false)
 
     private var usedTimer = false
     @EventTarget

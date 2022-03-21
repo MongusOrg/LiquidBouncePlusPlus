@@ -31,7 +31,7 @@ class AutoLogin : Module() {
 	private val regCmd = TextValue("Register-Cmd", "/register %p %p")
 	private val loginCmd = TextValue("Login-Cmd", "/login %p")
 
-	private val delayValue = IntegerValue("Delay", 5000, 0, 5000)
+	private val delayValue = IntegerValue("Delay", 5000, 0, 5000, "ms")
 
 	private val loginPackets = arrayListOf<C01PacketChatMessage>()
 	private val registerPackets = arrayListOf<C01PacketChatMessage>()

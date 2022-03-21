@@ -40,7 +40,7 @@ import java.util.List;
 @ModuleInfo(name = "AutoHypixel", spacedName = "Auto Hypixel", description = "Automatically send you into random games on Hypixel after you die or win.", category = ModuleCategory.MISC)
 public class AutoHypixel extends Module {
 
-    private final IntegerValue delayValue = new IntegerValue("Delay", 0, 0, 5000);
+    private final IntegerValue delayValue = new IntegerValue("Delay", 0, 0, 5000, "ms");
     private final BoolValue autoGGValue = new BoolValue("Auto-GG", true);
     private final TextValue ggMessageValue = new TextValue("GG-Message", "gOoD GaMe", () -> { return autoGGValue.get(); });
     private final BoolValue checkValue = new BoolValue("CheckGameMode", true);

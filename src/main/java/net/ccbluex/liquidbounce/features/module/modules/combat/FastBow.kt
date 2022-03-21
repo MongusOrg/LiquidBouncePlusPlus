@@ -25,7 +25,7 @@ class FastBow : Module() {
 
     private val packetsValue = IntegerValue("Packets", 20, 3, 20)
     // :V i saw someone want to add delay
-    private val delay = IntegerValue("Delay", 0, 0, 500)
+    private val delay = IntegerValue("Delay", 0, 0, 500, "ms")
 
 
     val timer = MSTimer()

@@ -23,7 +23,7 @@ import net.minecraft.item.ItemSword;
 public class TNTBlock extends Module {
 
     private final IntegerValue fuseValue = new IntegerValue("Fuse", 10, 0, 80);
-    private final FloatValue rangeValue = new FloatValue("Range", 9, 1, 20);
+    private final FloatValue rangeValue = new FloatValue("Range", 9, 1, 20, "m");
     private final BoolValue autoSwordValue = new BoolValue("AutoSword", true);
 
     private boolean blocked;

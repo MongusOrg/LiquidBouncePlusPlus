@@ -26,9 +26,9 @@ import net.minecraft.init.*;
 @ModuleInfo(name = "Heal", description = "Automatically eats Gapple. (only for some servers with a broken anticheat)", category = ModuleCategory.PLAYER)
 public class Heal extends Module
 {
-    private final FloatValue percent = new FloatValue("HealthPercent", 75.0f, 1.0f, 100.0f);
-    private final IntegerValue min = new IntegerValue("MinDelay", 75, 1, 5000);
-    private final IntegerValue max = new IntegerValue("MaxDelay", 125, 1, 5000);
+    private final FloatValue percent = new FloatValue("HealthPercent", 75.0f, 1.0f, 100.0f, "%");
+    private final IntegerValue min = new IntegerValue("MinDelay", 75, 1, 5000, "ms");
+    private final IntegerValue max = new IntegerValue("MaxDelay", 125, 1, 5000, "ms");
     private final FloatValue regenSec = new FloatValue("RegenSec", 4.6f, 0.0f, 10.0f);
     private final BoolValue groundCheck = new BoolValue("GroundCheck", false);
     private final BoolValue voidCheck = new BoolValue("VoidCheck", true);

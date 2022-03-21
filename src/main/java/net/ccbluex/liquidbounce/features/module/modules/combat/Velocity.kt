@@ -38,25 +38,25 @@ class Velocity : Module() {
     /**
      * OPTIONS
      */
-    private val horizontalValue = FloatValue("Horizontal", 0F, -1F, 1F)
-    private val verticalValue = FloatValue("Vertical", 0F, -1F, 1F)
-    private val horizontalExplosionValue = FloatValue("HorizontalExplosion", 0F, 0F, 1F)
-    private val verticalExplosionValue = FloatValue("VerticalExplosion", 0F, 0F, 1F)
+    private val horizontalValue = FloatValue("Horizontal", 0F, -1F, 1F, "x")
+    private val verticalValue = FloatValue("Vertical", 0F, -1F, 1F, "x")
+    private val horizontalExplosionValue = FloatValue("HorizontalExplosion", 0F, 0F, 1F, "x")
+    private val verticalExplosionValue = FloatValue("VerticalExplosion", 0F, 0F, 1F, "x")
     private val modeValue = ListValue("Mode", arrayOf("Cancel", "Simple", "AACv4", "AAC4Reduce", "AAC5Reduce", "AAC5.2.0", "AAC", "AACPush", "AACZero",
             "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit",  "AEMine"), "Simple") // later
 
     private val aac5KillAuraValue = BoolValue("AAC5.2.0-Attack-Only", true, { modeValue.get().equals("aac5.2.0", true) })
 
     // Affect chance
-    private val reduceChance = FloatValue("Reduce-Chance", 100F, 0F, 100F)
+    private val reduceChance = FloatValue("Reduce-Chance", 100F, 0F, 100F, "%")
     private var shouldAffect : Boolean = true
 
     // Reverse
-    private val reverseStrengthValue = FloatValue("ReverseStrength", 1F, 0.1F, 1F, { modeValue.get().equals("reverse", true) })
-    private val reverse2StrengthValue = FloatValue("SmoothReverseStrength", 0.05F, 0.02F, 0.1F, { modeValue.get().equals("smoothreverse", true) })
+    private val reverseStrengthValue = FloatValue("ReverseStrength", 1F, 0.1F, 1F, "x", { modeValue.get().equals("reverse", true) })
+    private val reverse2StrengthValue = FloatValue("SmoothReverseStrength", 0.05F, 0.02F, 0.1F, "x", { modeValue.get().equals("smoothreverse", true) })
 
     // AAC Push
-    private val aacPushXZReducerValue = FloatValue("AACPushXZReducer", 2F, 1F, 3F, { modeValue.get().equals("aacpush", true) })
+    private val aacPushXZReducerValue = FloatValue("AACPushXZReducer", 2F, 1F, 3F, "x", { modeValue.get().equals("aacpush", true) })
     private val aacPushYReducerValue = BoolValue("AACPushYReducer", true, { modeValue.get().equals("aacpush", true) })
 
     // legit
@@ -67,7 +67,7 @@ class Velocity : Module() {
     private val aacStrafeValue = BoolValue("AACStrafeValue", false, { modeValue.get().equals("aac", true) })
 
     //epic
-    private val phaseOffsetValue = FloatValue("Phase-Offset", 0.05F, -10F, 10F, { modeValue.get().equals("phase", true) })
+    private val phaseOffsetValue = FloatValue("Phase-Offset", 0.05F, -10F, 10F, "m", { modeValue.get().equals("phase", true) })
 
     /**
      * VALUES

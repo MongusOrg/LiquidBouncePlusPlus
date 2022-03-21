@@ -34,7 +34,7 @@ class ChestStealer : Module() {
      * OPTIONS
      */
 
-    private val maxDelayValue: IntegerValue = object : IntegerValue("MaxDelay", 200, 0, 400) {
+    private val maxDelayValue: IntegerValue = object : IntegerValue("MaxDelay", 200, 0, 400, "ms") {
         override fun onChanged(oldValue: Int, newValue: Int) {
             val i = minDelayValue.get()
             if (i > newValue)
@@ -44,7 +44,7 @@ class ChestStealer : Module() {
         }
     }
 
-    private val minDelayValue: IntegerValue = object : IntegerValue("MinDelay", 150, 0, 400) {
+    private val minDelayValue: IntegerValue = object : IntegerValue("MinDelay", 150, 0, 400, "ms") {
         override fun onChanged(oldValue: Int, newValue: Int) {
             val i = maxDelayValue.get()
 
@@ -65,7 +65,7 @@ class ChestStealer : Module() {
     public val showStringValue = BoolValue("Silent-ShowString", false, { silenceValue.get() })
     public val stillDisplayValue = BoolValue("Silent-StillDisplay", false, { silenceValue.get() })
 
-    private val autoCloseMaxDelayValue: IntegerValue = object : IntegerValue("AutoCloseMaxDelay", 0, 0, 400) {
+    private val autoCloseMaxDelayValue: IntegerValue = object : IntegerValue("AutoCloseMaxDelay", 0, 0, 400, "ms") {
         override fun onChanged(oldValue: Int, newValue: Int) {
             val i = autoCloseMinDelayValue.get()
             if (i > newValue) set(i)
@@ -73,7 +73,7 @@ class ChestStealer : Module() {
         }
     }
 
-    private val autoCloseMinDelayValue: IntegerValue = object : IntegerValue("AutoCloseMinDelay", 0, 0, 400) {
+    private val autoCloseMinDelayValue: IntegerValue = object : IntegerValue("AutoCloseMinDelay", 0, 0, 400, "ms") {
         override fun onChanged(oldValue: Int, newValue: Int) {
             val i = autoCloseMaxDelayValue.get()
             if (i < newValue) set(i)

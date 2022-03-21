@@ -61,7 +61,7 @@ public class AntiBot extends Module {
     private final BoolValue experimentalNPCDetection = new BoolValue("ExperimentalNPCDetection", false);
     private final BoolValue illegalName = new BoolValue("IllegalName", false);
     private final BoolValue removeFromWorld = new BoolValue("RemoveFromWorld", false);
-    private final IntegerValue removeIntervalValue = new IntegerValue("Remove-Interval", 20, 1, 100);
+    private final IntegerValue removeIntervalValue = new IntegerValue("Remove-Interval", 20, 1, 100, " tick");
     private final BoolValue debugValue = new BoolValue("Debug", false);
 
     private final List<Integer> ground = new ArrayList<>();

@@ -23,7 +23,7 @@ class SuperKnockback : Module() {
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
     private val modeValue = ListValue("Mode", arrayOf("ExtraPacket", "WTap", "Packet"), "ExtraPacket")
     //custom useless mode :V
-    private val delay = IntegerValue("Delay", 0, 0, 500)
+    private val delay = IntegerValue("Delay", 0, 0, 500, "ms")
 
     val timer = MSTimer()
 

@@ -32,8 +32,8 @@ import net.minecraft.util.Vec3
 @ModuleInfo(name = "ChestAura", spacedName = "Chest Aura", description = "Automatically opens chests around you.", category = ModuleCategory.WORLD)
 object ChestAura : Module() {
 
-    private val rangeValue = FloatValue("Range", 5F, 1F, 6F)
-    private val delayValue = IntegerValue("Delay", 100, 50, 200)
+    private val rangeValue = FloatValue("Range", 5F, 1F, 6F, "m")
+    private val delayValue = IntegerValue("Delay", 100, 50, 200, "ms")
     private val throughWallsValue = BoolValue("ThroughWalls", true)
     private val visualSwing = BoolValue("VisualSwing", true)
     private val chestValue = BlockValue("Chest", Block.getIdFromBlock(Blocks.chest))

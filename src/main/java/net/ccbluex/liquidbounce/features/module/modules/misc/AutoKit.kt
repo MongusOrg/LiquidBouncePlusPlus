@@ -35,7 +35,7 @@ class AutoKit : Module() {
     private val kitNameValue = TextValue("Kit-Name", "Armorer")
 
     // for easier selection
-    private val kitTimeOutValue = IntegerValue("Timeout-After", 40, 40, 100)
+    private val kitTimeOutValue = IntegerValue("Timeout-After", 40, 40, 100, " tick")
     private val editMode: BoolValue = object : BoolValue("Edit-Mode", false) {
         override fun onChanged(oldValue: Boolean, newValue: Boolean) {
             if (newValue)

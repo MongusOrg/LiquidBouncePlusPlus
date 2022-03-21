@@ -20,7 +20,7 @@ import kotlin.math.*
 @ModuleInfo(name = "Strafe", description = "Allows you to freely move in mid air.", category = ModuleCategory.MOVEMENT)
 class Strafe : Module() {
 
-    private var strengthValue = FloatValue("Strength", 0.5F, 0F, 1F)
+    private var strengthValue = FloatValue("Strength", 0.5F, 0F, 1F, "x")
     private var noMoveStopValue = BoolValue("NoMoveStop", false)
     private var onGroundStrafeValue = BoolValue("OnGroundStrafe", false)
     private var allDirectionsJumpValue = BoolValue("AllDirectionsJump", false)

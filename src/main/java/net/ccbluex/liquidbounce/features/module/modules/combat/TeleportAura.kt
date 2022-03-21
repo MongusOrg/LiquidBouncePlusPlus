@@ -40,8 +40,8 @@ class TeleportAura : Module() {
      */
     private val apsValue = IntegerValue("APS", 1, 1, 10)
     private val maxTargetsValue = IntegerValue("MaxTargets", 2, 1, 8)
-    private val rangeValue = IntegerValue("Range", 80, 10, 200)
-    private val maxMoveDistValue = FloatValue("MaxMoveSpeed", 8F, 2F, 15F)
+    private val rangeValue = IntegerValue("Range", 80, 10, 200, "m")
+    private val maxMoveDistValue = FloatValue("MaxMoveSpeed", 8F, 2F, 15F, "m")
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val noPureC03Value = BoolValue("NoStandingPackets", true)
     private val noKillAuraValue = BoolValue("NoKillAura", true)

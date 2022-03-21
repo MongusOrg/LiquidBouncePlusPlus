@@ -24,7 +24,7 @@ import net.minecraft.util.BlockPos;
 @ModuleInfo(name = "HighJump", spacedName = "High Jump", description = "Allows you to jump higher.", category = ModuleCategory.MOVEMENT)
 public class HighJump extends Module {
 
-    private final FloatValue heightValue = new FloatValue("Height", 2F, 1.1F, 10F);
+    private final FloatValue heightValue = new FloatValue("Height", 2F, 1.1F, 10F, "m");
     private final ListValue modeValue = new ListValue("Mode", new String[] {"Vanilla", "Damage", "AACv3", "DAC" ,"Mineplex", "MatrixWater"}, "Vanilla");
     private final BoolValue glassValue = new BoolValue("OnlyGlassPane", false);
 

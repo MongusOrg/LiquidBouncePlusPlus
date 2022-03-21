@@ -75,7 +75,7 @@ public final class ESP2D extends Module {
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
-   private final FloatValue fontScaleValue = new FloatValue("Font-scale", 0.5F, 0F, 1F);
+   private final FloatValue fontScaleValue = new FloatValue("Font-Scale", 0.5F, 0F, 1F, "x");
    private final BoolValue colorTeam = new BoolValue("Team", false);
    public static List collectedEntities = new ArrayList();
    private final IntBuffer viewport;

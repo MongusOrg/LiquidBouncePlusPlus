@@ -37,10 +37,10 @@ public class TargetMark extends Module {
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);
 	private final IntegerValue colorBlueValue = new IntegerValue("Blue", 255, 0, 255);
 	private final IntegerValue colorAlphaValue = new IntegerValue("Alpha", 255, 0, 255);
-	private final FloatValue jelloAlphaValue = new FloatValue("JelloEndAlphaPercent", 0.4F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
+	private final FloatValue jelloAlphaValue = new FloatValue("JelloEndAlphaPercent", 0.4F, 0F, 1F, "x", () -> { return modeValue.get().equalsIgnoreCase("jello"); });
 	private final FloatValue jelloWidthValue = new FloatValue("JelloCircleWidth", 3F, 0.01F, 5F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
-	private final FloatValue jelloGradientHeightValue = new FloatValue("JelloGradientHeight", 3F, 1F, 8F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
-	private final FloatValue jelloFadeSpeedValue = new FloatValue("JelloFadeSpeed", 0.1F, 0.01F, 0.5F, () -> { return modeValue.get().equalsIgnoreCase("jello"); });
+	private final FloatValue jelloGradientHeightValue = new FloatValue("JelloGradientHeight", 3F, 1F, 8F, "m", () -> { return modeValue.get().equalsIgnoreCase("jello"); });
+	private final FloatValue jelloFadeSpeedValue = new FloatValue("JelloFadeSpeed", 0.1F, 0.01F, 0.5F, "x", () -> { return modeValue.get().equalsIgnoreCase("jello"); });
 	private final FloatValue saturationValue = new FloatValue("Saturation", 1F, 0F, 1F);
 	private final FloatValue brightnessValue = new FloatValue("Brightness", 1F, 0F, 1F);
 	private final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);

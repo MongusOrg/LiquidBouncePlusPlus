@@ -24,7 +24,7 @@ class Regen : Module() {
     private val modeValue = ListValue("Mode", arrayOf("Vanilla", "Spartan"), "Vanilla")
     private val healthValue = IntegerValue("Health", 18, 0, 20)
     private val foodValue = IntegerValue("Food", 18, 0, 20)
-    private val speedValue = IntegerValue("Speed", 100, 1, 100)
+    private val speedValue = IntegerValue("Speed", 100, 1, 100, "x")
     private val noAirValue = BoolValue("NoAir", false)
     private val potionEffectValue = BoolValue("PotionEffect", false)
 

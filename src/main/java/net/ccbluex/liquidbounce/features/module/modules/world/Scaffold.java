@@ -89,7 +89,7 @@ public class Scaffold extends Module {
 
     // Delay
     private final BoolValue placeableDelay = new BoolValue("PlaceableDelay", false);
-    private final IntegerValue maxDelayValue = new IntegerValue("MaxDelay", 0, 0, 1000) {
+    private final IntegerValue maxDelayValue = new IntegerValue("MaxDelay", 0, 0, 1000, "ms") {
         @Override
         protected void onChanged(final Integer oldValue, final Integer newValue) {
             final int i = minDelayValue.get();
@@ -99,7 +99,7 @@ public class Scaffold extends Module {
         }
     };
 
-    private final IntegerValue minDelayValue = new IntegerValue("MinDelay", 0, 0, 1000) {
+    private final IntegerValue minDelayValue = new IntegerValue("MinDelay", 0, 0, 1000, "ms") {
         @Override
         protected void onChanged(final Integer oldValue, final Integer newValue) {
             final int i = maxDelayValue.get();
@@ -128,17 +128,17 @@ public class Scaffold extends Module {
     private final BoolValue eagleValue = new BoolValue("Eagle", false);
     private final BoolValue eagleSilentValue = new BoolValue("EagleSilent", false, () -> { return eagleValue.get(); });
     private final IntegerValue blocksToEagleValue = new IntegerValue("BlocksToEagle", 0, 0, 10, () -> { return eagleValue.get(); });
-    private final FloatValue eagleEdgeDistanceValue = new FloatValue("EagleEdgeDistance", 0.2F, 0F, 0.5F, () -> { return eagleValue.get(); });
+    private final FloatValue eagleEdgeDistanceValue = new FloatValue("EagleEdgeDistance", 0.2F, 0F, 0.5F, "m", () -> { return eagleValue.get(); });
 
     // Expand
-    private final IntegerValue expandLengthValue = new IntegerValue("ExpandLength", 5, 1, 6, () -> { return modeValue.get().equalsIgnoreCase("expand"); });
+    private final IntegerValue expandLengthValue = new IntegerValue("ExpandLength", 5, 1, 6, "blocks", () -> { return modeValue.get().equalsIgnoreCase("expand"); });
 
     // Rotations
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
     private final BoolValue noHitCheckValue = new BoolValue("NoHitCheck", false, () -> { return rotationsValue.get(); });
     public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Custom"}, "Normal"); // searching reason
 
-    private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, () -> { return rotationsValue.get(); }) {
+    private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, "°", () -> { return rotationsValue.get(); }) {
         @Override
         protected void onChanged(final Float oldValue, final Float newValue) {
             final float i = minTurnSpeed.get();
@@ -148,7 +148,7 @@ public class Scaffold extends Module {
         }
     };
 
-    private final FloatValue minTurnSpeed = new FloatValue("MinTurnSpeed", 180F, 0F, 180F, () -> { return rotationsValue.get(); }) {
+    private final FloatValue minTurnSpeed = new FloatValue("MinTurnSpeed", 180F, 0F, 180F, "°", () -> { return rotationsValue.get(); }) {
         @Override
         protected void onChanged(final Float oldValue, final Float newValue) {
             final float i = maxTurnSpeed.get();
@@ -158,10 +158,10 @@ public class Scaffold extends Module {
         }
     };
 
-    private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F, () -> { return rotationModeValue.get().toLowerCase().startsWith("static"); });
+    private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F, "°", () -> { return rotationModeValue.get().toLowerCase().startsWith("static"); });
 
-    private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F, () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
-    private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
+    private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
+    private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
 
     // Test Verus
     //public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
@@ -177,12 +177,12 @@ public class Scaffold extends Module {
     private final ListValue zitterModeValue = new ListValue("ZitterMode", new String[]{"Teleport", "Smooth"}, "Teleport", () -> { return !isTowerOnly() && zitterValue.get(); });
     private final FloatValue zitterSpeed = new FloatValue("ZitterSpeed", 0.13F, 0.1F, 0.3F, () -> { return !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("teleport"); });
     private final FloatValue zitterStrength = new FloatValue("ZitterStrength", 0.072F, 0.05F, 0.2F, () -> { return !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("teleport"); });
-    private final IntegerValue zitterDelay = new IntegerValue("ZitterDelay", 100, 0, 500, () -> { return !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("smooth"); });
+    private final IntegerValue zitterDelay = new IntegerValue("ZitterDelay", 100, 0, 500, "ms", () -> { return !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("smooth"); });
 
     // Game
     private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F, () -> { return !isTowerOnly(); });
-    public final FloatValue speedModifierValue = new FloatValue("SpeedModifier", 1F, 0, 2F);
-    public final FloatValue xzMultiplier = new FloatValue("XZ-Multiplier", 1F, 0F, 4F);
+    public final FloatValue speedModifierValue = new FloatValue("SpeedModifier", 1F, 0, 2F, "x");
+    public final FloatValue xzMultiplier = new FloatValue("XZ-Multiplier", 1F, 0F, 4F, "x");
     private final BoolValue customSpeedValue = new BoolValue("CustomSpeed", false);
     private final FloatValue customMoveSpeedValue = new FloatValue("CustomMoveSpeed", 0.3F, 0, 5F, () -> { return customSpeedValue.get(); });
 
@@ -204,7 +204,7 @@ public class Scaffold extends Module {
     private final IntegerValue alphaValue = new IntegerValue("Alpha", 120, 0, 255, () -> { return markValue.get(); });
 
     private final BoolValue blurValue = new BoolValue("Blur-Advanced", false, () -> { return counterDisplayValue.get().equalsIgnoreCase("advanced"); });
-    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 30F, () -> { return counterDisplayValue.get().equalsIgnoreCase("advanced"); });
+    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 30F, "x", () -> { return counterDisplayValue.get().equalsIgnoreCase("advanced"); });
 
     /**
      * MODULE

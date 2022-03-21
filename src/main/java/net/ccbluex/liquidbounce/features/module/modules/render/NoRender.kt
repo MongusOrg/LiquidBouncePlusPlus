@@ -30,7 +30,7 @@ class NoRender : Module() {
     private val animalsValue = BoolValue("Animals", true, { !allValue.get() })
     val armorStandValue = BoolValue("ArmorStand", true, { !allValue.get() })
     private val autoResetValue = BoolValue("AutoReset", true)
-    private val maxRenderRange = FloatValue("MaxRenderRange", 4F, 0F, 16F)
+    private val maxRenderRange = FloatValue("MaxRenderRange", 4F, 0F, 16F, "m")
 
     @EventTarget
     fun onMotion(event: MotionEvent) {

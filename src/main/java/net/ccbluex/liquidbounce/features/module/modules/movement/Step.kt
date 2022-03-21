@@ -34,10 +34,10 @@ class Step : Module() {
     ), "NCP")
 
     private val heightValue = FloatValue("Height", 1F, 0.6F, 10F)
-    private val timerValue = FloatValue("Timer", 1F, 0.3F, 10F)
+    private val timerValue = FloatValue("Timer", 1F, 0.3F, 10F, "x")
 
     private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.37F, 0.42F)
-    private val delayValue = IntegerValue("Delay", 0, 0, 500)
+    private val delayValue = IntegerValue("Delay", 0, 0, 500, "ms")
 
 
     /**

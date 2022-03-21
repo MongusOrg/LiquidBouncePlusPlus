@@ -51,7 +51,7 @@ class NameTags : Module() {
     private val borderColorGreenValue = IntegerValue("Border-G", 0, 0, 255)
     private val borderColorBlueValue = IntegerValue("Border-B", 0, 0, 255)
     private val borderColorAlphaValue = IntegerValue("Border-Alpha", 0, 0, 255)
-    private val scaleValue = FloatValue("Scale", 1F, 1F, 4F)
+    private val scaleValue = FloatValue("Scale", 1F, 1F, 4F, "x")
 
     private val inventoryBackground = ResourceLocation("textures/gui/container/inventory.png")
 

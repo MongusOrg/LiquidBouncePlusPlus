@@ -35,7 +35,7 @@ import kotlin.math.sin
 
 @ModuleInfo(name = "TargetStrafe", spacedName = "Target Strafe", description = "Strafe around your target. (Require Fly or Speed to be enabled)", category = ModuleCategory.MOVEMENT)
 class TargetStrafe : Module() {
-    public val radius = FloatValue("Radius", 2.0f, 0.1f, 4.0f)
+    public val radius = FloatValue("Radius", 2.0f, 0.1f, 4.0f, "m")
     private val render = BoolValue("Render", true)
     private val alwaysRender = BoolValue("Always-Render", true, { render.get() })
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "None")

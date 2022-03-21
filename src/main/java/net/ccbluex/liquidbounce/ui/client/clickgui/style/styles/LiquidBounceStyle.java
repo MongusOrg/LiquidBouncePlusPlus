@@ -154,7 +154,7 @@ public class LiquidBounceStyle extends Style {
                         }
                     }else if(value instanceof FloatValue) {
                         final FloatValue floatValue = (FloatValue) value;
-                        final String text = value.getName() + "§f: §c" + round(floatValue.get());
+                        final String text = value.getName() + "§f: §c" + round(floatValue.get()) + floatValue.getSuffix();
                         final float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
@@ -177,7 +177,7 @@ public class LiquidBounceStyle extends Style {
                         yPos += 22;
                     }else if(value instanceof IntegerValue) {
                         final IntegerValue integerValue = (IntegerValue) value;
-                        final String text = value.getName() + "§f: §c" + (value instanceof BlockValue ? BlockUtils.getBlockName(integerValue.get()) + " (" + integerValue.get() + ")" : integerValue.get());
+                        final String text = value.getName() + "§f: §c" + (value instanceof BlockValue ? BlockUtils.getBlockName(integerValue.get()) + " (" + integerValue.get() + ")" : (integerValue.get() + integerValue.getSuffix()));
                         final float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)

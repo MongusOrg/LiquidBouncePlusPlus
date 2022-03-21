@@ -23,7 +23,7 @@ import java.util.Random;
 @ModuleInfo(name = "Spammer", description = "Spams the chat with a given message.", category = ModuleCategory.MISC)
 public class Spammer extends Module {
 
-    private final IntegerValue maxDelayValue = new IntegerValue("MaxDelay", 1000, 0, 5000) {
+    private final IntegerValue maxDelayValue = new IntegerValue("MaxDelay", 1000, 0, 5000, "ms") {
         @Override
         protected void onChanged(final Integer oldValue, final Integer newValue) {
             final int minDelayValueObject = minDelayValue.get();
@@ -34,7 +34,7 @@ public class Spammer extends Module {
         }
     };
 
-    private final IntegerValue minDelayValue = new IntegerValue("MinDelay", 500, 0, 5000) {
+    private final IntegerValue minDelayValue = new IntegerValue("MinDelay", 500, 0, 5000, "ms") {
 
         @Override
         protected void onChanged(final Integer oldValue, final Integer newValue) {

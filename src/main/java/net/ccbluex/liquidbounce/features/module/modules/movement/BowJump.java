@@ -36,10 +36,10 @@ import java.awt.Color;
 @ModuleInfo(name = "BowJump", spacedName = "Bow Jump", description = "Allows you to jump further with auto bow shoot.", category = ModuleCategory.MOVEMENT)
 public class BowJump extends Module {
 
-    private final FloatValue boostValue = new FloatValue("Boost", 4.25F, 0F, 10F);
-    private final FloatValue heightValue = new FloatValue("Height", 0.42F, 0F, 10F);
-    private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F);
-    private final IntegerValue delayBeforeLaunch = new IntegerValue("DelayBeforeArrowLaunch", 1, 1, 20);
+    private final FloatValue boostValue = new FloatValue("Boost", 4.25F, 0F, 10F, "x");
+    private final FloatValue heightValue = new FloatValue("Height", 0.42F, 0F, 10F, "m");
+    private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F, "x");
+    private final IntegerValue delayBeforeLaunch = new IntegerValue("DelayBeforeArrowLaunch", 1, 1, 20, " tick");
 
     private final BoolValue autoDisable = new BoolValue("AutoDisable", true);
     private final BoolValue renderValue = new BoolValue("RenderStatus", true);

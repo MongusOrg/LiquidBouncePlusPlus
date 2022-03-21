@@ -31,7 +31,7 @@ class Rotations : Module() {
         if (modeValue.get().equals("head", true) && RotationUtils.serverRotation != null)
             mc.thePlayer.rotationYawHead = RotationUtils.serverRotation.yaw
     }
-    @EventTarget(priority = 1)
+    @EventTarget
     fun onPacket(event: PacketEvent) {
         if (modeValue.get().equals("head", true) || !shouldRotate() || mc.thePlayer == null)
             return

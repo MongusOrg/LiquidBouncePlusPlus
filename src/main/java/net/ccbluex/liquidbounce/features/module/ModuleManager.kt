@@ -43,7 +43,6 @@ class ModuleManager : Listenable {
         registerModules(
                 Patcher::class.java,
                 Performance::class.java,
-                //AutoPot::class.java,
                 AutoWeapon::class.java,
                 BowAimbot::class.java,
                 Aimbot::class.java,
@@ -180,7 +179,8 @@ class ModuleManager : Listenable {
                 AutoKit::class.java,
                 AntiBan::class.java,
                 NoInvClose::class.java,
-                TeleportAura::class.java
+                TeleportAura::class.java,
+                AutoPot::class.java
         )
 
         registerModule(Fucker)

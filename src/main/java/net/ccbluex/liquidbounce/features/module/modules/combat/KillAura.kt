@@ -88,22 +88,22 @@ class KillAura : Module() {
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
 
     // Range
-    val rangeValue = FloatValue("Range", 3.7f, 1f, 8f) //target hud thingy
-    private val throughWallsRangeValue = FloatValue("ThroughWallsRange", 3f, 0f, 8f)
-    private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f)
+    val rangeValue = FloatValue("Range", 3.7f, 1f, 8f, "m") //target hud thingy
+    private val throughWallsRangeValue = FloatValue("ThroughWallsRange", 3f, 0f, 8f, "m")
+    private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f, "m")
 
     // Modes
     private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin"), "BackTrack")
 
     // Spin Speed
-    private val maxSpinSpeed: FloatValue = object : FloatValue("MaxSpinSpeed", 180f, 0f, 180f, { rotations.get().equals("spin", true) }) {
+    private val maxSpinSpeed: FloatValue = object : FloatValue("MaxSpinSpeed", 180f, 0f, 180f, "°", { rotations.get().equals("spin", true) }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = minSpinSpeed.get()
             if (v > newValue) set(v)
         }
     }
 
-    private val minSpinSpeed: FloatValue = object : FloatValue("MinSpinSpeed", 180f, 0f, 180f, { rotations.get().equals("spin", true) }) {
+    private val minSpinSpeed: FloatValue = object : FloatValue("MinSpinSpeed", 180f, 0f, 180f, "°", { rotations.get().equals("spin", true) }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = maxSpinSpeed.get()
             if (v < newValue) set(v)
@@ -117,7 +117,7 @@ class KillAura : Module() {
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
 
     //reverted in old LB. idk why they removed it.
-    private val switchDelayValue = IntegerValue("SwitchDelay", 1000, 1, 2000, { targetModeValue.get().equals("switch", true) })
+    private val switchDelayValue = IntegerValue("SwitchDelay", 1000, 1, 2000, "ms", { targetModeValue.get().equals("switch", true) })
 
     // Bypass
     private val swingValue = BoolValue("Swing", true)
@@ -135,11 +135,11 @@ class KillAura : Module() {
     private val smartAutoBlockValue = BoolValue("SmartAutoBlock", false, { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() }) // thanks czech
     private val smartABItemValue = BoolValue("SmartAutoBlock-ItemCheck", true, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })
     private val smartABFacingValue = BoolValue("SmartAutoBlock-FacingCheck", true, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })
-    private val smartABRangeValue = FloatValue("SmartAB-Range", 3.5F, 3F, 8F, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })
+    private val smartABRangeValue = FloatValue("SmartAB-Range", 3.5F, 3F, 8F, "m", { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })
     private val smartABTolerationValue = FloatValue("SmartAB-Toleration", 0F, 0F, 2F, { !autoBlockModeValue.get().equals("None", true) && smartAutoBlockValue.get() && displayAutoBlockSettings.get() })
 
     private val afterTickPatchValue = BoolValue("AfterTickPatch", true, { autoBlockModeValue.get().equals("AfterTick", true) && displayAutoBlockSettings.get() })
-    private val blockRate = IntegerValue("BlockRate", 100, 1, 100, { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() })
+    private val blockRate = IntegerValue("BlockRate", 100, 1, 100, "%", { !autoBlockModeValue.get().equals("None", true) && displayAutoBlockSettings.get() })
 
     // Raycast
     private val raycastValue = BoolValue("RayCast", true)
@@ -150,14 +150,14 @@ class KillAura : Module() {
     private val aacValue = BoolValue("AAC", false)
 
     // Turn Speed
-    private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f) {
+    private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f, "°") {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = minTurnSpeed.get()
             if (v > newValue) set(v)
         }
     }
 
-    private val minTurnSpeed: FloatValue = object : FloatValue("MinTurnSpeed", 180f, 0f, 180f) {
+    private val minTurnSpeed: FloatValue = object : FloatValue("MinTurnSpeed", 180f, 0f, 180f, "°") {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = maxTurnSpeed.get()
             if (v < newValue) set(v)
@@ -188,13 +188,13 @@ class KillAura : Module() {
 
     private val randomCenterValue = BoolValue("RandomCenter", false)
     private val randomCenterNewValue = BoolValue("NewCalc", true, { randomCenterValue.get() })
-    private val minRand: FloatValue = object : FloatValue("MinMultiply", 0.8f, 0f, 2f, { randomCenterValue.get() }) {
+    private val minRand: FloatValue = object : FloatValue("MinMultiply", 0.8f, 0f, 2f, "x", { randomCenterValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = maxRand.get()
             if (v < newValue) set(v)
         }
     }
-    private val maxRand: FloatValue = object : FloatValue("MaxMultiply", 0.8f, 0f, 2f, { randomCenterValue.get() }) {
+    private val maxRand: FloatValue = object : FloatValue("MaxMultiply", 0.8f, 0f, 2f, "x", { randomCenterValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = minRand.get()
             if (v > newValue) set(v)
@@ -206,7 +206,7 @@ class KillAura : Module() {
     private val failRateValue = FloatValue("FailRate", 0f, 0f, 100f)
     private val fakeSwingValue = BoolValue("FakeSwing", true)
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
-    private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500, { noInventoryAttackValue.get() })
+    private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500, "ms", { noInventoryAttackValue.get() })
     private val limitedMultiTargetsValue = IntegerValue("LimitedMultiTargets", 0, 0, 50, { targetModeValue.get().equals("multi", true) })
 
     // idk

@@ -60,8 +60,8 @@ public class ESP extends Module {
 	public final BoolValue real2dOutline = new BoolValue("2D-Outline", true, () -> { return modeValue.get().equalsIgnoreCase("real2d"); });
 	public final FloatValue outlineWidth = new FloatValue("Outline-Width", 3F, 0.5F, 5F, () -> { return modeValue.get().equalsIgnoreCase("outline"); });
 	public final FloatValue wireframeWidth = new FloatValue("WireFrame-Width", 2F, 0.5F, 5F, () -> { return modeValue.get().equalsIgnoreCase("wireframe"); });
-	private final FloatValue shaderOutlineRadius = new FloatValue("ShaderOutline-Radius", 1.35F, 1F, 2F, () -> { return modeValue.get().equalsIgnoreCase("shaderoutline"); });
-	private final FloatValue shaderGlowRadius = new FloatValue("ShaderGlow-Radius", 2.3F, 2F, 3F, () -> { return modeValue.get().equalsIgnoreCase("shaderglow"); });
+	private final FloatValue shaderOutlineRadius = new FloatValue("ShaderOutline-Radius", 1.35F, 1F, 2F, "x", () -> { return modeValue.get().equalsIgnoreCase("shaderoutline"); });
+	private final FloatValue shaderGlowRadius = new FloatValue("ShaderGlow-Radius", 2.3F, 2F, 3F, "x", () -> { return modeValue.get().equalsIgnoreCase("shaderglow"); });
 	private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Health", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
 	private final IntegerValue colorRedValue = new IntegerValue("Red", 255, 0, 255);
 	private final IntegerValue colorGreenValue = new IntegerValue("Green", 255, 0, 255);

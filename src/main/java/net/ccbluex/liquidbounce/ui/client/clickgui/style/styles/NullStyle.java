@@ -156,7 +156,7 @@ public class NullStyle extends Style {
                         }
                     }else if(value instanceof FloatValue) {
                         FloatValue floatValue = (FloatValue) value;
-                        String text = value.getName() + "§f: §c" + round(floatValue.get());
+                        String text = value.getName() + "§f: §c" + round(floatValue.get()) + floatValue.getSuffix();
                         float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
@@ -179,7 +179,7 @@ public class NullStyle extends Style {
                         yPos += 22;
                     }else if(value instanceof IntegerValue) {
                         IntegerValue integerValue = (IntegerValue) value;
-                        String text = value.getName() + "§f: §c" + (value instanceof BlockValue ? BlockUtils.getBlockName(integerValue.get()) + " (" + integerValue.get() + ")" : integerValue.get());
+                        String text = value.getName() + "§f: §c" + (value instanceof BlockValue ? BlockUtils.getBlockName(integerValue.get()) + " (" + integerValue.get() + ")" : (integerValue.get() + integerValue.getSuffix()));
                         float textWidth = Fonts.font35.getStringWidth(text);
 
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
