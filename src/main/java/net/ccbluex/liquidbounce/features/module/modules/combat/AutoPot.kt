@@ -29,6 +29,7 @@ import net.minecraft.item.ItemPotion
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
 import net.minecraft.network.play.client.C09PacketHeldItemChange
 import net.minecraft.potion.Potion
+import net.minecraft.potion.PotionEffect
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -154,11 +155,12 @@ class AutoPot : Module() {
                 && ((mc.thePlayer.onGround && modeValue.get().equals("floor", true)) ||
                         (!mc.thePlayer.onGround && modeValue.get().equals("jump", true)))
                 && (!killAura.state || killAura.target == null) && !scaffold.state) {
-                val potionEffects = getPotionFromSlot(potIndex)
+                val potionEffects = getPotionFromSlot(potIndex).map { it.potionID }
                 if (potionEffects != null) {
-                    if (smartValue.get()) potionEffects!!.map { it.potionID }.filter { !throwQueue.contains(it) }.forEach {
-                        throwQueue.add(it)
-                    }
+                    if (smartValue.get()) 
+                        potionEffects!!.filter { !throwQueue.contains(it) }.forEach {
+                            throwQueue.add(it)
+                        }
 
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(potIndex - 36))
                     mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.heldItem))
@@ -187,7 +189,7 @@ class AutoPot : Module() {
         return -1
     }
 
-    private fun getPotionFromSlot(slotId: Int): List<Potion>? {
+    private fun getPotionFromSlot(slot: Int): List<PotionEffect>? {
         val stack = mc.thePlayer.inventoryContainer.getSlot(slot).stack
 
         if (stack == null || stack.item !is ItemPotion || !ItemPotion.isSplash(stack.itemDamage))
