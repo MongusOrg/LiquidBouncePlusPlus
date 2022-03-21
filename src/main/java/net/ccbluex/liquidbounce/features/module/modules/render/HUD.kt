@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.FontValue
+import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.ccbluex.liquidbounce.value.TextValue
 
@@ -38,6 +39,7 @@ class HUD : Module() {
     val chatAnimationSpeedValue = FloatValue("Chat-AnimationSpeed", 0.1F, 0.01F, 0.1F)
     private val toggleMessageValue = BoolValue("DisplayToggleMessage", true)
     private val toggleSoundValue = ListValue("ToggleSound", arrayOf("None", "Default", "Custom"), "Default")
+    private val toggleVolumeValue = IntegerValue("ToggleVolume", 100, 0, 100, { toggleSoundValue.get().equals("custom", true) })
     val containerBackground = BoolValue("Container-Background", false)
     val invEffectOffset = BoolValue("InvEffect-Offset", false)
     val domainValue = TextValue("Scoreboard-Domain", ".hud scoreboard-domain <your domain here>")
@@ -54,6 +56,7 @@ class HUD : Module() {
     fun onTick(event: TickEvent) {
         LiquidBounce.moduleManager.shouldNotify = toggleMessageValue.get()
         LiquidBounce.moduleManager.toggleSoundMode = toggleSoundValue.values.indexOf(toggleSoundValue.get())
+        LiquidBounce.moduleManager.toggleVolume = toggleVolumeValue.get().toFloat()
     }
 
     @EventTarget

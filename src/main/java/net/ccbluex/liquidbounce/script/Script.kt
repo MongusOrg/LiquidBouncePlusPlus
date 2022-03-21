@@ -17,14 +17,14 @@ import net.ccbluex.liquidbounce.script.api.global.Chat
 import net.ccbluex.liquidbounce.script.api.global.Item
 import net.ccbluex.liquidbounce.script.api.global.Setting
 import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.ccbluex.liquidbounce.utils.MinecraftInstance
+import net.minecraft.client.Minecraft
 import java.io.File
 import java.util.*
 import java.util.function.Function
 import javax.script.ScriptEngine
 import kotlin.collections.HashMap
 
-class Script(val scriptFile: File) : MinecraftInstance() {
+class Script(val scriptFile: File) {
 
     private val scriptEngine: ScriptEngine
     private val scriptText = scriptFile.readText()
@@ -49,7 +49,7 @@ class Script(val scriptFile: File) : MinecraftInstance() {
         scriptEngine.put("Item", StaticClass.forClass(Item::class.java))
 
         // Global instances
-        scriptEngine.put("mc", mc)
+        scriptEngine.put("mc", Minecraft.getMinecraft())
         scriptEngine.put("moduleManager", LiquidBounce.moduleManager)
         scriptEngine.put("commandManager", LiquidBounce.commandManager)
         scriptEngine.put("scriptManager", LiquidBounce.scriptManager)
@@ -144,7 +144,7 @@ class Script(val scriptFile: File) : MinecraftInstance() {
     private fun supportLegacyScripts() {
         if (getMagicComment("api_version") != "2") {
             ClientUtils.getLogger().info("[ScriptAPI] Running script '${scriptFile.name}' with legacy support.")
-            val legacyScript = LiquidBounce::class.java.getResource("/assets/minecraft/liquidbounce+/scriptapi/legacy.js").readText() //fuck
+            val legacyScript = LiquidBounce::class.java.getResource("/assets/minecraft/liquidbounce+/scriptapi/legacy.js").readText()
             scriptEngine.eval(legacyScript)
         }
     }
