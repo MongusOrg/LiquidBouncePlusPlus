@@ -155,10 +155,11 @@ class AutoPot : Module() {
                 && ((mc.thePlayer.onGround && modeValue.get().equals("floor", true)) ||
                         (!mc.thePlayer.onGround && modeValue.get().equals("jump", true)))
                 && (!killAura.state || killAura.target == null) && !scaffold.state) {
-                val potionEffects = getPotionFromSlot(potIndex).map { it.potionID }
+                val potionEffects = getPotionFromSlot(potIndex)
                 if (potionEffects != null) {
+                    val potionIds = potionEffects!!.map { it.potionID }
                     if (smartValue.get()) 
-                        potionEffects!!.filter { !throwQueue.contains(it) }.forEach {
+                        potionIds.filter { !throwQueue.contains(it) }.forEach {
                             throwQueue.add(it)
                         }
 
