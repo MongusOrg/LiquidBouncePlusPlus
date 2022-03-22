@@ -43,18 +43,16 @@ class Script(val scriptFile: File) {
         val engineFlags = getMagicComment("engine_flags")?.split(",")?.toTypedArray() ?: emptyArray()
         scriptEngine = NashornScriptEngineFactory().getScriptEngine(*engineFlags)
 
-        val bindings = scriptEngine.createBindings()
-
         // Global classes
         scriptEngine.put("Chat", StaticClass.forClass(Chat::class.java))
         scriptEngine.put("Setting", StaticClass.forClass(Setting::class.java))
         scriptEngine.put("Item", StaticClass.forClass(Item::class.java))
 
         // Global instances
-        bindings.put("mc", Minecraft.getMinecraft())
-        bindings.put("moduleManager", LiquidBounce.moduleManager)
-        bindings.put("commandManager", LiquidBounce.commandManager)
-        bindings.put("scriptManager", LiquidBounce.scriptManager)
+        scriptEngine.put("mc", Minecraft.getMinecraft())
+        scriptEngine.put("moduleManager", LiquidBounce.moduleManager)
+        scriptEngine.put("commandManager", LiquidBounce.commandManager)
+        scriptEngine.put("scriptManager", LiquidBounce.scriptManager)
 
         // Global functions
         scriptEngine.put("registerScript", RegisterScript())
