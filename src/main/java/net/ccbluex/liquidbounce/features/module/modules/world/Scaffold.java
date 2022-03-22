@@ -131,7 +131,7 @@ public class Scaffold extends Module {
     private final FloatValue eagleEdgeDistanceValue = new FloatValue("EagleEdgeDistance", 0.2F, 0F, 0.5F, "m", () -> { return eagleValue.get(); });
 
     // Expand
-    private final IntegerValue expandLengthValue = new IntegerValue("ExpandLength", 5, 1, 6, "blocks", () -> { return modeValue.get().equalsIgnoreCase("expand"); });
+    private final IntegerValue expandLengthValue = new IntegerValue("ExpandLength", 5, 1, 6, " blocks", () -> { return modeValue.get().equalsIgnoreCase("expand"); });
 
     // Rotations
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
