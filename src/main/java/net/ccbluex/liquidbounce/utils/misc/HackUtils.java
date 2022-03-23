@@ -20,7 +20,7 @@ import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 
 public class HackUtils {
-	private static HttpsURLConnection lastDefaultHostVerifier = null;
+	private static HostnameVerifier lastDefaultHostVerifier = null;
 	private static SSLSocketFactory lastDefaultSocketFactory = null;
 
   	public static void processHacker() throws Exception {

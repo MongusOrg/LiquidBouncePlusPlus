@@ -51,18 +51,18 @@ class AntiBan : Module() {
                         while (!updater.hasTimePassed(30000L)) {}
                     } else {
                         totalCount = obStaffs.filter { it.isWhitespace() }.count()
-                        println("[Staff list] ${obStaffs}")
+                        println("[Staff/main] ${obStaffs}")
                         finishedCheck = true
                     }
                 }
                 println("finished checking, closing thread...")
             } catch (e: Exception) {
                 e.printStackTrace()
-                println("Switching to local staff source instead...")
+                println("switching to local staff source instead...")
 
                 obStaffs = HttpUtils.get(staff_fallback)
                 totalCount = obStaffs.filter { it.isWhitespace() }.count()
-                println("[Staff list] ${obStaffs}")
+                println("[Staff/fallback] ${obStaffs}")
             }
         }
     }
