@@ -14,44 +14,49 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 
 public class HackUtils {
-  	public static void fixConnection(HttpsURLConnection connection) throws Exception {
-		/*
-	 	*  fix for
-	 	*    Exception in thread "main" javax.net.ssl.SSLHandshakeException:
-	 	*       sun.security.validator.ValidatorException:
-	 	*           PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException:
-	 	*               unable to find valid certification path to requested target
-	 	*/
+	private static HttpsURLConnection lastDefaultHostVerifier = null;
+	private static SSLSocketFactory lastDefaultSocketFactory = null;
+
+  	public static void processHacker() throws Exception {
+		lastDefaultHostVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
+		lastDefaultSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
+
 		TrustManager[] trustAllCerts = new TrustManager[] {
-	   	new X509TrustManager() {
-		  	public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-				return null;
-		  	}
+	   		new X509TrustManager() {
+			  	public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+					return null;
+		  		}
 
-		  	public void checkClientTrusted(X509Certificate[] certs, String authType) {  }
+		  		public void checkClientTrusted(X509Certificate[] certs, String authType) {  }
 
-		  	public void checkServerTrusted(X509Certificate[] certs, String authType) {  }
-
-	   	}
+		  		public void checkServerTrusted(X509Certificate[] certs, String authType) {  }
+	   		}
 		};
 		
 		SSLContext sc = SSLContext.getInstance("SSL");
 		sc.init(null, trustAllCerts, new java.security.SecureRandom());
-		connection.setSSLSocketFactory(sc.getSocketFactory());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		
+    	HostnameVerifier allHostsValid = new HostnameVerifier() {
+	        public boolean verify(String hostname, SSLSession session) {
+        	  	return true;
+        	}
+    	};
 
-		// Create all-trusting host name verifier
-		HostnameVerifier allHostsValid = new HostnameVerifier() {
-			public boolean verify(String hostname, SSLSession session) {
-		  	return true;
-			}
-		};
-
-		// Install the all-trusting host verifier
-		connection.setHostnameVerifier(allHostsValid);
+    	HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
   	}
+
+	public static void revertHacker() {
+		if (lastDefaultSocketFactory != null)
+			HttpsURLConnection.setDefaultSSLSocketFactory(lastDefaultSocketFactory);
+
+		if (lastDefaultHostVerifier != null)
+			HttpsURLConnection.setDefaultHostnameVerifier(lastDefaultHostVerifier);
+	}
 }

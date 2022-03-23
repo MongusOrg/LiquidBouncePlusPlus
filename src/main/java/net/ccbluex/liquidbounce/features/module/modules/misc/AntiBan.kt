@@ -27,14 +27,43 @@ class AntiBan : Module() {
     private var obStaffs = "_"
     private var detected = false
     private var totalCount = 0
+    private var finishedCheck = false
 
     private var updater = MSTimer()
 
+    private lateinit var staff_main: String
+    private lateinit var staff_fallback: String
+
+    init {
+        staff_main = "https://add-my-brain.exit-scammed.repl.co/staff/"
+        staff_fallback = "${LiquidBounce.CLIENT_CLOUD}/staffs.txt"
+    }
+
     override fun onInitialize() {
         thread {
-            obStaffs = HttpUtils.get("${LiquidBounce.CLIENT_CLOUD}/staffs.txt")
-            totalCount = obStaffs.filter { it.isWhitespace() }.count()
-            println("[Staff list] ${obStaffs}")
+            try {
+                while (!finishedCheck) {
+                    obStaffs = HttpUtils.getHttps(staff_main)
+
+                    if (obStaffs.contains("checking", true)) {
+                        println("am waiting for a while, the server is checking")
+                        updater.reset()
+                        while (!updater.hasTimePassed(30000L)) {}
+                    } else {
+                        totalCount = obStaffs.filter { it.isWhitespace() }.count()
+                        println("[Staff list] ${obStaffs}")
+                        finishedCheck = true
+                    }
+                }
+                println("finished checking, closing thread...")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("Switching to local staff source instead...")
+
+                obStaffs = HttpUtils.get(staff_fallback)
+                totalCount = obStaffs.filter { it.isWhitespace() }.count()
+                println("[Staff list] ${obStaffs}")
+            }
         }
     }
 
@@ -56,7 +85,7 @@ class AntiBan : Module() {
             val entity = mc.theWorld.getEntityByID(packet.entityId)
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through effect packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -66,7 +95,7 @@ class AntiBan : Module() {
             val entity = mc.theWorld.getEntityByID(packet.entityId)
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through teleportation packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -76,7 +105,7 @@ class AntiBan : Module() {
             val entity = mc.theWorld.getEntityByID(packet.entityId)
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through properties packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -86,7 +115,7 @@ class AntiBan : Module() {
             val entity = mc.theWorld.getEntityByID(packet.getEntityID())
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through animation packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -97,7 +126,7 @@ class AntiBan : Module() {
 
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through update packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -108,7 +137,7 @@ class AntiBan : Module() {
 
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through status packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -119,7 +148,7 @@ class AntiBan : Module() {
 
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through head packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }
@@ -130,7 +159,7 @@ class AntiBan : Module() {
 
             if (entity != null && (obStaffs.contains(entity.name) || obStaffs.contains(entity.displayName.unformattedText))) {
                 if (!detected) {
-                    LiquidBounce.hud.addNotification(Notification("Detected BlocksMC staff members. Leaving.", Notification.Type.ERROR))
+                    LiquidBounce.hud.addNotification(Notification("${entity.name} detected through nbt packet!", Notification.Type.ERROR))
                     mc.thePlayer.sendChatMessage("/leave")
                     detected = true
                 }

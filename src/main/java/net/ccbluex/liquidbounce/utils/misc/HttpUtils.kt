@@ -24,7 +24,6 @@ import javax.net.ssl.HttpsURLConnection
 object HttpUtils {
 
     private const val DEFAULT_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0"
-    private var lastHV: HostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier()
 
     init {
         HttpURLConnection.setFollowRedirects(true)
@@ -69,20 +68,10 @@ object HttpUtils {
     @Throws(IOException::class)
     @JvmStatic
     fun getHttps(url: String): String {
-        val httpConnection = URL(url).openConnection() as HttpsURLConnection
-
-        httpConnection.requestMethod = "GET"
-        httpConnection.connectTimeout = 2000
-        httpConnection.readTimeout = 10000
-
-        httpConnection.setRequestProperty("User-Agent", DEFAULT_AGENT)
-
-        httpConnection.instanceFollowRedirects = true
-        httpConnection.doOutput = true
-
-        HackUtils.fixConnection(httpConnection)
-
-        return httpConnection.inputStream.reader().readText()
+        HackUtils.processHacker()
+        val getter = get(url)
+        HackUtils.revertHacker()
+        return getter
     }
 
     @Throws(IOException::class)
