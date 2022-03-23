@@ -69,7 +69,16 @@ object HttpUtils {
     @JvmStatic
     fun getHttps(url: String): String {
         HackUtils.processHacker()
-        val getter = get(url)
+        val httpsConnection = URL(url).openConnection() as HttpsURLConnection
+
+        httpsConnection.requestMethod = "GET"
+        httpsConnection.connectTimeout = 10000
+        httpsConnection.readTimeout = 10000
+
+        httpsConnection.instanceFollowRedirects = true
+        httpsConnection.doOutput = true
+
+        val getter = httpsConnection.inputStream.reader().readText()
         HackUtils.revertHacker()
         return getter
     }
