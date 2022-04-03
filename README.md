@@ -1,5 +1,3 @@
-Due to hand injury and coming back to school, I won't be able to update the build for the following months (at least till summer). Thank you for understanding.
-
 # LiquidBounce+
 A free mixin-based injection hacked-client for Minecraft using Minecraft Forge.
 
