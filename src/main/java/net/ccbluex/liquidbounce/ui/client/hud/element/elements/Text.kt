@@ -222,9 +222,11 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
 
         if (blurValue.get()) {
             GL11.glTranslated(-renderX, -renderY, 0.0)
+            GL11.glScalef(1F, 1F, 1F)
             GL11.glPushMatrix()
-            BlurUtils.blurArea(floatX - 2F, floatY - 2F, floatX + fontRenderer.getStringWidth(displayText) + 2F, floatY + fontRenderer.FONT_HEIGHT, blurStrength.get())
+            BlurUtils.blurArea(floatX * scale - 2F * scale, floatY * scale - 2F * scale, (floatX + fontRenderer.getStringWidth(displayText) + 2F) * scale, (floatY + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
             GL11.glPopMatrix()
+            GL11.glScalef(scale, scale, scale)
             GL11.glTranslated(renderX, renderY, 0.0)
         }
 

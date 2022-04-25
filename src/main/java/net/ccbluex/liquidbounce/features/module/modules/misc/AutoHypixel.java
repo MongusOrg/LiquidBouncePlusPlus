@@ -44,6 +44,7 @@ public class AutoHypixel extends Module {
     private final BoolValue autoGGValue = new BoolValue("Auto-GG", true);
     private final TextValue ggMessageValue = new TextValue("GG-Message", "gOoD GaMe", () -> { return autoGGValue.get(); });
     private final BoolValue checkValue = new BoolValue("CheckGameMode", true);
+    private final BoolValue antiSnipeValue = new BoolValue("AntiSnipe", true);
     private final BoolValue renderValue = new BoolValue("Render", true);
     private final ListValue modeValue = new ListValue("Mode", new String[]{"Solo", "Teams", "Ranked", "Mega"}, "Solo");
     private final ListValue soloTeamsValue = new ListValue("Solo/Teams-Mode", new String[]{"Normal", "Insane"}, "Insane", () -> { return modeValue.get().equalsIgnoreCase("solo") || modeValue.get().equalsIgnoreCase("teams"); });
@@ -120,7 +121,12 @@ public class AutoHypixel extends Module {
     public void onPacket(PacketEvent event) {
         if (event.getPacket() instanceof S02PacketChat) {
             S02PacketChat chat = (S02PacketChat) event.getPacket();
-            if (chat.getChatComponent() != null)
+            if (chat.getChatComponent() != null) {
+                if (antiSnipeValue.get() && chat.getChatComponent().getUnformattedText().contains("Sending you to")) {
+                    event.cancelEvent();
+                    return;
+                }
+
                 for (String s : strings)
                     if (chat.getChatComponent().getUnformattedText().contains(s)) {
                         //LiquidBounce.hud.addNotification(new Notification("Attempting to send you to the next game in "+dFormat.format((double)delayValue.get()/1000D)+"s.",1000L));
@@ -128,6 +134,7 @@ public class AutoHypixel extends Module {
                         shouldChangeGame = true;
                         break;
                     }
+            }
         }
     }
     

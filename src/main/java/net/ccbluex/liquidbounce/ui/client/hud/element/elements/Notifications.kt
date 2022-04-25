@@ -29,6 +29,7 @@ import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.util.ResourceLocation
 import java.awt.Color
+import java.util.Date
 
 import org.lwjgl.opengl.GL11
 
@@ -36,16 +37,16 @@ import org.lwjgl.opengl.GL11
 class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
                     side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
 
-    private val smoothYTransition = BoolValue("Smooth-YTransition", true)
-    private val blurValue = BoolValue("Blur", false)
-    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
-    private val styleValue = ListValue("Style", arrayOf("Compact", "Full", "New"), "Compact")
-    private val newAnimValue = BoolValue("UseNewAnim", true)
-    private val animationSpeed = FloatValue("Anim-Speed", 0.5F, 0.01F, 1F, { newAnimValue.get() })
-    private val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
-    private val bgGreenValue = IntegerValue("Background-Red", 0, 0, 255)
-    private val bgBlueValue = IntegerValue("Background-Red", 0, 0, 255)
-    private val bgAlphaValue = IntegerValue("Background-Alpha", 190, 0, 255)
+    val smoothYTransition = BoolValue("Smooth-YTransition", true)
+    val blurValue = BoolValue("Blur", false)
+    val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
+    val styleValue = ListValue("Style", arrayOf("Compact", "Full", "New"), "Compact")
+    val newAnimValue = BoolValue("UseNewAnim", true)
+    val animationSpeed = FloatValue("Anim-Speed", 0.5F, 0.01F, 1F, { newAnimValue.get() })
+    val bgRedValue = IntegerValue("Background-Red", 0, 0, 255)
+    val bgGreenValue = IntegerValue("Background-Red", 0, 0, 255)
+    val bgBlueValue = IntegerValue("Background-Red", 0, 0, 255)
+    val bgAlphaValue = IntegerValue("Background-Alpha", 190, 0, 255)
 
     /**
      * Example notification for CustomHUD designer
@@ -56,7 +57,6 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
      * Draw element
      */
     override fun drawElement(): Border? {
-        val bgColor = Color(bgRedValue.get(), bgGreenValue.get(), bgBlueValue.get(), bgAlphaValue.get())
         var animationY = 30F
         val notifications = mutableListOf<Notification>()
 
@@ -65,34 +65,14 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         
         if (mc.currentScreen !is GuiHudDesigner || !notifications.isEmpty()) 
             for(i in notifications)
-                i.drawNotification(
-                animationY, 
-                smoothYTransition.get(), 
-                newAnimValue.get(), 
-                animationSpeed.get(), 
-                bgColor, side, 
-                styleValue.get(), 
-                blurValue.get(), 
-                blurStrength.get(), 
-                renderX.toFloat(), 
-                renderY.toFloat())
+                i.drawNotification(animationY, this)
                     .also { animationY += when (styleValue.get().toLowerCase()) {
                         "compact" -> 20
                         "full" -> 30
                         else -> 30
                     } * if (side.vertical == Side.Vertical.DOWN) 1F else -1F}
         else
-            exampleNotification.drawNotification(
-                animationY, 
-                smoothYTransition.get(), 
-                newAnimValue.get(), 
-                animationSpeed.get(), 
-                bgColor, side, 
-                styleValue.get(), 
-                blurValue.get(), 
-                blurStrength.get(), 
-                renderX.toFloat(), 
-                renderY.toFloat())
+            exampleNotification.drawNotification(animationY, this)
 
         if (mc.currentScreen is GuiHudDesigner) {
             exampleNotification.fadeState = Notification.FadeState.STAY
@@ -151,9 +131,21 @@ class Notification(message : String, type : Type, displayLength: Long) {
         IN,STAY,OUT,END
     }
 
-    fun drawNotification(animationY: Float, smooth: Boolean, newAnim: Boolean, animSpeed: Float, backgroundColor: Color, side: Side, style: String, blur: Boolean, strength: Float, originalX: Float, originalY: Float) {
+    fun drawNotification(animationY: Float, parent: Notifications) {
         val delta = RenderUtils.deltaTime
         val width = textLength.toFloat() + 8.0f
+
+        val smooth = parent.smoothYTransition.get()
+        val newAnim = parent.newAnimValue.get()
+        val animSpeed = parent.animationSpeed.get()
+        val side = parent.side
+        val style = parent.styleValue.get()
+        val blur = parent.blurValue.get()
+        val strength = parent.blurStrength.get()
+        val originalX = parent.renderX.toFloat()
+        val originalY = parent.renderY.toFloat()
+
+        val backgroundColor = Color(parent.bgRedValue.get(), parent.bgGreenValue.get(), parent.bgBlueValue.get(), parent.bgAlphaValue.get())
         
         if (smooth) {
             if (firstY == 19190.0F) {

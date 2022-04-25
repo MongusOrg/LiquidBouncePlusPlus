@@ -69,6 +69,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val delayValue = IntegerValue("Delay", 50, 0, 200)
 
     private val shadowValue = BoolValue("Shadow", false)
+    private val antiSnipeMatch = BoolValue("AntiSnipeMatch", true)
     private val changeDomain = BoolValue("ChangeDomain", false)
     private val showRedNumbersValue = BoolValue("ShowRedNumbers", false)
     private val fontValue = FontValue("Font", Fonts.minecraftFont)
@@ -78,6 +79,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val cachedDomains = arrayListOf<String>()
 
     private val garbageTimer = MSTimer()
+
+    private val hypickleRegex = Regex("[0-9][0-9]/[0-9][0-9]/[0-9][0-9]")
 
     override fun updateElement() {
         if (garbageTimer.hasTimePassed(30000L)) {
@@ -230,6 +233,9 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                         }
                     }*/
             }
+
+            if (antiSnipeMatch.get() && hypickleRegex.containsMatchIn(stripped))
+                name = ""
             
             if (changed) {
                 var stringZ = ""

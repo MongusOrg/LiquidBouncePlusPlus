@@ -14,6 +14,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.Side
 import net.ccbluex.liquidbounce.ui.font.AWTFontRenderer
 import net.ccbluex.liquidbounce.ui.font.Fonts
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.shader.shaders.RainbowShader
@@ -25,11 +26,14 @@ import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.input.Keyboard
+import org.lwjgl.opengl.GL11
 import java.awt.Color
 
 @ElementInfo(name = "TabGUI")
 class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
 
+    private val blurValue = BoolValue("Blur", true)
+    private val blurStrength = FloatValue("BlurStrength", 1F, 0F, 30F)
     private val rainbowX = FloatValue("Rainbow-X", -1000F, -2000F, 2000F)
     private val rainbowY = FloatValue("Rainbow-Y", -1000F, -2000F, 2000F)
     private val redValue = IntegerValue("Rectangle Red", 0, 0, 255)
@@ -104,6 +108,17 @@ class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
 
         // Draw
         val guiHeight = tabs.size * tabHeight.get()
+
+        if (blurValue.get()) {
+            GL11.glTranslated(-renderX, -renderY, 0.0)
+            GL11.glScalef(1F, 1F, 1F)
+            GL11.glPushMatrix()
+            BlurUtils.blurArea(renderX.toFloat() * scale + 1F * scale, renderY.toFloat() * scale, 
+                renderX.toFloat() * scale + width.get() * scale, renderY.toFloat() * scale + guiHeight * scale, blurStrength.get())
+            GL11.glPopMatrix()
+            GL11.glScalef(scale, scale, scale)
+            GL11.glTranslated(renderX, renderY, 0.0)
+        }
 
         RenderUtils.drawRect(1F, 0F, width.get(), guiHeight, backgroundColor.rgb)
 
@@ -180,7 +195,10 @@ class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
                         lowerCaseValue.get(),
                         fontRenderer,
                         borderRainbow.get().equals("Normal", ignoreCase = true),
-                        rectangleRainbowEnabled
+                        rectangleRainbowEnabled,
+                        blurValue.get(),
+                        blurStrength.get(),
+                        scale, renderX, renderY
                 )
             }
             y += tabHeight.get()
@@ -317,7 +335,8 @@ class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
         var textFade = 0F
 
         fun drawTab(x: Float, y: Float, color: Int, backgroundColor: Int, borderColor: Int, borderStrength: Float,
-                    lowerCase: Boolean, fontRenderer: FontRenderer, borderRainbow: Boolean, rectRainbow: Boolean) {
+                    lowerCase: Boolean, fontRenderer: FontRenderer, borderRainbow: Boolean, rectRainbow: Boolean,
+                    blur: Boolean, blurStrength: Float, scale: Float, renderX: Double, renderY: Double) {
             var maxWidth = 0
 
             for (module in modules)
@@ -333,6 +352,18 @@ class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
                     RenderUtils.drawBorder(x - 1F, y - 1F, x + menuWidth - 2F, y + menuHeight - 1F, borderStrength, borderColor)
                 }
             }
+
+            if (blur) {
+                GL11.glTranslated(-renderX, -renderY, 0.0)
+                GL11.glScalef(1F, 1F, 1F)
+                GL11.glPushMatrix()
+                BlurUtils.blurArea((renderX.toFloat() + x - 1F) * scale, (renderY.toFloat() + y - 1F) * scale, 
+                    (renderX.toFloat() + x + menuWidth - 2F) * scale, (renderY.toFloat() + y + menuHeight - 1F) * scale, blurStrength)
+                GL11.glPopMatrix()
+                GL11.glScalef(scale, scale, scale)
+                GL11.glTranslated(renderX, renderY, 0.0)
+            }
+
             RenderUtils.drawRect(x - 1F, y - 1F, x + menuWidth - 2F, y + menuHeight - 1F, backgroundColor)
 
 

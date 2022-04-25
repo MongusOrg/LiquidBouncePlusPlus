@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.features.module.modules.misc.AntiDesync;
 import net.ccbluex.liquidbounce.features.module.modules.movement.GuiMove;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
+import net.ccbluex.liquidbounce.features.module.modules.movement.LongJump;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sneak;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
@@ -224,16 +225,16 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
                 }
 
                 if (rotated) {
-                    this.lastReportedYaw = event.getYaw();
-                    this.lastReportedPitch = event.getPitch();
+                    this.lastReportedYaw = yaw;
+                    this.lastReportedPitch = pitch;
                 }
             }
 
-            event.setEventState(EventState.POST);
-            LiquidBounce.eventManager.callEvent(event);
-
             if (this.isCurrentViewEntity())
                 lastOnGround = event.getOnGround();
+
+            event.setEventState(EventState.POST);
+            LiquidBounce.eventManager.callEvent(event);
         } catch (final Exception e) {
             e.printStackTrace();
         }

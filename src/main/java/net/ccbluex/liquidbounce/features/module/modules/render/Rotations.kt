@@ -22,7 +22,7 @@ import net.minecraft.network.play.client.C03PacketPlayer
 @ModuleInfo(name = "Rotations", description = "Allows you to see server-sided head and body rotations.", category = ModuleCategory.RENDER)
 class Rotations : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("Chams", "Head", "Body"), "Chams")
+    val modeValue = ListValue("Mode", arrayOf("Head", "Body"), "Body")
 
     private var playerYaw: Float? = null
 

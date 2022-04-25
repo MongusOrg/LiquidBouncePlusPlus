@@ -28,12 +28,12 @@ object Remapper {
      */
     fun loadSrg() {
         // Check if srg file is already downloaded
-        if(!srgFile.exists()) {
+        if (srgFile.length() == 0L) {
             // Download srg file
             srgFile.createNewFile()
 
             ClientUtils.getLogger().info("[Remapper] Downloading $srgName srg...")
-            HttpUtils.download("https://cloud.liquidbounce.net/LiquidBounce/srgs/mcp-$srgName.srg", srgFile)
+            HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/mcp-$srgName.srg", srgFile)
             ClientUtils.getLogger().info("[Remapper] Downloaded $srgName.")
         }
 

@@ -66,10 +66,11 @@ open class HUD : MinecraftInstance() {
     fun render(designer: Boolean) {
         for (element in elements) {
             GL11.glPushMatrix()
-            GL11.glTranslated(element.renderX, element.renderY, 0.0)
 
             if (!element.info.disableScale && element.scale != 1F)
                 GL11.glScalef(element.scale, element.scale, element.scale)
+
+            GL11.glTranslated(element.renderX, element.renderY, 0.0)
 
             try {
                 element.border = element.drawElement()
