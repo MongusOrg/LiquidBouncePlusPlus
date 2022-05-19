@@ -12,14 +12,17 @@ import net.ccbluex.liquidbounce.features.command.CommandManager
 import net.ccbluex.liquidbounce.features.module.ModuleManager
 import net.ccbluex.liquidbounce.features.special.AntiForge
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof
+import net.ccbluex.liquidbounce.features.special.MacroManager
 import net.ccbluex.liquidbounce.file.FileManager
 import net.ccbluex.liquidbounce.script.ScriptManager
 import net.ccbluex.liquidbounce.script.remapper.Remapper.loadSrg
+import net.ccbluex.liquidbounce.tabs.*
 import net.ccbluex.liquidbounce.ui.client.altmanager.GuiAltManager
 import net.ccbluex.liquidbounce.ui.client.clickgui.ClickGui
 import net.ccbluex.liquidbounce.ui.client.hud.HUD
 import net.ccbluex.liquidbounce.ui.client.hud.HUD.Companion.createDefault
 import net.ccbluex.liquidbounce.ui.font.Fonts
+import net.ccbluex.liquidbounce.utils.ClassUtils.hasForge
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.InventoryHelper
 import net.ccbluex.liquidbounce.utils.InventoryUtils
@@ -34,7 +37,7 @@ object LiquidBounce {
 
     // Client information
     const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "240422"
+    const val CLIENT_VERSION = "Final"
     const val CLIENT_CREATOR = "CCBlueX, WYSI-Foundation"
     const val CLIENT_CLOUD = "https://wysi-foundation.github.io/LiquidCloud/LiquidBounce"
 
@@ -86,6 +89,7 @@ object LiquidBounce {
         eventManager.registerListener(InventoryHelper)
         eventManager.registerListener(PacketUtils())
         eventManager.registerListener(SessionUtils())
+        eventManager.registerListener(MacroManager)
 
         // Init Discord RPC
         clientRichPresence = ClientRichPresence()
@@ -126,6 +130,13 @@ object LiquidBounce {
         clickGui = ClickGui()
         fileManager.loadConfig(fileManager.clickGuiConfig)
 
+        // Tabs (Only for Forge!)
+        if (hasForge()) {
+            BlocksTab()
+            ExploitsTab()
+            HeadsTab()
+        }
+
         // Set HUD
         hud = createDefault()
         fileManager.loadConfig(fileManager.hudConfig)
@@ -134,7 +145,7 @@ object LiquidBounce {
         //ClientUtils.disableFastRender()
 
         // Load generators
-        GuiAltManager.loadGenerators()
+        GuiAltManager.loadActiveGenerators()
 
         // Setup Discord RPC
         if (clientRichPresence.showRichPresenceValue) {

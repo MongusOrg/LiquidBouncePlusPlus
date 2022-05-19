@@ -37,10 +37,14 @@ class HUD : Module() {
     val chatCombineValue = BoolValue("ChatCombine", true)
     val chatAnimationValue = BoolValue("ChatAnimation", true)
     val chatAnimationSpeedValue = FloatValue("Chat-AnimationSpeed", 0.1F, 0.01F, 0.1F)
-    private val toggleMessageValue = BoolValue("DisplayToggleMessage", true)
+
+    private val toggleMessageValue = BoolValue("DisplayToggleMessage", false)
     private val toggleSoundValue = ListValue("ToggleSound", arrayOf("None", "Default", "Custom"), "Default")
     private val toggleVolumeValue = IntegerValue("ToggleVolume", 100, 0, 100, { toggleSoundValue.get().equals("custom", true) })
+    val guiButtonStyle = ListValue("Button-Style", arrayOf("Minecraft", "LiquidBounce", "Rounded", "LiquidBounce+"), "Minecraft")
+
     val containerBackground = BoolValue("Container-Background", false)
+    val containerButton = ListValue("Container-Button", arrayOf("TopLeft", "TopRight", "Off"), "TopLeft")
     val invEffectOffset = BoolValue("InvEffect-Offset", false)
     val domainValue = TextValue("Scoreboard-Domain", ".hud scoreboard-domain <your domain here>")
 
@@ -54,9 +58,14 @@ class HUD : Module() {
 
     @EventTarget(ignoreCondition = true)
     fun onTick(event: TickEvent) {
-        LiquidBounce.moduleManager.shouldNotify = toggleMessageValue.get()
-        LiquidBounce.moduleManager.toggleSoundMode = toggleSoundValue.values.indexOf(toggleSoundValue.get())
-        LiquidBounce.moduleManager.toggleVolume = toggleVolumeValue.get().toFloat()
+        if (LiquidBounce.moduleManager.shouldNotify != toggleMessageValue.get())
+            LiquidBounce.moduleManager.shouldNotify = toggleMessageValue.get()
+
+        if (LiquidBounce.moduleManager.toggleSoundMode != toggleSoundValue.values.indexOf(toggleSoundValue.get()))
+            LiquidBounce.moduleManager.toggleSoundMode = toggleSoundValue.values.indexOf(toggleSoundValue.get())
+
+        if (LiquidBounce.moduleManager.toggleVolume != toggleVolumeValue.get().toFloat())
+            LiquidBounce.moduleManager.toggleVolume = toggleVolumeValue.get().toFloat()
     }
 
     @EventTarget

@@ -11,7 +11,6 @@ import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
-@SideOnly(Side.CLIENT)
 class CommandManager {
     val commands = mutableListOf<Command>()
     var latestAutoComplete: Array<String> = emptyArray()
@@ -27,7 +26,9 @@ class CommandManager {
         registerCommand(HClipCommand())
         registerCommand(HelpCommand())
         registerCommand(SayCommand())
+        registerCommand(MacroCommand())
         registerCommand(FriendCommand())
+        registerCommand(AutoSettingsCommand())
         registerCommand(LocalAutoSettingsCommand())
         registerCommand(ServerInfoCommand())
         registerCommand(ToggleCommand())
@@ -37,7 +38,6 @@ class CommandManager {
         registerCommand(PanicCommand())
         registerCommand(PingCommand())
         registerCommand(ReloadCommand())
-        registerCommand(LoginCommand())
         registerCommand(ScriptManagerCommand())
         registerCommand(PrefixCommand())
         registerCommand(HideCommand())

@@ -13,12 +13,17 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EntityMovementEvent;
+import net.ccbluex.liquidbounce.features.module.modules.misc.AntiExploit;
 import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
 import net.ccbluex.liquidbounce.features.special.AntiForge;
+import net.ccbluex.liquidbounce.ui.client.clickgui.ClickGui;
+import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.minecraft.client.ClientBrandRetriever;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiDownloadTerrain;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -43,6 +48,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -104,24 +111,21 @@ public abstract class MixinNetHandlerPlayClient {
             callbackInfo.cancel();
         }
     }
-/*
-    @Inject(method = "handleDisconnect", at = @At("HEAD")) 
-    public void handleDisconnect(S40PacketDisconnect packetIn, CallbackInfo callbackInfo) {
-        if (wdl.WDL.downloading) {
-			wdl.WDL.stopDownload();
 
-			try {
-				Thread.sleep(3000L);
-			} catch (Exception var3) {
-				;
-			}
-		}
+    @Inject(method = "handleCloseWindow", at = @At("HEAD"), cancellable = true)
+    private void handleCloseWindow(final S2EPacketCloseWindow packetIn, final CallbackInfo callbackInfo) {
+        if (this.gameController.currentScreen instanceof ClickGui 
+            || this.gameController.currentScreen instanceof GuiHudDesigner 
+            || this.gameController.currentScreen instanceof GuiChat)
+            callbackInfo.cancel();
     }
-*/
+
     @Inject(method = "handleResourcePack", at = @At("HEAD"), cancellable = true)
     private void handleResourcePack(final S48PacketResourcePackSend p_handleResourcePack_1_, final CallbackInfo callbackInfo) {
         final String url = p_handleResourcePack_1_.getURL();
         final String hash = p_handleResourcePack_1_.getHash();
+
+        final AntiExploit antiExploit = (AntiExploit) LiquidBounce.moduleManager.getModule(AntiExploit.class);
 
         try {
             final String scheme = new URI(url).getScheme();
@@ -141,11 +145,16 @@ public abstract class MixinNetHandlerPlayClient {
                 } else {
                     netManager.sendPacket(new C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD));
                 }
+                
+                if (antiExploit.getState() && antiExploit.getNotifyValue().get()) {
+                    ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §6Resourcepack exploit detected.");
+                    ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §7Exploit target directory: §r" + url);
 
-                ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §6Resourcepack exploit detected.");
-                ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §7Exploit target directory: §r" + url);
-
-                throw new IllegalStateException("Invalid levelstorage resourcepack path");
+                    throw new IllegalStateException("Invalid levelstorage resourcepack path");
+                } else {
+                    callbackInfo.cancel(); // despite not having it enabled we still prevents anything from illegally checking files in your computer.
+                }
+                
             }
         } catch (final URISyntaxException e) {
             ClientUtils.getLogger().error("Failed to handle resource pack", e);
@@ -194,6 +203,15 @@ public abstract class MixinNetHandlerPlayClient {
                 LiquidBounce.hud.handleDamage((EntityPlayer) entity);
             }
         }
+    }
+
+    @Redirect(
+        method = "handleUpdateSign",
+        slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=Unable to locate sign at ", ordinal = 0)),
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/EntityPlayerSP;addChatMessage(Lnet/minecraft/util/IChatComponent;)V", ordinal = 0)
+    )
+    private void removeDebugMessage(EntityPlayerSP instance, IChatComponent component) {
+        
     }
 
     @Inject(method={"handleAnimation"}, at={@At(value="INVOKE", target="Lnet/minecraft/network/PacketThreadUtil;checkThreadAndEnqueue(Lnet/minecraft/network/Packet;Lnet/minecraft/network/INetHandler;Lnet/minecraft/util/IThreadListener;)V", shift=At.Shift.AFTER)}, cancellable=true)
@@ -261,37 +279,4 @@ public abstract class MixinNetHandlerPlayClient {
             callbackInfo.cancel();
         }
     }
-/*
-    @Inject(method = "onDisconnect", at = @At("HEAD")) 
-    public void injectDisconnect(IChatComponent reason, CallbackInfo callbackInfo) {
-        if (wdl.WDL.downloading) {
-			wdl.WDL.stopDownload();
-
-			try {
-				Thread.sleep(3000L);
-			} catch (Exception var3) {
-				;
-			}
-		}
-    }
-*//*
-    @Inject(method = "handleBlockAction", at = @At("RETURN"))
-    public void handleBlockAction(S24PacketBlockAction packetIn, CallbackInfo callbackInfo) {
-        wdl.WDLHooks.onNHPCHandleBlockAction((NetHandlerPlayClient) (Object) this, packetIn);
-    }
-
-    @Inject(method = "handleMaps", at = @At("RETURN"))
-    public void handleMaps(S34PacketMaps packetIn, CallbackInfo callbackInfo) {
-        wdl.WDLHooks.onNHPCHandleMaps((NetHandlerPlayClient) (Object) this, packetIn);
-    }
-
-    @Inject(method = "handleCustomPayload", at = @At("TAIL"))
-    public void handleCustomPayload(S3FPacketCustomPayload packetIn, CallbackInfo callbackInfo) {
-        wdl.WDLHooks.onNHPCHandleCustomPayload((NetHandlerPlayClient) (Object) this, packetIn);
-    }
-
-    @Inject(method = "handleChat", at = @At("RETURN"))
-    public void handleChat(S02PacketChat packetIn, CallbackInfo callbackInfo) {
-        wdl.WDLHooks.onNHPCHandleChat((NetHandlerPlayClient) (Object) this, packetIn);
-    }*/
 }

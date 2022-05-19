@@ -152,12 +152,12 @@ class InvManager : Module() {
         if (hotbarValue.get() && !spoofInventory && mc.currentScreen !is GuiInventory) {
             for (index in 0..8) {
                 val bestItem = mc.thePlayer.inventory.getStackInSlot(index) ?: continue
-                if (bestItem.item != null && garbageQueue.containsKey(bestItem)) {
+                if (bestItem.item != null && garbageQueue.containsValue(bestItem)) {
                     if (index != mc.thePlayer.inventory.currentItem) mc.netHandler.addToSendQueue(C09PacketHeldItemChange(index))
                     mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.DROP_ALL_ITEMS, BlockPos.ORIGIN, EnumFacing.DOWN))
                     if (index != mc.thePlayer.inventory.currentItem) mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
 
-                    garbageQueue.remove(bestItem)
+                    garbageQueue.remove(index, bestItem)
                 }
             }
         }

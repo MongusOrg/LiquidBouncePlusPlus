@@ -43,8 +43,6 @@ import net.minecraft.network.play.client.C0APacketAnimation;
 import net.minecraft.network.play.client.C0BPacketEntityAction;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -58,7 +56,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(EntityPlayerSP.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
 
     @Shadow
@@ -121,7 +118,7 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
      */
     @Overwrite
     protected boolean isCurrentViewEntity() {
-        return (mc.getRenderViewEntity()!=null&&mc.getRenderViewEntity().equals(this)) || (LiquidBounce.moduleManager!=null&&LiquidBounce.moduleManager.getModule(Fly.class).getState());
+        return (mc.getRenderViewEntity()!=null && mc.getRenderViewEntity().equals(this)) || (LiquidBounce.moduleManager != null && LiquidBounce.moduleManager.getModule(Fly.class).getState());
     }
 
     @Shadow
@@ -237,17 +234,6 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             LiquidBounce.eventManager.callEvent(event);
         } catch (final Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    @Inject(method = "swingItem", at = @At("HEAD"), cancellable = true)
-    private void swingItem(CallbackInfo callbackInfo) {
-
-        if(Animations.swingMethod.get().equalsIgnoreCase("Cancel")){
-            callbackInfo.cancel();
-
-            if(!Animations.swingCancelMode.get().equalsIgnoreCase("ServerSide"))
-                this.sendQueue.addToSendQueue(new C0APacketAnimation());
         }
     }
 

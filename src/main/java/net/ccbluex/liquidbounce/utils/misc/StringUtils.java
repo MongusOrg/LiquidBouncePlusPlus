@@ -5,13 +5,10 @@
  */
 package net.ccbluex.liquidbounce.utils.misc;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
 import java.util.HashMap;
 
-@SideOnly(Side.CLIENT)
 public final class StringUtils {
 
     private static HashMap<String,String> stringCache = new HashMap<>();

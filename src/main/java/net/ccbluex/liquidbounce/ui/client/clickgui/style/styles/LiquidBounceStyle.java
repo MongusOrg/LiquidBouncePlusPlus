@@ -23,15 +23,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
 public class LiquidBounceStyle extends Style {
 
     private boolean mouseDown;
@@ -166,6 +163,14 @@ public class LiquidBounceStyle extends Style {
                         RenderUtils.drawRect(8 + sliderValue, yPos + 15, sliderValue + 11, yPos + 21, guiColor);
 
                         if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() - 4 && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
+                            int dWheel = Mouse.getDWheel();
+                            if (dWheel != 0) {
+                                if (dWheel > 0)
+                                    floatValue.set(Math.min(floatValue.get() + 0.01F, floatValue.getMaximum()));
+                                if (dWheel < 0)
+                                    floatValue.set(Math.max(floatValue.get() - 0.01F, floatValue.getMinimum()));
+                            }
+                            
                             if(Mouse.isButtonDown(0)) {
                                 double i = MathHelper.clamp_double((mouseX - moduleElement.getX() - moduleElement.getWidth() - 8) / (moduleElement.getSettingsWidth() - 12), 0, 1);
                                 floatValue.set(round((float) (floatValue.getMinimum() + (floatValue.getMaximum() - floatValue.getMinimum()) * i)).floatValue());
@@ -189,6 +194,14 @@ public class LiquidBounceStyle extends Style {
                         RenderUtils.drawRect(8 + sliderValue, yPos + 15, sliderValue + 11, yPos + 21, guiColor);
 
                         if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
+                            int dWheel = Mouse.getDWheel();
+                            if (dWheel != 0) {
+                                if (dWheel > 0)
+                                    integerValue.set(Math.min(integerValue.get() + 1, integerValue.getMaximum()));
+                                if (dWheel < 0)
+                                    integerValue.set(Math.max(integerValue.get() - 1, integerValue.getMinimum()));
+                            }
+
                             if(Mouse.isButtonDown(0)) {
                                 double i = MathHelper.clamp_double((mouseX - moduleElement.getX() - moduleElement.getWidth() - 8) / (moduleElement.getSettingsWidth() - 12), 0, 1);
                                 integerValue.set((int) (integerValue.getMinimum() + (integerValue.getMaximum() - integerValue.getMinimum()) * i));

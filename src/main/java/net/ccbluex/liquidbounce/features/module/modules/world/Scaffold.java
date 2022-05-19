@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.features.module.modules.render.BlockOverlay;
+import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Speed;
 import net.ccbluex.liquidbounce.injection.access.StaticStorage;
@@ -131,12 +132,14 @@ public class Scaffold extends Module {
     private final FloatValue eagleEdgeDistanceValue = new FloatValue("EagleEdgeDistance", 0.2F, 0F, 0.5F, "m", () -> { return eagleValue.get(); });
 
     // Expand
+    private final BoolValue omniDirectionalExpand = new BoolValue("OmniDirectionalExpand", true, () -> { return modeValue.get().equalsIgnoreCase("expand"); });
     private final IntegerValue expandLengthValue = new IntegerValue("ExpandLength", 5, 1, 6, " blocks", () -> { return modeValue.get().equalsIgnoreCase("expand"); });
 
     // Rotations
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
     private final BoolValue noHitCheckValue = new BoolValue("NoHitCheck", false, () -> { return rotationsValue.get(); });
     public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Custom"}, "Normal"); // searching reason
+    public final ListValue rotationLookupValue = new ListValue("RotationLookup", new String[]{"Normal", "AAC", "Same"}, "Normal");
 
     private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, "°", () -> { return rotationsValue.get(); }) {
         @Override
@@ -162,9 +165,7 @@ public class Scaffold extends Module {
 
     private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
     private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
-
-    // Test Verus
-    //public final BoolValue verusScaffold = new BoolValue("VerusFix", false);
+    private final BoolValue keepRotOnJumpValue = new BoolValue("KeepRotOnJump", true, () -> (!rotationModeValue.get().equalsIgnoreCase("normal") && !rotationModeValue.get().equalsIgnoreCase("aac")));
 
     private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false, () -> { return rotationsValue.get(); });
     private final IntegerValue keepLengthValue = new IntegerValue("KeepRotationLength", 0, 0, 20, () -> { return rotationsValue.get() && !keepRotationValue.get(); });
@@ -219,6 +220,7 @@ public class Scaffold extends Module {
 
     // Rotation lock
     private Rotation lockRotation;
+    private Rotation lookupRotation;
 
     // Auto block slot
     private int slot, lastSlot;
@@ -512,8 +514,9 @@ public class Scaffold extends Module {
         }
 
         //Auto Jump thingy
-        if (shouldGoDown) launchY = (int) mc.thePlayer.posY - 1;
-        else if (!sameYValue.get()) {
+        if (shouldGoDown) {
+            launchY = (int) mc.thePlayer.posY - 1;
+        } else if (!sameYValue.get()) {
             if ((!autoJumpValue.get() && !(smartSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState())) || GameSettings.isKeyDown(mc.gameSettings.keyBindJump) || mc.thePlayer.posY < launchY) launchY = (int) mc.thePlayer.posY;
             if (autoJumpValue.get() && !LiquidBounce.moduleManager.getModule(Speed.class).getState() && MovementUtils.isMoving() && mc.thePlayer.onGround && mc.thePlayer.jumpTicks == 0) {
                 mc.thePlayer.jump();
@@ -540,10 +543,10 @@ public class Scaffold extends Module {
     @EventTarget
     //took it from applyrotationstrafe XD. staticyaw comes from bestnub.
     public void onStrafe(final StrafeEvent event) {
-        if (lockRotation != null && rotationStrafeValue.get()) {
-            final int dif = (int) ((MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw - lockRotation.getYaw() - 23.5F - 135) + 180) / 45);
+        if (lookupRotation != null && rotationStrafeValue.get()) {
+            final int dif = (int) ((MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw - lookupRotation.getYaw() - 23.5F - 135) + 180) / 45);
 
-            final float yaw = lockRotation.getYaw();
+            final float yaw = lookupRotation.getYaw();
             final float strafe = event.getStrafe();
             final float forward = event.getForward();
             final float friction = event.getFriction();
@@ -658,6 +661,13 @@ public class Scaffold extends Module {
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
+        // i think patches should be here instead
+        for (int i = 0; i < 8; i++) {
+			if (mc.thePlayer.inventory.mainInventory[i] != null
+					&& mc.thePlayer.inventory.mainInventory[i].stackSize <= 0)
+				mc.thePlayer.inventory.mainInventory[i] = null;
+		}
+
         if ((!rotationsValue.get() || noHitCheckValue.get() || faceBlock) && placeModeValue.get().equalsIgnoreCase(eventState.getStateName()) && !towerActivation()) {
             place(false);
         }
@@ -726,13 +736,12 @@ public class Scaffold extends Module {
             return;
 
         if (expand) {
-            for (int i = 0; i < expandLengthValue.get(); i++) {
-                if (search(blockPosition.add(
-                        mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0,
-                        0,
-                        mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0
-                ), false, false))
+            double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
+            int x = omniDirectionalExpand.get() ? (int) Math.round(-Math.sin(yaw)) : mc.thePlayer.getHorizontalFacing().getDirectionVec().getX();
+            int z = omniDirectionalExpand.get() ? (int) Math.round(Math.cos(yaw)) : mc.thePlayer.getHorizontalFacing().getDirectionVec().getZ();
 
+            for (int i = 0; i < expandLengthValue.get(); i++) {
+                if (search(blockPosition.add(x * i, 0, z * i), false, false))
                     return;
             }
         } else if (searchValue.get()) {
@@ -775,13 +784,12 @@ public class Scaffold extends Module {
                 mc.thePlayer.inventory.currentItem = blockSlot - 36;
                 mc.playerController.updateController();
             }
-
         }
 
         // blacklist check
         if (itemStack != null && itemStack.getItem() != null && itemStack.getItem() instanceof ItemBlock) {
             Block block = ((ItemBlock)itemStack.getItem()).getBlock();
-            if (InventoryUtils.BLOCK_BLACKLIST.contains(block) || !block.isFullCube()) return;
+            if (InventoryUtils.BLOCK_BLACKLIST.contains(block) || !block.isFullCube() || itemStack.stackSize <= 0) return;
         }
 
         if (mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, itemStack, (towerActive ? towerPlace : targetPlace).getBlockPos(),
@@ -834,6 +842,7 @@ public class Scaffold extends Module {
             mc.gameSettings.keyBindLeft.pressed = false;
 
         lockRotation = null;
+        lookupRotation = null;
         mc.timer.timerSpeed = 1F;
         shouldGoDown = false;
         faceBlock = false;
@@ -970,8 +979,20 @@ public class Scaffold extends Module {
         if (!markValue.get())
             return;
 
+        double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
+            int x = omniDirectionalExpand.get() ? (int) Math.round(-Math.sin(yaw)) : mc.thePlayer.getHorizontalFacing().getDirectionVec().getX();
+            int z = omniDirectionalExpand.get() ? (int) Math.round(Math.cos(yaw)) : mc.thePlayer.getHorizontalFacing().getDirectionVec().getZ();
+
         for (int i = 0; i < ((modeValue.get().equalsIgnoreCase("Expand") && !towerActivation()) ? expandLengthValue.get() + 1 : 2); i++) {
-            final BlockPos blockPos = new BlockPos(mc.thePlayer.posX + (mc.thePlayer.getHorizontalFacing() == EnumFacing.WEST ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.EAST ? i : 0), !towerActivation() && (sameYValue.get() || ((autoJumpValue.get() || (smartSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState())) && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) && launchY <= mc.thePlayer.posY ? launchY - 1 : (mc.thePlayer.posY - (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? 0D : 1.0D) - (shouldGoDown ? 1D : 0)), mc.thePlayer.posZ + (mc.thePlayer.getHorizontalFacing() == EnumFacing.NORTH ? -i : mc.thePlayer.getHorizontalFacing() == EnumFacing.SOUTH ? i : 0));
+            final BlockPos blockPos = new BlockPos(
+                mc.thePlayer.posX + x * i, 
+                (!towerActivation() 
+                    && (sameYValue.get() || 
+                        ((autoJumpValue.get() || 
+                            (smartSpeedValue.get() && LiquidBounce.moduleManager.getModule(Speed.class).getState())) 
+                            && !GameSettings.isKeyDown(mc.gameSettings.keyBindJump))) 
+                && launchY <= mc.thePlayer.posY) ? launchY - 1 : (mc.thePlayer.posY - (mc.thePlayer.posY == (int) mc.thePlayer.posY + 0.5D ? 0D : 1.0D) - (shouldGoDown ? 1D : 0)), 
+                mc.thePlayer.posZ + z * i);
             final PlaceInfo placeInfo = PlaceInfo.get(blockPos);
 
             if (BlockUtils.isReplaceable(blockPos) && placeInfo != null) {
@@ -999,7 +1020,9 @@ public class Scaffold extends Module {
             return false;
 
 
-        final boolean staticYawMode = rotationModeValue.get().equalsIgnoreCase("AAC") || (rotationModeValue.get().contains("Static") && !rotationModeValue.get().equalsIgnoreCase("static3"));
+        final boolean staticYawMode = rotationLookupValue.get().equalsIgnoreCase("AAC") 
+                || (rotationLookupValue.get().equalsIgnoreCase("same") && (rotationModeValue.get().equalsIgnoreCase("AAC") 
+                    || (rotationModeValue.get().contains("Static") && !rotationModeValue.get().equalsIgnoreCase("static3"))));
 
         final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY + mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ);
 
@@ -1036,16 +1059,18 @@ public class Scaffold extends Module {
                                     MathHelper.wrapAngleTo180_float((float) -Math.toDegrees(Math.atan2(diffY, diffXZ)))
                             );
 
-                            if (rotationModeValue.get().equalsIgnoreCase("static") && !mc.gameSettings.keyBindJump.isKeyDown())
+                            lookupRotation = rotation;
+
+                            if (rotationModeValue.get().equalsIgnoreCase("static") && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown()))
                                 rotation = new Rotation(MovementUtils.getScaffoldRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing), staticPitchValue.get());
 
-                            if ((rotationModeValue.get().equalsIgnoreCase("static2") || rotationModeValue.get().equalsIgnoreCase("static3")) && !mc.gameSettings.keyBindJump.isKeyDown())
+                            if ((rotationModeValue.get().equalsIgnoreCase("static2") || rotationModeValue.get().equalsIgnoreCase("static3")) && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown()))
                                 rotation = new Rotation(rotation.getYaw(), staticPitchValue.get());
 
-                            if (rotationModeValue.get().equalsIgnoreCase("custom") && !mc.gameSettings.keyBindJump.isKeyDown()) 
+                            if (rotationModeValue.get().equalsIgnoreCase("custom") && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown())) 
                                 rotation = new Rotation(mc.thePlayer.rotationYaw + customYawValue.get(), customPitchValue.get());
 
-                            final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotation);
+                            final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotationLookupValue.get().equalsIgnoreCase("same") ? rotation : lookupRotation);
                             final Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4, rotationVector.yCoord * 4, rotationVector.zCoord * 4);
                             final MovingObjectPosition obj = mc.theWorld.rayTraceBlocks(eyesPos, vector, false, false, true);
 
@@ -1080,7 +1105,9 @@ public class Scaffold extends Module {
                 lockRotation = placeRotation.getRotation();
                 faceBlock = true;
             }
-            
+
+            if (rotationLookupValue.get().equalsIgnoreCase("same"))
+                lookupRotation = lockRotation;
         }
 
         if (towerActive) 
@@ -1090,17 +1117,6 @@ public class Scaffold extends Module {
 
         return true;
     }
-
-    @EventTarget
-	public void onTick(TickEvent event) {
-        if (mc.thePlayer == null) return;
-
-		for (int i = 0; i < 8; i++) {
-			if (mc.thePlayer.inventory.mainInventory[i] != null
-					&& mc.thePlayer.inventory.mainInventory[i].stackSize <= 0)
-				mc.thePlayer.inventory.mainInventory[i] = null;
-		}
-	}
 
     /**
      * @return hotbar blocks amount

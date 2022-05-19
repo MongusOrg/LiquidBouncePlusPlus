@@ -35,7 +35,7 @@ import kotlin.math.sin
 
 @ModuleInfo(name = "TargetStrafe", spacedName = "Target Strafe", description = "Strafe around your target. (Require Fly or Speed to be enabled)", category = ModuleCategory.MOVEMENT)
 class TargetStrafe : Module() {
-    public val radius = FloatValue("Radius", 2.0f, 0.1f, 4.0f, "m")
+    val radius = FloatValue("Radius", 2.0f, 0.1f, 4.0f, "m")
     private val render = BoolValue("Render", true)
     private val alwaysRender = BoolValue("Always-Render", true, { render.get() })
     private val modeValue = ListValue("KeyMode", arrayOf("Jump", "None"), "None")
@@ -56,9 +56,11 @@ class TargetStrafe : Module() {
     private lateinit var speed: Speed
     private lateinit var fly: Fly
 
-    var direction: Int = 1
-    var lastView: Int = 0
-    var hasChangedThirdPerson: Boolean = true
+    var direction = 1
+    var lastView = 0
+    var hasChangedThirdPerson = true
+
+    var hasModifiedMovement = false
 
     override fun onInitialize() {
         killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
@@ -96,14 +98,15 @@ class TargetStrafe : Module() {
         }
     }
 
-    @EventTarget
+    @EventTarget(priority = 2)
     fun onMove(event: MoveEvent) {
         if (canStrafe) {
-            strafe(event, MovementUtils.getSpeed(event.x, event.z))
+            if (!hasModifiedMovement) strafe(event, MovementUtils.getSpeed(event.x, event.z))
             
             if (safewalk.get() && checkVoid())
                 event.isSafeWalk = true
         }
+        hasModifiedMovement = false
     }
 
     fun strafe(event: MoveEvent, moveSpeed: Double) {
@@ -113,9 +116,11 @@ class TargetStrafe : Module() {
         val rotYaw = RotationUtils.getRotationsEntity(target).yaw
 
         val forward = if (mc.thePlayer.getDistanceToEntity(target) <= radius.get()) 0.0 else 1.0
+        val strafe = direction.toDouble()
         var modifySpeed = if (expMode.get()) maximizeSpeed(target, moveSpeed, killAura.rangeValue.get()) else moveSpeed
         
-        MovementUtils.setSpeed(event, modifySpeed, rotYaw, direction.toDouble(), forward)
+        MovementUtils.setSpeed(event, modifySpeed, rotYaw, strafe, forward)
+        hasModifiedMovement = true
     }
 
     private fun maximizeSpeed(ent: EntityLivingBase, speed: Double, range: Float): Double {

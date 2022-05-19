@@ -9,11 +9,8 @@ import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
-@SideOnly(Side.CLIENT)
 public class ModuleElement extends ButtonElement {
 
     private final Module module;
@@ -38,16 +35,18 @@ public class ModuleElement extends ButtonElement {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if(mouseButton == 0 && isHovering(mouseX, mouseY) && isVisible()) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (mouseButton == 0 && isHovering(mouseX, mouseY) && isVisible()) {
             module.toggle();
+            return true;
             //mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F)); duplicated lol
         }
-
-        if(mouseButton == 1 && isHovering(mouseX, mouseY) && isVisible()) {
+        if (mouseButton == 1 && isHovering(mouseX, mouseY) && isVisible()) {
             showSettings = !showSettings;
             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+            return true;
         }
+        return false;
     }
 
     public Module getModule() {

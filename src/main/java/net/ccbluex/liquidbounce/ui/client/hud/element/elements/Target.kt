@@ -58,7 +58,7 @@ class Target : Element() {
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
-    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
+    private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Remix", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val chillFontSpeed = FloatValue("Chill-FontSpeed", 0.5F, 0.01F, 1F, { styleValue.get().equals("chill", true) })
     private val chillHealthBarValue = BoolValue("Chill-Healthbar", true, { styleValue.get().equals("chill", true) })
@@ -437,7 +437,102 @@ class Target : Element() {
                     font.drawString(healthName, 10F + barWidth, 41F, -1)
                 }
 
-                // TODO new flux targethud
+                "Remix" -> {
+                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+
+                    // background
+					RenderUtils.newDrawRect(0F, 0F, 146F, 49F, Color(25, 25, 25).rgb)
+					RenderUtils.newDrawRect(1F, 1F, 145F, 48F, Color(35, 35, 35).rgb)
+
+					// health bar
+					RenderUtils.newDrawRect(4F, 40F, 142F, 45F, Color.red.darker().darker().rgb)
+					RenderUtils.newDrawRect(4F, 40F, 4F + (easingHealth / convertedTarget.maxHealth).coerceIn(0F, 1F) * 138F, 45F, barColor.rgb)
+
+					// head
+					RenderUtils.newDrawRect(4F, 4F, 38F, 38F, Color(150, 150, 150).rgb)
+					RenderUtils.newDrawRect(5F, 5F, 37F, 37F, Color(0, 0, 0).rgb)
+
+					// armor bar
+					RenderUtils.newDrawRect(40F, 36F, 141.5F, 38F, Color.blue.darker().rgb)
+					RenderUtils.newDrawRect(40F, 36F, 40F + (convertedTarget.getTotalArmorValue().toFloat() / 20F).coerceIn(0F, 1F) * 101.5F, 38F, Color.blue.rgb)
+
+					// armor item background
+					RenderUtils.newDrawRect(40F, 16F, 58F, 34F, Color(25, 25, 25).rgb)
+					RenderUtils.newDrawRect(41F, 17F, 57F, 33F, Color(95, 95, 95).rgb)
+
+					RenderUtils.newDrawRect(60F, 16F, 78F, 34F, Color(25, 25, 25).rgb)
+					RenderUtils.newDrawRect(61F, 17F, 77F, 33F, Color(95, 95, 95).rgb)
+
+					RenderUtils.newDrawRect(80F, 16F, 98F, 34F, Color(25, 25, 25).rgb)
+					RenderUtils.newDrawRect(81F, 17F, 97F, 33F, Color(95, 95, 95).rgb)
+
+					RenderUtils.newDrawRect(100F, 16F, 118F, 34F, Color(25, 25, 25).rgb)
+					RenderUtils.newDrawRect(101F, 17F, 117F, 33F, Color(95, 95, 95).rgb)
+
+                    // name
+					Fonts.minecraftFont.drawStringWithShadow(convertedTarget.name, 41F, 5F, -1)
+
+                    // ping
+                    if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) {
+                        // actual head
+                        drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 5, 5, 32, 32)
+
+                        val responseTime = mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).responseTime.toInt()
+                        val stringTime = "${responseTime.coerceAtLeast(0)}ms"
+
+                        var j = 0
+
+                        if (responseTime < 0)
+							j = 5
+						else if (responseTime < 150)
+							j = 0
+						else if (responseTime < 300)
+							j = 1
+						else if (responseTime < 600)
+							j = 2
+						else if (responseTime < 1000)
+							j = 3
+						else
+							j = 4
+
+                        mc.textureManager.bindTexture(Gui.icons)
+                        RenderUtils.drawTexturedModalRect(132, 18, 0, 176 + j * 8, 10, 8, 100.0F)
+
+                        GL11.glPushMatrix()
+                        GL11.glTranslatef(142F - Fonts.minecraftFont.getStringWidth(stringTime) / 2F, 28F, 0F)
+                        GL11.glScalef(0.5F, 0.5F, 0.5F)
+                        Fonts.minecraftFont.drawStringWithShadow(stringTime, 0F, 0F, -1)
+                        GL11.glPopMatrix()
+                    }
+
+                    // armor items
+                    GL11.glPushMatrix()
+                    GL11.glColor4f(1f, 1f, 1f, 1f)
+                    RenderHelper.enableGUIStandardItemLighting()
+
+                    val renderItem = mc.renderItem
+
+                    var x = 41
+                    var y = 17
+
+                    for (index in 3 downTo 0) {
+                        val stack = convertedTarget.inventory.armorInventory[index] ?: continue
+
+                        if (stack.getItem() == null)
+                            continue
+
+                        renderItem.renderItemAndEffectIntoGUI(stack, x, y)
+
+                        x += 20
+                    }
+
+                    RenderHelper.disableStandardItemLighting()
+                    GlStateManager.enableAlpha()
+                    GlStateManager.disableBlend()
+                    GlStateManager.disableLighting()
+                    GlStateManager.disableCull()
+                    GL11.glPopMatrix()
+                }
 
                 "Exhibition" -> {
                     val font = exhiFontValue.get()
@@ -471,7 +566,11 @@ class Target : Element() {
 
                     GL11.glPushMatrix()
                     GL11.glColor4f(1f, 1f, 1f, 1f)
+                    GlStateManager.enableRescaleNormal()
+                    GlStateManager.enableBlend()
+                    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
                     RenderHelper.enableGUIStandardItemLighting()
+                    
 
                     val renderItem = mc.renderItem
 
@@ -497,6 +596,7 @@ class Target : Element() {
                     }
 
                     RenderHelper.disableStandardItemLighting()
+                    GlStateManager.disableRescaleNormal()
                     GlStateManager.enableAlpha()
                     GlStateManager.disableBlend()
                     GlStateManager.disableLighting()
@@ -674,6 +774,7 @@ class Target : Element() {
             "Novoline" -> Border(-1F, -2F, 90F, 38F)
             "Slowly" -> Border(0F, 0F, 90F, 36F)
             "Rise" -> Border(0F, 0F, 90F, 55F)
+            "Remix" -> Border(0F, 0F, 146F, 49F)
             "Exhibition" -> Border(0F, 3F, 140F, 48F)
             "Chill" -> Border(0F, 0F, 110F, 46F)
             else -> Border(0F, 0F, 120F, 36F)

@@ -20,7 +20,6 @@ import java.awt.image.BufferedImage
 /**
  * Generate new bitmap based font renderer
  */
-@SideOnly(Side.CLIENT)
 class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
 
     companion object {

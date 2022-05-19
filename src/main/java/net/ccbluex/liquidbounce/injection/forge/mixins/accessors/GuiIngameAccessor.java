@@ -25,5 +25,5 @@ public interface GuiIngameAccessor {
     void setDisplayedSubTitle(String subTitle);
 
     @Invoker
-    boolean callShowCrosshair();
+    boolean invokeShowCrosshair();
 }

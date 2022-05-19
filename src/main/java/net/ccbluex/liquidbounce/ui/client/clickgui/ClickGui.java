@@ -89,13 +89,15 @@ public class ClickGui extends GuiScreen {
                     }
 
                     @Override
-                    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+                    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
                         if (mouseButton == 0 && isHovering(mouseX, mouseY) && isVisible()) {
                             EntityUtils.targetPlayer = !EntityUtils.targetPlayer;
                             displayName = "Players";
                             color = EntityUtils.targetPlayer ? ClickGUI.generateColor().getRGB() : Integer.MAX_VALUE;
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                            return true;
                         }
+                        return false;
                     }
                 });
 
@@ -115,13 +117,15 @@ public class ClickGui extends GuiScreen {
                     }
 
                     @Override
-                    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+                    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
                         if (mouseButton == 0 && isHovering(mouseX, mouseY) && isVisible()) {
                             EntityUtils.targetMobs = !EntityUtils.targetMobs;
                             displayName = "Mobs";
                             color = EntityUtils.targetMobs ? ClickGUI.generateColor().getRGB() : Integer.MAX_VALUE;
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                            return true;
                         }
+                        return false;
                     }
                 });
 
@@ -141,13 +145,15 @@ public class ClickGui extends GuiScreen {
                     }
 
                     @Override
-                    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+                    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
                         if (mouseButton == 0 && isHovering(mouseX, mouseY) && isVisible()) {
                             EntityUtils.targetAnimals = !EntityUtils.targetAnimals;
                             displayName = "Animals";
                             color = EntityUtils.targetAnimals ? ClickGUI.generateColor().getRGB() : Integer.MAX_VALUE;
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                            return true;
                         }
+                        return false;
                     }
                 });
 
@@ -167,13 +173,15 @@ public class ClickGui extends GuiScreen {
                     }
 
                     @Override
-                    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+                    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
                         if (mouseButton == 0 && isHovering(mouseX, mouseY) && isVisible()) {
                             EntityUtils.targetInvisible = !EntityUtils.targetInvisible;
                             displayName = "Invisible";
                             color = EntityUtils.targetInvisible ? ClickGUI.generateColor().getRGB() : Integer.MAX_VALUE;
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                            return true;
                         }
+                        return false;
                     }
                 });
 
@@ -193,13 +201,15 @@ public class ClickGui extends GuiScreen {
                     }
 
                     @Override
-                    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+                    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
                         if (mouseButton == 0 && isHovering(mouseX, mouseY) && isVisible()) {
                             EntityUtils.targetDead = !EntityUtils.targetDead;
                             displayName = "Dead";
                             color = EntityUtils.targetDead ? ClickGUI.generateColor().getRGB() : Integer.MAX_VALUE;
                             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+                            return true;
                         }
+                        return false;
                     }
                 });
             }
@@ -252,7 +262,9 @@ public class ClickGui extends GuiScreen {
             drawDefaultBackground();
             break;
         case "Gradient":
-            drawGradientRect(0, 0, width, height, ColorUtils.reAlpha(ClickGUI.generateColor(), 40).getRGB(), ClickGUI.generateColor().getRGB());
+            drawGradientRect(0, 0, width, height, 
+                ColorUtils.reAlpha(ClickGUI.generateColor(), ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).gradEndValue.get()).getRGB(), 
+                ColorUtils.reAlpha(ClickGUI.generateColor(), ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).gradStartValue.get()).getRGB());
             break;
         default:
             break;
@@ -341,13 +353,19 @@ public class ClickGui extends GuiScreen {
         mouseX /= scale;
         mouseY /= scale;
 
-        for (final Panel panel : panels) {
-            panel.mouseClicked(mouseX, mouseY, mouseButton);
+        for (int i = panels.size() - 1; i >= 0; i--) {
+            if (panels.get(i).mouseClicked(mouseX, mouseY, mouseButton)){
+                break;
+            }
+        }
 
+        for (final Panel panel : panels) {
             panel.drag = false;
 
-            if (mouseButton == 0 && panel.isHovering(mouseX, mouseY))
+            if (mouseButton == 0 && panel.isHovering(mouseX, mouseY)) {
                 clickedPanel = panel;
+                break;
+            }
         }
 
         if (clickedPanel != null) {

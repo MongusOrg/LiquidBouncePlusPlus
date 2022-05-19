@@ -11,7 +11,6 @@ import net.ccbluex.liquidbounce.event.MoveEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
-import net.ccbluex.liquidbounce.utils.block.BlockUtils.Collidable
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.collideBlockIntersects
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.getBlock
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -75,7 +74,7 @@ class FastClimb : Module() {
             }
 
             mode.equals("AAC3.0.5", ignoreCase = true) && mc.gameSettings.keyBindForward.isKeyDown &&
-                    collideBlockIntersects(mc.thePlayer.entityBoundingBox, object : Collidable { override fun collideBlock(block: Block?) = block is BlockLadder || block is BlockVine }) -> {
+                    collideBlockIntersects(mc.thePlayer.entityBoundingBox, { it is BlockLadder || it is BlockVine }) -> {
                 event.x = 0.0
                 event.y = 0.5
                 event.z = 0.0

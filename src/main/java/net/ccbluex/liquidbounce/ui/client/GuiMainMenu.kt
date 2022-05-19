@@ -51,7 +51,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
             lastAnimTick = System.currentTimeMillis()
             alrUpdate = true
         }
-        val creditInfo = "made by epic group of paster."
+        val creditInfo = "Copyright Mojang AB. Do not distribute!"
         drawBackground(0)
         GL11.glPushMatrix()
         renderSwitchButton()
@@ -139,7 +139,9 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
         else 
-            Fonts.font35.drawCenteredString("nice try dude", width / 2F, staticY + 30F, Color(255, 154, 31).rgb)
+            Fonts.font35.drawCenteredString("Thank you for supporting me. Goodbye. - inf", width / 2F, staticY + 30F, Color(255, 50, 70).rgb)
+
+        Fonts.font35.drawCenteredString("Check out new website: lbpro.ml and lbforum.cf by codepatch!", width / 2F, staticY + 41F, -1)
 
         if (shouldAnimate) {
             if (fade == 0F)

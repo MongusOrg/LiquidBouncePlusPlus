@@ -11,9 +11,9 @@ import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.AutoClicker;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AbortBreaking;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.MultiActions;
+import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
 import net.ccbluex.liquidbounce.features.module.modules.world.FastPlace;
-import net.ccbluex.liquidbounce.patcher.util.enhancement.EnhancementManager;
-import net.ccbluex.liquidbounce.patcher.util.enhancement.ReloadListener;
+import net.ccbluex.liquidbounce.injection.forge.mixins.accessors.MinecraftForgeClientAccessor;
 import net.ccbluex.liquidbounce.ui.client.GuiMainMenu;
 //import net.ccbluex.liquidbounce.ui.client.GuiWelcome;
 import net.ccbluex.liquidbounce.utils.CPSCounter;
@@ -29,32 +29,40 @@ import net.minecraft.client.main.GameConfiguration;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.particle.EffectRenderer;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.stream.IStream;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Util;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.client.MinecraftForgeClient;
+import org.apache.commons.lang3.SystemUtils;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.ByteBuffer;
 
 @Mixin(Minecraft.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinMinecraft {
 
     @Shadow
     public GuiScreen currentScreen;
+
+    @Shadow
+    private boolean fullscreen;
 
     @Shadow
     public boolean skipRenderWorld;
@@ -73,6 +81,8 @@ public abstract class MixinMinecraft {
 
     @Shadow
     public EffectRenderer effectRenderer;
+
+    @Shadow public EntityRenderer entityRenderer;
 
     @Shadow
     public PlayerControllerMP playerController;
@@ -112,21 +122,47 @@ public abstract class MixinMinecraft {
 
     @Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;checkGLError(Ljava/lang/String;)V", ordinal = 2, shift = At.Shift.AFTER))
     private void startGame(CallbackInfo callbackInfo) {
-        ((IReloadableResourceManager)getResourceManager()).registerReloadListener(new ReloadListener());
         LiquidBounce.INSTANCE.startClient();
     }
-
-    /*@Inject(method = "startGame", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;displayGuiScreen(Lnet/minecraft/client/gui/GuiScreen;)V", shift = At.Shift.AFTER))
-    private void afterMainScreen(CallbackInfo callbackInfo) {
-        if (LiquidBounce.fileManager.firstStart)
-            Minecraft.getMinecraft().displayGuiScreen(new GuiWelcome());
-        else if (LiquidBounce.INSTANCE.getLatestVersion() > LiquidBounce.CLIENT_VERSION)
-            Minecraft.getMinecraft().displayGuiScreen(new GuiUpdate());
-    }*/
 
     @Inject(method = "createDisplay", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setTitle(Ljava/lang/String;)V", shift = At.Shift.AFTER))
     private void createDisplay(CallbackInfo callbackInfo) {
         Display.setTitle(LiquidBounce.CLIENT_NAME + " build " + LiquidBounce.CLIENT_VERSION);
+    }
+
+    @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
+    private void clearLoadedMaps(WorldClient worldClientIn, String loadingMessage, CallbackInfo ci) {
+        if (worldClientIn != this.theWorld) {
+            this.entityRenderer.getMapItemRenderer().clearLoadedMaps();
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    @Inject(
+        method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V",
+        at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;theWorld:Lnet/minecraft/client/multiplayer/WorldClient;", opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER)
+    )
+    private void clearRenderCache(CallbackInfo ci) {
+        //noinspection ResultOfMethodCallIgnored
+        MinecraftForgeClient.getRenderPass(); // Ensure class is loaded, strange accessor issue
+        MinecraftForgeClientAccessor.getRegionCache().invalidateAll();
+        MinecraftForgeClientAccessor.getRegionCache().cleanUp();
+    }
+
+    @Redirect(
+        method = "runGameLoop",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/stream/IStream;func_152935_j()V")
+    )
+    private void skipTwitchCode1(IStream instance) {
+        // No-op
+    }
+
+    @Redirect(
+        method = "runGameLoop",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/stream/IStream;func_152922_k()V")
+    )
+    private void skipTwitchCode2(IStream instance) {
+        // No-op
     }
 
     @Inject(method = "displayGuiScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;currentScreen:Lnet/minecraft/client/gui/GuiScreen;", shift = At.Shift.AFTER))
@@ -157,11 +193,6 @@ public abstract class MixinMinecraft {
         return (Sys.getTime() * 1000) / Sys.getTimerResolution();
     }
 
-    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/profiler/Profiler;startSection(Ljava/lang/String;)V", ordinal = 0, shift = At.Shift.BEFORE))
-    private void injectEnhancement(CallbackInfo callbackInfo) {
-        EnhancementManager.getInstance().tick();
-    }
-    
     @Inject(method = "runTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;joinPlayerCounter:I", shift = At.Shift.BEFORE))
     private void onTick(final CallbackInfo callbackInfo) {
         LiquidBounce.eventManager.callEvent(new TickEvent());
@@ -200,7 +231,7 @@ public abstract class MixinMinecraft {
     private void clickMouse(CallbackInfo callbackInfo) {
         CPSCounter.registerClick(CPSCounter.MouseButton.LEFT);
 
-        if (LiquidBounce.moduleManager.getModule(AutoClicker.class).getState())
+        if (Patcher.noHitDelay.get() || LiquidBounce.moduleManager.getModule(AutoClicker.class).getState())
             leftClickCounter = 0;
     }
 
@@ -222,6 +253,19 @@ public abstract class MixinMinecraft {
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
     private void loadWorld(WorldClient p_loadWorld_1_, String p_loadWorld_2_, final CallbackInfo callbackInfo) {
         LiquidBounce.eventManager.callEvent(new WorldEvent(p_loadWorld_1_));
+    }
+
+    @Inject(method = "toggleFullscreen", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/Display;setFullscreen(Z)V", remap = false))
+    private void resolveScreenState(CallbackInfo ci) {
+        if (!this.fullscreen && SystemUtils.IS_OS_WINDOWS) {
+            Display.setResizable(false);
+            Display.setResizable(true);
+        }
+    }
+
+    @Redirect(method = "dispatchKeypresses", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;getEventCharacter()C", remap = false))
+    private char resolveForeignKeyboards() {
+        return (char) (Keyboard.getEventCharacter() + 256);
     }
 
     /**
@@ -251,10 +295,10 @@ public abstract class MixinMinecraft {
     }
 
     /**
-     * @author
+     * @author CCBlueX
      */
-    @Overwrite
-    public int getLimitFramerate() {
-        return this.theWorld == null && this.currentScreen != null ? 120 : this.gameSettings.limitFramerate;
+    @ModifyConstant(method = "getLimitFramerate", constant = @Constant(intValue = 30))
+    public int getLimitFramerate(int constant) {
+        return 60;
     }
 }

@@ -6,7 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
-//import net.ccbluex.liquidbounce.features.module.modules.misc.ComponentOnHover;
+import net.ccbluex.liquidbounce.features.module.modules.misc.HoverDetails;
 import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.ui.client.GuiBackground;
 import net.ccbluex.liquidbounce.utils.render.ParticleUtils;
@@ -22,14 +22,14 @@ import net.minecraft.event.ClickEvent;
 import net.minecraft.event.HoverEvent;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
@@ -37,7 +37,6 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(GuiScreen.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinGuiScreen {
     @Shadow
     public Minecraft mc;
@@ -63,6 +62,11 @@ public abstract class MixinGuiScreen {
 
     @Shadow
     protected abstract void drawHoveringText(List<String> textLines, int x, int y);
+
+    @Redirect(method = "handleKeyboardInput", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;getEventKeyState()Z", remap = false))
+    private boolean checkCharacter() {
+        return Keyboard.getEventKey() == 0 && Keyboard.getEventCharacter() >= ' ' || Keyboard.getEventKeyState();
+    }
 
     @Inject(method = "drawWorldBackground", at = @At("HEAD"), cancellable = true)
     private void drawWorldBackground(final CallbackInfo callbackInfo) {
@@ -135,13 +139,9 @@ public abstract class MixinGuiScreen {
         }
     }
 
-    protected boolean shouldRenderBackground() {
-        return true;
-    }
-/*
     @Inject(method = "handleComponentHover", at = @At("HEAD"))
     private void handleHoverOverComponent(IChatComponent component, int x, int y, final CallbackInfo callbackInfo) {
-        if (component == null || component.getChatStyle().getChatClickEvent() == null || !LiquidBounce.moduleManager.getModule(ComponentOnHover.class).getState())
+        if (component == null || component.getChatStyle().getChatClickEvent() == null || !LiquidBounce.moduleManager.getModule(HoverDetails.class).getState())
             return;
 
         final ChatStyle chatStyle = component.getChatStyle();
@@ -151,7 +151,7 @@ public abstract class MixinGuiScreen {
 
         drawHoveringText(Collections.singletonList("§c§l" + clickEvent.getAction().getCanonicalName().toUpperCase() + ": §a" + clickEvent.getValue()), x, y - (hoverEvent != null ? 17 : 0));
     }
-*/
+
     /**
      * @author CCBlueX (superblaubeere27)
      * @reason Making it possible for other mixins to receive actions
@@ -159,6 +159,10 @@ public abstract class MixinGuiScreen {
     @Inject(method = "actionPerformed", at = @At("RETURN"))
     protected void injectActionPerformed(GuiButton button, CallbackInfo callbackInfo) {
         this.injectedActionPerformed(button);
+    }
+
+    protected boolean shouldRenderBackground() {
+        return true;
     }
 
     protected void injectedActionPerformed(GuiButton button) {

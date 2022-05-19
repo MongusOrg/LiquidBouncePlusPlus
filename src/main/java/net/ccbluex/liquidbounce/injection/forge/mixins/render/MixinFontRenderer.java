@@ -7,59 +7,38 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.render;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.TextEvent;
-import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
-import net.ccbluex.liquidbounce.patcher.ducks.FontRendererExt;
-import net.ccbluex.liquidbounce.patcher.hooks.font.FontRendererHook;
+import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(FontRenderer.class)
-@SideOnly(Side.CLIENT)
-public class MixinFontRenderer implements FontRendererExt {
+public abstract class MixinFontRenderer {
 
-    @Unique
-    private final FontRendererHook patcher$fontRendererHook = new FontRendererHook((FontRenderer) (Object) this);
+    @Shadow protected abstract void resetStyles();
 
-    /**
-     * @author asbyth
-     * @reason Use a string width cache
-     */
-    @Overwrite
-    public int getStringWidth(String text) {
-        if (text == null || LiquidBounce.eventManager == null)
-            return this.patcher$fontRendererHook.getStringWidth(text);
-
-        final TextEvent textEvent = new TextEvent(text);
-        LiquidBounce.eventManager.callEvent(textEvent);
-
-        return this.patcher$fontRendererHook.getStringWidth(textEvent.getText());
+    @Inject(method = "drawString(Ljava/lang/String;FFIZ)I",
+        at = @At(
+            value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;renderString(Ljava/lang/String;FFIZ)I",
+            ordinal = 0, shift = At.Shift.AFTER
+        )
+    )
+    private void resetStyle(CallbackInfoReturnable<Integer> ci) {
+        this.resetStyles();
     }
 
-    @Inject(method = "renderStringAtPos", at = @At("HEAD"), cancellable = true)
-    private void patcher$useOptimizedRendering(String text, boolean shadow, CallbackInfo ci) {
-        /*if (string != null && LiquidBounce.eventManager != null && Patcher.getPatcherSetting(0)) {
-            final TextEvent textEvent = new TextEvent(text);
-            LiquidBounce.eventManager.callEvent(textEvent);
-
-            text = textEvent.getText();
-        }*/ // this is mostly useless since the renderStringAtPos method is only be used inside FontRenderer class under renderString method.
-
-        if (this.patcher$fontRendererHook.renderStringAtPos(text, shadow)) {
-            ci.cancel();
-        }
-    }
-    
-    @ModifyVariable(method = "renderString", at = @At("HEAD"), ordinal = 0)
+    @ModifyVariable(method = "renderString", at = @At("HEAD"), require = 1, ordinal = 0)
     private String renderString(final String string) {
-        if (string == null || LiquidBounce.eventManager == null)
+        if (string == null)
+            return null;
+        if (LiquidBounce.eventManager == null)
             return string;
 
         final TextEvent textEvent = new TextEvent(string);
@@ -67,9 +46,16 @@ public class MixinFontRenderer implements FontRendererExt {
         return textEvent.getText();
     }
 
-    @Override
-    public FontRendererHook patcher$getFontRendererHook() {
-        return patcher$fontRendererHook;
+    @ModifyVariable(method = "getStringWidth", at = @At("HEAD"), require = 1, ordinal = 0)
+    private String getStringWidth(final String string) {
+        if (string == null)
+            return null;
+        if (LiquidBounce.eventManager == null)
+            return string;
+
+        final TextEvent textEvent = new TextEvent(string);
+        LiquidBounce.eventManager.callEvent(textEvent);
+        return textEvent.getText();
     }
 
 }

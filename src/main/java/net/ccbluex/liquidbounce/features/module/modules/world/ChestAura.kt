@@ -74,7 +74,7 @@ object ChestAura : Module() {
 
                             movingObjectPosition != null && movingObjectPosition.blockPos == blockPos
                         }
-                        .minBy { BlockUtils.getCenterDistance(it.key) }?.key
+                        .minByOrNull { BlockUtils.getCenterDistance(it.key) }?.key
 
                 if (rotationsValue.get())
                     RotationUtils.setTargetRotation((RotationUtils.faceBlock(currentBlock ?: return)

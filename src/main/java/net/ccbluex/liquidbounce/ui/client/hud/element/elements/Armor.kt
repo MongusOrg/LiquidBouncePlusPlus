@@ -31,9 +31,6 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
      */
     override fun drawElement(): Border {
         if (mc.playerController.isNotCreative) {
-            GL11.glPushMatrix()
-            GL11.glTranslatef(0F, -RenderUtils.yPosOffset, 0F)
-
             val renderItem = mc.renderItem
             val isInsideWater = mc.thePlayer.isInsideOfMaterial(Material.water)
 
@@ -57,7 +54,6 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
             GlStateManager.disableBlend()
             GlStateManager.disableLighting()
             GlStateManager.disableCull()
-            GL11.glPopMatrix()
         }
 
         return if (modeValue.get().equals("Horizontal", true))

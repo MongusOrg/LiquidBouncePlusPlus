@@ -24,20 +24,19 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import org.lwjgl.opengl.GL11;
 
 @Mixin(GuiIngame.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinGuiInGame extends MixinGui {
 
     @Shadow
@@ -47,8 +46,6 @@ public abstract class MixinGuiInGame extends MixinGui {
     protected static ResourceLocation widgetsTexPath;
 
     @Shadow public GuiPlayerTabOverlay overlayPlayerList;
-
-    public boolean shouldCallPop = true;
 
     @Inject(method = "showCrosshair", at = @At("HEAD"), cancellable = true) 
     private void injectCrosshair(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
@@ -66,6 +63,11 @@ public abstract class MixinGuiInGame extends MixinGui {
             callbackInfo.cancel();
     }
 
+    @ModifyConstant(method = "renderScoreboard", constant = @Constant(intValue = 553648127))
+    private int fixTextBlending(int original) {
+        return -1;
+    }
+
     @Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
     private void renderBossHealth(CallbackInfo callbackInfo) {
         final AntiBlind antiBlind = (AntiBlind) LiquidBounce.moduleManager.getModule(AntiBlind.class);
@@ -77,13 +79,11 @@ public abstract class MixinGuiInGame extends MixinGui {
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
 
-        GlStateManager.translate(0F, -RenderUtils.yPosOffset, 0F);
-
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
             final Minecraft mc = Minecraft.getMinecraft();
             EntityPlayer entityPlayer = (EntityPlayer) mc.getRenderViewEntity();
 
-            boolean blackHB = hud.getState() && hud.getBlackHotbarValue().get();
+            boolean blackHB = hud.getBlackHotbarValue().get();
             int middleScreen = sr.getScaledWidth() / 2;
             float posInv = hud.getAnimPos(entityPlayer.inventory.currentItem * 20F);
 
@@ -112,28 +112,22 @@ public abstract class MixinGuiInGame extends MixinGui {
 
             for (int j = 0; j < 9; ++j) {
                 int k = sr.getScaledWidth() / 2 - 90 + j * 20 + 2;
-                int l = sr.getScaledHeight() - 16 - (blackHB ? 4 : 3);
+                int l = sr.getScaledHeight() - 19 - (blackHB ? 1 : 0);
                 this.renderHotbarItem(j, k, l, partialTicks, entityPlayer);
-            }
+            }   
 
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
-            GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
+            GlStateManager.resetColor();
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();
-            shouldCallPop = false;
             callbackInfo.cancel();
-            return;
         }
-
-        shouldCallPop = true;
     }
 
     @Inject(method = "renderTooltip", at = @At("RETURN"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
-        if (shouldCallPop) GlStateManager.translate(0F, RenderUtils.yPosOffset, 0F);
-
         if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
             AWTFontRenderer.Companion.garbageCollectionTick();

@@ -14,6 +14,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.PathUtils
+import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -41,6 +42,7 @@ class TeleportAura : Module() {
     private val apsValue = IntegerValue("APS", 1, 1, 10)
     private val maxTargetsValue = IntegerValue("MaxTargets", 2, 1, 8)
     private val rangeValue = IntegerValue("Range", 80, 10, 200, "m")
+    private val fovValue = FloatValue("FOV", 180F, 0F, 180F, "°")
     private val maxMoveDistValue = FloatValue("MaxMoveSpeed", 8F, 2F, 15F, "m")
     private val swingValue = ListValue("Swing", arrayOf("Normal", "Packet", "None"), "Normal")
     private val noPureC03Value = BoolValue("NoStandingPackets", true)
@@ -102,7 +104,10 @@ class TeleportAura : Module() {
 
         for (entity in mc.theWorld.loadedEntityList)
             if (entity is EntityLivingBase && EntityUtils.isSelected(entity, true) && mc.thePlayer.getDistanceToEntity(entity) <= rangeValue.get()) {
-                if (entityCount > maxTargetsValue.get())
+                if (fovValue.get() < 180F && RotationUtils.getRotationDifference(entity) > fovValue.get())
+                    continue
+
+                if (entityCount >= maxTargetsValue.get())
                     break
 
                 targets.add(entity)

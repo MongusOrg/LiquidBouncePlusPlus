@@ -65,6 +65,11 @@ dependencies {
     compile 'com.jagrosh:DiscordIPC:0.4'
     include "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
+    include("com.github.CCBlueX:Elixir:1.2.4") {
+        exclude module: "kotlin-stdlib"
+        exclude module: "authlib"
+    }
+
     implementation 'com.github.TheAltening:TheAltening4j:master-SNAPSHOT'
     implementation 'com.github.TheAltening:TheAlteningAuth4j:-SNAPSHOT'
     compile 'com.github.TheAltening:TheAltening4j:api-2.0-SNAPSHOT'
@@ -90,6 +95,8 @@ shadowJar {
 
         include(dependency('org.yaml:snakeyaml'))
         include(dependency('org.jetbrains.kotlin:kotlin-stdlib'))
+
+        include(dependency('com.github.CCBlueX:Elixir'))
 
         include(dependency('com.github.TheAltening:TheAltening4j'))
         include(dependency('com.github.TheAltening:TheAlteningAuth4j'))

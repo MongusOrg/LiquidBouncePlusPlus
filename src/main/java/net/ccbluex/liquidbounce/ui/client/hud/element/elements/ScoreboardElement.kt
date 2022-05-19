@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FontValue
@@ -53,8 +54,13 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 95, 0, 255)
 
     private val rectValue = BoolValue("Rect", false)
+    private val rectHeight = IntegerValue("Rect-Height", 1, 1, 10)
+
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
+
+    private val bgRoundedValue = BoolValue("Rounded", false)
+    private val roundStrength = FloatValue("Rounded-Strength", 5F, 0F, 30F)
 
     private val rectColorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "LiquidSlowly", "Fade", "Sky", "Mixer"), "Custom")
     
@@ -83,7 +89,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val hypickleRegex = Regex("[0-9][0-9]/[0-9][0-9]/[0-9][0-9]")
 
     override fun updateElement() {
-        if (garbageTimer.hasTimePassed(30000L)) {
+        if (garbageTimer.hasTimePassed(30000L) || cachedDomains.size > 50) { // prevent another kind of memory leak
             cachedDomains.clear() // prevent memory leak
             garbageTimer.reset()
         }
@@ -136,7 +142,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             val scorePlayerTeam = scoreboard.getPlayersTeam(score.playerName)
             var name = ScorePlayerTeam.formatPlayerName(scorePlayerTeam, score.playerName)
             var stripped = StringUtils.fixString(ColorUtils.stripColor(name)!!)
-            if(changeDomain.get()){
+            if (changeDomain.get()) {
                 if (cachedDomains.contains(stripped)) {
                     name = hud.domainValue.get()
                 } else if (ServerUtils.isHypixelDomain(stripped)) {
@@ -164,41 +170,74 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
         val mixerColor = ColorMixer.getMixedColor(0, cRainbowSecValue.get()).rgb
 
-        if (blurValue.get()) {
-            GL11.glPushMatrix()
-            GL11.glScalef(1F, 1F, 1F)
-            GL11.glTranslated(-renderX, -renderY, 0.0)
+        if (scoreCollection.size > 0) { // only draw background and rect whenever there's something on scoreboard
+            // blur
+            if (blurValue.get()) {
+                GL11.glPushMatrix()
+                GL11.glScalef(1F, 1F, 1F)
+                GL11.glTranslated(-renderX, -renderY, 0.0)
+
+                if (bgRoundedValue.get()) {
+                    if (side.horizontal == Side.Horizontal.LEFT) 
+                        BlurUtils.blurAreaRounded(renderX.toFloat() + (l1 + 2F) * scale, renderY.toFloat() + -2F * scale, 
+                            renderX.toFloat() + -5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, roundStrength.get(), blurStrength.get())
+                    else
+                        BlurUtils.blurAreaRounded(renderX.toFloat() + (l1 - 2F) * scale, renderY.toFloat() + -2F * scale, 
+                            renderX.toFloat() + 5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, roundStrength.get(), blurStrength.get())
+                } else {
+                    if (side.horizontal == Side.Horizontal.LEFT) 
+                        BlurUtils.blurArea(renderX.toFloat() + (l1 + 2F) * scale, renderY.toFloat() + -2F * scale, 
+                            renderX.toFloat() + -5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+                    else
+                        BlurUtils.blurArea(renderX.toFloat() + (l1 - 2F) * scale, renderY.toFloat() + -2F * scale, 
+                            renderX.toFloat() + 5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+                }
+
+                GL11.glTranslated(renderX, renderY, 0.0)
+                GL11.glScalef(scale, scale, scale)
+                GL11.glPopMatrix()
+            }
+
+            // backyard
+            if (bgRoundedValue.get()) {
+                Stencil.write(false)
+                GlStateManager.enableBlend()
+                GlStateManager.disableTexture2D()
+                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+                RenderUtils.fastRoundedRect(
+                    l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
+                    if (rectValue.get()) -2F - rectHeight.get().toFloat() else -2F, 
+                    if (side.horizontal == Side.Horizontal.LEFT) -5F else 5F, 
+                    (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), roundStrength.get())
+                GlStateManager.enableTexture2D()
+                GlStateManager.disableBlend()
+                Stencil.erase(true)
+            }
+
             if (side.horizontal == Side.Horizontal.LEFT) 
-                BlurUtils.blurArea(renderX.toFloat() + (l1 + 2F) * scale, renderY.toFloat() + -2F * scale, 
-                    renderX.toFloat() + -5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+                Gui.drawRect(l1 + 2, -2, -5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
             else
-                BlurUtils.blurArea(renderX.toFloat() + (l1 - 2F) * scale, renderY.toFloat() + -2F * scale, 
-                    renderX.toFloat() + 5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
+                Gui.drawRect(l1 - 2, -2, 5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
 
-            GL11.glTranslated(renderX, renderY, 0.0)
-            GL11.glScalef(scale, scale, scale)
-            GL11.glPopMatrix()
-        }
- 
-        if (side.horizontal == Side.Horizontal.LEFT) 
-            Gui.drawRect(l1 + 2, -2, -5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
-        else
-            Gui.drawRect(l1 - 2, -2, 5, maxHeight + fontRenderer.FONT_HEIGHT, backColor)
+            // rect
+            if (rectValue.get()) {
+                val rectColor = when {
+                    rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
+                    rectColorMode.equals("Rainbow", ignoreCase = true) -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
+                    rectColorMode.equals("LiquidSlowly", ignoreCase = true) -> liquidSlowli
+                    rectColorMode.equals("Fade", ignoreCase = true) -> FadeColor
+                    rectColorMode.equals("Mixer", ignoreCase = true) -> mixerColor
+                    else -> rectCustomColor
+                }       
 
-        if (rectValue.get() && scoreCollection.size > 0) {
-            val rectColor = when {
-                rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
-                rectColorMode.equals("Rainbow", ignoreCase = true) -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
-                rectColorMode.equals("LiquidSlowly", ignoreCase = true) -> liquidSlowli
-                rectColorMode.equals("Fade", ignoreCase = true) -> FadeColor
-                rectColorMode.equals("Mixer", ignoreCase = true) -> mixerColor
-                else -> rectCustomColor
-            }       
+                if (side.horizontal == Side.Horizontal.LEFT)
+                    Gui.drawRect(l1 + 2, -2, -5, -2 - rectHeight.get(), rectColor)
+                else
+                    Gui.drawRect(l1 - 2, -2, 5, -2 - rectHeight.get(), rectColor)
+            }
 
-            if (side.horizontal == Side.Horizontal.LEFT)
-                Gui.drawRect(l1 + 2, -2, -5, -3, rectColor)
-            else
-                Gui.drawRect(l1 - 2, -2, 5, -3, rectColor)
+            if (bgRoundedValue.get())
+                Stencil.dispose()
         }
 
         scoreCollection.forEachIndexed { index, score ->
@@ -215,23 +254,9 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
             var stripped = StringUtils.fixString(ColorUtils.stripColor(name)!!)
 
             GlStateManager.resetColor()
-            if(changeDomain.get()) {
-                if (cachedDomains.contains(stripped)) {
-                    name = hud.domainValue.get()
-                    changed = true
-                }/* else if (ServerUtils.isHypixelDomain(stripped)) {
-                    name = hud.domainValue.get()
-                    changed = true
-                    cachedDomains.add(stripped)
-                } else
-                    for (domain in domainList) {
-                        if (stripped.contains(domain, true)) {
-                            name = hud.domainValue.get()
-                            changed = true
-                            cachedDomains.add(stripped)
-                            break;
-                        }
-                    }*/
+            if (changeDomain.get() && cachedDomains.contains(stripped)) {
+                name = hud.domainValue.get()
+                changed = true
             }
 
             if (antiSnipeMatch.get() && hypickleRegex.containsMatchIn(stripped))

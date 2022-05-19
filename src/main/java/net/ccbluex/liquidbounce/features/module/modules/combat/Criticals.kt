@@ -27,7 +27,7 @@ import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 @ModuleInfo(name = "Criticals", description = "Automatically deals critical hits.", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Invalid", "VerusSmart"), "Packet")
+    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "NCPPacket", "NoGround", "Redesky", "AACv4", "AACv5", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Invalid", "VerusSmart"), "Packet")
     val delayValue = IntegerValue("Delay", 0, 0, 500, "ms")
     private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.1F, 0.42F)
     private val downYValue = FloatValue("DownY", 0f, 0f, 0.1F)
@@ -91,6 +91,13 @@ class Criticals : Module() {
                     mc.thePlayer.motionX *= 0
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 3e-14, mc.thePlayer.posZ, true))
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 8e-15, mc.thePlayer.posZ, true))
+                }
+
+                "aacv5" -> {
+                    mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.0625, mc.thePlayer.posZ, false))
+		            mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.09858, mc.thePlayer.posZ, false))
+		            mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.04114514, mc.thePlayer.posZ, false))
+		            mc.netHandler.addToSendQueue(C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.025, mc.thePlayer.posZ, false))
                 }
 
                 "hop" -> {
@@ -202,9 +209,6 @@ class Criticals : Module() {
         }
 
     }
-
-
-
 
     override val tag: String?
         get() = modeValue.get()

@@ -16,14 +16,17 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -31,7 +34,6 @@ import java.util.Random;
 import java.util.UUID;
 
 @Mixin(Entity.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinEntity {
 
     @Shadow
@@ -173,6 +175,8 @@ public abstract class MixinEntity {
     @Shadow
     public abstract boolean isInsideOfMaterial(Material materialIn);
 
+    @Shadow(remap = false) private CapabilityDispatcher capabilities;
+
     public int getNextStepDistance() {
         return nextStepDistance;
     }
@@ -192,10 +196,10 @@ public abstract class MixinEntity {
         if (hitBox.getState())
             callbackInfoReturnable.setReturnValue(0.1F + hitBox.getSizeValue().get());
     }
-
+/*
     @Inject(method = "setAngles", at = @At("HEAD"), cancellable = true)
     private void setAngles(final float yaw, final float pitch, final CallbackInfo callbackInfo) {
-        /*if (LiquidBounce.moduleManager.getModule(NoPitchLimit.class).getState()) {
+        if (LiquidBounce.moduleManager.getModule(NoPitchLimit.class).getState()) {
             callbackInfo.cancel();
 
             float f = this.rotationPitch;
@@ -204,9 +208,9 @@ public abstract class MixinEntity {
             this.rotationPitch = (float) ((double) this.rotationPitch - (double) pitch * 0.15D);
             this.prevRotationPitch += this.rotationPitch - f;
             this.prevRotationYaw += this.rotationYaw - f1;
-        }*/
+        }
     }
-
+*/
     @Inject(method = "moveFlying", at = @At("HEAD"), cancellable = true)
     private void handleRotations(float strafe, float forward, float friction, final CallbackInfo callbackInfo) {
         if ((Entity) (Object) this != Minecraft.getMinecraft().thePlayer)
@@ -217,5 +221,24 @@ public abstract class MixinEntity {
 
         if (strafeEvent.isCancelled())
             callbackInfo.cancel();
+    }
+
+    @Redirect(method = "getBrightnessForRender", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isBlockLoaded(Lnet/minecraft/util/BlockPos;)Z"))
+    public boolean alwaysReturnTrue(World world, BlockPos pos) {
+        return true;
+    }
+
+    @Inject(method = "spawnRunningParticles", at = @At("HEAD"), cancellable = true)
+    private void checkGroundState(CallbackInfo ci) {
+        if (!this.onGround) ci.cancel();
+    }
+
+    /**
+     * @author asbyth
+     * @reason Faster capability check
+     */
+    @Overwrite(remap = false)
+    public boolean hasCapability(Capability<?> capability, EnumFacing direction) {
+        return this.capabilities != null && this.capabilities.hasCapability(capability, direction);
     }
 }

@@ -6,21 +6,18 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.block;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
-//import net.ccbluex.liquidbounce.features.module.modules.movement.FastClimb;
+import net.ccbluex.liquidbounce.features.module.modules.movement.FastClimb;
 import net.minecraft.block.BlockLadder;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockLadder.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinBlockLadder extends MixinBlock {
 
     @Shadow
@@ -30,7 +27,7 @@ public abstract class MixinBlockLadder extends MixinBlock {
     /**
      * /@author CCBlueX
      */
-/*    @Overwrite
+    @Overwrite
     public void setBlockBoundsBasedOnState(IBlockAccess worldIn, BlockPos pos) {
         final IBlockState iblockstate = worldIn.getBlockState(pos);
 
@@ -54,5 +51,5 @@ public abstract class MixinBlockLadder extends MixinBlock {
             }
         }
     }
-    */
+    
 }

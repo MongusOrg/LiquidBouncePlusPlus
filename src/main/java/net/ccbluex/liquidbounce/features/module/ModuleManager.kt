@@ -42,8 +42,8 @@ class ModuleManager : Listenable {
         ClientUtils.getLogger().info("[ModuleManager] Loading modules...")
 
         registerModules(
+                AntiExploit::class.java,
                 Patcher::class.java,
-                Performance::class.java,
                 AutoWeapon::class.java,
                 BowAimbot::class.java,
                 Aimbot::class.java,
@@ -181,7 +181,34 @@ class ModuleManager : Listenable {
                 AntiBan::class.java,
                 NoInvClose::class.java,
                 TeleportAura::class.java,
-                AutoPot::class.java
+                AutoPot::class.java,
+                Ignite::class.java,
+                AntiAFK::class.java,
+                AutoFish::class.java,
+                ComboOneHit::class.java,
+                AutoLeave::class.java,
+                BedGodMode::class.java,
+                Damage::class.java,
+                Ghost::class.java,
+                GodMode::class.java,
+                KeepContainer::class.java,
+                Kick::class.java,
+                AirLadder::class.java,
+                AutoWalk::class.java,
+                BlockWalk::class.java,
+                BufferSpeed::class.java,
+                IceSpeed::class.java,
+                LadderJump::class.java,
+                NoClip::class.java,
+                PerfectHorseJump::class.java,
+                KeepAlive::class.java,
+                Zoot::class.java,
+                ProphuntESP::class.java,
+                Liquids::class.java,
+                HoverDetails::class.java,
+                AutoBreak::class.java,
+                CivBreak::class.java,
+                Nuker::class.java
         )
 
         registerModule(Fucker)

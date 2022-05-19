@@ -142,6 +142,7 @@ class AutoPot : Module() {
                     debug("jumped")
                 }
 
+                RotationUtils.reset() // reset all rotations
                 event.pitch = 90F
                 debug("silent rotation")
             }

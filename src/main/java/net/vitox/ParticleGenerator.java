@@ -1,8 +1,6 @@
 package net.vitox;
 
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.vitox.particle.util.RenderUtils;
 
 import java.util.ArrayList;
@@ -15,7 +13,6 @@ import java.util.Random;
  * @author Vitox
  * @version 3.0
  */
-@SideOnly(Side.CLIENT)
 public class ParticleGenerator {
 
     private final List<Particle> particles = new ArrayList<>();

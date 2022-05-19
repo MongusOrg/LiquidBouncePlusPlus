@@ -29,14 +29,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S0BPacketAnimation;
 import net.minecraft.network.play.server.S14PacketEntity;
+import net.minecraft.network.play.server.S38PacketPlayerListItem;
+import net.minecraft.network.play.server.S41PacketServerDifficulty;
+import net.minecraft.world.WorldSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @ModuleInfo(name = "AntiBot", spacedName = "Anti Bot", description = "Prevents KillAura from attacking AntiCheat bots.", category = ModuleCategory.MISC)
 public class AntiBot extends Module {
+    private final BoolValue czechHekValue = new BoolValue("CzechMatrix", false);
+    private final BoolValue czechHekPingCheckValue = new BoolValue("PingCheck", true, () -> czechHekValue.get());
+    private final BoolValue czechHekGMCheckValue = new BoolValue("GamemodeCheck", true, () -> czechHekValue.get());
     private final BoolValue tabValue = new BoolValue("Tab", true);
     private final ListValue tabModeValue = new ListValue("TabMode", new String[] {"Equals", "Contains"}, "Contains");
     private final BoolValue entityIDValue = new BoolValue("EntityID", true);
@@ -57,6 +65,7 @@ public class AntiBot extends Module {
     private final BoolValue pingValue = new BoolValue("Ping", false);
     private final BoolValue needHitValue = new BoolValue("NeedHit", false);
     private final BoolValue duplicateInWorldValue = new BoolValue("DuplicateInWorld", false);
+    private final BoolValue drvcValue = new BoolValue("ReverseCheck", true, () -> duplicateInWorldValue.get());
     private final BoolValue duplicateInTabValue = new BoolValue("DuplicateInTab", false);
     private final BoolValue experimentalNPCDetection = new BoolValue("ExperimentalNPCDetection", false);
     private final BoolValue illegalName = new BoolValue("IllegalName", false);
@@ -71,6 +80,8 @@ public class AntiBot extends Module {
     private final List<Integer> invisible = new ArrayList<>();
     private final List<Integer> hitted = new ArrayList<>();
 
+    private boolean wasAdded = (mc.thePlayer != null);
+
     @Override
     public void onDisable() {
         clearAll();
@@ -81,6 +92,7 @@ public class AntiBot extends Module {
     public void onUpdate(final UpdateEvent event) {
         if(mc.thePlayer == null || mc.theWorld == null)
             return;
+
         if (removeFromWorld.get() && mc.thePlayer.ticksExisted > 0 && mc.thePlayer.ticksExisted % removeIntervalValue.get() == 0){ 
             List<EntityPlayer> ent = new ArrayList<>();
             for (EntityPlayer entity : mc.theWorld.playerEntities) {
@@ -101,6 +113,23 @@ public class AntiBot extends Module {
             return;
 
         final Packet<?> packet = event.getPacket();
+
+        if (czechHekValue.get()) {
+            if (packet instanceof S41PacketServerDifficulty) wasAdded = false;
+            if (packet instanceof S38PacketPlayerListItem) {
+                final S38PacketPlayerListItem packetListItem = (S38PacketPlayerListItem) event.getPacket();
+                final S38PacketPlayerListItem.AddPlayerData data = packetListItem.getEntries().get(0);
+
+                if (data.getProfile() != null && data.getProfile().getName() != null) {
+                    if (!wasAdded) 
+                        wasAdded = data.getProfile().getName().equals(mc.thePlayer.getName());
+                    else if (!mc.thePlayer.isSpectator() && !mc.thePlayer.capabilities.allowFlying && (!czechHekPingCheckValue.get() || data.getPing() != 0) && (!czechHekGMCheckValue.get() || data.getGameMode() != WorldSettings.GameType.NOT_SET)) {
+                        event.cancelEvent();
+                        if (debugValue.get()) ClientUtils.displayChatMessage("§7[§a§lAnti Bot/§6Matrix§7] §fPrevented §r"+data.getProfile().getName()+" §ffrom spawning.");
+                    }
+                }
+            }
+        }
 
         if(packet instanceof S14PacketEntity) {
             final S14PacketEntity packetEntity = (S14PacketEntity) event.getPacket();
@@ -161,7 +190,7 @@ public class AntiBot extends Module {
     }
 
     public static boolean isBot(final EntityLivingBase entity) {
-        if (!(entity instanceof EntityPlayer))
+        if (!(entity instanceof EntityPlayer) || entity == mc.thePlayer)
             return false;
 
         final AntiBot antiBot = (AntiBot) LiquidBounce.moduleManager.getModule(AntiBot.class);
@@ -246,7 +275,13 @@ public class AntiBot extends Module {
             }
         }
 
-        if(antiBot.duplicateInWorldValue.get()) {
+        if (antiBot.duplicateInWorldValue.get()) {
+            if (antiBot.drvcValue.get() && reverse(mc.theWorld.loadedEntityList.stream())
+                    .filter(currEntity -> currEntity instanceof EntityPlayer && ((EntityPlayer) currEntity)
+                            .getDisplayNameString().equals(((EntityPlayer) currEntity).getDisplayNameString()))
+                    .count() > 1)
+                return true;
+
             if (mc.theWorld.loadedEntityList.stream()
                     .filter(currEntity -> currEntity instanceof EntityPlayer && ((EntityPlayer) currEntity)
                             .getDisplayNameString().equals(((EntityPlayer) currEntity).getDisplayNameString()))
@@ -254,7 +289,7 @@ public class AntiBot extends Module {
                 return true;
         }
 
-        if(antiBot.duplicateInTabValue.get()) {
+        if (antiBot.duplicateInTabValue.get()) {
             if (mc.getNetHandler().getPlayerInfoMap().stream()
                     .filter(networkPlayer -> entity.getName().equals(ColorUtils.stripColor(EntityUtils.getName(networkPlayer))))
                     .count() > 1)
@@ -262,6 +297,12 @@ public class AntiBot extends Module {
         }
 
         return entity.getName().isEmpty() || entity.getName().equals(mc.thePlayer.getName());
+    }
+
+    private static <T> Stream<T> reverse(Stream<T> stream) { // from Don't Panic!
+        LinkedList<T> stack = new LinkedList<>();
+        stream.forEach(stack::push);
+        return stack.stream();
     }
 
 }

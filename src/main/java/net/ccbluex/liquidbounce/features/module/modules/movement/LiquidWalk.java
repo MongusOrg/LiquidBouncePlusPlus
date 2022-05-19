@@ -26,10 +26,11 @@ import org.lwjgl.input.Keyboard;
 @ModuleInfo(name = "LiquidWalk", spacedName = "Liquid Walk", description = "Allows you to walk on water.", category = ModuleCategory.MOVEMENT, keyBind = Keyboard.KEY_J)
 public class LiquidWalk extends Module {
 
-    public final ListValue modeValue = new ListValue("Mode", new String[] {"Vanilla", "NCP", "AAC", "AAC3.3.11", "AACFly", "AAC4.2.1", "Horizon1.4.6", "Twillight", "Matrix" , "Dolphin", "Swim"}, "NCP");
+    public final ListValue modeValue = new ListValue("Mode", new String[] {"Vanilla", "NCP", "AAC", "AAC3.3.11", "AACFly", "AAC4.2.1", "Horizon1.4.6", "Twillight", "Matrix", "Dolphin", "Swim"}, "NCP");
     private final BoolValue noJumpValue = new BoolValue("NoJump", false);
 
     private final FloatValue aacFlyValue = new FloatValue("AACFlyMotion", 0.5F, 0.1F, 1F);
+    private final FloatValue matrixSpeedValue = new FloatValue("MatrixSpeed", 1.15F, 0.1F, 1.15F, () -> modeValue.get().equalsIgnoreCase("matrix"));
 
     private boolean nextTick;
 
@@ -79,7 +80,7 @@ public class LiquidWalk extends Module {
                 if(mc.thePlayer.isInWater()) {
                     mc.gameSettings.keyBindJump.pressed = false;
                     if(mc.thePlayer.isCollidedHorizontally) {
-                        mc.thePlayer.motionY = + 0.09;
+                        mc.thePlayer.motionY = 0.09;
                         return;
                     }
 
@@ -91,11 +92,8 @@ public class LiquidWalk extends Module {
                     }else if(block instanceof BlockLiquid) {
                         mc.thePlayer.motionY = 0;
                     }
-                    mc.thePlayer.motionX *= 1.15;
-                    mc.thePlayer.motionZ *= 1.15;
-
-
-
+                    mc.thePlayer.motionX *= matrixSpeedValue.get();
+                    mc.thePlayer.motionZ *= matrixSpeedValue.get();
                 }
                 break;
             case "aac3.3.11":
@@ -161,7 +159,6 @@ public class LiquidWalk extends Module {
             event.setY(0.01);
             mc.thePlayer.motionY = 0.01;
         }
-
     }
 
     @EventTarget

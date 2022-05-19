@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.utils.extensions
 
+import net.ccbluex.liquidbounce.utils.Rotation
 import net.minecraft.entity.Entity
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.Vec3
@@ -33,3 +34,6 @@ fun getNearestPointBB(eye: Vec3, box: AxisAlignedBB): Vec3 {
     }
     return Vec3(origin[0], origin[1], origin[2])
 }
+
+val Entity.rotation: Rotation
+    get() = Rotation(rotationYaw, rotationPitch)

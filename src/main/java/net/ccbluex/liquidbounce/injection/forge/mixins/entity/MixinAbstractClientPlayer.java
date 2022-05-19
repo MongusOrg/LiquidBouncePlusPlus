@@ -14,8 +14,6 @@ import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.init.Items;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Objects;
 
 @Mixin(AbstractClientPlayer.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinAbstractClientPlayer extends MixinEntityPlayer {
 
     //private CapeInfo capeInfo;
@@ -70,7 +67,7 @@ public abstract class MixinAbstractClientPlayer extends MixinEntityPlayer {
             if (!nameProtect.allPlayersValue.get() && !Objects.equals(getGameProfile().getName(), Minecraft.getMinecraft().thePlayer.getGameProfile().getName()))
                 return;
 
-            callbackInfoReturnable.setReturnValue(DefaultPlayerSkin.getDefaultSkin(getUniqueID()));
+            callbackInfoReturnable.setReturnValue((nameProtect.customSkinValue.get() && nameProtect.skinImage != null) ? nameProtect.skinImage : DefaultPlayerSkin.getDefaultSkin(getUniqueID()));
         }
     }
 }

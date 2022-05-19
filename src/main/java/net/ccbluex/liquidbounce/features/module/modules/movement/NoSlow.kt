@@ -17,6 +17,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.MovementUtils
+import net.ccbluex.liquidbounce.utils.PacketUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
@@ -25,6 +26,7 @@ import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.item.*
 import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
+import net.minecraft.network.play.client.C09PacketHeldItemChange
 import net.minecraft.network.play.server.S30PacketWindowItems
 import net.minecraft.util.BlockPos
 import net.minecraft.util.EnumFacing
@@ -32,16 +34,18 @@ import net.minecraft.util.EnumFacing
 @ModuleInfo(name = "NoSlow", spacedName = "No Slow", category = ModuleCategory.MOVEMENT, description = "Prevent you from getting slowed down by items (swords, foods, etc.) and liquids.")
 class NoSlow : Module() {
     private val msTimer = MSTimer()
-    private val modeValue = ListValue("PacketMode", arrayOf("Custom", "Watchdog", "OldWatchdog", "OldHypixel", "NCP", "AAC", "AAC5", "None"), "None")
+    private val modeValue = ListValue("PacketMode", arrayOf("Vanilla", "Custom", "Watchdog", "OldWatchdog", "OldHypixel", "NCP", "AAC", "AAC5"), "Vanilla")
     private val blockForwardMultiplier = FloatValue("BlockForwardMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val blockStrafeMultiplier = FloatValue("BlockStrafeMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val consumeForwardMultiplier = FloatValue("ConsumeForwardMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val consumeStrafeMultiplier = FloatValue("ConsumeStrafeMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val bowForwardMultiplier = FloatValue("BowForwardMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val bowStrafeMultiplier = FloatValue("BowStrafeMultiplier", 1.0F, 0.2F, 1.0F, "x")
+    private val customRelease = BoolValue("CustomReleasePacket", false, { modeValue.get().equals("custom", true) })
+    private val customPlace = BoolValue("CustomPlacePacket", false, { modeValue.get().equals("custom", true) })
     private val customOnGround = BoolValue("CustomOnGround", false, { modeValue.get().equals("custom", true) })
-    private val customDelayValue = IntegerValue("CustomDelay", 60, 10, 200, "ms", { modeValue.get().equals("custom", true) })
-    private val sendPacketValue = BoolValue("SendPacket", true, { modeValue.get().equals("watchdog", true) })
+    private val customDelayValue = IntegerValue("CustomDelay", 60, 0, 1000, "ms", { modeValue.get().equals("custom", true) })
+    private val testValue = BoolValue("SendPacket", false, { modeValue.get().equals("watchdog", true) })
     private val debugValue = BoolValue("Debug", false, { modeValue.get().equals("watchdog", true) })
 
     // Soulsand
@@ -97,11 +101,19 @@ class NoSlow : Module() {
             return
 
         val heldItem = mc.thePlayer.heldItem
-        val killAura = LiquidBounce.moduleManager[KillAura::class.java] as KillAura
+        val killAura = LiquidBounce.moduleManager[KillAura::class.java]!! as KillAura
 
         if(modeValue.get().equals("aac5", true)) {
             if (event.eventState == EventState.POST && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking() || killAura.blockingStatus)) {
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0f, 0f, 0f))
+            }
+        } else if (modeValue.get().equals("watchdog", true)) {
+            if (testValue.get() && (!killAura.state || !killAura.blockingStatus) 
+                && event.eventState == EventState.PRE
+                && mc.thePlayer.getItemInUse() != null && mc.thePlayer.getItemInUse().getItem() != null) {
+                val item = mc.thePlayer.getItemInUse().getItem()
+                if (mc.thePlayer.isUsingItem && (item is ItemFood || item is ItemBucketMilk || item is ItemPotion) && mc.thePlayer.getItemInUseCount() >= 1)
+                    PacketUtils.sendPacketNoEvent(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
             }
         } else {
             if (!mc.thePlayer.isBlocking && !killAura.blockingStatus) {
@@ -117,25 +129,15 @@ class NoSlow : Module() {
                 }
 
                 "custom" -> {
-                    sendPacket(event,true,true,true,customDelayValue.get().toLong(),customOnGround.get())
+                    sendPacket(event, customRelease.get(), customPlace.get(), customDelayValue.get() > 0, customDelayValue.get().toLong(), customOnGround.get())
                 }
 
                 "ncp" -> {
-                    sendPacket(event,true,true,false,0,false)
-                }
-
-                "watchdog" -> {
-                    if (sendPacketValue.get() && !killAura.blockingStatus) {
-                        if (event.eventState == EventState.PRE) {
-                            mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(-1, -1, -1), EnumFacing.DOWN))
-                        } else {
-                            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0F, 0F, 0F))
-                        }
-                    }
+                    sendPacket(event, true, true, false, 0, false)
                 }
 
                 "oldwatchdog" -> {
-                    if(mc.thePlayer.ticksExisted % 2 == 0) {
+                    if (mc.thePlayer.ticksExisted % 2 == 0) {
                         sendPacket(event, true, false, false, 50, true)
                     } else {
                         sendPacket(event, false, true, false, 0, true, true)

@@ -241,7 +241,7 @@ object Fucker : Module() {
         searchBlocks(rangeValue.get().toInt() + 1).filter {
                     Block.getIdFromBlock(it.value) == targetID && getCenterDistance(it.key) <= rangeValue.get()
                             && (isHitable(it.key) || surroundingsValue.get())
-                }.minBy { getCenterDistance(it.key) }?.key*/
+                }.minByOrNull { getCenterDistance(it.key) }?.key*/
 
     //Removed triple iteration of blocks to improve speed
     /**

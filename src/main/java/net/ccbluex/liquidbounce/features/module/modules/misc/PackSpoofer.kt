@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.misc
 
+import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.features.module.Module
@@ -23,6 +24,7 @@ class PackSpoofer : Module() {
     @EventTarget
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
+        val antiExploit = LiquidBounce.moduleManager[AntiExploit::class.java]!! as AntiExploit
 
         if (packet is S48PacketResourcePackSend) {
             val url = packet.url
@@ -40,8 +42,18 @@ class PackSpoofer : Module() {
                     val file1 = File(mc.mcDataDir, "saves")
                     val file2 = File(file1, s2)
 
-                    if (!file2.isFile() || url.contains("liquidbounce", true))
-                        throw URISyntaxException(url, "Invalid levelstorage resourcepack path")
+                    if (!file2.isFile() || url.contains("liquidbounce", true)) {
+                        if (antiExploit.state && antiExploit.notifyValue.get()) {
+                            ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §6Resourcepack exploit detected.")
+                            ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §7Exploit target directory: §r$url")
+
+                            throw URISyntaxException(url, "Invalid levelstorage resourcepack path")
+                        } else {
+                            mc.netHandler.addToSendQueue(C19PacketResourcePackStatus(hash, C19PacketResourcePackStatus.Action.FAILED_DOWNLOAD))
+                            event.cancelEvent()
+                            return
+                        }
+                    }
                 }
 
                 mc.netHandler.addToSendQueue(C19PacketResourcePackStatus(packet.hash,

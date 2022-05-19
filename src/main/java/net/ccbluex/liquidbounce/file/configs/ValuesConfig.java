@@ -5,20 +5,18 @@
  */
 package net.ccbluex.liquidbounce.file.configs;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.Module;
 import net.ccbluex.liquidbounce.features.special.AntiForge;
 import net.ccbluex.liquidbounce.features.special.AutoReconnect;
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof;
+import net.ccbluex.liquidbounce.features.special.MacroManager;
 import net.ccbluex.liquidbounce.file.FileConfig;
 import net.ccbluex.liquidbounce.file.FileManager;
 import net.ccbluex.liquidbounce.ui.client.GuiBackground;
 import net.ccbluex.liquidbounce.ui.client.GuiMainMenu;
-import net.ccbluex.liquidbounce.ui.client.altmanager.sub.altgenerator.GuiTheAltening;
+import net.ccbluex.liquidbounce.ui.client.altmanager.menus.altgenerator.GuiTheAltening;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
 import net.ccbluex.liquidbounce.value.Value;
 
@@ -72,6 +70,15 @@ public class ValuesConfig extends FileConfig {
                     EntityUtils.targetInvisible = jsonValue.get("TargetInvisible").getAsBoolean();
                 if (jsonValue.has("TargetDead"))
                     EntityUtils.targetDead = jsonValue.get("TargetDead").getAsBoolean();
+            } else if (entry.getKey().equalsIgnoreCase("macros")) {
+                JsonArray jsonValue = entry.getValue().getAsJsonArray();
+                for (final JsonElement macroElement : jsonValue) {
+                    JsonObject macroObject = macroElement.getAsJsonObject();
+                    JsonElement keyValue = macroObject.get("key");
+                    JsonElement commandValue = macroObject.get("command");
+
+                    MacroManager.INSTANCE.addMacro(keyValue.getAsInt(), commandValue.getAsString());
+                }
             } else if (entry.getKey().equalsIgnoreCase("features")) {
                 JsonObject jsonValue = (JsonObject) entry.getValue();
 
@@ -137,6 +144,15 @@ public class ValuesConfig extends FileConfig {
         jsonTargets.addProperty("TargetInvisible", EntityUtils.targetInvisible);
         jsonTargets.addProperty("TargetDead", EntityUtils.targetDead);
         jsonObject.add("targets", jsonTargets);
+
+        final JsonArray jsonMacros = new JsonArray();
+        MacroManager.INSTANCE.getMacroMapping().forEach((k, v) -> {
+            final JsonObject jsonMacro = new JsonObject();
+            jsonMacro.addProperty("key", k);
+            jsonMacro.addProperty("command", v);
+            jsonMacros.add(jsonMacro);
+        });
+        jsonObject.add("macros", jsonMacros);
 
         final JsonObject jsonFeatures = new JsonObject();
         jsonFeatures.addProperty("AntiForge", AntiForge.enabled);

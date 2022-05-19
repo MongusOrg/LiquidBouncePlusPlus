@@ -88,12 +88,13 @@ class KillAura : Module() {
     private val hurtTimeValue = IntegerValue("HurtTime", 10, 0, 10)
 
     // Range
-    val rangeValue = FloatValue("Range", 3.7f, 1f, 8f, "m") //target hud thingy
+    val rangeValue = FloatValue("Range", 3.7f, 1f, 8f, "m")
     private val throughWallsRangeValue = FloatValue("ThroughWallsRange", 3f, 0f, 8f, "m")
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f, "m")
 
     // Modes
-    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin"), "BackTrack")
+    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin", "None"), "BackTrack")
+    private val spinHurtTimeValue = IntegerValue("Spin-HitHurtTime", 10, 0, 10, { rotations.get().equals("spin", true) })
 
     // Spin Speed
     private val maxSpinSpeed: FloatValue = object : FloatValue("MaxSpinSpeed", 180f, 0f, 180f, "°", { rotations.get().equals("spin", true) }) {
@@ -111,7 +112,7 @@ class KillAura : Module() {
     }
 
     private val noSendRot = BoolValue("NoSendRotation", true, { rotations.get().equals("spin", true) })
-    private val noHitCheck = BoolValue("NoHitCheck", false)
+    private val noHitCheck = BoolValue("NoHitCheck", false, { !rotations.get().equals("none", true) })
 
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
@@ -150,21 +151,21 @@ class KillAura : Module() {
     private val aacValue = BoolValue("AAC", false)
 
     // Turn Speed
-    private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f, "°") {
+    private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f, "°", { !rotations.get().equals("none", true) }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = minTurnSpeed.get()
             if (v > newValue) set(v)
         }
     }
 
-    private val minTurnSpeed: FloatValue = object : FloatValue("MinTurnSpeed", 180f, 0f, 180f, "°") {
+    private val minTurnSpeed: FloatValue = object : FloatValue("MinTurnSpeed", 180f, 0f, 180f, "°", { !rotations.get().equals("none", true) }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = maxTurnSpeed.get()
             if (v < newValue) set(v)
         }
     }
 
-    private val silentRotationValue = BoolValue("SilentRotation", true)
+    private val silentRotationValue = BoolValue("SilentRotation", true, { !rotations.get().equals("none", true) })
     private val rotationStrafeValue = ListValue("Strafe", arrayOf("Off", "Strict", "Silent"), "Off")
     
     private val fovValue = FloatValue("FOV", 180f, 0f, 180f)
@@ -186,15 +187,15 @@ class KillAura : Module() {
         }
     }
 
-    private val randomCenterValue = BoolValue("RandomCenter", false)
-    private val randomCenterNewValue = BoolValue("NewCalc", true, { randomCenterValue.get() })
-    private val minRand: FloatValue = object : FloatValue("MinMultiply", 0.8f, 0f, 2f, "x", { randomCenterValue.get() }) {
+    private val randomCenterValue = BoolValue("RandomCenter", false, { !rotations.get().equals("none", true) })
+    private val randomCenterNewValue = BoolValue("NewCalc", true, { !rotations.get().equals("none", true) && randomCenterValue.get() })
+    private val minRand: FloatValue = object : FloatValue("MinMultiply", 0.8f, 0f, 2f, "x", { !rotations.get().equals("none", true) && randomCenterValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = maxRand.get()
             if (v < newValue) set(v)
         }
     }
-    private val maxRand: FloatValue = object : FloatValue("MaxMultiply", 0.8f, 0f, 2f, "x", { randomCenterValue.get() }) {
+    private val maxRand: FloatValue = object : FloatValue("MaxMultiply", 0.8f, 0f, 2f, "x", { !rotations.get().equals("none", true) && randomCenterValue.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
             val v = minRand.get()
             if (v > newValue) set(v)
@@ -789,6 +790,8 @@ class KillAura : Module() {
      * Update killaura rotations to enemy
      */
     private fun updateRotations(entity: Entity): Boolean {
+        if (rotations.get().equals("none", true)) return true
+
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
         val modify = disabler.canModifyRotation
 
@@ -877,11 +880,16 @@ class KillAura : Module() {
      * Check if enemy is hitable with current rotations
      */
     private fun updateHitable() {
+        if (rotations.get().equals("none", true)) {
+            hitable = true
+            return
+        }
+
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java)!! as Disabler
 
         // Modify hit check for some situations
         if (rotations.get().equals("spin", true)) {
-            hitable = target!!.hurtTime <= 1
+            hitable = target!!.hurtTime <= spinHurtTimeValue.get()
             return
         }
 

@@ -27,8 +27,8 @@ import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 
-@ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT)
-public class ClickGUI extends Module { // TODO fr fr new clickgui
+@ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT, forceNoSound = true, onlyEnable = true)
+public class ClickGUI extends Module {
     private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White"}, "Null") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
@@ -48,6 +48,9 @@ public class ClickGUI extends Module { // TODO fr fr new clickgui
     private static final IntegerValue mixerSecondsValue = new IntegerValue("Seconds", 2, 1, 10);
 
     public final ListValue backgroundValue = new ListValue("Background", new String[] {"Default", "Gradient", "None"}, "Default");
+
+    public final IntegerValue gradStartValue = new IntegerValue("GradientStartAlpha", 255, 0, 255, () -> backgroundValue.get().equalsIgnoreCase("gradient"));
+    public final IntegerValue gradEndValue = new IntegerValue("GradientEndAlpha", 0, 0, 255, () -> backgroundValue.get().equalsIgnoreCase("gradient"));
 
     public final ListValue animationValue = new ListValue("Animation", new String[] {"Azura", "Slide", "SlideBounce", "Zoom", "ZoomBounce", "None"}, "Azura");
 
@@ -86,11 +89,6 @@ public class ClickGUI extends Module { // TODO fr fr new clickgui
         mc.displayGuiScreen(LiquidBounce.clickGui);
     }
 
-    @EventTarget
-    public void onTick(TickEvent event) {
-        this.setState(false);
-    }
-
     private void updateStyle() {
         switch(styleValue.get().toLowerCase()) {
             case "liquidbounce":
@@ -108,15 +106,6 @@ public class ClickGUI extends Module { // TODO fr fr new clickgui
             case "white":
                 LiquidBounce.clickGui.style = new WhiteStyle();
                 break;
-        }
-    }
-
-    @EventTarget(ignoreCondition = true)
-    public void onPacket(final PacketEvent event) {
-        final Packet packet = event.getPacket();
-
-        if (packet instanceof S2EPacketCloseWindow && mc.currentScreen instanceof ClickGui) {
-            event.cancelEvent();
         }
     }
 }

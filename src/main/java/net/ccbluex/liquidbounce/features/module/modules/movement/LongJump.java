@@ -32,23 +32,10 @@ import net.minecraft.util.EnumFacing;
 @ModuleInfo(name = "LongJump", spacedName = "Long Jump", description = "Allows you to jump further.", category = ModuleCategory.MOVEMENT)
 public class LongJump extends Module {
 
-    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP"/*, "HypixelDamage", "HypixelDamage2"*/, "Damage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
+    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "Damage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
 
     private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
-
-    /*private final ListValue hypixelDmgMode = new ListValue("HypixelDamage-Mode", new String[] {"Spartan", "Test", "Mini"}, "Spartan", () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final IntegerValue hypixelDmgDelay = new IntegerValue("HypixelDamage-DmgDelay", 0, 0, 2000, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final BoolValue hypixelDmgBlinkComp = new BoolValue("HypixelDamage-BlinkCompatible", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage") || modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final BoolValue hypixelStrafe = new BoolValue("HypixelDamage-StrafeAfterTick", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
-    private final IntegerValue hypixelDmgTick = new IntegerValue("HypixelDamage-Tick", 10, 1, 20, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
-    private final FloatValue hypixelDmgMotionY = new FloatValue("HypixelDamage-MotionY", 1F, 0F, 2F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
-    private final FloatValue hypixelDmgXZBoost = new FloatValue("HypixelDamage-XZBoost", 1F, 0F, 2F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage"); });
-
-    private final BoolValue hypixelDmgRider = new BoolValue("HypixelDamage2-FakeRideJump", false, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final FloatValue hpxDamage2Value = new FloatValue("HypixelDamage2-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final FloatValue hpxDamage2HeightValue = new FloatValue("HypixelDamage2-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });
-    private final FloatValue hpxDamage2TimerValue = new FloatValue("HypixelDamage2-Timer", 1F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("hypixeldamage2"); });*/
 
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
     private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
@@ -86,11 +73,6 @@ public class LongJump extends Module {
     private int pearlState = 0;
 
     private MSTimer dmgTimer = new MSTimer();
-
-    /*private void sendPosPacket(double x, double y, double z, boolean gr) {
-        if (hypixelDmgBlinkComp.get()) mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, gr));
-        else PacketUtils.sendPacketNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, gr));
-    }*/
 
     public void onEnable() {
         if (mc.thePlayer == null) return;
@@ -133,69 +115,7 @@ public class LongJump extends Module {
                 }
             }
         }
-/*
-        if (modeValue.get().equalsIgnoreCase("hypixeldamage2")) {
-            switch (hypixelDmgMode.get().toLowerCase()) {
-                case "spartan":
-                    for(int i = 0; i < 65; ++i) {
-                        sendPosPacket(x, y + 0.049D, z, false);
-                        sendPosPacket(x, y, z, false);
-                    }
-                    sendPosPacket(x, y + 0.1D, z, true);
-                    break;
-                case "test":
-                    for(int i = 0; i < 32; ++i) {
-                        sendPosPacket(x, y + 0.1075D, z, false);
-                        sendPosPacket(x, y, z, false);
-                    }
-                    sendPosPacket(x, y + 0.0095D, z, true);
-                    break;
-                case "mini": // only 10 packets??? might actually work LOL
-                    for(int i = 0; i < 10; ++i) {
-                        sendPosPacket(x, y + 0.3175D, z, false);
-                        sendPosPacket(x, y, z, false);
-                    }
-                    sendPosPacket(x, y + 0.01025D, z, true);
-                    break;
-            }
-        }
-*/
     }
-
-    /*@EventTarget
-    public void onMotion(final MotionEvent event) {
-        double x = mc.thePlayer.posX;
-        double y = mc.thePlayer.posY;
-        double z = mc.thePlayer.posZ;
-        
-        if (!hpxDamage && modeValue.get().equalsIgnoreCase("hypixeldamage") && (hypixelDmgDelay.get() <= 0 || dmgTimer.hasTimePassed(hypixelDmgDelay.get()))) {
-            switch (hypixelDmgMode.get().toLowerCase()) {
-            case "spartan":
-                for(int i = 0; i < 65; ++i) {
-                    sendPosPacket(x, y + 0.049D, z, false);
-                    sendPosPacket(x, y, z, false);
-                }
-                sendPosPacket(x, y + 0.1D, z, true);
-                break;
-            case "test":
-                for(int i = 0; i < 32; ++i) {
-                    sendPosPacket(x, y + 0.1075D, z, false);
-                    sendPosPacket(x, y, z, false);
-                }
-                sendPosPacket(x, y + 0.0095D, z, true);
-                break;
-            case "mini": // only 10 packets??? might actually work LOL
-                for(int i = 0; i < 10; ++i) {
-                    sendPosPacket(x, y + 0.3175D, z, false);
-                    sendPosPacket(x, y, z, false);
-                }
-                sendPosPacket(x, y + 0.01025D, z, true);
-                break;
-            }
-
-            hpxDamage = true;
-        }
-    }*/
 
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
@@ -225,27 +145,7 @@ public class LongJump extends Module {
 
             return;
         }
-/*
-        if (modeValue.get().equalsIgnoreCase("hypixeldamage2")) {
-            if (mc.thePlayer.hurtTime > 0 && !hpxDamage) {
-                if (hypixelDmgRider.get()) {
-                    PacketUtils.sendPacketNoEvent(new C0CPacketInput());
-                    PacketUtils.sendPacketNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.RIDING_JUMP, 100));
-                }
-                hpxDamage = true;
-                MovementUtils.strafe(hpxDamage2Value.get());
-                mc.thePlayer.motionY = hpxDamage2HeightValue.get();
-            }
-            if (hpxDamage)
-                mc.timer.timerSpeed = hpxDamage2TimerValue.get();
-            else {
-                mc.thePlayer.movementInput.moveForward = 0F;
-                mc.thePlayer.movementInput.moveStrafe = 0F;
-            }
 
-            return;
-        }
-*/
         if (modeValue.get().equalsIgnoreCase("damage")) {
             if (mc.thePlayer.hurtTime > 0 && !damaged) {
                 damaged = true;
@@ -382,6 +282,9 @@ public class LongJump extends Module {
                     }
                     if (ticks < redeskyTickValue.get()) {
                         mc.thePlayer.jump();
+                        mc.thePlayer.motionY *= redeskyYMultiplier.get();
+                        mc.thePlayer.motionX *= redeskyXZMultiplier.get();
+                        mc.thePlayer.motionZ *= redeskyXZMultiplier.get();
                     } else {
                         if (redeskyGlideAfterTicksValue.get()) {
                             mc.thePlayer.motionY += 0.03F;
@@ -390,22 +293,8 @@ public class LongJump extends Module {
                             currentTimer = Math.max(0.08F, currentTimer - 0.05F * redeskyTimerBoostSlowDownSpeedValue.get()); // zero-timer protection
                         }
                     }
-                    mc.thePlayer.motionY *= redeskyYMultiplier.get();
-                    mc.thePlayer.motionX *= redeskyXZMultiplier.get();
-                    mc.thePlayer.motionZ *= redeskyXZMultiplier.get();
                     ticks++;
                     break;
-                // copied????
-                /*case "hypixeldamage":
-                    if (ticks < hypixelDmgTick.get()) {
-                        mc.thePlayer.jump();
-                        mc.thePlayer.motionY = hypixelDmgMotionY.get();
-                        MovementUtils.strafe(MovementUtils.getSpeed() * hypixelDmgXZBoost.get());
-                    } else {
-                        if (!mc.thePlayer.onGround && hypixelStrafe.get()) MovementUtils.strafe(hypixelDmgXZBoost.get());
-                    }
-                    ticks++;
-                    break;*/
                 case "infiniteredesky":
                     if(mc.thePlayer.fallDistance > 0.6F) 
                         mc.thePlayer.motionY += 0.02F;
@@ -437,7 +326,7 @@ public class LongJump extends Module {
         if ((mode.equalsIgnoreCase("damage") && damageNoMoveValue.get() && !damaged) || (mode.equalsIgnoreCase("verusdmg") && !verusDmged))
             event.zeroXZ();
 
-        if (/* || (mode.equalsIgnoreCase("hypixeldamage2") && !hpxDamage)*/mode.equalsIgnoreCase("pearl") && pearlState != 2)
+        if (mode.equalsIgnoreCase("pearl") && pearlState != 2)
             event.cancelEvent();
     }
 

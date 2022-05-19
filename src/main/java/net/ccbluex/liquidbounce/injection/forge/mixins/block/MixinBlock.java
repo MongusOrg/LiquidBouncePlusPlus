@@ -24,8 +24,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -37,7 +35,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(Block.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinBlock {
 
     @Shadow
@@ -110,7 +107,7 @@ public abstract class MixinBlock {
             final NoFall noFall = (NoFall) LiquidBounce.moduleManager.getModule(NoFall.class);
             final Criticals criticals = (Criticals) LiquidBounce.moduleManager.getModule(Criticals.class);
 
-            if (noFall.getState() && noFall.modeValue.get().equalsIgnoreCase("NoGround") ||
+            if (noFall.getState() && noFall.getTypeValue().get().equalsIgnoreCase("edit") && noFall.getEditMode().get().equalsIgnoreCase("noground") ||
                     criticals.getState() && criticals.getModeValue().get().equalsIgnoreCase("NoGround")) {
                 f /= 5F;
             }

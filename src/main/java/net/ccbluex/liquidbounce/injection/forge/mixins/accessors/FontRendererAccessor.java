@@ -86,5 +86,5 @@ public interface FontRendererAccessor {
     int[] getColorCode();
 
     @Invoker
-    int callRenderString(String text, float x, float y, int color, boolean dropShadow);
+    int invokeRenderString(String text, float x, float y, int color, boolean dropShadow);
 }

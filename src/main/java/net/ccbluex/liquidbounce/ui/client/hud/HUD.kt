@@ -19,7 +19,6 @@ import org.lwjgl.opengl.GL11
 import kotlin.math.max
 import kotlin.math.min
 
-@SideOnly(Side.CLIENT)
 open class HUD : MinecraftInstance() {
 
     val elements = mutableListOf<Element>()
@@ -51,7 +50,6 @@ open class HUD : MinecraftInstance() {
         @JvmStatic
         fun createDefault() = HUD()
                 .addElement(Text.defaultClient())
-                //.addElement(TabGUI())
                 .addElement(Arraylist())
                 .addElement(ScoreboardElement())
                 .addElement(Armor())
@@ -64,7 +62,7 @@ open class HUD : MinecraftInstance() {
      * Render all elements
      */
     fun render(designer: Boolean) {
-        for (element in elements) {
+        elements.forEach { element ->
             GL11.glPushMatrix()
 
             if (!element.info.disableScale && element.scale != 1F)

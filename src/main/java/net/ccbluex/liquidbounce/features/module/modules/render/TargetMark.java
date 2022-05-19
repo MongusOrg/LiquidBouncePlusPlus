@@ -16,6 +16,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
+import net.ccbluex.liquidbounce.utils.render.BlendUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.*;
@@ -141,7 +142,7 @@ public class TargetMark extends Module {
 
 		    post3D();
         } else if (modeValue.get().equalsIgnoreCase("default")) {
-            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawPlatform(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()));
+            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawPlatform(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(aura.getTarget()), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()));
         } else if (modeValue.get().equalsIgnoreCase("tracers")) {
 			if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) {
 				final Tracers tracers = (Tracers) LiquidBounce.moduleManager.getModule(Tracers.class);
@@ -173,13 +174,16 @@ public class TargetMark extends Module {
         		GlStateManager.resetColor();
 			}
 		} else {
-            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawEntityBox(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(entity), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()), false);
+            if (!aura.getTargetModeValue().get().equalsIgnoreCase("multi") && aura.getTarget() != null) RenderUtils.drawEntityBox(aura.getTarget(), (aura.getHitable()) ? ColorUtils.reAlpha(getColor(aura.getTarget()), colorAlphaValue.get()) : new Color(255, 0, 0, colorAlphaValue.get()), false);
         }
 	}
 
 	public final Color getColor(final Entity ent) {
 		if (ent instanceof EntityLivingBase) {
 			final EntityLivingBase entityLivingBase = (EntityLivingBase) ent;
+
+			if (colorModeValue.get().equalsIgnoreCase("Health"))
+				return BlendUtils.getHealthColor(entityLivingBase.getHealth(), entityLivingBase.getMaxHealth());
 
 			if (colorTeam.get()) {
 				final char[] chars = entityLivingBase.getDisplayName().getFormattedText().toCharArray();

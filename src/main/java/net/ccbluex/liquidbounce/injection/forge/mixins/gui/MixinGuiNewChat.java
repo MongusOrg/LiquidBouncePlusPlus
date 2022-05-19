@@ -31,6 +31,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -90,10 +91,15 @@ public abstract class MixinGuiNewChat {
     private HUD hud;
     private final HashMap<String,String> stringCache=new HashMap<>();
 
-    private void checkHud(){
-        if(hud==null){
+    private void checkHud() {
+        if (hud == null)
             hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
-        }
+    }
+
+    @Redirect(method = "deleteChatLine", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ChatLine;getChatLineID()I"))
+    private int checkIfChatLineIsNull(ChatLine instance) {
+        if (instance == null) return -1;
+        return instance.getChatLineID();
     }
 
     @Overwrite
@@ -129,7 +135,7 @@ public abstract class MixinGuiNewChat {
     @Overwrite
     public void drawChat(int updateCounter) {
         checkHud();
-        boolean canFont=hud.getState() && hud.getFontChatValue().get();
+        boolean canFont = hud.getState() && hud.getFontChatValue().get();
 
         if (Patcher.chatPosition.get()) {
             GlStateManager.pushMatrix();
@@ -238,21 +244,21 @@ public abstract class MixinGuiNewChat {
             GlStateManager.popMatrix();
     }
 
-    private String fixString(String str){
-        if(stringCache.containsKey(str)) return stringCache.get(str);
+    private String fixString(String str) {
+        if (stringCache.containsKey(str)) return stringCache.get(str);
 
-        str=str.replaceAll("\uF8FF","");//remove air chars
+        str = str.replaceAll("\uF8FF", "");//remove air chars
 
-        StringBuilder sb=new StringBuilder();
-        for(char c:str.toCharArray()){
-            if((int) c >(33+65248)&& (int) c <(128+65248)){
+        StringBuilder sb = new StringBuilder();
+        for (char c : str.toCharArray()) {
+            if ((int) c > (33 + 65248) && (int) c < (128 + 65248))
                 sb.append(Character.toChars((int) c - 65248));
-            }else{
+            else
                 sb.append(c);
-            }
         }
-        String result=sb.toString();
-        stringCache.put(str,result);
+
+        String result = sb.toString();
+        stringCache.put(str, result);
 
         return result;
     }

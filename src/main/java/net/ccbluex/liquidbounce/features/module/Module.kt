@@ -19,7 +19,6 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.input.Keyboard
 
-@SideOnly(Side.CLIENT)
 open class Module : MinecraftInstance(), Listenable {
 
     // Module information
@@ -43,6 +42,8 @@ open class Module : MinecraftInstance(), Listenable {
                 LiquidBounce.fileManager.saveConfig(LiquidBounce.fileManager.modulesConfig)
         }
     private val canEnable: Boolean
+    private val onlyEnable: Boolean
+    private val forceNoSound: Boolean
 
     var slideStep = 0F
     var animation = 0F
@@ -58,6 +59,8 @@ open class Module : MinecraftInstance(), Listenable {
         keyBind = moduleInfo.keyBind
         array = moduleInfo.array
         canEnable = moduleInfo.canEnable
+        onlyEnable = moduleInfo.onlyEnable
+        forceNoSound = moduleInfo.forceNoSound
     }
 
     // Current state of module
@@ -69,21 +72,21 @@ open class Module : MinecraftInstance(), Listenable {
             onToggle(value)
 
             // Play sound and add notification
-            if (!LiquidBounce.isStarting) {
+            if (!LiquidBounce.isStarting && !forceNoSound) {
                 when (LiquidBounce.moduleManager.toggleSoundMode) {
                     1 -> mc.soundHandler.playSound(PositionedSoundRecord.create(ResourceLocation("random.click"),
                         1F))
                     2 -> (if (value) LiquidBounce.tipSoundManager.enableSound else LiquidBounce.tipSoundManager.disableSound).asyncPlay(LiquidBounce.moduleManager.toggleVolume)
                 }
                 if (LiquidBounce.moduleManager.shouldNotify)
-                    LiquidBounce.hud.addNotification(Notification("${if (value) "§aEnabled" else "§cDisabled"} §r$name", Notification.Type.INFO, 1000L))
+                    LiquidBounce.hud.addNotification(Notification("${if (value) "Enabled" else "Disabled"} §r$name", if (value) Notification.Type.SUCCESS else Notification.Type.ERROR, 1000L))
             }
 
             // Call on enabled or disabled
             if (value) {
                 onEnable()
 
-                if (canEnable)
+                if (!onlyEnable)
                     field = true
             } else {
                 onDisable()

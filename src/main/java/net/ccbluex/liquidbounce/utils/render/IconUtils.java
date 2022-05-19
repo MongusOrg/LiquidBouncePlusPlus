@@ -6,8 +6,6 @@
 package net.ccbluex.liquidbounce.utils.render;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -15,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-@SideOnly(Side.CLIENT)
 public final class IconUtils {
 
     public static ByteBuffer[] getFavicon() {

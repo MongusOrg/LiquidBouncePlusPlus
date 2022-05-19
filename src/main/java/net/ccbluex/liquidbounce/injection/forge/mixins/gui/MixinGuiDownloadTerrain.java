@@ -23,7 +23,6 @@ public abstract class MixinGuiDownloadTerrain extends MixinGuiScreen {
     @Inject(method = "initGui", at = @At(value = "RETURN"))
     private void injectDisconnectButton(CallbackInfo ci) {
         this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 120 + 12, I18n.format("gui.cancel")));
-        //SessionUtils.handleReconnection();
     }
 
     @Override
@@ -32,6 +31,7 @@ public abstract class MixinGuiDownloadTerrain extends MixinGuiScreen {
             boolean flag = this.mc.isIntegratedServerRunning();
             boolean flag1 = this.mc.isConnectedToRealms();
             button.enabled = false;
+
             this.mc.theWorld.sendQuittingDisconnectingPacket();
             this.mc.loadWorld(null);
 

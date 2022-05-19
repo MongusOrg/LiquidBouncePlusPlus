@@ -42,6 +42,7 @@ class NameTags : Module() {
     private val potionValue = BoolValue("Potions", true)
     private val clearNamesValue = BoolValue("ClearNames", false)
     private val fontValue = FontValue("Font", Fonts.font40)
+    private val fontShadowValue = BoolValue("Shadow", true)
     private val borderValue = BoolValue("Border", true)
     private val backgroundColorRedValue = IntegerValue("Background-R", 0, 0, 255)
     private val backgroundColorGreenValue = IntegerValue("Background-G", 0, 0, 255)
@@ -133,7 +134,7 @@ class NameTags : Module() {
 
         glScalef(-scale, -scale, scale)
 
-        AWTFontRenderer.assumeNonVolatile = true
+        //AWTFontRenderer.assumeNonVolatile = true
 
         // Draw NameTag
         val width = fontRenderer.getStringWidth(text) * 0.5f
@@ -159,9 +160,9 @@ class NameTags : Module() {
         glEnable(GL_TEXTURE_2D)
 
         fontRenderer.drawString(text, 1F + -width, if (fontRenderer == Fonts.minecraftFont) 1F else 1.5F,
-                0xFFFFFF, true)
+                0xFFFFFF, fontShadowValue.get())
 
-        AWTFontRenderer.assumeNonVolatile = false
+        //AWTFontRenderer.assumeNonVolatile = false
 
         var foundPotion = false
         if (potionValue.get() && entity is EntityPlayer) {

@@ -6,14 +6,13 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
+import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -27,7 +26,6 @@ import java.util.Comparator;
 import java.util.List;
 
 @Mixin(GuiChat.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinGuiChat extends MixinGuiScreen {
     @Shadow
     protected GuiTextField inputField;
@@ -66,12 +64,10 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
         if (fade < 14) fade = AnimationUtils.animate(14F, fade, 0.02F * delta);
         if (fade > 14) fade = 14;
 
-        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.0175F * delta);
+        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.0185F * delta);
         if (yPosOfInputField < height - 12) yPosOfInputField = height - 12;
 
         inputField.yPosition = (int) yPosOfInputField;
-
-        RenderUtils.yPosOffset = fade * (16F / 14F);
     }
 
     @Inject(method = "autocompletePlayerNames", at = @At("HEAD"))
@@ -135,10 +131,5 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
 
         if (ichatcomponent != null)
             this.handleComponentHover(ichatcomponent, mouseX, mouseY);
-    }
-
-    @Inject(method = "onGuiClosed", at = @At("RETURN"), cancellable = true) 
-    public void injectGuiClosed(CallbackInfo callbackInfo) {
-        RenderUtils.yPosOffset = 0F;
     }
 }

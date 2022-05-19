@@ -14,16 +14,10 @@ import net.ccbluex.liquidbounce.value.*;
 
 import java.util.HashMap;
 
-@ModuleInfo(name = "Patcher", description = "Bring many Patcher mod features into LiquidBounce+. (see settings for more info)", category = ModuleCategory.MISC, canEnable = false)
+@ModuleInfo(name = "Patcher", description = "improving your experience without bloatware, aka. Essential.", category = ModuleCategory.MISC, canEnable = false)
 public class Patcher extends Module {
 
-    public static final BoolValue betterFontRenderer = new BoolValue("BetterVanillaFontRenderer", false);
-    public static final BoolValue betterFontRendererStringCache = new BoolValue("BVFR-StringCache", false);
-    public static final BoolValue keepShadersOnPerspectiveChange = new BoolValue("KeepShadersOnPerspectiveChange", false);
-    public static final BoolValue optimizedWorldSwapping = new BoolValue("OptimizedWorldSnapping", true);
-    public static final BoolValue batchModelRendering = new BoolValue("BatchModelRendering", false);
-    public static final BoolValue labyModMoment = new BoolValue("LabyMod-Moment", false);
-    public static final BoolValue lowAnimationTick = new BoolValue("LowAnimationTick", false);
+    public static final BoolValue noHitDelay = new BoolValue("NoHitDelay", false);
     public static final BoolValue chatPosition = new BoolValue("ChatPosition1.12", true);
     public static final BoolValue silentNPESP = new BoolValue("SilentNPE-SpawnPlayer", true);
 

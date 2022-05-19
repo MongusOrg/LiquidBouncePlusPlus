@@ -18,7 +18,7 @@ import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
 import net.ccbluex.liquidbounce.utils.block.BlockUtils;
-import net.ccbluex.liquidbounce.utils.misc.FallingPlayer;
+import net.ccbluex.liquidbounce.utils.misc.NewFallingPlayer;
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils;
 import net.ccbluex.liquidbounce.value.*;
 
@@ -124,20 +124,10 @@ public class AntiVoid extends Module {
             shouldRender = false;
 
             if (!mc.thePlayer.onGround && !mc.thePlayer.isOnLadder() && !mc.thePlayer.isInWater()) {
-                FallingPlayer fallingPlayer = new FallingPlayer(
-                    mc.thePlayer.posX,
-                    mc.thePlayer.posY,
-                    mc.thePlayer.posZ,
-                    mc.thePlayer.motionX,
-                    mc.thePlayer.motionY,
-                    mc.thePlayer.motionZ,
-                    mc.thePlayer.rotationYaw,
-                    mc.thePlayer.moveStrafing,
-                    mc.thePlayer.moveForward
-                );
+                NewFallingPlayer NewFallingPlayer = new NewFallingPlayer(mc.thePlayer);
 
                 try {
-                    if (fallingPlayer != null) detectedLocation = fallingPlayer.findCollision(maxFindRangeValue.get()).getPos();
+                    detectedLocation = NewFallingPlayer.findCollision(maxFindRangeValue.get());
                 } catch (Exception e) {
                     // do nothing. i hate errors
                 }

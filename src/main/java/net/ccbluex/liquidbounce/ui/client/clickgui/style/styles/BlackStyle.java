@@ -149,7 +149,7 @@ public class BlackStyle extends Style {
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
 
-                        final float valueOfSlide = drawSlider(floatValue.get(), floatValue.getMinimum(), floatValue.getMaximum(), moduleElement.getX() + moduleElement.getWidth() + 8, moduleElement.slowlySettingsYPos + 14, (int) moduleElement.getSettingsWidth() - 12, mouseX, mouseY, new Color(20,20,20));
+                        final float valueOfSlide = drawSlider(floatValue.get(), floatValue.getMinimum(), floatValue.getMaximum(), false, moduleElement.getX() + moduleElement.getWidth() + 8, moduleElement.slowlySettingsYPos + 14, (int) moduleElement.getSettingsWidth() - 12, mouseX, mouseY, new Color(20,20,20));
 
                         if(valueOfSlide != floatValue.get())
                             floatValue.set(valueOfSlide);
@@ -164,7 +164,7 @@ public class BlackStyle extends Style {
                         if(moduleElement.getSettingsWidth() < textWidth + 8)
                             moduleElement.setSettingsWidth(textWidth + 8);
 
-                        final float valueOfSlide = drawSlider(integerValue.get(), integerValue.getMinimum(), integerValue.getMaximum(), moduleElement.getX() + moduleElement.getWidth() + 8, moduleElement.slowlySettingsYPos + 14, (int) moduleElement.getSettingsWidth() - 12, mouseX, mouseY, new Color(20,20,20));
+                        final float valueOfSlide = drawSlider(integerValue.get(), integerValue.getMinimum(), integerValue.getMaximum(), true, moduleElement.getX() + moduleElement.getWidth() + 8, moduleElement.slowlySettingsYPos + 14, (int) moduleElement.getSettingsWidth() - 12, mouseX, mouseY, new Color(20,20,20));
 
                         if(valueOfSlide != integerValue.get())
                             integerValue.set((int) valueOfSlide);
@@ -279,7 +279,7 @@ public class BlackStyle extends Style {
         return new Color(Math.max(r, 0), Math.max(g, 0), Math.max(b, 0), color.getAlpha());
     }
 
-    public static float drawSlider(final float value, final float min, final float max, final int x, final int y, final int width, final int mouseX, final int mouseY, final Color color) {
+    public static float drawSlider(final float value, final float min, final float max, final boolean inte, final int x, final int y, final int width, final int mouseX, final int mouseY, final Color color) {
         final float displayValue = Math.max(min, Math.min(value, max));
 
         final float sliderValue = (float) x + (float) width * (displayValue - min) / (max - min);
@@ -288,12 +288,22 @@ public class BlackStyle extends Style {
         RenderUtils.drawRect(x, y, sliderValue, y + 2, color);
         RenderUtils.drawFilledCircle((int) sliderValue, y + 1, 3, color);
 
-        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + 3 && Mouse.isButtonDown(0)) {
-            double i = MathHelper.clamp_double(((double) mouseX - (double) x) / ((double) width - 3), 0, 1);
+        if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + 3) {
+            int dWheel = Mouse.getDWheel();
+            if (dWheel != 0) {
+                if (dWheel > 0)
+                    return Math.min(value + (inte ? 1F : 0.01F), max);
+                if (dWheel < 0)
+                    return Math.max(value - (inte ? 1F : 0.01F), min);
+            }
+            
+            if (Mouse.isButtonDown(0)) {
+                double i = MathHelper.clamp_double(((double) mouseX - (double) x) / ((double) width - 3), 0, 1);
 
-            BigDecimal bigDecimal = new BigDecimal(Double.toString((min + (max - min) * i)));
-            bigDecimal = bigDecimal.setScale(2, 4);
-            return bigDecimal.floatValue();
+                BigDecimal bigDecimal = new BigDecimal(Double.toString((min + (max - min) * i)));
+                bigDecimal = bigDecimal.setScale(2, 4);
+                return bigDecimal.floatValue();
+            }
         }
 
         return value;

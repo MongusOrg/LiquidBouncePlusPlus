@@ -13,8 +13,6 @@ import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.MinecraftInstance;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -22,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Field;
 
-@SideOnly(Side.CLIENT)
 public class FileManager extends MinecraftInstance {
 
     public final File dir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME + "-1.8");
@@ -198,7 +195,7 @@ public class FileManager extends MinecraftInstance {
                 LiquidBounce.INSTANCE.setBackground(new ResourceLocation(LiquidBounce.CLIENT_NAME.toLowerCase() + "/userbackground.png"));
                 mc.getTextureManager().loadTexture(LiquidBounce.INSTANCE.getBackground(), new DynamicTexture(bufferedImage));
                 ClientUtils.getLogger().info("[FileManager] Loaded background.");
-            }catch(final Exception e) {
+            } catch (final Exception e) {
                 ClientUtils.getLogger().error("[FileManager] Failed to load background.", e);
             }
         }

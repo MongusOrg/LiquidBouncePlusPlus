@@ -8,8 +8,15 @@ package net.ccbluex.liquidbounce.utils;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.ccbluex.liquidbounce.event.MoveEvent;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
+import net.minecraft.stats.StatList;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.MathHelper;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,15 +24,8 @@ import java.util.Collections;
 
 public final class MovementUtils extends MinecraftInstance {
 
-    public static final List<Double> frictionValues = new ArrayList<>();
-    public static double calculateFriction(final double moveSpeed, final double lastDist, final double baseMoveSpeedRef) {
-        frictionValues.clear();
-        frictionValues.add(lastDist - lastDist / 159.9999985);
-        frictionValues.add(lastDist - (moveSpeed - lastDist) / 33.3);
-        final double materialFriction = mc.thePlayer.isInWater() ? 0.8899999856948853 : (mc.thePlayer.isInLava() ? 0.5350000262260437 : 0.9800000190734863);
-        frictionValues.add(lastDist - baseMoveSpeedRef * (1.0 - materialFriction));
-        return Collections.min((Collection<? extends Double>)frictionValues);
-    }
+    private static double lastX = -999999.0;
+    private static double lastZ = -999999.0;
 
     public static float getSpeed() {
         return (float) getSpeed(mc.thePlayer.motionX, mc.thePlayer.motionZ);
@@ -33,6 +33,12 @@ public final class MovementUtils extends MinecraftInstance {
 
     public static double getSpeed(double motionX, double motionZ) {
         return Math.sqrt(motionX * motionX + motionZ * motionZ);
+    }
+
+    public static boolean isOnIce() {
+        final EntityPlayerSP player = mc.thePlayer;
+        final Block blockUnder = mc.theWorld.getBlockState(new BlockPos(player.posX, player.posY - 1.0, player.posZ)).getBlock();
+        return blockUnder instanceof BlockIce || blockUnder instanceof BlockPackedIce;
     }
 
     public static boolean isBlockUnder() {
@@ -101,6 +107,27 @@ public final class MovementUtils extends MinecraftInstance {
         return getRawDirectionRotation(yaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
     }
 
+    public static float getPredictionYaw(double x, double z) {
+        if (mc.thePlayer == null) {
+            lastX = -999999.0;
+            lastZ = -999999.0;
+            return 0F;
+        }
+
+        if (lastX == -999999.0)
+            lastX = mc.thePlayer.prevPosX;
+
+        if (lastZ == -999999.0)
+            lastZ = mc.thePlayer.prevPosZ;
+
+        float returnValue = (float) (Math.atan2(z - lastZ, x - lastX) * 180F / Math.PI);
+
+        lastX = x;
+        lastZ = z;
+
+        return returnValue;
+    }
+
     public static double getDirectionRotation(float yaw, float pStrafe, float pForward) {
         float rotationYaw = yaw;
 
@@ -159,6 +186,14 @@ public final class MovementUtils extends MinecraftInstance {
         return rotationYaw;
     }
 
+    public static int getJumpEffect() {
+        return mc.thePlayer.isPotionActive(Potion.jump) ? mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier() + 1 : 0;
+    }
+
+    public static int getSpeedEffect() {
+        return mc.thePlayer.isPotionActive(Potion.moveSpeed) ? mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier() + 1 : 0;
+    }
+
     public static double getBaseMoveSpeed() {
         double baseSpeed = 0.2873D;
         if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
@@ -168,12 +203,86 @@ public final class MovementUtils extends MinecraftInstance {
         return baseSpeed;
     }
 
-    public static double getJumpBoostModifier(double baseJumpHeight) {
-        if (mc.thePlayer.isPotionActive(Potion.jump)) {
-            int amplifier = mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier();
-            baseJumpHeight += (double)((float)(amplifier + 1) * 0.1F);
+    public static double getBaseMoveSpeed(double customSpeed) {
+        double baseSpeed = isOnIce() ? 0.258977700006 : customSpeed;
+        if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
+            int amplifier = mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier();
+            baseSpeed *= 1.0 + 0.2 * (amplifier + 1);
         }
+        return baseSpeed;
+    }
+
+    public static double getJumpBoostModifier(double baseJumpHeight) {
+        return getJumpBoostModifier(baseJumpHeight, true);
+    }
+
+    public static double getJumpBoostModifier(double baseJumpHeight, boolean potionJump) {
+        if (mc.thePlayer.isPotionActive(Potion.jump) && potionJump) {
+            int amplifier = mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier();
+            baseJumpHeight += ((float)(amplifier + 1) * 0.1f);
+        }
+
         return baseJumpHeight;
+    }
+
+    public static void setMotion(MoveEvent event, double speed, double motion, boolean smoothStrafe) {
+        double forward = mc.thePlayer.movementInput.moveForward;
+        double strafe = mc.thePlayer.movementInput.moveStrafe;
+        double yaw = mc.thePlayer.rotationYaw;
+        int direction = smoothStrafe ? 45 : 90;
+
+        if ((forward == 0.0) && (strafe == 0.0)) {
+            event.setX(0.0);
+            event.setZ(0.0);
+        } else {
+            if (forward != 0.0) {
+                if (strafe > 0.0) {
+                    yaw += (forward > 0.0 ? -direction : direction);
+                } else if (strafe < 0.0) {
+                    yaw += (forward > 0.0 ? direction : -direction);
+                }
+                strafe = 0.0;
+                if (forward > 0.0) {
+                    forward = 1.0;
+                } else if (forward < 0.0) {
+                    forward = -1.0;
+                }
+            }
+
+            double cos = Math.cos(Math.toRadians(yaw + 90.0f));
+            double sin = Math.sin(Math.toRadians(yaw + 90.0f));
+            event.setX((forward * speed * cos + strafe * speed * sin) * motion);
+            event.setZ((forward * speed * sin - strafe * speed * cos) * motion);
+        }
+    }
+
+    public static void setMotion(double speed, boolean smoothStrafe) {
+        double forward = mc.thePlayer.movementInput.moveForward;
+        double strafe = mc.thePlayer.movementInput.moveStrafe;
+        float yaw = mc.thePlayer.rotationYaw;
+        int direction = smoothStrafe ? 45 : 90;
+
+        if (forward == 0.0 && strafe == 0.0) {
+            mc.thePlayer.motionX = 0.0;
+            mc.thePlayer.motionZ = 0.0;
+        } else {
+            if (forward != 0.0) {
+                if (strafe > 0.0) {
+                    yaw += (float)(forward > 0.0 ? -direction : direction);
+                } else if (strafe < 0.0) {
+                    yaw += (float)(forward > 0.0 ? direction : -direction);
+                }
+                strafe = 0.0;
+                if (forward > 0.0) {
+                    forward = 1.0;
+                } else if (forward < 0.0) {
+                    forward = -1.0;
+                }
+            }
+
+            mc.thePlayer.motionX = forward * speed * (- Math.sin(Math.toRadians(yaw))) + strafe * speed * Math.cos(Math.toRadians(yaw));
+            mc.thePlayer.motionZ = forward * speed * Math.cos(Math.toRadians(yaw)) - strafe * speed * (- Math.sin(Math.toRadians(yaw)));
+        }
     }
 
     public static void setSpeed(MoveEvent moveEvent, double moveSpeed) {

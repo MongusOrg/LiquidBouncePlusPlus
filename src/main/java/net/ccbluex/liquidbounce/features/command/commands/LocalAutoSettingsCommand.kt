@@ -55,8 +55,13 @@ class LocalAutoSettingsCommand : Command("localautosettings", arrayOf("localsett
 
                         try {
                             if (scriptFile.exists())
-                                scriptFile.delete()
-                            scriptFile.createNewFile()
+                                if (scriptFile.delete()) {
+                                    scriptFile.createNewFile()
+                                    chat("§aSuccessfully deleted old file.")
+                                } else {
+                                    chat("§cFailed to delete old file.")
+                                    return
+                                }
 
                             val option = if (args.size > 3) StringUtils.toCompleteString(args, 3).toLowerCase() else "values"
                             val values = option.contains("all") || option.contains("values")

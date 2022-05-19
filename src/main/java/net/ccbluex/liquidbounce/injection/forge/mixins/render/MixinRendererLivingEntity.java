@@ -25,8 +25,6 @@ import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -39,13 +37,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.awt.*;
 
 @Mixin(RendererLivingEntity.class)
-@SideOnly(Side.CLIENT)
 public abstract class MixinRendererLivingEntity extends MixinRender {
 
     @Shadow
     protected ModelBase mainModel;
 
-    @Inject(method = "doRender", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "doRender(Lnet/minecraft/entity/EntityLivingBase;DDDFF)V", at = @At("HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void injectChamsPre(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
         final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
@@ -61,7 +58,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         }
     }
 
-    @Inject(method = "doRender", at = @At("RETURN"))
+    @Inject(method = "doRender(Lnet/minecraft/entity/EntityLivingBase;DDDFF)V", at = @At("RETURN"))
     private <T extends EntityLivingBase> void injectChamsPost(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
         final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
@@ -73,7 +70,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         }
     }
 
-    @Inject(method = "canRenderName", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "canRenderName(Lnet/minecraft/entity/EntityLivingBase;)Z", at = @At("HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void canRenderName(T entity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
         final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
 
@@ -87,16 +84,16 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
     /**
      * @author CCBlueX
      */
-    @Overwrite
-    protected <T extends EntityLivingBase> void renderModel(T entitylivingbaseIn, float p_77036_2_, float p_77036_3_, float p_77036_4_, float p_77036_5_, float p_77036_6_, float scaleFactor) {
-        boolean visible = !entitylivingbaseIn.isInvisible();
+    @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
+    protected <T extends EntityLivingBase> void renderModel(T p_renderModel_1_, float p_renderModel_2_, float p_renderModel_3_, float p_renderModel_4_, float p_renderModel_5_, float p_renderModel_6_, float p_renderModel_7_, CallbackInfo ci) {
+        boolean visible = !p_renderModel_1_.isInvisible();
         final TrueSight trueSight = (TrueSight) LiquidBounce.moduleManager.getModule(TrueSight.class);
         final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
-        boolean chamsFlag = (chams.getState() && chams.getTargetsValue().get() && !chams.getLegacyMode().get() && EntityUtils.isSelected(entitylivingbaseIn, false));
-        boolean semiVisible = !visible && (!entitylivingbaseIn.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) || (trueSight.getState() && trueSight.getEntitiesValue().get()));
+        boolean chamsFlag = (chams.getState() && chams.getTargetsValue().get() && !chams.getLegacyMode().get() && EntityUtils.isSelected(p_renderModel_1_, false));
+        boolean semiVisible = !visible && (!p_renderModel_1_.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) || (trueSight.getState() && trueSight.getEntitiesValue().get()));
 
         if(visible || semiVisible) {
-            if(!this.bindEntityTexture(entitylivingbaseIn))
+            if(!this.bindEntityTexture(p_renderModel_1_))
                 return;
 
             if(semiVisible) {
@@ -109,7 +106,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
             }
 
             final ESP esp = (ESP) LiquidBounce.moduleManager.getModule(ESP.class);
-            if(esp.getState() && EntityUtils.isSelected(entitylivingbaseIn, false)) {
+            if(esp.getState() && EntityUtils.isSelected(p_renderModel_1_, false)) {
                 Minecraft mc = Minecraft.getMinecraft();
                 boolean fancyGraphics = mc.gameSettings.fancyGraphics;
                 mc.gameSettings.fancyGraphics = false;
@@ -128,9 +125,9 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                         GL11.glEnable(GL11.GL_LINE_SMOOTH);
                         GL11.glEnable(GL11.GL_BLEND);
                         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                        RenderUtils.glColor(esp.getColor(entitylivingbaseIn));
+                        RenderUtils.glColor(esp.getColor(p_renderModel_1_));
                         GL11.glLineWidth(esp.wireframeWidth.get());
-                        this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                        this.mainModel.render(p_renderModel_1_, p_renderModel_2_, p_renderModel_3_, p_renderModel_4_, p_renderModel_5_, p_renderModel_6_, p_renderModel_7_);
                         GL11.glPopAttrib();
                         GL11.glPopMatrix();
                         break;
@@ -138,19 +135,19 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                         ClientUtils.disableFastRender();
                         GlStateManager.resetColor();
 
-                        final Color color = esp.getColor(entitylivingbaseIn);
+                        final Color color = esp.getColor(p_renderModel_1_);
                         OutlineUtils.setColor(color);
                         OutlineUtils.renderOne(esp.outlineWidth.get());
-                        this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                        this.mainModel.render(p_renderModel_1_, p_renderModel_2_, p_renderModel_3_, p_renderModel_4_, p_renderModel_5_, p_renderModel_6_, p_renderModel_7_);
                         OutlineUtils.setColor(color);
                         OutlineUtils.renderTwo();
-                        this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                        this.mainModel.render(p_renderModel_1_, p_renderModel_2_, p_renderModel_3_, p_renderModel_4_, p_renderModel_5_, p_renderModel_6_, p_renderModel_7_);
                         OutlineUtils.setColor(color);
                         OutlineUtils.renderThree();
-                        this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                        this.mainModel.render(p_renderModel_1_, p_renderModel_2_, p_renderModel_3_, p_renderModel_4_, p_renderModel_5_, p_renderModel_6_, p_renderModel_7_);
                         OutlineUtils.setColor(color);
                         OutlineUtils.renderFour(color);
-                        this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                        this.mainModel.render(p_renderModel_1_, p_renderModel_2_, p_renderModel_3_, p_renderModel_4_, p_renderModel_5_, p_renderModel_6_, p_renderModel_7_);
                         OutlineUtils.setColor(color);
                         OutlineUtils.renderFive();
                         OutlineUtils.setColor(Color.WHITE);
@@ -226,7 +223,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                 GL11.glDepthMask(false);
             }
 
-            this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+            this.mainModel.render(p_renderModel_1_, p_renderModel_2_, p_renderModel_3_, p_renderModel_4_, p_renderModel_5_, p_renderModel_6_, p_renderModel_7_);
 
             if (chamsFlag) {
                 GL11.glEnable(depth);
@@ -236,7 +233,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                     GL11.glColor4f(chamsColor.getRed() / 255.0F, chamsColor.getGreen() / 255.0F, chamsColor.getBlue() / 255.0F, chamsColor.getAlpha() / 255.0F);
                 }
 
-                this.mainModel.render(entitylivingbaseIn, p_77036_2_, p_77036_3_, p_77036_4_, p_77036_5_, p_77036_6_, scaleFactor);
+                this.mainModel.render(p_renderModel_1_, p_renderModel_2_, p_renderModel_3_, p_renderModel_4_, p_renderModel_5_, p_renderModel_6_, p_renderModel_7_);
 
                 if (!textured) {
                     GL11.glEnable(texture2D);
@@ -250,12 +247,14 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                 GL11.glPopMatrix();
             }
 
-            if(semiVisible) {
+            if (semiVisible) {
                 GlStateManager.disableBlend();
                 GlStateManager.alphaFunc(516, 0.1F);
                 GlStateManager.popMatrix();
                 GlStateManager.depthMask(true);
             }
         }
+
+        ci.cancel();
     }
 }

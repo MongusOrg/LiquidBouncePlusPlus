@@ -12,14 +12,11 @@ import net.ccbluex.liquidbounce.utils.MinecraftInstance;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@SideOnly(Side.CLIENT)
 public abstract class Panel extends MinecraftInstance {
 
     private final String name;
@@ -97,32 +94,39 @@ public abstract class Panel extends MinecraftInstance {
         }
     }
 
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if(!visible)
-            return;
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (!visible)
+            return false;
 
-        if(mouseButton == 1 && isHovering(mouseX, mouseY)) {
+        if (mouseButton == 1 && isHovering(mouseX, mouseY)) {
             open = !open;
             mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("random.bow"), 1.0F));
-            return;
+            return true;
         }
 
-        for(final Element element : elements)
-            if(element.getY() <= getY() + fade)
-                element.mouseClicked(mouseX, mouseY, mouseButton);
+        for (final Element element : elements) {
+            if(element.getY() <= getY() + fade && element.mouseClicked(mouseX, mouseY, mouseButton)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void mouseReleased(int mouseX, int mouseY, int state) {
+    public boolean mouseReleased(int mouseX, int mouseY, int state) {
         if(!visible)
-            return;
+            return false;
 
         drag = false;
 
         if(!open)
-            return;
+            return false;
 
-        for(final Element element : elements)
-            element.mouseReleased(mouseX, mouseY, state);
+        for (final Element element : elements) {
+            if(element.getY() <= getY() + fade && element.mouseReleased(mouseX, mouseY, state)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean handleScroll(int mouseX, int mouseY, int wheel) {

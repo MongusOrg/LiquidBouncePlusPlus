@@ -38,8 +38,6 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Random", "Sky", "CRainbow", "LiquidSlowly", "Fade", "Mixer"), "Custom")
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
-    /*private val shadowValue = BoolValue("Shadow", false)
-    private val shadowStrength = IntegerValue("Shadow-Strength", 1, 1, 30)*/
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
@@ -67,7 +65,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 0, 0, 255)
     private val rectRightValue = ListValue("Rect-Right", arrayOf("None", "Left", "Right", "Outline", "Special", "Top"), "None")
     private val rectLeftValue = ListValue("Rect-Left", arrayOf("None", "Left", "Right"), "None")
-    private val lowerCaseValue = BoolValue("LowerCase", false)
+    private val caseValue = ListValue("Case", arrayOf("None", "Lower", "Upper"), "None")
     private val spaceValue = FloatValue("Space", 0F, 0F, 5F)
     private val textHeightValue = FloatValue("TextHeight", 11F, 1F, 20F)
     private val textYValue = FloatValue("TextY", 1F, 0F, 20F)
@@ -106,12 +104,63 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
         var inx = 0
         for (module in sortedModules) {
-            val shouldAdd = module.array && module.slide > 0F
+            // update slide x
+            if (module.array && (module.state || module.slide != 0F)) {
+                var displayString = getModName(module)
+
+                val width = fontRenderer.getStringWidth(displayString)
+
+                when (hAnimation.get()) {
+                    "Astolfo" -> {
+                        if (module.state) {
+                            if (module.slide < width) {
+                                module.slide += animationSpeed.get() * delta
+                                module.slideStep = delta / 1F
+                            }
+                        } else if (module.slide > 0) {
+                            module.slide -= animationSpeed.get() * delta
+                            module.slideStep = 0F
+                        }
+
+                        if (module.slide > width) module.slide = width.toFloat()
+                    }
+                    "Slide" -> {
+                        if (module.state) {
+                            if (module.slide < width) {
+                                module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble() * 0.025 * delta.toDouble()).toFloat()
+                                module.slideStep = delta / 1F
+                            }
+                        } else if (module.slide > 0) {
+                            module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(-width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble() * 0.025 * delta.toDouble()).toFloat()
+                            module.slideStep = 0F
+                        }
+                    }
+                    "Default" -> {
+                        if (module.state) {
+                            if (module.slide < width) {
+                                module.slide = AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width
+                                module.slideStep += delta / 4F
+                            }
+                        } else if (module.slide > 0) {
+                            module.slide = AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width
+                            module.slideStep -= delta / 4F
+                        }
+                    }
+                    else -> {
+                        module.slide = if (module.state) width.toFloat() else 0f
+                        module.slideStep += (if (module.state) delta else -delta).toFloat()
+                    }
+                }
+
+                module.slide = module.slide.coerceIn(0F, width.toFloat())
+                module.slideStep = module.slideStep.coerceIn(0F, width.toFloat())
+            }
+
             // update slide y
             var yPos = (if (side.vertical == Vertical.DOWN) -textSpacer else textSpacer) *
                             if (side.vertical == Vertical.DOWN) inx + 1 else inx
             
-            if (shouldAdd) {
+            if (module.array && module.slide > 0F) {
                 if (vAnimation.get().equals("Rise", ignoreCase = true) && !module.state) 
                     yPos = -fontRenderer.FONT_HEIGHT - textY
 
@@ -150,60 +199,6 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 module.arrayY = yPos
         }
 
-        for (module in LiquidBounce.moduleManager.modules) {
-            // update slide x
-            if (!module.array || (!module.state && module.slide == 0F)) continue
-
-            var displayString = getModName(module)
-
-            val width = fontRenderer.getStringWidth(displayString)
-
-            when (hAnimation.get()) {
-                "Astolfo" -> {
-                    if (module.state) {
-                        if (module.slide < width) {
-                            module.slide += animationSpeed.get() * delta
-                            module.slideStep = delta / 1F
-                        }
-                    } else if (module.slide > 0) {
-                        module.slide -= animationSpeed.get() * delta
-                        module.slideStep = 0F
-                    }
-
-                    if (module.slide > width) module.slide = width.toFloat()
-                }
-                "Slide" -> {
-                    if (module.state) {
-                        if (module.slide < width) {
-                            module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble() * 0.025 * delta.toDouble()).toFloat()
-                            module.slideStep = delta / 1F
-                        }
-                    } else if (module.slide > 0) {
-                        module.slide = net.ccbluex.liquidbounce.utils.AnimationUtils.animate(-width.toDouble(), module.slide.toDouble(), animationSpeed.get().toDouble() * 0.025 * delta.toDouble()).toFloat()
-                        module.slideStep = 0F
-                    }
-                }
-                "Default" -> {
-                    if (module.state) {
-                        if (module.slide < width) {
-                            module.slide = AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width
-                            module.slideStep += delta / 4F
-                        }
-                    } else if (module.slide > 0) {
-                        module.slide = AnimationUtils.easeOut(module.slideStep, width.toFloat()) * width
-                        module.slideStep -= delta / 4F
-                    }
-                }
-                else -> {
-                    module.slide = if (module.state) width.toFloat() else 0f
-                    module.slideStep += (if (module.state) delta else -delta).toFloat()
-                }
-            }
-
-            module.slide = module.slide.coerceIn(0F, width.toFloat())
-            module.slideStep = module.slideStep.coerceIn(0F, width.toFloat())
-        }
-
         when (side.horizontal) {
             Horizontal.RIGHT, Horizontal.MIDDLE -> {
                 if (blurValue.get()) {
@@ -222,46 +217,21 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         xP = Math.min(xP, -wid)
                     }
 
-                    BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP, false)
-                    modules.forEachIndexed { index, module ->
-                        val xPos = -module.slide - 2
-                        RenderUtils.quickDrawRect(
-                                floatX + xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
-                                floatY + module.arrayY,
-                                floatX + if (rectRightValue.get().equals("right", true)) -1F else 0F,
-                                floatY + module.arrayY + textHeight
-                        )
+                    BlurUtils.blur(floatX, floatY, floatX + xP, floatY + yP, blurStrength.get(), false) {
+                        modules.forEachIndexed { index, module ->
+                            val xPos = -module.slide - 2
+                            RenderUtils.quickDrawRect(
+                                    floatX + xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
+                                    floatY + module.arrayY,
+                                    floatX + if (rectRightValue.get().equals("right", true)) -1F else 0F,
+                                    floatY + module.arrayY + textHeight
+                            )
+                        }
                     }
-                    BlurUtils.postCustomBlur()
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
-/*
-                if (shadowValue.get()) {
-                    val boostedColor = Color(backgroundColorRedValue.get().toFloat() / 255.0F, backgroundColorGreenValue.get().toFloat() / 255.0F,
-                            backgroundColorBlueValue.get().toFloat() / 255.0F, (backgroundColorAlphaValue.get().toFloat() / 255.0F * 1.85F).coerceIn(0F, 1F)).rgb
-                    val floatX = renderX.toFloat()
-                    val floatY = renderY.toFloat()
-                    GL11.glTranslated(-renderX, -renderY, 0.0)
-                    GL11.glPushMatrix()
-                    GlStateManager.pushAttrib()
-                    BlurUtils.downscale(true, shadowStrength.get())
-                    modules.forEachIndexed { index, module ->
-                        val xPos = -module.slide - 2
-                        RenderUtils.newDrawRect(
-                                floatX + xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
-                                floatY + module.arrayY,
-                                floatX + if (rectRightValue.get().equals("right", true)) -1F else 0F,
-                                floatY + module.arrayY + textHeight,
-                                boostedColor
-                        )
-                    }
-                    BlurUtils.downscale(false, shadowStrength.get())
-                    GlStateManager.popAttrib()
-                    GL11.glPopMatrix()
-                    GL11.glTranslated(renderX, renderY, 0.0)
-                }
-*/
+
                 modules.forEachIndexed { index, module ->
                     var displayString = getModName(module)
 
@@ -369,53 +339,24 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         xP = Math.max(xP, wid)
                     }
 
-                    BlurUtils.preCustomBlur(blurStrength.get(), floatX, floatY, floatX + xP, floatY + yP, false)
-                    modules.forEachIndexed { index, module ->
-                        var displayString = getModName(module)
-                        val width = fontRenderer.getStringWidth(displayString)
-                        val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
+                    BlurUtils.blur(floatX, floatY, floatX + xP, floatY + yP, blurStrength.get(), false) {
+                        modules.forEachIndexed { index, module ->
+                            var displayString = getModName(module)
+                            val width = fontRenderer.getStringWidth(displayString)
+                            val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
 
-                        RenderUtils.quickDrawRect(
-                                floatX,
-                                floatY + module.arrayY,
-                                floatX + xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
-                                floatY + module.arrayY + textHeight
-                        )
-                        
+                            RenderUtils.quickDrawRect(
+                                    floatX,
+                                    floatY + module.arrayY,
+                                    floatX + xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
+                                    floatY + module.arrayY + textHeight
+                            )
+                        }
                     }
-                    BlurUtils.postCustomBlur()
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
-/*
-                if (shadowValue.get()) {
-                    val boostedColor = Color(backgroundColorRedValue.get().toFloat() / 255.0F, backgroundColorGreenValue.get().toFloat() / 255.0F,
-                            backgroundColorBlueValue.get().toFloat() / 255.0F, (backgroundColorAlphaValue.get().toFloat() / 255.0F * 1.85F).coerceIn(0F, 1F)).rgb
-                    val floatX = renderX.toFloat()
-                    val floatY = renderY.toFloat()
-                    GL11.glTranslated(-renderX, -renderY, 0.0)
-                    GL11.glPushMatrix()
-                    GlStateManager.pushAttrib()
-                    BlurUtils.downscale(true, shadowStrength.get())
-                    modules.forEachIndexed { index, module ->
-                        var displayString = getModName(module)
-                        val width = fontRenderer.getStringWidth(displayString)
-                        val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
-                        
-                        RenderUtils.newDrawRect(
-                                floatX,
-                                floatY + module.arrayY,
-                                floatX + xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
-                                floatY + module.arrayY + textHeight,
-                                boostedColor
-                        )
-                    }
-                    BlurUtils.downscale(false, shadowStrength.get())
-                    GlStateManager.popAttrib()
-                    GL11.glPopMatrix()
-                    GL11.glTranslated(renderX, renderY, 0.0)
-                }
-*/
+
                 modules.forEachIndexed { index, module ->
                     var displayString = getModName(module)
 
@@ -519,36 +460,35 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 else LiquidBounce.moduleManager.modules.sortedBy { -fontValue.get().getStringWidth(getModName(it)) }.toList()
     }
 
-    fun getModName(mod: Module): String {
-        var modTag : String = ""
-        if (tags.get() && mod.tag != null) {
-            // add space
-            modTag += " "
+    private fun getModTag(m: Module): String {
+        if (!tags.get() || m.tag == null) return ""
 
-            // check and add gray prefix if possible
-            if (!tagsArrayColor.get()) 
-                modTag += "§7"
+        var returnTag = " ${if (tagsArrayColor.get()) "" else "§7"}"
 
-            // tag prefix, ignore default value
-            if (!tagsStyleValue.get().equals("default", true)) 
-                modTag += tagsStyleValue.get().get(0).toString() + if (tagsStyleValue.get().equals("-", true) || tagsStyleValue.get().equals("|", true)) " " else ""
+        // tag prefix, ignore default value
+        if (!tagsStyleValue.get().equals("default", true)) 
+            returnTag += tagsStyleValue.get().get(0).toString() + if (tagsStyleValue.get().equals("-", true) || tagsStyleValue.get().equals("|", true)) " " else ""
 
-            // main tag value
-            modTag += mod.tag
+        // main tag value
+        returnTag += m.tag
 
-            // tag suffix, ignore default, -, | values
-            if (!tagsStyleValue.get().equals("default", true) 
+        // tag suffix, ignore default, -, | values
+        if (!tagsStyleValue.get().equals("default", true) 
             && !tagsStyleValue.get().equals("-", true) 
             && !tagsStyleValue.get().equals("|", true)) 
-                modTag += tagsStyleValue.get().get(1).toString()
+            returnTag += tagsStyleValue.get().get(1).toString()
 
+        return returnTag
+    }
+
+    fun getModName(mod: Module): String {
+        var displayName : String = (if (nameBreak.get()) mod.spacedName else mod.name) + getModTag(mod)
+
+        when (caseValue.get().toLowerCase()) {
+            "lower" -> displayName = displayName.toLowerCase()
+            "upper" -> displayName = displayName.toUpperCase()
         }
-
-        var displayName : String = (if (nameBreak.get()) mod.spacedName else mod.name) + modTag
-
-        if (lowerCaseValue.get()) 
-            displayName = displayName.toLowerCase()
-
+        
         return displayName        
     }
 }
