@@ -24,7 +24,7 @@ public class ProxyManager {
     private String proxyAddress;
     private ProxyType proxyType;
 
-    private ProxyManager() {
+    public ProxyManager() {
         this.loadConfig();
     }
 
