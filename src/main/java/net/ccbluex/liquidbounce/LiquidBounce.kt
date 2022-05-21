@@ -13,6 +13,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleManager
 import net.ccbluex.liquidbounce.features.special.AntiForge
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof
 import net.ccbluex.liquidbounce.features.special.MacroManager
+import net.ccbluex.liquidbounce.features.special.proxy.ProxyManager
 import net.ccbluex.liquidbounce.file.FileManager
 import net.ccbluex.liquidbounce.script.ScriptManager
 import net.ccbluex.liquidbounce.script.remapper.Remapper.loadSrg
@@ -52,6 +53,7 @@ object LiquidBounce {
     lateinit var scriptManager: ScriptManager
 
     lateinit var tipSoundManager: TipSoundManager
+    lateinit var proxyManager: ProxyManager
 
     // HUD & ClickGUI
     lateinit var hud: HUD
@@ -140,6 +142,9 @@ object LiquidBounce {
         // Set HUD
         hud = createDefault()
         fileManager.loadConfig(fileManager.hudConfig)
+
+        // Proxy thing
+        proxyManager = ProxyManager()
 
         // Disable optifine fastrender
         //ClientUtils.disableFastRender()
