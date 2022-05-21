@@ -13,7 +13,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.oio.OioEventLoopGroup;
 import io.netty.handler.timeout.ReadTimeoutHandler;
-import net.ccbluex.liquidbounce.features.special.ProxyManager;
+import net.ccbluex.liquidbounce.features.special.proxy.ProxyManager;
 import net.ccbluex.liquidbounce.features.special.proxy.ProxyOioChannelFactory;
 import net.minecraft.network.EnumPacketDirection;
 import net.minecraft.network.NetworkManager;
