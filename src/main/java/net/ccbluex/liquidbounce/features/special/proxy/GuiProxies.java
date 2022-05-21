@@ -5,7 +5,7 @@
  *
  * liulihaocai, ProxyMod.
  */
-package net.ccbluex.liquidbounce.features.special;
+package net.ccbluex.liquidbounce.features.special.proxy;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
