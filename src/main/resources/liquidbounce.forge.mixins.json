@@ -75,6 +75,7 @@
     "item.MixinItemStack",
     "item.MixinNBTTagCompound",
     "network.MixinNetHandlerPlayClient",
+    "network.MixinNetworkManagerProxy",
     "network.MixinNetworkManagerChInit",
     "network.MixinNetworkManager",
     "network.MixinNetworkPlayerInfo",

@@ -10,6 +10,7 @@ import de.enzaxd.viaforge.ViaForge;
 import de.enzaxd.viaforge.protocol.ProtocolCollection;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof;
+import net.ccbluex.liquidbounce.features.special.proxy.GuiProxies;
 import net.ccbluex.liquidbounce.ui.client.GuiAntiForge;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMultiplayer;
@@ -38,6 +39,7 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
                         }));
 
         buttonList.add(bungeeCordSpoofButton = new GuiButton(998, 108, 8, 98, 20, (BungeeCordSpoof.enabled ? "§a" : "§c") + "BungeeCord Spoof"));
+        buttonList.add(new GuiButton(999, width - 207, 8, 98, 20, "Proxy"));
         this.updatePortalText();
     }
 
@@ -66,6 +68,15 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
                 bungeeCordSpoofButton.displayString = (BungeeCordSpoof.enabled ? "§a" : "§c") + "BungeeCord Spoof";
                 LiquidBounce.fileManager.saveConfig(LiquidBounce.fileManager.valuesConfig);
                 break;
+            case 999:
+                mc.displayGuiScreen(new GuiProxies((GuiScreen) (Object) this));
+                break;
         }
+    }
+
+    @Inject(method = "connectToServer", at = @At("HEAD"))
+    public void connectToServer(CallbackInfo callbackInfo) {
+        if (mc.getNetHandler() != null)
+            mc.getNetHandler().getNetworkManager().closeChannel(new ChatComponentText(""));
     }
 }
