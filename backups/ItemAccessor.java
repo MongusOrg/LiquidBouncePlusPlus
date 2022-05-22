@@ -13,8 +13,8 @@ import java.util.UUID;
 
 @Mixin(Item.class)
 public interface ItemAccessor {
-    @Accessor
+    /*@Accessor
     static UUID getItemModifierUUID() {
         throw new UnsupportedOperationException("Mixin failed to inject!");
-    }
+    }*/
 }

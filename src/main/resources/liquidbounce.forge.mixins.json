@@ -15,7 +15,6 @@
     "accessors.GuiMultiplayerAccessor",
     "accessors.GuiNewChatAccessor",
     "accessors.GuiSelectWorldAccessor",
-    "accessors.ItemAccessor",
     "accessors.ItemRendererAccessor",
     "accessors.ItemStackAccessor",
     "accessors.KeyBindingAccessor",
