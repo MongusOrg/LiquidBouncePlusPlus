@@ -51,7 +51,7 @@ class LocalThemeCommand : Command("localtheme", arrayOf("localthememanager", "lt
                         return
                     }
 
-                    chatSyntax("theme load <name>")
+                    chatSyntax("localtheme load <name>")
                     return
                 }
 
@@ -76,7 +76,7 @@ class LocalThemeCommand : Command("localtheme", arrayOf("localthememanager", "lt
                         return
                     }
 
-                    chatSyntax("theme save <name>")
+                    chatSyntax("localtheme save <name>")
                     return
                 }
 
@@ -94,7 +94,7 @@ class LocalThemeCommand : Command("localtheme", arrayOf("localthememanager", "lt
                         return
                     }
 
-                    chatSyntax("theme delete <name>")
+                    chatSyntax("localtheme delete <name>")
                     return
                 }
 
@@ -109,7 +109,7 @@ class LocalThemeCommand : Command("localtheme", arrayOf("localthememanager", "lt
                 }
             }
         }
-        chatSyntax("theme <load/save/list/delete>")
+        chatSyntax("localtheme <load/save/list/delete>")
     }
 
     override fun tabComplete(args: Array<String>): List<String> {
