@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.modules.misc.NameProtect
 import net.ccbluex.liquidbounce.features.module.modules.misc.Spammer
+import net.ccbluex.liquidbounce.features.special.MacroManager
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils.get
 import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils.translateAlternateColorCodes
@@ -48,6 +49,17 @@ object SettingsUtils {
                         ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] §7Loaded settings from §a§l$url§7.")
                     } catch (e: Exception) {
                         ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] §7Failed to load settings from §a§l$url§7.")
+                    }
+                }
+
+                "macro" -> {
+                    val macroBind = args[1]
+                    val macroCommand = args[2]
+                    try {
+                        MacroManager.addMacro(macroBind.toInt(), macroCommand)
+                        ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] Macro §c§l$macroCommand§7 has been bound to §a§l$macroBind§7.")
+                    } catch (e: Exception) {
+                        ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] §a§l${e.javaClass.name}§7(${e.message}) §cAn Exception occurred while importing macro with keybind §a§l$macroBind§c to §a§l$macroCommand§c.")
                     }
                 }
 
@@ -136,17 +148,19 @@ object SettingsUtils {
     fun generateScript(values: Boolean, binds: Boolean, states: Boolean): String {
         val stringBuilder = StringBuilder()
 
+        MacroManager.macroMapping.filter { it.key != 0 }.forEach { stringBuilder.append("macro ${it.key} ${it.value}").append("\n") }
+
         LiquidBounce.moduleManager.modules.filter {
             it.category !== ModuleCategory.RENDER && it !is NameProtect && it !is Spammer
         }.forEach {
             if (values)
-                it.values.forEach { value -> stringBuilder.append(it.name).append(" ").append(value.name).append(" ").append(value.get()).append("\n") }
+                it.values.forEach { value -> stringBuilder.append("${it.name} ${value.name} ${value.get()}").append("\n") }
 
             if (states)
-                stringBuilder.append(it.name).append(" toggle ").append(it.state).append("\n")
+                stringBuilder.append("${it.name} toggle ${it.state}").append("\n")
 
             if (binds)
-                stringBuilder.append(it.name).append(" bind ").append(Keyboard.getKeyName(it.keyBind)).append("\n")
+                stringBuilder.append("${it.name} bind ${Keyboard.getKeyName(it.keyBind)}").append("\n")
         }
 
         return stringBuilder.toString()
