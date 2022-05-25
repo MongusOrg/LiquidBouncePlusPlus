@@ -16,11 +16,6 @@ import net.ccbluex.liquidbounce.utils.render.ColorUtils.translateAlternateColorC
 import net.ccbluex.liquidbounce.value.*
 import org.lwjgl.input.Keyboard
 
-/*
- * LiquidBounce+ Hacked Client
- * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
- */
 object SettingsUtils {
 
     /**
@@ -53,13 +48,15 @@ object SettingsUtils {
                 }
 
                 "macro" -> {
-                    val macroBind = args[1]
-                    val macroCommand = args[2]
-                    try {
-                        MacroManager.addMacro(macroBind.toInt(), macroCommand)
-                        ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] Macro §c§l$macroCommand§7 has been bound to §a§l$macroBind§7.")
-                    } catch (e: Exception) {
-                        ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] §a§l${e.javaClass.name}§7(${e.message}) §cAn Exception occurred while importing macro with keybind §a§l$macroBind§c to §a§l$macroCommand§c.")
+                    if (args[1] != "0") {
+                        val macroBind = args[1]
+                        val macroCommand = StringUtils.toCompleteString(args, 2)
+                        try {
+                            MacroManager.addMacro(macroBind.toInt(), macroCommand)
+                            ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] Macro §c§l$macroCommand§7 has been bound to §a§l$macroBind§7.")
+                        } catch (e: Exception) {
+                            ClientUtils.displayChatMessage("§7[§3§lAutoSettings§7] §a§l${e.javaClass.name}§7(${e.message}) §cAn Exception occurred while importing macro with keybind §a§l$macroBind§c to §a§l$macroCommand§c.")
+                        }
                     }
                 }
 
