@@ -59,10 +59,12 @@ class Target : Element() {
     private val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     private val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
     private val styleValue = ListValue("Style", arrayOf("LiquidBounce", "Flux", "Novoline", "Slowly", "Rise", "Remix", "Exhibition", "LiquidBounce+", "Chill"), "LiquidBounce")
+    private val animInstant = BoolValue("NoBarAnimation", false)
     private val fadeSpeed = FloatValue("FadeSpeed", 2F, 1F, 9F)
     private val chillFontSpeed = FloatValue("Chill-FontSpeed", 0.5F, 0.01F, 1F, { styleValue.get().equals("chill", true) })
     private val chillHealthBarValue = BoolValue("Chill-Healthbar", true, { styleValue.get().equals("chill", true) })
     private val chillFadingValue = BoolValue("Chill-FadingAnim", true, { styleValue.get().equals("chill", true) })
+    private val chillRoundValue = BoolValue("Chill-RoundedBar", true, { styleValue.get().equals("chill", true) })
     private val blurValue = BoolValue("Blur", false, { styleValue.get().equals("rise", true) })
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { styleValue.get().equals("rise", true) && blurValue.get() })
     private val tSlideAnim = BoolValue("TSlide-Animation", true, { !styleValue.get().equals("rise", true) })
@@ -210,7 +212,10 @@ class Target : Element() {
                         RenderUtils.drawRect((easingHealth / convertedTarget.maxHealth) * width, 34F,
                                 (convertedTarget.health / convertedTarget.maxHealth) * width, 36F, Color(44, 201, 144).rgb)
 
-                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    if (animInstant.get())
+                        easingHealth = convertedTarget.health
+                    else
+                        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     Fonts.font40.drawString(convertedTarget.name, 36, 3, 0xffffff)
                     Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}", 36, 15, 0xffffff)
@@ -274,7 +279,10 @@ class Target : Element() {
                     font.drawStringWithShadow(convertedTarget.name, 2F + 36F + 1F, 2F, -1)
                     RenderUtils.drawRect(2F + 36F, 15F, 36F + nameLength, 25F, Color(24, 24, 24, 255).rgb)
 
-                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    if (animInstant.get())
+                        easingHealth = convertedTarget.health
+                    else
+                        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     val animateThingy = (easingHealth.coerceIn(convertedTarget.health, convertedTarget.maxHealth) / convertedTarget.maxHealth) * (nameLength - 2F)
 
@@ -295,7 +303,10 @@ class Target : Element() {
                     font.drawStringWithShadow(convertedTarget.name, 33F, 2F, -1)
                     font.drawStringWithShadow("${decimalFormat2.format(convertedTarget.health)} ❤", length + 32F - 1F - font.getStringWidth("${decimalFormat2.format(convertedTarget.health)} ❤").toFloat(), 22F, barColor.rgb)
 
-                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    if (animInstant.get())
+                        easingHealth = convertedTarget.health
+                    else
+                        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     RenderUtils.drawRect(0F, 32F, (easingHealth / convertedTarget.maxHealth.toFloat()).coerceIn(0F, convertedTarget.maxHealth.toFloat()) * (length + 32F), 36F, barColor.rgb)
                 }
@@ -306,7 +317,10 @@ class Target : Element() {
                     val name = "Name: ${convertedTarget.name}"
                     val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}"// Hurt ${convertedTarget.hurtTime}"
 
-                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    if (animInstant.get())
+                        easingHealth = convertedTarget.health
+                    else
+                        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     val healthName = decimalFormat2.format(easingHealth).toString()
 
@@ -438,7 +452,10 @@ class Target : Element() {
                 }
 
                 "Remix" -> {
-                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    if (animInstant.get())
+                        easingHealth = convertedTarget.health
+                    else
+                        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     // background
 					RenderUtils.newDrawRect(0F, 0F, 146F, 49F, Color(25, 25, 25).rgb)
@@ -626,7 +643,10 @@ class Target : Element() {
                     RenderUtils.drawRect(0F, 34F, (convertedTarget.health / convertedTarget.maxHealth) * width,
                             36F, barColor.rgb)
 
-                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    if (animInstant.get())
+                        easingHealth = convertedTarget.health
+                    else
+                        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     Fonts.font40.drawString(convertedTarget.name, 36, 3, 0xffffff)
                     Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}", 36, 15, 0xffffff)
@@ -651,7 +671,10 @@ class Target : Element() {
                 }
 
                 "Chill" -> {
-                    easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
+                    if (animInstant.get())
+                        easingHealth = convertedTarget.health
+                    else
+                        easingHealth += ((convertedTarget.health - easingHealth) / 2.0F.pow(10.0F - fadeSpeed.get())) * RenderUtils.deltaTime
 
                     val name = convertedTarget.name
                     val health = convertedTarget.health
@@ -737,7 +760,10 @@ class Target : Element() {
                         RenderUtils.fastRoundedRect(4F, 38F, tWidth - 4F, 44F, 3F)
                         GL11.glDisable(GL11.GL_BLEND)
                         Stencil.erase(true)
-                        RenderUtils.drawRect(4F, 38F, 4F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 8F), 44F, reColorBar.rgb)
+                        if (chillRoundValue.get())
+                            RenderUtils.customRounded(4F, 38F, 4F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 8F), 44F, 0F, 3F, 3F, 0F, reColorBar.rgb)
+                        else
+                            RenderUtils.drawRect(4F, 38F, 4F + (easingHealth / convertedTarget.maxHealth) * (tWidth - 8F), 44F, reColorBar.rgb)
                         Stencil.dispose()
                     }
 
