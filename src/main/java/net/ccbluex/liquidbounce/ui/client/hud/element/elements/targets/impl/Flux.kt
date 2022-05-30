@@ -5,10 +5,11 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.impl
 
+import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetStyle
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
-
+import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 
 class Flux: TargetStyle("Flux") {

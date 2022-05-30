@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets
 
+import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
@@ -15,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.util.ResourceLocation
 
 import org.lwjgl.opengl.GL11
+import kotlin.math.pow
 
 abstract class TargetStyle(val name: String): MinecraftInstance() {
 

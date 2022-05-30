@@ -5,111 +5,23 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.impl
 
+import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetStyle
+import net.ccbluex.liquidbounce.ui.font.Fonts
+import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
-
+import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 class Chill: TargetStyle("Chill") {
 
     override fun drawTarget(entity: EntityPlayer, element: Target): Border? {
-        val name = entity.name
-        val health = entity.health
-        val tWidth = (45F + Fonts.font40.getStringWidth(name).coerceAtLeast(Fonts.font72.getStringWidth(decimalFormat.format(health)))).coerceAtLeast(if (chillHealthBarValue.get()) 150F else 90F)
-        val playerInfo = mc.netHandler.getPlayerInfo(entity.uniqueID)
 
-        val reColorBg = Color(bgColor.red / 255.0F, bgColor.green / 255.0F, bgColor.blue / 255.0F, bgColor.alpha / 255.0F * (1F - progressChill))
-        val reColorBar = Color(barColor.red / 255.0F, barColor.green / 255.0F, barColor.blue / 255.0F, barColor.alpha / 255.0F * (1F - progressChill))
-        val reColorText = Color(1F, 1F, 1F, 1F - progressChill)
-
-        val floatX = renderX.toFloat()
-        val floatY = renderY.toFloat()
-
-        val calcScaleX = (progressChill * (4F / (tWidth / 2F)))
-        val calcScaleY = if (chillHealthBarValue.get()) (progressChill * (4F / 24F))
-                        else (progressChill * (4F / 19F))
-        val calcTranslateX = floatX + tWidth / 2F * calcScaleX
-        val calcTranslateY = floatY + if (chillHealthBarValue.get()) (24F * (progressChill * (4F / 24F))) 
-                                            else (19F * (progressChill * (4F / 19F)))
-
-        // translation/scaling
-        GL11.glScalef(1f, 1f, 1f)
-        GL11.glPopMatrix()
-
-        GL11.glPushMatrix()
-
-        if (chillFadingValue.get()) {
-            GL11.glTranslatef(
-                calcTranslateX, calcTranslateY, 0F)
-            GL11.glScalef(
-                1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
-        } else {
-            GL11.glTranslated(renderX, renderY, 0.0)
-            GL11.glScalef(1F, 1F, 1F)
-        }
-        
-        /*
-        some calculation
-        0.2 of 15 = 3 // 3/15 = 0.2
-        0.2 of 20 = 4 // 4/20 = 0.2
-        0.066 of 60 = 4 // 4/60 = 0.0(6)
-            */
-
-        // background
-        RenderUtils.drawRoundedRect(0F, 0F, tWidth, if (chillHealthBarValue.get()) 48F else 38F, 7F, reColorBg.rgb)
-        GlStateManager.resetColor()
-        GL11.glColor4f(1F, 1F, 1F, 1F)
-        
-        // head
-        if (playerInfo != null) {
-            Stencil.write(false)
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-            RenderUtils.fastRoundedRect(4F, 4F, 34F, 34F, 8F)
-            GL11.glDisable(GL11.GL_BLEND)
-            GL11.glEnable(GL11.GL_TEXTURE_2D)
-            Stencil.erase(true)
-            //GL11.glTranslated(renderX, renderY, 0.0)
-            drawHead(playerInfo.locationSkin, 4, 4, 30, 30, 1F - progressChill)
-            //GL11.glTranslated(-renderX, -renderY, 0.0)
-            Stencil.dispose()
-        }
-
-        GlStateManager.resetColor()
-        GL11.glColor4f(1F, 1F, 1F, 1F)
-
-        // name + health
-        Fonts.font40.drawString(name, 38F, 6F, reColorText.rgb, false)
-        numberRenderer.renderChar(health, calcTranslateX, calcTranslateY, 38F, 17F, calcScaleX, calcScaleY, false, chillFontSpeed.get(), reColorText.rgb)
-
-        GlStateManager.resetColor()
-        GL11.glColor4f(1F, 1F, 1F, 1F)
-        
-        // health bar
-        if (chillHealthBarValue.get()) {
-            RenderUtils.drawRoundedRect(4F, 38F, tWidth - 4F, 44F, 3F, reColorBar.darker().darker().darker().rgb)
-
-            Stencil.write(false)
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-            RenderUtils.fastRoundedRect(4F, 38F, tWidth - 4F, 44F, 3F)
-            GL11.glDisable(GL11.GL_BLEND)
-            Stencil.erase(true)
-            if (chillRoundValue.get())
-                RenderUtils.customRounded(4F, 38F, 4F + (easingHealth / entity.maxHealth) * (tWidth - 8F), 44F, 0F, 3F, 3F, 0F, reColorBar.rgb)
-            else
-                RenderUtils.drawRect(4F, 38F, 4F + (easingHealth / entity.maxHealth) * (tWidth - 8F), 44F, reColorBar.rgb)
-            Stencil.dispose()
-        }
-
-        GL11.glScalef(1F, 1F, 1F)
-        GL11.glPopMatrix()
-
-        GL11.glPushMatrix()
-        GL11.glTranslated(renderX, renderY, 0.0)
     }
 
     private class CharRenderer(val small: Boolean) {
