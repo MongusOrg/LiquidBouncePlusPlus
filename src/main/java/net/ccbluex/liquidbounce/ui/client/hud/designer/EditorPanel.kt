@@ -366,12 +366,16 @@ class EditorPanel(private val hudDesigner: GuiHudDesigner, var x: Int, var y: In
                 is ListValue -> {
                     // Title
                     Fonts.font35.drawString(value.name, x + 2, y + height, Color.WHITE.rgb)
+                    Fonts.font35.drawString("${if (value.openList) "-" else "+"}", x + width - 10, y + height + 1, Color.GRAY.rgb)
+
+                    if (Mouse.isButtonDown(0) && !mouseDown && mouseX >= x && mouseX <= x + width && mouseY >= y + height && mouseY <= y + height + 10)
+                        value.openList = !value.openList
 
                     height += 10
                     realHeight += 10
 
                     // Selectable values
-                    for (s in value.values) {
+                    if (value.openList) for (s in value.values) {
                         // Value title
                         val text = "§c> §r$s"
                         Fonts.font35.drawString(text, x + 2, y + height, if (s == value.get()) Color.WHITE.rgb else Color.GRAY.rgb)

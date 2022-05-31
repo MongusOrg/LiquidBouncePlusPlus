@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11
 
 class Exhibition: TargetStyle("Exhibition") {
 
-    override fun drawTarget(entity: EntityPlayer, element: Target): Border? {
+    override fun drawTarget(entity: EntityPlayer, element: Target) {
         
     }
 

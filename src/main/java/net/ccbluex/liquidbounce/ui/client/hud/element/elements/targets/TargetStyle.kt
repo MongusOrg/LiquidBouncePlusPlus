@@ -23,7 +23,8 @@ abstract class TargetStyle(val name: String): MinecraftInstance() {
     var easingHealth = 0F
     val shieldIcon = ResourceLocation("liquidbounce+/shield.png")
 
-    abstract fun drawTarget(entity: EntityPlayer, element: Target): Border?
+    abstract fun drawTarget(entity: EntityPlayer, element: Target)
+    abstract fun getBorder(entity: EntityPlayer?, element: Target): Border?
     
     open fun updateAnim(targetHealth: Float, animSpeed: Float, instant: Boolean) {
         if (instant)
@@ -34,9 +35,9 @@ abstract class TargetStyle(val name: String): MinecraftInstance() {
 
     open fun handleDamage(player: EntityPlayer) {}
 
-    open fun handleBlur(blurAmount: Float) {}
+    open fun handleBlur() {}
     
-    open fun handleShadow(shadowAmount: Float) {}
+    open fun handleShadow() {}
 
     fun drawHead(skin: ResourceLocation, x: Int = 2, y: Int = 2, width: Int, height: Int, alpha: Float = 1F) {
         GL11.glColor4f(1F, 1F, 1F, alpha)
