@@ -52,7 +52,7 @@ import kotlin.math.pow
 /**
  * A target hud
  */
-@ElementInfo(name = "Targetz", disableScale = true, retrieveDamage = true)
+@ElementInfo(name = "OldTarget", disableScale = true, retrieveDamage = true)
 class OldTarget : Element() {
 
     private val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))

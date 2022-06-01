@@ -9,11 +9,15 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetStyle
 import net.ccbluex.liquidbounce.ui.font.Fonts
+import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
+
+import kotlin.math.abs
+import kotlin.math.pow
 
 class LiquidBounce: TargetStyle("LiquidBounce") {
 
@@ -49,18 +53,18 @@ class LiquidBounce: TargetStyle("LiquidBounce") {
 
         updateAnim(entity.health, element.globalAnimSpeed.get(), element.noAnimValue.get())
 
-        Fonts.font40.drawString(entity.name, 36, 3, getColor(-1, element))
-        Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(entity))}", 36, 15, getColor(-1, element))
+        Fonts.font40.drawString(entity.name, 36, 3, getColor(-1, element).rgb)
+        Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(entity))}", 36, 15, getColor(-1, element).rgb)
 
         // Draw info
         val playerInfo = mc.netHandler.getPlayerInfo(entity.uniqueID)
         if (playerInfo != null) {
             Fonts.font35.drawString("Ping: ${playerInfo.responseTime.coerceAtLeast(0)}",
-                    36, 24, getColor(-1, element))
+                    36, 24, getColor(-1, element).rgb)
 
             // Draw head
             val locationSkin = playerInfo.locationSkin
-            drawHead(locationSkin, 30, 30, alpha = 1F - element.getFadeProgress())
+            drawHead(skin = locationSkin, width = 30, height = 30, alpha = 1F - element.getFadeProgress())
         }
 
         lastTarget = entity
