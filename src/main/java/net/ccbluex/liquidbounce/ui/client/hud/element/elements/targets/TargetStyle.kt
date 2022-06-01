@@ -49,7 +49,7 @@ abstract class TargetStyle(val name: String): MinecraftInstance() {
     
     open fun handleShadow() {}
 
-    fun getColor(color: Color, element: Target) = ColorUtils.reAlpha(color, 1F - element.getFadeProgress())
+    fun getColor(color: Color, element: Target) = ColorUtils.reAlpha(color, color.alpha / 255F * (1F - element.getFadeProgress()))
     fun getColor(color: Int, element: Target) = getColor(Color(color), element)
 
     fun drawHead(skin: ResourceLocation, x: Int = 2, y: Int = 2, width: Int, height: Int, alpha: Float = 1F) {

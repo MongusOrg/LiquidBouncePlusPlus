@@ -130,12 +130,12 @@ class Target : Element() {
 
         animProgress = animProgress.coerceIn(0F, 1F)
 
-        barColor = ColorUtils.reAlpha(preBarColor, 1F - animProgress)
-        bgColor = ColorUtils.reAlpha(preBgColor, 1F - animProgress)
+        barColor = ColorUtils.reAlpha(preBarColor, preBarColor.alpha / 255F * (1F - animProgress))
+        bgColor = ColorUtils.reAlpha(preBgColor, preBgColor.alpha / 255F * (1F - animProgress))
 
-        if (actualTarget != null)
+        if (actualTarget != null || !fadeValue.get())
             mainTarget = actualTarget
-        else if (mainTarget != null && (!fadeValue.get() || animProgress >= 1F))
+        else if (mainTarget != null && animProgress >= 1F)
             mainTarget = null
 
         val returnBorder = mainStyle.getBorder(mainTarget, this) ?: return null
