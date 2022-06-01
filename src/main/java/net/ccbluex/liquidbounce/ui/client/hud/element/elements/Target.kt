@@ -135,7 +135,7 @@ class Target : Element() {
 
         if (actualTarget != null || !fadeValue.get())
             mainTarget = actualTarget
-        else if (mainTarget != null && animProgress >= 1F)
+        else if (animProgress >= 1F)
             mainTarget = null
 
         val returnBorder = mainStyle.getBorder(mainTarget, this) ?: return null
