@@ -17,12 +17,8 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetSty
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.impl.*
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer
-import net.ccbluex.liquidbounce.utils.render.RenderUtils
-import net.ccbluex.liquidbounce.value.FloatValue
-import net.ccbluex.liquidbounce.value.IntegerValue
-import net.ccbluex.liquidbounce.value.BoolValue
-import net.ccbluex.liquidbounce.value.ListValue
-import net.ccbluex.liquidbounce.value.FontValue
+import net.ccbluex.liquidbounce.utils.render.*
+import net.ccbluex.liquidbounce.value.*
 import net.minecraft.client.gui.GuiChat
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.Entity
@@ -40,7 +36,7 @@ class Target : Element() {
 
     val styleList = mutableListOf<TargetStyle>()
 
-    lateinit val styleValue: ListValue
+    val styleValue: ListValue
 
     // Global variables
     val blurValue = BoolValue("Blur", false)
@@ -75,7 +71,7 @@ class Target : Element() {
             colorModeValue, // color mode
             redValue, greenValue, blueValue, // global rgb
             saturationValue, brightnessValue, waveSecondValue, // wave colors stuffs
-            bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) + styles.map { style -> // background global rgba
+            bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) + styleList.map { style -> // background global rgba
             style.javaClass.declaredFields.map { styleField ->
                 styleField.isAccessible = true
                 styleField[style]
@@ -84,23 +80,26 @@ class Target : Element() {
 
     init {
         styleValue = ListValue("Style", addStyles(
-            Chill(),
+            /*Chill(),
             Chillest(),
             Exhibition(),
             Flux(),
-            NewFlux(),
+            NewFlux(),*/
             LiquidBounce(),
-            LiquidBouncePlus(),
+            /*LiquidBouncePlus(),
             Novoline(),
             Remix(),
             Rise(),
             Simplified(),
-            Slowly()
-        ).toTypedArray(), "Chill")
+            Slowly()*/
+        ).toTypedArray(), "LiquidBounce")
     }
 
     var mainTarget: EntityPlayer? = null
     var animProgress = 0F
+
+    var barColor = Color(-1)
+    var bgColor = Color(-1)
 
     override fun drawElement(): Border? {
         val mainStyle = getCurrentStyle(styleValue.get()) ?: return null
@@ -113,20 +112,38 @@ class Target : Element() {
                             else if ((mc.currentScreen is GuiChat && showWithChatOpen.get()) || mc.currentScreen is GuiHudDesigner) mc.thePlayer 
                             else null
 
+        val preBarColor = when (colorModeValue.get()) {
+            "Rainbow" -> Color(RenderUtils.getRainbowOpaque(waveSecondValue.get(), saturationValue.get(), brightnessValue.get(), 0))
+            "Custom" -> Color(redValue.get(), greenValue.get(), blueValue.get())
+            "Sky" -> RenderUtils.skyRainbow(0, saturationValue.get(), brightnessValue.get())
+            "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), 0, 100)
+            "Health" -> if (actualTarget != null) BlendUtils.getHealthColor(actualTarget.health, actualTarget.maxHealth) else Color.green
+            "Mixer" -> ColorMixer.getMixedColor(0, waveSecondValue.get())
+            else -> ColorUtils.LiquidSlowly(System.nanoTime(), 0, saturationValue.get(), brightnessValue.get())!!
+        }
+
+        val preBgColor = Color(bgRedValue.get(), bgGreenValue.get(), bgBlueValue.get(), bgAlphaValue.get())
+
         if (!fadeValue.get())
-            animProgress += (if (actualTarget != null) 0.05F * RenderUtils.deltaTime else -0.05F * RenderUtils.deltaTime).coerceIn(0F, 1F)
-        else animProgress = 1F
+            animProgress += (0.0075F * fadeSpeed.get() * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F)
+        else animProgress = 0F
+
+        animProgress = animProgress.coerceIn(0F, 1F)
+
+        barColor = ColorUtils.reAlpha(preBarColor, 1F - animProgress)
+        bgColor = ColorUtils.reAlpha(preBgColor, 1F - animProgress)
 
         if (actualTarget != null)
             mainTarget = actualTarget
-        else if (mainTarget != null && (!fadeValue.get() || animProgress <= 0F))
+        else if (mainTarget != null && (!fadeValue.get() || animProgress >= 1F))
             mainTarget = null
 
-        val returnBorder = mainStyle.getBorder(mainTarget, this)
+        val returnBorder = mainStyle.getBorder(mainTarget, this) ?: return null
         val borderWidth = returnBorder.x2 - returnBorder.x
         val borderHeight = returnBorder.y2 - returnBorder.y
 
         if (mainTarget == null) return returnBorder
+        val convertTarget = mainTarget!! as EntityPlayer
         
         val calcScaleX = animProgress * (4F / (borderWidth / 2F))
         val calcScaleY = animProgress * (4F / (borderHeight / 2F))
@@ -136,12 +153,12 @@ class Target : Element() {
         if (blurValue.get()) {
             GL11.glTranslated(-renderX, -renderY, 0.0)
             GL11.glPushMatrix()
-            BlurUtils.blur(returnBorder.x, returnBorder.y, returnBorder.x2, returnBorder.y2, blurStrength.get() * animProgress, false) {
+            BlurUtils.blur(returnBorder.x, returnBorder.y, returnBorder.x2, returnBorder.y2, blurStrength.get() * (1F - animProgress), false) {
                 GL11.glPushMatrix()
                 GL11.glTranslated(renderX, renderY, 0.0)
                 GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
                 GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
-                mainStyle.handleBlur()
+                mainStyle.handleBlur(convertTarget)
                 GL11.glPopMatrix()
             }
             GL11.glPopMatrix()
@@ -153,8 +170,8 @@ class Target : Element() {
             GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
             GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
         }
-
-        mainStyle.drawTarget(mainTarget, this)
+        
+        mainStyle.drawTarget(convertTarget, this)
 
         if (fadeValue.get())
             GL11.glPopMatrix()
@@ -180,23 +197,4 @@ class Target : Element() {
 
     fun getCurrentStyle(styleName: String): TargetStyle? = styleList.find { it.name.equals(styleName, true) }
     
-    class Particle(var color: Color, var distX: Float, var distY: Float, var radius: Float) {
-        var alpha = 1F
-        var progress = 0.0
-        fun render(x: Float, y: Float, fade: Boolean, speed: Float, fadeSpeed: Float) {
-            if (progress >= 1.0) {
-                progress = 1.0
-                if (fade) alpha -= (fadeSpeed * 0.02F * RenderUtils.deltaTime)
-                if (alpha < 0F) alpha = 0F
-            } else
-                progress += (speed * 0.025F * RenderUtils.deltaTime).toDouble()
-
-            if (alpha <= 0F) return
-
-            var reColored = Color(color.red / 255.0F, color.green / 255.0F, color.blue / 255.0F, alpha)
-            var easeOut = EaseUtils.easeOutQuart(progress).toFloat()
-
-            RenderUtils.drawFilledCircle(x + distX * easeOut, y + distY * easeOut, radius, reColored)
-        }
-    }
 }

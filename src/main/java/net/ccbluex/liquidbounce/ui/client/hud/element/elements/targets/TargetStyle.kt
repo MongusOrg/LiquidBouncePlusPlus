@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
+import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -18,10 +19,19 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 import kotlin.math.pow
 
+import java.awt.Color
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
+
 abstract class TargetStyle(val name: String): MinecraftInstance() {
 
     var easingHealth = 0F
     val shieldIcon = ResourceLocation("liquidbounce+/shield.png")
+
+    val decimalFormat = DecimalFormat("##0.00", DecimalFormatSymbols(Locale.ENGLISH))
+    val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
+    val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
 
     abstract fun drawTarget(entity: EntityPlayer, element: Target)
     abstract fun getBorder(entity: EntityPlayer?, element: Target): Border?
@@ -35,9 +45,12 @@ abstract class TargetStyle(val name: String): MinecraftInstance() {
 
     open fun handleDamage(player: EntityPlayer) {}
 
-    open fun handleBlur() {}
+    open fun handleBlur(player: EntityPlayer) {}
     
     open fun handleShadow() {}
+
+    fun getColor(color: Color, element: Target) = ColorUtils.reAlpha(color, 1F - element.getFadeProgress())
+    fun getColor(color: Int, element: Target) = getColor(Color(color), element)
 
     fun drawHead(skin: ResourceLocation, x: Int = 2, y: Int = 2, width: Int, height: Int, alpha: Float = 1F) {
         GL11.glColor4f(1F, 1F, 1F, alpha)

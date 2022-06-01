@@ -117,7 +117,10 @@ object ColorUtils {
     }
 
     @JvmStatic
-    fun reAlpha(color: Color, alpha: Int): Color = Color(color.red, color.green, color.blue, alpha)
+    fun reAlpha(color: Color, alpha: Int): Color = Color(color.red, color.green, color.blue, alpha.coerceIn(0, 255))
+
+    @JvmStatic
+    fun reAlpha(color: Color, alpha: Float): Color = Color(color.red / 255F, color.green / 255F, color.blue / 255F, alpha.coerceIn(0F, 1F))
 
     @JvmStatic
     fun getOppositeColor(color: Color): Color = Color(255 - color.red, 255 - color.green, 255 - color.blue, color.alpha)
