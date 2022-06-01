@@ -124,7 +124,7 @@ class Target : Element() {
 
         val preBgColor = Color(bgRedValue.get(), bgGreenValue.get(), bgBlueValue.get(), bgAlphaValue.get())
 
-        if (!fadeValue.get())
+        if (fadeValue.get())
             animProgress += (0.0075F * fadeSpeed.get() * RenderUtils.deltaTime * if (actualTarget != null) -1F else 1F)
         else animProgress = 0F
 
@@ -151,13 +151,18 @@ class Target : Element() {
         val calcTranslateY = borderHeight / 2F * calcScaleY
 
         if (blurValue.get()) {
+            val floatX = renderX.toFloat()
+            val floatY = renderY.toFloat()
+
             GL11.glTranslated(-renderX, -renderY, 0.0)
             GL11.glPushMatrix()
-            BlurUtils.blur(returnBorder.x, returnBorder.y, returnBorder.x2, returnBorder.y2, blurStrength.get() * (1F - animProgress), false) {
+            BlurUtils.blur(floatX + returnBorder.x, floatY + returnBorder.y, floatX + returnBorder.x2, floatY + returnBorder.y2, blurStrength.get() * (1F - animProgress), false) {
                 GL11.glPushMatrix()
                 GL11.glTranslated(renderX, renderY, 0.0)
-                GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
-                GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
+                if (fadeValue.get()) {
+                    GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
+                    GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
+                }
                 mainStyle.handleBlur(convertTarget)
                 GL11.glPopMatrix()
             }
