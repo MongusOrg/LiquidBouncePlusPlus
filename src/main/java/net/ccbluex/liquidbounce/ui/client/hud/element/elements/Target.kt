@@ -71,7 +71,7 @@ class Target : Element() {
                     colorModeValue, // color mode
                     redValue, greenValue, blueValue, // global rgb
                     saturationValue, brightnessValue, waveSecondValue, // wave colors stuffs
-                    bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) + styleList.map { it.values } // background global rgba 
+                    bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) + styleList.map { it.values }.toList() // background global rgba 
 
     init {
         styleValue = ListValue("Style", addStyles(
