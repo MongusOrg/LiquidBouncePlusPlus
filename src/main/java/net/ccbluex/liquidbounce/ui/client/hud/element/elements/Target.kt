@@ -180,7 +180,8 @@ class Target : Element() {
 
         if (fadeValue.get())
             GL11.glPopMatrix()
-        
+
+        GlStateManager.resetColor()
         return returnBorder
     }
 
