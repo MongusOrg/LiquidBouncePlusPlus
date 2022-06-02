@@ -51,7 +51,7 @@ abstract class TargetStyle(val name: String, val targetInstance: Target): Minecr
     open fun handleShadow(player: EntityPlayer) {}
 
     fun getColor(color: Color) = ColorUtils.reAlpha(color, color.alpha / 255F * (1F - targetInstance.getFadeProgress()))
-    fun getColor(color: Int) = getColor(Color(color), targetInstance)
+    fun getColor(color: Int) = getColor(Color(color))
 
     fun drawHead(skin: ResourceLocation, x: Int = 2, y: Int = 2, width: Int, height: Int, alpha: Float = 1F) {
         glDisable(GL_DEPTH_TEST)

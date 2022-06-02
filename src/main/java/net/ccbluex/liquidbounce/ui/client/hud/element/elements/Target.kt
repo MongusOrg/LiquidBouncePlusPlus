@@ -138,7 +138,7 @@ class Target : Element() {
         else if (animProgress >= 1F)
             mainTarget = null
 
-        val returnBorder = mainStyle.getBorder(mainTarget, this) ?: return null
+        val returnBorder = mainStyle.getBorder(mainTarget) ?: return null
         val borderWidth = returnBorder.x2 - returnBorder.x
         val borderHeight = returnBorder.y2 - returnBorder.y
 
@@ -176,7 +176,7 @@ class Target : Element() {
             GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
         }
         
-        mainStyle.drawTarget(convertTarget, this)
+        mainStyle.drawTarget(convertTarget)
 
         if (fadeValue.get())
             GL11.glPopMatrix()
