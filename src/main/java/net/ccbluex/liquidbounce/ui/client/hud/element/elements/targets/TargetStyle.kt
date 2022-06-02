@@ -38,11 +38,11 @@ abstract class TargetStyle(val name: String, val targetInstance: Target): Minecr
     abstract fun drawTarget(entity: EntityPlayer)
     abstract fun getBorder(entity: EntityPlayer?): Border?
     
-    open fun updateAnim(targetHealth: Float, animSpeed: Float, instant: Boolean) {
-        if (instant)
+    open fun updateAnim(targetHealth: Float) {
+        if (targetInstance.noAnimValue.get())
             easingHealth = targetHealth
         else
-            easingHealth += ((targetHealth - easingHealth) / 2.0F.pow(10.0F - animSpeed)) * RenderUtils.deltaTime
+            easingHealth += ((targetHealth - easingHealth) / 2.0F.pow(10.0F - targetInstance.globalAnimSpeed.get())) * RenderUtils.deltaTime
     }
 
     open fun handleDamage(player: EntityPlayer) {}

@@ -65,7 +65,7 @@ class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst) {
             RenderUtils.drawRect((easingHealth / entity.maxHealth) * width, 34F,
                     (entity.health / entity.maxHealth) * width, 36F, getColor(Color(44, 201, 144)).rgb)
 
-        updateAnim(entity.health, targetInstance.globalAnimSpeed.get(), targetInstance.noAnimValue.get())
+        updateAnim(entity.health)
 
         Fonts.font40.drawString(entity.name, 36, 3, getColor(-1).rgb)
         Fonts.font35.drawString("Distance: ${decimalFormat.format(mc.thePlayer.getDistanceToEntityBox(entity))}", 36, 15, getColor(-1).rgb)
