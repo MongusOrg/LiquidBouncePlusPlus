@@ -85,7 +85,7 @@ class Target : Element() {
             Exhibition(),
             Flux(),
             NewFlux(),*/
-            LiquidBounce(),
+            LiquidBounce(this),
             /*LiquidBouncePlus(),
             Novoline(),
             Remix(),

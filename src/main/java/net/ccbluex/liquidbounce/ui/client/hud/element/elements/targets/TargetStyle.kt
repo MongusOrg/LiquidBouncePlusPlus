@@ -25,7 +25,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-abstract class TargetStyle(val name: String): MinecraftInstance() {
+abstract class TargetStyle(val name: String, val targetInstance: Target): MinecraftInstance() {
 
     var easingHealth = 0F
     val shieldIcon = ResourceLocation("liquidbounce+/shield.png")
@@ -34,8 +34,8 @@ abstract class TargetStyle(val name: String): MinecraftInstance() {
     val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
 
-    abstract fun drawTarget(entity: EntityPlayer, element: Target)
-    abstract fun getBorder(entity: EntityPlayer?, element: Target): Border?
+    abstract fun drawTarget(entity: EntityPlayer)
+    abstract fun getBorder(entity: EntityPlayer?): Border?
     
     open fun updateAnim(targetHealth: Float, animSpeed: Float, instant: Boolean) {
         if (instant)
@@ -48,10 +48,10 @@ abstract class TargetStyle(val name: String): MinecraftInstance() {
 
     open fun handleBlur(player: EntityPlayer) {}
     
-    open fun handleShadow() {}
+    open fun handleShadow(player: EntityPlayer) {}
 
-    fun getColor(color: Color, element: Target) = ColorUtils.reAlpha(color, color.alpha / 255F * (1F - element.getFadeProgress()))
-    fun getColor(color: Int, element: Target) = getColor(Color(color), element)
+    fun getColor(color: Color) = ColorUtils.reAlpha(color, color.alpha / 255F * (1F - targetInstance.getFadeProgress()))
+    fun getColor(color: Int) = getColor(Color(color), targetInstance)
 
     fun drawHead(skin: ResourceLocation, x: Int = 2, y: Int = 2, width: Int, height: Int, alpha: Float = 1F) {
         glDisable(GL_DEPTH_TEST)
