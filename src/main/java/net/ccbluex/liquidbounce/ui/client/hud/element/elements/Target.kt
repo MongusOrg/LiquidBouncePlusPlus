@@ -63,20 +63,27 @@ class Target : Element() {
     val bgAlphaValue = IntegerValue("Background-Alpha", 160, 0, 255)
 
     override val values: List<Value<*>>
-        get() = listOf(styleValue, // style
-            blurValue, blurStrength, // blur
-            fadeValue, fadeSpeed, // fade anim
-            noAnimValue, globalAnimSpeed, // global anim
-            showWithChatOpen, // if not found any target and chat is open then pick mc.thePlayer
-            colorModeValue, // color mode
-            redValue, greenValue, blueValue, // global rgb
-            saturationValue, brightnessValue, waveSecondValue, // wave colors stuffs
-            bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) + styleList.map { style -> // background global rgba
-            style.javaClass.declaredFields.map { styleField ->
-                styleField.isAccessible = true
-                styleField[style]
+        get() {
+            val currentList = listOf(styleValue, // style
+                    blurValue, blurStrength, // blur
+                    fadeValue, fadeSpeed, // fade anim
+                    noAnimValue, globalAnimSpeed, // global anim
+                    showWithChatOpen, // if not found any target and chat is open then pick mc.thePlayer
+                    colorModeValue, // color mode
+                    redValue, greenValue, blueValue, // global rgb
+                    saturationValue, brightnessValue, waveSecondValue, // wave colors stuffs
+                    bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) // background global rgba
+
+            val otherList = mutableListOf<Value<*>>()
+            styleList.forEach { style ->
+                otherList.plus(style.javaClass.declaredFields.map {
+                    it.isAccessible = true
+                    it[style]
+                }.filterIsInstance<Value<*>>())
             }
-        }.filterIsInstance<Value<*>>()
+
+            return currentList + otherList
+        }
 
     init {
         styleValue = ListValue("Style", addStyles(
