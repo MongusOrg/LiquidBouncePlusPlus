@@ -25,9 +25,9 @@ class Slowly(inst: Target): TargetStyle("Slowly", inst) {
         RenderUtils.drawRect(0F, 0F, 32F + length, 36F, targetInstance.bgColor.rgb)
 
         if (mc.netHandler.getPlayerInfo(entity.uniqueID) != null) 
-            drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 1, 1, 30, 30)
+            drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 1, 1, 30, 30, 1F - targetInstance.getFadeProgress())
 
-        font.drawStringWithShadow(entity.name, 33F, 2F, -1)
+        font.drawStringWithShadow(entity.name, 33F, 2F, getColor(-1).rgb)
         font.drawStringWithShadow(healthString, length + 31F - font.getStringWidth(healthString).toFloat(), 22F, targetInstance.barColor.rgb)
 
         updateAnim(entity.health)
