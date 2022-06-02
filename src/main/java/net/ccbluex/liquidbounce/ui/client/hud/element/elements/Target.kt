@@ -63,8 +63,7 @@ class Target : Element() {
     val bgAlphaValue = IntegerValue("Background-Alpha", 160, 0, 255)
 
     override val values: List<Value<*>>
-        get() {
-            val currentList = listOf(styleValue, // style
+        get() = listOf(styleValue, // style
                     blurValue, blurStrength, // blur
                     fadeValue, fadeSpeed, // fade anim
                     noAnimValue, globalAnimSpeed, // global anim
@@ -73,17 +72,7 @@ class Target : Element() {
                     redValue, greenValue, blueValue, // global rgb
                     saturationValue, brightnessValue, waveSecondValue, // wave colors stuffs
                     bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) // background global rgba
-
-            val otherList = mutableListOf<Value<*>>()
-            styleList.forEach { style ->
-                otherList.plus(style.javaClass.declaredFields.map {
-                    it.isAccessible = true
-                    it[style]
-                }.filterIsInstance<Value<*>>())
-            }
-
-            return currentList + otherList
-        }
+                + styleList.map { it.values }
 
     init {
         styleValue = ListValue("Style", addStyles(

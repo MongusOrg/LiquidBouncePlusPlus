@@ -50,6 +50,15 @@ abstract class TargetStyle(val name: String, val targetInstance: Target): Minecr
     
     open fun handleShadow(player: EntityPlayer) {}
 
+    /**
+     * Get all values of element
+     */
+    open val values: List<Value<*>>
+        get() = javaClass.declaredFields.map { valueField ->
+            valueField.isAccessible = true
+            valueField[this]
+        }.filterIsInstance<Value<*>>()
+
     fun getColor(color: Color) = ColorUtils.reAlpha(color, color.alpha / 255F * (1F - targetInstance.getFadeProgress()))
     fun getColor(color: Int) = getColor(Color(color))
 
