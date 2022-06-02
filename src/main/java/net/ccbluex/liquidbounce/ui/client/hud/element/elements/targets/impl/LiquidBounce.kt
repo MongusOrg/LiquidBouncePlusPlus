@@ -24,12 +24,12 @@ import kotlin.math.pow
 
 class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst) {
 
-    private val borderColorMode = ListValue("Border-Color", arrayOf("Custom", "MatchBar", "None"), "None", { inst.styleValue.get().equals("LiquidBounce", true) })
-    private val borderWidthValue = FloatValue("Border-Width", 3F, 0.5F, 5F, { inst.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
-    private val borderRedValue = IntegerValue("Border-Red", 0, 0, 255, { inst.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
-    private val borderGreenValue = IntegerValue("Border-Green", 0, 0, 255, { inst.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
-    private val borderBlueValue = IntegerValue("Border-Blue", 0, 0, 255, { inst.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
-    private val borderAlphaValue = IntegerValue("Border-Alpha", 0, 0, 255, { inst.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
+    val borderColorMode = ListValue("Border-Color", arrayOf("Custom", "MatchBar", "None"), "None", { targetInstance.styleValue.get().equals("LiquidBounce", true) })
+    val borderWidthValue = FloatValue("Border-Width", 3F, 0.5F, 5F, { targetInstance.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
+    val borderRedValue = IntegerValue("Border-Red", 0, 0, 255, { targetInstance.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
+    val borderGreenValue = IntegerValue("Border-Green", 0, 0, 255, { targetInstance.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
+    val borderBlueValue = IntegerValue("Border-Blue", 0, 0, 255, { targetInstance.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
+    val borderAlphaValue = IntegerValue("Border-Alpha", 0, 0, 255, { targetInstance.styleValue.get().equals("LiquidBounce", true) && borderColorMode.get().equals("custom", true) })
 
     private var lastTarget: EntityPlayer? = null
 
