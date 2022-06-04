@@ -44,6 +44,9 @@ public class Fonts {
     @FontDetails(fontName = "Roboto Bold", fontSize = 180)
     public static GameFontRenderer fontBold180;
 
+    @FontDetails(fontName = "Tahoma Bold", fontSize = 40)
+    public static GameFontRenderer fontTahoma;
+
     @FontDetails(fontName = "Minecraft Font")
     public static final FontRenderer minecraftFont = Minecraft.getMinecraft().fontRendererObj;
 
@@ -63,6 +66,7 @@ public class Fonts {
         fontSFUI35 = new GameFontRenderer(getFont("sfui.ttf", 35));
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
+        fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 40));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
@@ -102,8 +106,12 @@ public class Fonts {
     private static void downloadFonts() {
         try {
             final File outputFile = new File(LiquidBounce.fileManager.fontsDir, "roboto.zip");
+            final File sfuiFile = new File(LiquidBounce.fileManager.fontsDir, "sfui.ttf");
+            final File prodSansFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Medium.ttf");
+            final File prodBoldFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Bold.ttf");
+            final File tahomaFile = new File(LiquidBounce.fileManager.fontsDir, "TahomaBold.ttf");
 
-            if(!outputFile.exists()) {
+            if(!outputFile.exists() || !sfuiFile.exist() || !prodSansFile.exist() || !prodBoldFile.exist() || !tahomaFile.exist()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
                 HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
