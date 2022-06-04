@@ -81,7 +81,7 @@ class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst) {
             // Draw head
             val locationSkin = playerInfo.locationSkin
             if (hurtTimeAnim.get()) {
-                val scaleHT = (convertedTarget.hurtTime.toFloat() / convertedTarget.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
+                val scaleHT = (entity.hurtTime.toFloat() / entity.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
                 drawHead(locationSkin, 
                     2F + 15F * (scaleHT * 0.2F), 
                     2F + 15F * (scaleHT * 0.2F), 
