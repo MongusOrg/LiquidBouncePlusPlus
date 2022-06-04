@@ -111,7 +111,7 @@ public class Fonts {
             final File prodBoldFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Bold.ttf");
             final File tahomaFile = new File(LiquidBounce.fileManager.fontsDir, "TahomaBold.ttf");
 
-            if(!outputFile.exists() || !sfuiFile.exist() || !prodSansFile.exist() || !prodBoldFile.exist() || !tahomaFile.exist()) {
+            if(!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
                 HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
