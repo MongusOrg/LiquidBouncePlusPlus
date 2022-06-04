@@ -225,7 +225,7 @@ public class ClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (progress < 1) progress = (float)(System.currentTimeMillis() - lastMS) / 500F; // fully fps async
+        if (progress < 1) progress = (float)(System.currentTimeMillis() - lastMS) / (500F / ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).animSpeedValue.get()); // fully fps async
         else progress = 1;
 
         switch (((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).animationValue.get().toLowerCase()) {

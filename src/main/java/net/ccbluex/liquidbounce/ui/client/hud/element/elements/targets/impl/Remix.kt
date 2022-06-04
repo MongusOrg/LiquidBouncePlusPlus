@@ -22,6 +22,8 @@ import java.awt.Color
 class Remix(inst: Target): TargetStyle("Remix", inst) {
 
     override fun drawTarget(entity: EntityPlayer) {
+        updateAnim(entity.health)
+
         // background
         RenderUtils.newDrawRect(0F, 0F, 146F, 49F, getColor(Color(25, 25, 25)).rgb)
         RenderUtils.newDrawRect(1F, 1F, 145F, 48F, getColor(Color(35, 35, 35)).rgb)
@@ -52,12 +54,12 @@ class Remix(inst: Target): TargetStyle("Remix", inst) {
         RenderUtils.newDrawRect(101F, 17F, 117F, 33F, getColor(Color(95, 95, 95)).rgb)
 
         // name
-        Fonts.minecraftFont.drawStringWithShadow(entity.name, 41F, 5F, -1)
+        Fonts.minecraftFont.drawStringWithShadow(entity.name, 41F, 5F, getColor(-1).rgb)
 
         // ping
         if (mc.netHandler.getPlayerInfo(entity.uniqueID) != null) {
             // actual head
-            drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 5, 5, 32, 32)
+            drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 5, 5, 32, 32, 1F - targetInstance.getFadeProgress())
 
             val responseTime = mc.netHandler.getPlayerInfo(entity.uniqueID).responseTime.toInt()
             val stringTime = "${responseTime.coerceAtLeast(0)}ms"
@@ -83,13 +85,13 @@ class Remix(inst: Target): TargetStyle("Remix", inst) {
             GL11.glPushMatrix()
             GL11.glTranslatef(142F - Fonts.minecraftFont.getStringWidth(stringTime) / 2F, 28F, 0F)
             GL11.glScalef(0.5F, 0.5F, 0.5F)
-            Fonts.minecraftFont.drawStringWithShadow(stringTime, 0F, 0F, -1)
+            Fonts.minecraftFont.drawStringWithShadow(stringTime, 0F, 0F, getColor(-1).rgb)
             GL11.glPopMatrix()
         }
 
         // armor items
         GL11.glPushMatrix()
-        GL11.glColor4f(1f, 1f, 1f, 1f)
+        GL11.glColor4f(1f, 1f, 1f, 1f - targetInstance.getFadeProgress())
         RenderHelper.enableGUIStandardItemLighting()
 
         val renderItem = mc.renderItem
@@ -104,7 +106,6 @@ class Remix(inst: Target): TargetStyle("Remix", inst) {
                 continue
 
             renderItem.renderItemAndEffectIntoGUI(stack, x, y)
-
             x += 20
         }
 

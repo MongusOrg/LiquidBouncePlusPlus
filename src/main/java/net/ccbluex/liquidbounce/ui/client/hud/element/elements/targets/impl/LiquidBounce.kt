@@ -25,7 +25,7 @@ import kotlin.math.pow
 
 class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst) {
 
-    val hurtTimeAnim = BoolValue("HurtTimeAnim", true)
+    val hurtTimeAnim = BoolValue("HurtTimeAnim", true, { targetInstance.styleValue.get().equals("liquidbounce", true) })
     val borderColorMode = ListValue("Border-Color", arrayOf("Custom", "MatchBar", "None"), "None", { targetInstance.styleValue.get().equals("liquidbounce", true) })
     val borderWidthValue = FloatValue("Border-Width", 3F, 0.5F, 5F, { targetInstance.styleValue.get().equals("liquidbounce", true) })
     val borderRedValue = IntegerValue("Border-Red", 0, 0, 255, { targetInstance.styleValue.get().equals("liquidbounce", true) && borderColorMode.get().equals("custom", true) })

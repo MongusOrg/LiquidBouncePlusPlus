@@ -139,7 +139,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
         else 
-            Fonts.font35.drawCenteredString("Thank you for supporting me. Goodbye. - inf", width / 2F, staticY + 30F, Color(255, 50, 70).rgb)
+            Fonts.font35.drawCenteredString("gg", width / 2F, staticY + 30F, Color(255, 50, 70).rgb)
 
         Fonts.font35.drawCenteredString("Check out new website: lbpro.ml and lbforum.cf by codepatch!", width / 2F, staticY + 41F, -1)
 
