@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetStyle
 import net.ccbluex.liquidbounce.ui.font.Fonts
+import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -96,7 +97,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
         val font = Fonts.fontTahoma
         val minWidth = 140F.coerceAtLeast(40F + font.getStringWidth(entity.name))
 
-        RenderUtils.drawExhiRect(0F, 0F, minWidth, 40F)
+        return Border(0F, 0F, minWidth, 40F)
     }
 
 }
