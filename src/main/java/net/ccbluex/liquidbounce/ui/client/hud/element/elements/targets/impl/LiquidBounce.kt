@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetSty
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.ccbluex.liquidbounce.value.IntegerValue
@@ -24,6 +25,7 @@ import kotlin.math.pow
 
 class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst) {
 
+    val hurtTimeAnim = BoolValue("HurtTimeAnim", true)
     val borderColorMode = ListValue("Border-Color", arrayOf("Custom", "MatchBar", "None"), "None", { targetInstance.styleValue.get().equals("liquidbounce", true) })
     val borderWidthValue = FloatValue("Border-Width", 3F, 0.5F, 5F, { targetInstance.styleValue.get().equals("liquidbounce", true) })
     val borderRedValue = IntegerValue("Border-Red", 0, 0, 255, { targetInstance.styleValue.get().equals("liquidbounce", true) && borderColorMode.get().equals("custom", true) })
@@ -78,7 +80,16 @@ class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst) {
 
             // Draw head
             val locationSkin = playerInfo.locationSkin
-            drawHead(skin = locationSkin, width = 30, height = 30, alpha = 1F - targetInstance.getFadeProgress())
+            if (hurtTimeAnim.get()) {
+                val scaleHT = (convertedTarget.hurtTime.toFloat() / convertedTarget.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
+                drawHead(locationSkin, 
+                    2F + 15F * (scaleHT * 0.2F), 
+                    2F + 15F * (scaleHT * 0.2F), 
+                    1F - scaleHT * 0.2F, 
+                    30, 30, 
+                    1F, 0.4F + (1F - scaleHT) * 0.6F, 0.4F + (1F - scaleHT) * 0.6F)
+            } else
+                drawHead(skin = locationSkin, width = 30, height = 30, alpha = 1F - targetInstance.getFadeProgress())
         }
 
         lastTarget = entity

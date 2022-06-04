@@ -12,7 +12,6 @@ import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
-import net.ccbluex.liquidbounce.value.BoolValue
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.player.EntityPlayer
@@ -33,7 +32,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
         GL11.glColor4f(1f, 1f, 1f, 1f - targetInstance.getFadeProgress())
         RenderUtils.drawEntityOnScreen(22, 40, 15, entity)
 
-        font.drawString(entity.name, 46, 4, getColor(-1).rgb)
+        font.drawString(entity.name, 46, 5, getColor(-1).rgb)
 
         val barLength = 60F * (entity.health / entity.maxHealth).coerceIn(0F, 1F)
         RenderUtils.drawRect(45F, 16F, 45F + 60F, 19F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker().darker().darker()).rgb)
@@ -43,7 +42,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
             GL11.glPushMatrix()
             GL11.glTranslatef(45F + i * 6F, 16F, 0F)
             GL11.glScalef(0.5F, 0.5F, 0.5F)
-            RenderUtils.drawBorder(0F, 0F, 12F, 6F, 0.4F, getColor(Color.black).rgb)
+            RenderUtils.drawBorder(0F, 0F, 12F, 6F, 0.25F, getColor(Color.black).rgb)
             GL11.glPopMatrix()
         }
 

@@ -27,6 +27,7 @@ import net.ccbluex.liquidbounce.value.*;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
+import net.ccbluex.liquidbounce.utils.item.ItemUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.utils.render.BlendUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
@@ -61,7 +62,10 @@ public final class ESP2D extends Module {
    public final ListValue boxMode = new ListValue("Mode", new String[]{"Box", "Corners"}, "Box");
    public final BoolValue healthBar = new BoolValue("Health-bar", true);
    public final BoolValue armorBar = new BoolValue("Armor-bar", true);
-   public final BoolValue details = new BoolValue("Details", true);
+   public final BoolValue healthNumber = new BoolValue("HealthNumber", true, () -> healthBar.get());
+   public final BoolValue armorNumber = new BoolValue("ArmorNumber", true, () -> armorBar.get());
+   public final BoolValue armorItems = new BoolValue("ArmorItems", true);
+   public final BoolValue armorDur = new BoolValue("ArmorDurability", true, () -> armorItems.get());
    public final BoolValue tagsValue = new BoolValue("Tags", true);
    public final BoolValue itemTagsValue = new BoolValue("Item-Tags", true);
    public final BoolValue clearNameValue = new BoolValue("Use-Clear-Name", false);
@@ -258,9 +262,8 @@ public final class ESP2D extends Module {
 
                      durabilityWidth = (double)(armorValue / itemDurability);
                      textWidth = (endPosY - posY) * durabilityWidth; 
-                     String healthDisplay = dFormat.format(armorValue) + "§c❤";
-                     //if (details.get()) Fonts.fontSmall.drawStringWithShadow(healthDisplay, (float)posX - 4F - Fonts.fontSmall.getStringWidth(healthDisplay), (float)(endPosY - textWidth) - Fonts.fontSmall.FONT_HEIGHT / 2F, -1);
-                     if (details.get()) drawScaledString(healthDisplay, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
+                     String healthDisplay = dFormat.format(armorValue) + " §c❤";
+                     if (healthNumber.get()) drawScaledString(healthDisplay, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                      RenderUtils.drawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
                      if (armorValue > 0.0F) {
                         int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
@@ -278,7 +281,6 @@ public final class ESP2D extends Module {
                      entityLivingBase = (EntityLivingBase)entity;
                      armorValue = (float)entityLivingBase.getTotalArmorValue();
                      double armorWidth = (endPosY - posY) * (double)armorValue / 20.0D;
-                     //if (details.get()) Fonts.font35.drawStringWithShadow(entityLivingBase.getTotalArmorValue() + "", (float)endPosX + 4F, (float)(endPosY - armorWidth) - 4F, -1);
                      RenderUtils.drawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
                      if (armorValue > 0.0F) {
                         RenderUtils.drawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(40, 40, 230).getRGB());
@@ -289,8 +291,7 @@ public final class ESP2D extends Module {
                         int maxDamage = itemStack.getMaxDamage();
                         itemDurability = (float)(maxDamage - itemStack.getItemDamage());
                         durabilityWidth = (endPosY - posY) * (double)itemDurability / (double)maxDamage;
-                        //if (details.get()) Fonts.fontSmall.drawStringWithShadow(((int)itemDurability) + "", (float)endPosX + 4F, (float)(endPosY - durabilityWidth) - Fonts.fontSmall.FONT_HEIGHT / 2F, -1);
-                        if (details.get()) drawScaledString(((int)itemDurability) + "", endPosX + 4.0, (endPosY - durabilityWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
+                        if (armorNumber.get()) drawScaledString(((int)itemDurability) + "", endPosX + 4.0, (endPosY - durabilityWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                         RenderUtils.drawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
                         RenderUtils.drawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(40, 40, 230).getRGB());
                      }
@@ -298,7 +299,7 @@ public final class ESP2D extends Module {
                }
 
                
-               if (isPlayer && details.get()) {
+               if (isPlayer && armorItems.get()) {
                   entityLivingBase = (EntityLivingBase) entity;
                   EntityPlayer player = (EntityPlayer) entityLivingBase;
                   double yDist = (double)(endPosY - posY) / 4.0D;
@@ -306,6 +307,8 @@ public final class ESP2D extends Module {
                      ItemStack armorStack = player.getEquipmentInSlot(j);
                      if (armorStack != null && armorStack.getItem() != null) {
                         renderItemStack(armorStack, endPosX + (armor ? 4.0D : 2.0D), posY + (yDist * (4 - j)) + (yDist / 2.0D) - 5.0D);
+                        if (armorDur.get())
+                           drawScaledCenteredString(ItemUtils.getItemDurability(armorStack) + "", endPosX + (armor ? 4.0D : 2.0D) + 4.5D, posY + (yDist * (4 - j)) + (yDist / 2.0D) + 4.0D, -1);
                      }
                   }
                }

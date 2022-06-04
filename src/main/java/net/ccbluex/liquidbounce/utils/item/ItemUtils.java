@@ -94,4 +94,8 @@ public final class ItemUtils {
 
         return c;
     }
+
+    public static int getItemDurability(ItemStack stack) {
+        return stack == null ? 0 : (stack.getMaxDamage() - stack.getItemDamage());
+    }
 }
