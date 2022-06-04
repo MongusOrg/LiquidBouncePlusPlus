@@ -308,7 +308,7 @@ public final class ESP2D extends Module {
                      if (armorStack != null && armorStack.getItem() != null) {
                         renderItemStack(armorStack, endPosX + (armor ? 4.0D : 2.0D), posY + (yDist * (4 - j)) + (yDist / 2.0D) - 5.0D);
                         if (armorDur.get())
-                           drawScaledCenteredString(ItemUtils.getItemDurability(armorStack) + "", endPosX + (armor ? 4.0D : 2.0D) + 4.5D, posY + (yDist * (4 - j)) + (yDist / 2.0D) + 4.0D, -1);
+                           drawScaledCenteredString(ItemUtils.getItemDurability(armorStack) + "", endPosX + (armor ? 4.0D : 2.0D) + 4.5D, posY + (yDist * (4 - j)) + (yDist / 2.0D) + 4.0D, fontScaleValue.get(), -1);
                      }
                   }
                }
