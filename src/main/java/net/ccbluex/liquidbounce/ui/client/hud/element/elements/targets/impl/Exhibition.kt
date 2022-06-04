@@ -23,36 +23,40 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
 
     override fun drawTarget(entity: EntityPlayer) {
         val font = Fonts.fontTahoma
-        val minWidth = 140F.coerceAtLeast(40F + font.getStringWidth(entity.name))
+        val minWidth = 140F.coerceAtLeast(55F + font.getStringWidth(entity.name))
 
-        RenderUtils.drawExhiRect(0F, 0F, minWidth, 40F)
+        RenderUtils.drawExhiRect(0F, 0F, minWidth, 45F, 1F - targetInstance.getFadeProgress())
 
-        RenderUtils.drawRect(2.5F, 2.5F, 37.5F, 37.5F, Color(59, 59, 59).rgb)
-        RenderUtils.drawRect(3F, 3F, 37F, 37F, Color(19, 19, 19).rgb)
+        RenderUtils.drawRect(2.5F, 2.5F, 42.5F, 42.5F, getColor(Color(59, 59, 59)).rgb)
+        RenderUtils.drawRect(3F, 3F, 42F, 42F, getColor(Color(19, 19, 19)).rgb)
 
-        GL11.glColor4f(1f, 1f, 1f, 1f)
-        RenderUtils.drawEntityOnScreen(17, 35, 12, entity)
+        GL11.glColor4f(1f, 1f, 1f, 1f - targetInstance.getFadeProgress())
+        RenderUtils.drawEntityOnScreen(22, 40, 15, entity)
 
-        font.drawString(entity.name, 41, 4, -1)
+        font.drawString(entity.name, 46, 4, getColor(-1).rgb)
 
         val barLength = 60F * (entity.health / entity.maxHealth).coerceIn(0F, 1F)
-        RenderUtils.drawRect(40F, 14F, 40F + 60F, 17F, BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker().darker().darker().rgb)
-        RenderUtils.drawRect(40F, 14F, 40F + barLength, 17F, BlendUtils.getHealthColor(entity.health, entity.maxHealth).rgb)
+        RenderUtils.drawRect(45F, 16F, 45F + 60F, 19F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker().darker().darker()).rgb)
+        RenderUtils.drawRect(45F, 16F, 45F + barLength, 19F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
 
         for (i in 0..9) {
-            RenderUtils.drawBorder(40F + i * 6F, 14F, 40F + (i + 1F) * 6F, 17F, 0.25F, Color.black.rgb)
+            GL11.glPushMatrix()
+            GL11.glTranslatef(45F + i * 6F, 16F, 0F)
+            GL11.glScalef(0.5F, 0.5F, 0.5F)
+            RenderUtils.drawBorder(0F, 0F, 12F, 6F, 0.4F, getColor(Color.black).rgb)
+            GL11.glPopMatrix()
         }
 
         GL11.glPushMatrix()
-        GL11.glTranslatef(41F, 20F, 0F)
+        GL11.glTranslatef(46F, 21F, 0F)
         GL11.glScalef(0.5f, 0.5f, 0.5f)
-        Fonts.minecraftFont.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 0, 0, -1)
+        Fonts.minecraftFont.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 0, 0, getColor(-1).rgb)
         GL11.glPopMatrix()
 
         GlStateManager.resetColor()
 
         GL11.glPushMatrix()
-        GL11.glColor4f(1f, 1f, 1f, 1f)
+        GL11.glColor4f(1f, 1f, 1f, 1f - targetInstance.getFadeProgress())
         GlStateManager.enableRescaleNormal()
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
@@ -61,8 +65,8 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
 
         val renderItem = mc.renderItem
 
-        var x = 41
-        var y = 21
+        var x = 45
+        var y = 26
 
         for (index in 3 downTo 0) {
             val stack = entity.inventory.armorInventory[index] ?: continue
@@ -92,12 +96,12 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
     }
 
     override fun getBorder(entity: EntityPlayer?): Border? {
-        entity ?: return Border(0F, 0F, 140F, 40F)
+        entity ?: return Border(0F, 0F, 140F, 45F)
 
         val font = Fonts.fontTahoma
-        val minWidth = 140F.coerceAtLeast(40F + font.getStringWidth(entity.name))
+        val minWidth = 140F.coerceAtLeast(55F + font.getStringWidth(entity.name))
 
-        return Border(0F, 0F, minWidth, 40F)
+        return Border(0F, 0F, minWidth, 45F)
     }
 
 }
