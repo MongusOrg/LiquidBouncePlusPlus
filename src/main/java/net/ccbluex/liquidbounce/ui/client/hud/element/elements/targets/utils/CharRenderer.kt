@@ -7,6 +7,7 @@ package net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.utils
 
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.AnimationUtils
+import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.client.gui.ScaledResolution
 import org.lwjgl.opengl.GL11
@@ -15,7 +16,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-class CharRenderer(val small: Boolean) {
+class CharRenderer(val small: Boolean): MinecraftInstance() {
     var moveY = FloatArray(20)
     var moveX = FloatArray(20)
 

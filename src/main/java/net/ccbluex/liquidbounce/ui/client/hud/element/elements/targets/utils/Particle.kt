@@ -62,12 +62,12 @@ enum class ShapeType {
     },
     SOLID_TRIANGLE {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
-            RenderUtils.drawTriAngle(x, y, rad, 3F, col.rgb, true)
+            RenderUtils.drawTriAngle(x, y, rad, 3F, col, true)
         }
     },
     TRIANGLE {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
-            RenderUtils.drawTriAngle(x, y, rad, 3F, col.rgb, false)
+            RenderUtils.drawTriAngle(x, y, rad, 3F, col, false)
         }
     };
     abstract fun performRendering(x: Float, y: Float, rad: Float, col: Color)
