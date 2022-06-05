@@ -183,7 +183,7 @@ class Target : Element() {
         }
         
         if (mainStyle is Chill)
-            mainStyle.updateData(calcTranslateX, calcTranslateY, calcScaleX, calcScaleY)
+            mainStyle.updateData(renderX.toFloat() + calcTranslateX, renderY.toFloat() + calcTranslateY, calcScaleX, calcScaleY)
         mainStyle.drawTarget(convertTarget)
 
         if (fadeValue.get())
