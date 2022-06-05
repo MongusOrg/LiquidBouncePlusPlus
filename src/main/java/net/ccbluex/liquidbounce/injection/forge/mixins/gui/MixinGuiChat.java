@@ -9,6 +9,7 @@ import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
+import net.ccbluex.liquidbounce.utils.render.Stencil;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
@@ -61,10 +62,10 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
     private void updateScreen(CallbackInfo callbackInfo) {
         final int delta = RenderUtils.deltaTime;
 
-        if (fade < 14) fade = AnimationUtils.animate(14F, fade, 0.02F * delta);
+        if (fade < 14) fade = AnimationUtils.animate(14F, fade, 0.025F * delta);
         if (fade > 14) fade = 14;
 
-        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.0185F * delta);
+        if (yPosOfInputField > height - 12) yPosOfInputField = AnimationUtils.animate(height - 12, yPosOfInputField, 0.025F * delta);
         if (yPosOfInputField < height - 12) yPosOfInputField = height - 12;
 
         inputField.yPosition = (int) yPosOfInputField;
@@ -115,7 +116,15 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
     @Overwrite
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         //Gui.drawRect(2, this.height - (int) fade, this.width - 2, this.height - (int), Integer.MIN_VALUE);
-        RenderUtils.drawRect(2F, this.height - fade, this.width - 2, this.height - fade + 12, Integer.MIN_VALUE);
+        if (!inputField.getText().isEmpty() && inputField.getText().startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
+            Stencil.write(true);
+            RenderUtils.drawRect(2F, this.height - fade, this.width - 2, this.height - fade + 12, Integer.MIN_VALUE);
+            Stencil.erase(false);
+            RenderUtils.drawRect(1F, this.height - fade - 1, this.width - 1, this.height - fade + 13, new Color(20, 110, 255).getRGB());
+            Stencil.dispose();
+        } else
+            RenderUtils.drawRect(2F, this.height - fade, this.width - 2, this.height - fade + 12, Integer.MIN_VALUE);
+            
         this.inputField.drawTextBox();
 
         if (LiquidBounce.commandManager.getLatestAutoComplete().length > 0 && !inputField.getText().isEmpty() && inputField.getText().startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {

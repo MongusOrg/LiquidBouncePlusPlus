@@ -23,7 +23,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
 
     override fun drawTarget(entity: EntityPlayer) {
         val font = Fonts.fontTahoma
-        val minWidth = 140F.coerceAtLeast(55F + font.getStringWidth(entity.name))
+        val minWidth = 136F.coerceAtLeast(50F + font.getStringWidth(entity.name))
 
         RenderUtils.drawExhiRect(0F, 0F, minWidth, 45F, 1F - targetInstance.getFadeProgress())
 
@@ -36,19 +36,19 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
         font.drawString(entity.name, 46, 5, getColor(-1).rgb)
 
         val barLength = 60F * (entity.health / entity.maxHealth).coerceIn(0F, 1F)
-        RenderUtils.drawRect(45F, 16F, 45F + 60F, 19F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker(0.4F)).rgb)
-        RenderUtils.drawRect(45F, 16F, 45F + barLength, 19F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
+        RenderUtils.drawRect(45F, 16F, 45F + 60F, 20F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker(0.4F)).rgb)
+        RenderUtils.drawRect(45F, 16F, 45F + barLength, 20F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
 
         for (i in 0..9) {
             GL11.glPushMatrix()
             GL11.glTranslatef(45F + i * 6F, 16F, 0F)
             GL11.glScalef(0.1F, 0.1F, 0.1F)
-            RenderUtils.drawBorder(0F, 0F, 60F, 30F, 2F, getColor(Color.black).rgb)
+            RenderUtils.drawBorder(0F, 0F, 60F, 40F, 1.5F, getColor(Color.black).rgb)
             GL11.glPopMatrix()
         }
 
         GL11.glPushMatrix()
-        GL11.glTranslatef(46F, 21F, 0F)
+        GL11.glTranslatef(46F, 22F, 0F)
         GL11.glScalef(0.5f, 0.5f, 0.5f)
         Fonts.minecraftFont.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 0, 0, getColor(-1).rgb)
         GL11.glPopMatrix()
@@ -66,7 +66,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
         val renderItem = mc.renderItem
 
         var x = 45
-        var y = 26
+        var y = 27
 
         for (index in 3 downTo 0) {
             val stack = entity.inventory.armorInventory[index] ?: continue
@@ -96,10 +96,10 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
     }
 
     override fun getBorder(entity: EntityPlayer?): Border? {
-        entity ?: return Border(0F, 0F, 140F, 45F)
+        entity ?: return Border(0F, 0F, 136F, 45F)
 
         val font = Fonts.fontTahoma
-        val minWidth = 140F.coerceAtLeast(55F + font.getStringWidth(entity.name))
+        val minWidth = 136F.coerceAtLeast(50F + font.getStringWidth(entity.name))
 
         return Border(0F, 0F, minWidth, 45F)
     }

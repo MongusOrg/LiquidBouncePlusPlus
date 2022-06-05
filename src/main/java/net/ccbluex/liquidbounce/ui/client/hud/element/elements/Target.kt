@@ -90,7 +90,8 @@ class Target : Element() {
             LiquidBounce(this),
             Slowly(this),
             Exhibition(this),
-            Remix(this)
+            Remix(this),
+            Chill(this)
             /*LiquidBouncePlus(),
             Novoline(),
             Remix(),
