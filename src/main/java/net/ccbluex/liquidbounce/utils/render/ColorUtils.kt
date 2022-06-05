@@ -11,6 +11,14 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.*
 
+// Extensions
+fun Color.darker(factor: Float) = Color(
+    this.red / 255F * factor.coerceIn(0F, 1F), 
+    this.green / 255F * factor.coerceIn(0F, 1F),
+    this.blue / 255F * factor.coerceIn(0F, 1F),
+    this.alpha
+)
+
 object ColorUtils {
 
     private val COLOR_PATTERN = Pattern.compile("(?i)§[0-9A-FK-OR]")
