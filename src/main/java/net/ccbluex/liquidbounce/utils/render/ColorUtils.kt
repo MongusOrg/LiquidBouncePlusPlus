@@ -16,7 +16,7 @@ fun Color.darker(factor: Float) = Color(
     this.red / 255F * factor.coerceIn(0F, 1F), 
     this.green / 255F * factor.coerceIn(0F, 1F),
     this.blue / 255F * factor.coerceIn(0F, 1F),
-    this.alpha
+    this.alpha / 255F
 )
 
 object ColorUtils {

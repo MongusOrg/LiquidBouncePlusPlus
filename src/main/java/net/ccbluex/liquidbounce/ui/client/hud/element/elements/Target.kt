@@ -181,6 +181,8 @@ class Target : Element() {
             GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
         }
         
+        if (mainStyle is Chill)
+            mainStyle.updateData(calcTranslateX, calcTranslateY, calcScaleX, calcScaleY)
         mainStyle.drawTarget(convertTarget)
 
         if (fadeValue.get())

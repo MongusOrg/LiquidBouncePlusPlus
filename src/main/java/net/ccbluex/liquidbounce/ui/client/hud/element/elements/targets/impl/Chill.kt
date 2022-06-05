@@ -10,7 +10,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetStyle
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.utils.CharRenderer
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.render.ColorUtils.darker
+import net.ccbluex.liquidbounce.utils.render.ColorUtils.customDarker
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -27,6 +27,18 @@ class Chill(inst: Target): TargetStyle("Chill", inst) {
     val chillRoundValue = BoolValue("Chill-RoundedBar", true, { targetInstance.styleValue.get().equals("chill", true) })
 
     private val numberRenderer = CharRenderer(false)
+
+    private var calcScaleX = 0F
+    private var calcScaleY = 0F
+    private var calcTranslateX = 0F
+    private var calcTranslateY = 0F
+
+    fun updateData(_a: Float, _b: Float, _c: Float, _d: Float) {
+        calcTranslateX = _a
+        calcTranslateY = _b
+        calcScaleX = _c
+        calcScaleY = _d
+    }
 
     override fun drawTarget(entity: EntityPlayer) {
         updateAnim(entity.health)
@@ -63,7 +75,7 @@ class Chill(inst: Target): TargetStyle("Chill", inst) {
         numberRenderer.renderChar(health, calcTranslateX, calcTranslateY, 38F, 17F, calcScaleX, calcScaleY, false, chillFontSpeed.get(), getColor(-1).rgb)
 
         // health bar
-        RenderUtils.drawRoundedRect(4F, 38F, tWidth - 4F, 44F, 3F, targetInstance.barColor.darker(0.4F).rgb)
+        RenderUtils.drawRoundedRect(4F, 38F, tWidth - 4F, 44F, 3F, targetInstance.barColor.customDarker(0.5F).rgb)
 
         Stencil.write(false)
         GL11.glDisable(GL11.GL_TEXTURE_2D)
