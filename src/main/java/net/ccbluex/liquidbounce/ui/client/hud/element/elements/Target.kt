@@ -82,22 +82,11 @@ class Target : Element() {
 
     init {
         styleValue = ListValue("Style", addStyles(
-            /*Chill(),
-            Chillest(),
-            Exhibition(),
-            Flux(),
-            NewFlux(),*/
             LiquidBounce(this),
             Slowly(this),
             Exhibition(this),
             Remix(this),
             Chill(this)
-            /*LiquidBouncePlus(),
-            Novoline(),
-            Remix(),
-            Rise(),
-            Simplified(),
-            Slowly()*/
         ).toTypedArray(), "LiquidBounce")
     }
 
