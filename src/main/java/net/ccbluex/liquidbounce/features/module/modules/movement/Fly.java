@@ -28,16 +28,16 @@ import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockSlime;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemEnderPearl;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.*;
 import org.lwjgl.input.Keyboard;
-
-import net.minecraft.item.ItemEnderPearl;
-import net.minecraft.item.ItemStack;
 
 import java.awt.*;
 import java.util.ArrayList;
