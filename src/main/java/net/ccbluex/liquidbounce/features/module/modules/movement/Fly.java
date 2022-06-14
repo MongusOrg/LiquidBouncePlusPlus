@@ -12,7 +12,6 @@ import net.ccbluex.liquidbounce.features.module.ModuleCategory;
 import net.ccbluex.liquidbounce.features.module.ModuleInfo;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
-import net.ccbluex.liquidbounce.utils.InventoryUtils;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.Rotation;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
@@ -28,6 +27,7 @@ import net.ccbluex.liquidbounce.value.ListValue;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.minecraft.block.BlockAir;
+import net.minecraft.block.BlockSlime;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
@@ -97,7 +97,7 @@ public class Fly extends Module {
             "HawkEye",
             "HAC",
             "WatchCat",
-            "OldWatchdog",
+            "Watchdog",
             
             // Other exploit-based stuffs.
             "Jetpack",
@@ -366,10 +366,10 @@ public class Fly extends Module {
                     mc.thePlayer.jump();
                 moveSpeed = 1;
                 break;
-            case "oldwatchdog":
-                expectItemStack = InventoryUtils.findAutoBlockBlock();
+            case "watchdog":
+                expectItemStack = getSlimeSlot();
                 if (expectItemStack == -1) {
-                    LiquidBounce.hud.addNotification(new Notification("The fly requires blocks to be activated properly."));
+                    LiquidBounce.hud.addNotification(new Notification("The fly requires slime blocks to be activated properly."));
                     break;
                 }
 
@@ -424,7 +424,7 @@ public class Fly extends Module {
             freeHypixelPitch = mc.thePlayer.rotationPitch;
         }
 
-        if (!mode.equalsIgnoreCase("oldwatchdog")
+        if (!mode.equalsIgnoreCase("watchdog")
             && !mode.equalsIgnoreCase("bugspartan") && !mode.equalsIgnoreCase("verus") && !mode.equalsIgnoreCase("damage") && !mode.toLowerCase().contains("hypixel")
             && fakeDmgValue.get()) {
             mc.thePlayer.handleStatusUpdate((byte) 2);
@@ -966,7 +966,7 @@ public class Fly extends Module {
                     mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY - 8e-6, mc.thePlayer.posZ);
                 }
                 break;
-            case "oldwatchdog":
+            case "watchdog":
                 int current = mc.thePlayer.inventory.currentItem;
                 if (event.getEventState() == EventState.PRE) {
                     if (wdState == 1 && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, -1, 0).expand(0, 0, 0)).isEmpty()) {
@@ -1059,11 +1059,11 @@ public class Fly extends Module {
         if(noPacketModify)
             return;
 
-        if (packet instanceof C09PacketHeldItemChange && mode.equalsIgnoreCase("oldwatchdog") && wdState < 4)
+        if (packet instanceof C09PacketHeldItemChange && mode.equalsIgnoreCase("watchdog") && wdState < 4)
             event.cancelEvent();
 
         if (packet instanceof S08PacketPlayerPosLook) {
-            if (mode.equalsIgnoreCase("oldwatchdog") && wdState == 3) {
+            if (mode.equalsIgnoreCase("watchdog") && wdState == 3) {
                 wdState = 4;
                 if (fakeDmgValue.get() && mc.thePlayer != null)
                     mc.thePlayer.handleStatusUpdate((byte) 2);
@@ -1194,7 +1194,7 @@ public class Fly extends Module {
                     }
                 }
                 break;
-            case "oldwatchdog":
+            case "watchdog":
                 if (wdState < 4)
                     event.zeroXZ();
                 break;
@@ -1285,7 +1285,7 @@ public class Fly extends Module {
         final String mode = modeValue.get();
 
         if (mode.equalsIgnoreCase("Hypixel") || mode.equalsIgnoreCase("BoostHypixel") ||
-                mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null) || (mode.equalsIgnoreCase("FunCraft") && moveSpeed > 0) || (mode.equalsIgnoreCase("oldwatchdog") && wdState >= 1))
+                mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null) || (mode.equalsIgnoreCase("FunCraft") && moveSpeed > 0) || (mode.equalsIgnoreCase("watchdog") && wdState >= 1))
             e.cancelEvent();
     }
 
@@ -1294,7 +1294,7 @@ public class Fly extends Module {
         final String mode = modeValue.get();
 
         if (mode.equalsIgnoreCase("Hypixel") || mode.equalsIgnoreCase("BoostHypixel") ||
-                mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null) || mode.equalsIgnoreCase("FunCraft") || mode.equalsIgnoreCase("oldwatchdog"))
+                mode.equalsIgnoreCase("Rewinside") || (mode.equalsIgnoreCase("Mineplex") && mc.thePlayer.inventory.getCurrentItem() == null) || mode.equalsIgnoreCase("FunCraft") || mode.equalsIgnoreCase("watchdog"))
             e.setStepHeight(0F);
     }
 
@@ -1348,6 +1348,18 @@ public class Fly extends Module {
             ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
             if (stack != null && stack.getItem() instanceof ItemEnderPearl) {
                 return i - 36;
+            }
+        }
+        return -1;
+    }
+
+    private int getSlimeSlot() {
+        for(int i = 36; i < 45; ++i) {
+            ItemStack stack = mc.thePlayer.inventoryContainer.getSlot(i).getStack();
+            if (stack != null && stack.getItem() != null && stack.getItem() instanceof ItemBlock) {
+                final ItemBlock itemBlock = (ItemBlock) stack.getItem();
+                if (itemBlock.getBlock() instanceof BlockSlime)
+                    return i - 36;
             }
         }
         return -1;

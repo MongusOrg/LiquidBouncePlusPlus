@@ -41,19 +41,14 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
 
         for (i in 0..9) {
             GL11.glPushMatrix()
-            GL11.glTranslatef(45F + i * 8F, 16F, 0F)
-            GL11.glScalef(0.1F, 0.1F, 0.1F)
-            RenderUtils.drawBorder(0F, 0F, 80F, 40F, 0.5F, getColor(Color.black).rgb)
-            RenderUtils.drawBorder(0F, 0F, 80F, 40F, 0.5F, getColor(Color.black).rgb)
+            GL11.glTranslatef(45F + i * 8F, 14F, 0F)
+            GL11.glScalef(.05F, .05F, .05F)
+            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .1F, getColor(Color.black).rgb)
+            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .1F, getColor(Color.black).rgb)
             GL11.glPopMatrix()
         }
 
-        GL11.glPushMatrix()
-        GL11.glTranslatef(46F, 22F, 0F)
-        GL11.glScalef(0.5f, 0.5f, 0.5f)
-        Fonts.minecraftFont.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 0, 0, getColor(-1).rgb)
-        GL11.glPopMatrix()
-
+        Fonts.fontVerdana.drawString("HP:${entity.health.toInt()} | Dist:${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 46F, 20F, getColor(-1).rgb)
         GlStateManager.resetColor()
 
         GL11.glPushMatrix()

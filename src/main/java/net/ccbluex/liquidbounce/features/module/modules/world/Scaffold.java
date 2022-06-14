@@ -138,7 +138,7 @@ public class Scaffold extends Module {
     // Rotations
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
     private final BoolValue noHitCheckValue = new BoolValue("NoHitCheck", false, () -> { return rotationsValue.get(); });
-    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Custom"}, "Normal"); // searching reason
+    public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Spin", "Custom"}, "Normal"); // searching reason
     public final ListValue rotationLookupValue = new ListValue("RotationLookup", new String[]{"Normal", "AAC", "Same"}, "Normal");
 
     private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, "°", () -> { return rotationsValue.get(); }) {
@@ -165,6 +165,10 @@ public class Scaffold extends Module {
 
     private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
     private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
+
+    private final FloatValue speenSpeedValue = new FloatValue("Spin-Speed", 5F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("spin"); });
+    private final FloatValue speenPitchValue = new FloatValue("Spin-Pitch", 90F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("spin"); });
+
     private final BoolValue keepRotOnJumpValue = new BoolValue("KeepRotOnJump", true, () -> (!rotationModeValue.get().equalsIgnoreCase("normal") && !rotationModeValue.get().equalsIgnoreCase("aac")));
 
     private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false, () -> { return rotationsValue.get(); });
@@ -242,6 +246,7 @@ public class Scaffold extends Module {
 
     // Render thingy
     private float progress = 0;
+    private float spinYaw = 0F;
     private long lastMS = 0L;
 
     // Mode stuff
@@ -266,6 +271,7 @@ public class Scaffold extends Module {
         if (mc.thePlayer == null) return;
 
         progress = 0;
+        spinYaw = 0;
         launchY = (int) mc.thePlayer.posY;
         lastSlot = mc.thePlayer.inventory.currentItem;
         slot = mc.thePlayer.inventory.currentItem;
@@ -1069,6 +1075,11 @@ public class Scaffold extends Module {
 
                             if (rotationModeValue.get().equalsIgnoreCase("custom") && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown())) 
                                 rotation = new Rotation(mc.thePlayer.rotationYaw + customYawValue.get(), customPitchValue.get());
+
+                            if (rotationModeValue.get().equalsIgnoreCase("spin") && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown())) {
+                                spinYaw += speenSpeedValue.get();
+                                rotation = new Rotation(MathHelper.wrapAngleTo180_float(spinYaw), speenPitchValue.get());
+                            }
 
                             final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotationLookupValue.get().equalsIgnoreCase("same") ? rotation : lookupRotation);
                             final Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4, rotationVector.yCoord * 4, rotationVector.zCoord * 4);

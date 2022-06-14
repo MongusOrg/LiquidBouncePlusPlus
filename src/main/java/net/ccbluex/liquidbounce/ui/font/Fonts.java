@@ -44,8 +44,11 @@ public class Fonts {
     @FontDetails(fontName = "Roboto Bold", fontSize = 180)
     public static GameFontRenderer fontBold180;
 
-    @FontDetails(fontName = "Tahoma Bold", fontSize = 40)
+    @FontDetails(fontName = "Tahoma Bold", fontSize = 35)
     public static GameFontRenderer fontTahoma;
+
+    @FontDetails(fontName = "Verdana", fontSize = 11)
+    public static GameFontRenderer fontVerdana;
 
     @FontDetails(fontName = "Minecraft Font")
     public static final FontRenderer minecraftFont = Minecraft.getMinecraft().fontRendererObj;
@@ -67,6 +70,7 @@ public class Fonts {
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
         fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 40));
+        fontVerdana = new GameFontRenderer(getFont("Verdana.ttf", 11));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
@@ -110,6 +114,7 @@ public class Fonts {
             final File prodSansFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Medium.ttf");
             final File prodBoldFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Bold.ttf");
             final File tahomaFile = new File(LiquidBounce.fileManager.fontsDir, "TahomaBold.ttf");
+            final File verdanaFile = new File(LiquidBounce.fileManager.fontsDir, "Verdana.ttf");
 
             if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
