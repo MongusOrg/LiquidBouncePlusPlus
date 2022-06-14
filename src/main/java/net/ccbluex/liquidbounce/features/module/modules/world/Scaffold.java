@@ -225,6 +225,7 @@ public class Scaffold extends Module {
     // Rotation lock
     private Rotation lockRotation;
     private Rotation lookupRotation;
+    private Rotation speenRotation;
 
     // Auto block slot
     private int slot, lastSlot;
@@ -661,9 +662,16 @@ public class Scaffold extends Module {
         mc.thePlayer.motionZ *= xzMultiplier.get();
 
         // Lock Rotation
-        if (rotationsValue.get() && keepRotationValue.get() && lockRotation != null)
-            RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, lockRotation, RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
-
+        if (rotationsValue.get() && keepRotationValue.get() && lockRotation != null) {
+            if (rotationModeValue.get().equalsIgnoreCase("spin")) {
+                spinYaw += speenSpeedValue.get();
+                spinYaw = MathHelper.wrapAngleTo180_float(spinYaw);
+                speenRotation = new Rotation(spinYaw, speenPitchValue.get());
+                RotationUtils.setTargetRotation(speenRotation);
+            } else if (lockRotation != null) 
+                RotationUtils.setTargetRotation(RotationUtils.limitAngleChange(RotationUtils.serverRotation, lockRotation, RandomUtils.nextFloat(minTurnSpeed.get(), maxTurnSpeed.get())));
+        }
+            
         final String mode = modeValue.get();
         final EventState eventState = event.getEventState();
 
@@ -1076,10 +1084,8 @@ public class Scaffold extends Module {
                             if (rotationModeValue.get().equalsIgnoreCase("custom") && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown())) 
                                 rotation = new Rotation(mc.thePlayer.rotationYaw + customYawValue.get(), customPitchValue.get());
 
-                            if (rotationModeValue.get().equalsIgnoreCase("spin") && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown())) {
-                                spinYaw += speenSpeedValue.get();
-                                rotation = new Rotation(MathHelper.wrapAngleTo180_float(spinYaw), speenPitchValue.get());
-                            }
+                            if (rotationModeValue.get().equalsIgnoreCase("spin") && speenRotation != null && (keepRotOnJumpValue.get() || !mc.gameSettings.keyBindJump.isKeyDown())) 
+                                rotation = speenRotation;
 
                             final Vec3 rotationVector = RotationUtils.getVectorForRotation(rotationLookupValue.get().equalsIgnoreCase("same") ? rotation : lookupRotation);
                             final Vec3 vector = eyesPos.addVector(rotationVector.xCoord * 4, rotationVector.yCoord * 4, rotationVector.zCoord * 4);
