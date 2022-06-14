@@ -116,7 +116,7 @@ public class Fonts {
             final File tahomaFile = new File(LiquidBounce.fileManager.fontsDir, "TahomaBold.ttf");
             final File verdanaFile = new File(LiquidBounce.fileManager.fontsDir, "Verdana.ttf");
 
-            if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists() || !verdanaFile.get()) {
+            if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists() || !verdanaFile.exists()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
                 HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
