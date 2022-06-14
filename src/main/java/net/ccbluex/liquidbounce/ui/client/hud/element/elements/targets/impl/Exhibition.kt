@@ -43,8 +43,8 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
             GL11.glPushMatrix()
             GL11.glTranslatef(45F + i * 8F, 16F, 0F)
             GL11.glScalef(.05F, .05F, .05F)
-            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .5F, getColor(Color.black).rgb)
-            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .5F, getColor(Color.black).rgb)
+            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .25F, getColor(Color.black).rgb)
+            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .25F, getColor(Color.black).rgb)
             GL11.glPopMatrix()
         }
 

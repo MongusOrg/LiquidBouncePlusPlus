@@ -47,7 +47,7 @@ public class Fonts {
     @FontDetails(fontName = "Tahoma Bold", fontSize = 35)
     public static GameFontRenderer fontTahoma;
 
-    @FontDetails(fontName = "Verdana", fontSize = 24)
+    @FontDetails(fontName = "Verdana", fontSize = 22)
     public static GameFontRenderer fontVerdana;
 
     @FontDetails(fontName = "Minecraft Font")
@@ -70,7 +70,7 @@ public class Fonts {
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
         fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 40));
-        fontVerdana = new GameFontRenderer(getFont("Verdana.ttf", 24));
+        fontVerdana = new GameFontRenderer(getFont("Verdana.ttf", 22));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
@@ -116,7 +116,7 @@ public class Fonts {
             final File tahomaFile = new File(LiquidBounce.fileManager.fontsDir, "TahomaBold.ttf");
             final File verdanaFile = new File(LiquidBounce.fileManager.fontsDir, "Verdana.ttf");
 
-            if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists()) {
+            if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists() || !verdanaFile.get()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
                 HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
