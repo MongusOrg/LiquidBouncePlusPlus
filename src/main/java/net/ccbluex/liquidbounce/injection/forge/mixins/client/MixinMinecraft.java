@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.client;
 
 import de.enzaxd.viaforge.ViaForge;
+import de.enzaxd.viaforge.util.AttackOrder;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.AutoClicker;
@@ -233,6 +234,22 @@ public abstract class MixinMinecraft {
 
         if (Patcher.noHitDelay.get() || LiquidBounce.moduleManager.getModule(AutoClicker.class).getState())
             leftClickCounter = 0;
+    }
+
+    @Redirect(
+        method = "clickMouse",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;swingItem()V")
+    )
+    private void fixAttackOrder_VanillaSwing() {
+        AttackOrder.sendConditionalSwing(this.objectMouseOver);
+    }
+
+    @Redirect(
+        method = "clickMouse",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;attackEntity(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/entity/Entity;)V")
+    )
+    private void fixAttackOrder_VanillaAttack() {
+        AttackOrder.sendFixedAttack(this.thePlayer, this.objectMouseOver.entityHit);
     }
 
     @Inject(method = "middleClickMouse", at = @At("HEAD"))

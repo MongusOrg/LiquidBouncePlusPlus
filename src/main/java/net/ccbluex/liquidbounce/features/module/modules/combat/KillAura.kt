@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.combat
 
+import de.enzaxd.viaforge.ViaForge
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
@@ -122,6 +123,7 @@ class KillAura : Module() {
 
     // Bypass
     private val swingValue = BoolValue("Swing", true)
+    private val swingOrderValue = BoolValue("1.9OrderCheck", true, { swingValue.get() })
     private val keepSprintValue = BoolValue("KeepSprint", true)
 
     // AutoBlock
@@ -749,10 +751,13 @@ class KillAura : Module() {
         }
 
         // Attack target
-        if (swingValue.get())
+        if (swingValue.get() && (!swingOrderValue.get() || ViaForge.getInstance().getVersion() <= 47)) // version fix
             mc.thePlayer.swingItem()
 
         mc.netHandler.addToSendQueue(C02PacketUseEntity(entity, C02PacketUseEntity.Action.ATTACK))
+
+        if (swingValue.get() && swingOrderValue.get() && ViaForge.getInstance().getVersion() > 47)
+            mc.thePlayer.swingItem()
 
         if (keepSprintValue.get()) {
             // Critical Effect
