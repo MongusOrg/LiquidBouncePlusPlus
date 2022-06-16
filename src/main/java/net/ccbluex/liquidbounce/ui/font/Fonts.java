@@ -44,7 +44,7 @@ public class Fonts {
     @FontDetails(fontName = "Roboto Bold", fontSize = 180)
     public static GameFontRenderer fontBold180;
 
-    @FontDetails(fontName = "Tahoma Bold", fontSize = 35)
+    @FontDetails(fontName = "Tahoma Bold", fontSize = 40)
     public static GameFontRenderer fontTahoma;
 
     @FontDetails(fontName = "Verdana", fontSize = 22)

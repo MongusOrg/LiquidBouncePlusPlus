@@ -39,18 +39,16 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
         RenderUtils.drawRect(45F, 16F, 45F + 80F, 20F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker(0.4F)).rgb)
         RenderUtils.drawRect(45F, 16F, 45F + barLength, 20F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
 
-        for (i in 0..9) {
-            GL11.glPushMatrix()
-            GL11.glTranslatef(45F + i * 8F, 16F, 0F)
-            GL11.glScalef(.05F, .05F, .05F)
-            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .25F, getColor(Color.black).rgb)
-            RenderUtils.drawBorder(0F, 0F, 160F, 80F, .25F, getColor(Color.black).rgb)
-            GL11.glPopMatrix()
-        }
+        for (i in 0..9)
+            RenderUtils.drawRectBasedBorder(45F + i * 8F, 16F, 45F + (i + 1) * 8F, 20F, 1F, getColor(Color.black).rgb)
 
-        Fonts.fontVerdana.drawString("HP:${entity.health.toInt()} | Dist:${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 46F, 22F, getColor(-1).rgb)
+        GL11.glPushMatrix()
+        GL11.glTranslatef(46F, 22F, 0F)
+        GL11.glScalef(0.5f, 0.5f, 0.5f)
+        Fonts.minecraftFont.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 0, 0, getColor(-1).rgb)
+        GL11.glPopMatrix()
+
         GlStateManager.resetColor()
-
         GL11.glPushMatrix()
         GL11.glColor4f(1f, 1f, 1f, 1f - targetInstance.getFadeProgress())
         GlStateManager.enableRescaleNormal()

@@ -30,7 +30,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -114,6 +116,13 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     private void headLiving(CallbackInfo callbackInfo) {
         if (LiquidBounce.moduleManager.getModule(NoJumpDelay.class).getState())
             jumpTicks = 0;
+    }
+
+    @ModifyConstant(method = "onLivingUpdate", constant = @Constant(doubleValue = 0.005D))
+    private int refactor1_9MovementThreshold(int constant) {
+        if (ViaForge.getInstance().getVersion() != 47)
+            return 0.003D;
+        return 0.005D;
     }
 
     @Inject(method = "onLivingUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;isJumping:Z", ordinal = 1))
