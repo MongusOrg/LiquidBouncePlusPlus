@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@ModuleInfo(name = "AsianHat", spacedName = "Asian Hat", description = "Yep. China Hat.", category = ModuleCategory.RENDER)
+@ModuleInfo(name = "AsianHat", spacedName = "Asian Hat", description = "not your typical china hat", category = ModuleCategory.RENDER)
 public class AsianHat extends Module {
 
     private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
@@ -74,9 +74,9 @@ public class AsianHat extends Module {
         final AxisAlignedBB bb = entity.getEntityBoundingBox();
         double radius = bb.maxX - bb.minX;
 		double height = bb.maxY - bb.minY;
-		double posX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * mc.timer.renderPartialTicks;
-	    double posY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * mc.timer.renderPartialTicks;
-	    double posZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * mc.timer.renderPartialTicks;
+		double posX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * event.getPartialTicks();
+	    double posY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * event.getPartialTicks();
+	    double posZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * event.getPartialTicks();
 
         Color colour = getColor(entity, 0);
         float r = colour.getRed() / 255.0F;
@@ -97,19 +97,30 @@ public class AsianHat extends Module {
         checkPosition(radius);
 
         GL11.glPushMatrix();
-        GlStateManager.translate(viewX + posX, viewY + posY, viewZ + posZ);
+        GlStateManager.translate(viewX + posX, viewY + posY + height, viewZ + posZ);
 
         pre3D();
         
-        if (hatRotation.get() && RotationUtils.serverRotation != null) {
-            GlStateManager.rotate(-RotationUtils.serverRotation.getYaw(), 0, 1, 0);
-            GlStateManager.rotate(RotationUtils.serverRotation.getPitch(), 1, 0, 0);
+        if (hatRotation.get()) {
+            float yaw_interpolate = RenderUtils.interpolate(
+                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getYaw() : entity.rotationYaw,
+                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getYaw() : entity.prevRotationYaw,
+                event.getPartialTicks()
+                );
+            float pitch_interpolate = RenderUtils.interpolate(
+                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getPitch() : entity.rotationPitch,
+                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getPitch() : entity.prevRotationPitch,
+                event.getPartialTicks()
+                );
+
+            GlStateManager.rotate(-yaw_interpolate, 0, 1, 0);
+            GlStateManager.rotate(pitch_interpolate, 1, 0, 0);
         }
 
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
         // main section
-        worldrenderer.pos(0, height + 0.3, 0).color(r, g, b, al).endVertex();
+        worldrenderer.pos(0, 0.3, 0).color(r, g, b, al).endVertex();
 
         int i = 0;
         for (double[] smolPos : positions) {
@@ -119,15 +130,15 @@ public class AsianHat extends Module {
                 float g2 = colour2.getGreen() / 255.0F;
                 float b2 = colour2.getBlue() / 255.0F;
 
-                worldrenderer.pos(smolPos[0], height, smolPos[1]).color(r2, g2, b2, Eal).endVertex();
+                worldrenderer.pos(smolPos[0], 0, smolPos[1]).color(r2, g2, b2, Eal).endVertex();
             } else {
-                worldrenderer.pos(smolPos[0], height, smolPos[1]).color(r, g, b, Eal).endVertex();
+                worldrenderer.pos(smolPos[0], 0, smolPos[1]).color(r, g, b, Eal).endVertex();
             }
 
             i++;
 		}
 
-        worldrenderer.pos(0, height + 0.3, 0).color(r, g, b, al).endVertex();
+        worldrenderer.pos(0, 0.3, 0).color(r, g, b, al).endVertex();
         tessellator.draw();
 
         // border section
@@ -147,9 +158,9 @@ public class AsianHat extends Module {
                     float g2 = colour2.getGreen() / 255.0F;
                     float b2 = colour2.getBlue() / 255.0F;
 
-                    worldrenderer.pos(smolPos[0], height, smolPos[1]).color(r2, g2, b2, lineAlp).endVertex();
+                    worldrenderer.pos(smolPos[0], 0, smolPos[1]).color(r2, g2, b2, lineAlp).endVertex();
                 } else {
-                    worldrenderer.pos(smolPos[0], height, smolPos[1]).color(r, g, b, lineAlp).endVertex();
+                    worldrenderer.pos(smolPos[0], 0, smolPos[1]).color(r, g, b, lineAlp).endVertex();
                 }
 
                 i++;
@@ -161,6 +172,8 @@ public class AsianHat extends Module {
         post3D();
         GL11.glPopMatrix();
     }
+
+    public void drawAsianHat()
 
 	public final Color getColor(final Entity ent, final int index) {
 		switch (colorModeValue.get()) {
