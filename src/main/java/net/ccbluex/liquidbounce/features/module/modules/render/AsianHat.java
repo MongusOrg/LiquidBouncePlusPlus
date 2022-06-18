@@ -98,8 +98,8 @@ public class AsianHat extends Module {
         pre3D();
         
         if (hatRotation.get() && RotationUtils.serverRotation != null) {
-            GlStateManager.rotate(RotationUtils.serverRotation.getPitch(), 0, 1, 0);
-            GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), 0, 0, 1);
+            GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), 0, 1, 0);
+            GlStateManager.rotate(RotationUtils.serverRotation.getPitch(), 1, 0, 0);
         }
 
         GlStateManager.translate(viewX + posX, viewY + posY + height, viewZ + posZ);
