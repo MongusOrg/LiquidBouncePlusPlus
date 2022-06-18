@@ -40,7 +40,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
         RenderUtils.drawRect(45F, 16F, 45F + barLength, 20F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
 
         for (i in 0..9)
-            RenderUtils.drawRectBasedBorder(45F + i * 8F, 16F, 45F + (i + 1) * 8F, 20F, 1F, getColor(Color.black).rgb)
+            RenderUtils.drawRectBasedBorder(45F + i * 8F, 16F, 45F + (i + 1) * 8F, 20F, 0.5F, getColor(Color.black).rgb)
 
         GL11.glPushMatrix()
         GL11.glTranslatef(46F, 22F, 0F)

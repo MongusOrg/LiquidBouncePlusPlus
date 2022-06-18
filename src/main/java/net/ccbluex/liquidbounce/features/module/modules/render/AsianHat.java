@@ -49,7 +49,7 @@ public class AsianHat extends Module {
     private final IntegerValue spaceValue = new IntegerValue("Color-Space", 0, 0, 100);
     private final BoolValue noFirstPerson = new BoolValue("NoFirstPerson", true);
     private final BoolValue hatBorder = new BoolValue("HatBorder", true);
-    //private final BoolValue hatRotation = new BoolValue("HatRotation", true);
+    private final BoolValue hatRotation = new BoolValue("HatRotation", true);
     private final IntegerValue borderAlphaValue = new IntegerValue("BorderAlpha", 255, 0, 255);
     private final FloatValue borderWidthValue = new FloatValue("BorderWidth", 1F, 0.1F, 4F);
 
@@ -96,17 +96,19 @@ public class AsianHat extends Module {
 
         checkPosition(radius);
         pre3D();
-/*
+        
         if (hatRotation.get() && RotationUtils.serverRotation != null) {
-            //GlStateManager.translate(viewX, viewY, viewZ);
             GlStateManager.rotate(RotationUtils.serverRotation.getPitch(), 0, 1, 0);
             GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), 0, 0, 1);
         }
-*/
+
+        GlStateManager.translate(viewX, viewY, viewZ);
+
+
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
         // main section
-        worldrenderer.pos(viewX + posX, viewY + posY + height + 0.3, viewZ + posZ).color(r, g, b, al).endVertex();
+        worldrenderer.pos(posX, posY + height + 0.3, posZ).color(r, g, b, al).endVertex();
 
         int i = 0;
         for (double[] smolPos : positions) {
@@ -119,15 +121,15 @@ public class AsianHat extends Module {
                 float g2 = colour2.getGreen() / 255.0F;
                 float b2 = colour2.getBlue() / 255.0F;
 
-                worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r2, g2, b2, Eal).endVertex();
+                worldrenderer.pos(posX2, posY + height, posZ2).color(r2, g2, b2, Eal).endVertex();
             } else {
-                worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r, g, b, Eal).endVertex();
+                worldrenderer.pos(posX2, posY + height, posZ2).color(r, g, b, Eal).endVertex();
             }
 
             i++;
 		}
 
-        worldrenderer.pos(viewX + posX, viewY + posY + height + 0.3, viewZ + posZ).color(r, g, b, al).endVertex();
+        worldrenderer.pos(posX, posY + height + 0.3, posZ).color(r, g, b, al).endVertex();
         tessellator.draw();
 
         // border section
@@ -149,9 +151,9 @@ public class AsianHat extends Module {
                     float g2 = colour2.getGreen() / 255.0F;
                     float b2 = colour2.getBlue() / 255.0F;
 
-                    worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r2, g2, b2, lineAlp).endVertex();
+                    worldrenderer.pos(posX2, posY + height, posZ2).color(r2, g2, b2, lineAlp).endVertex();
                 } else {
-                    worldrenderer.pos(viewX + posX2, viewY + posY + height, viewZ + posZ2).color(r, g, b, lineAlp).endVertex();
+                    worldrenderer.pos(posX2, posY + height, posZ2).color(r, g, b, lineAlp).endVertex();
                 }
 
                 i++;

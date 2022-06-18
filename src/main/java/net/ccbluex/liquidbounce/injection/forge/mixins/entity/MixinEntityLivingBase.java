@@ -122,8 +122,8 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
     @ModifyConstant(method = "onLivingUpdate", constant = @Constant(doubleValue = 0.005D))
     private double refactor1_9MovementThreshold(double constant) {
         if (ViaForge.getInstance().getVersion() <= 47)
-            return 0.003D;
-        return 0.005D;
+            return 0.005D;
+        return 0.003D;
     }
 
     @Inject(method = "onLivingUpdate", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/EntityLivingBase;isJumping:Z", ordinal = 1))
