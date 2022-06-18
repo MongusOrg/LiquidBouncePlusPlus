@@ -66,6 +66,7 @@ public class Scaffold extends Module {
     private final BoolValue stopWhenBlockAbove = new BoolValue("StopWhenBlockAbove", false, () -> { return towerEnabled.get(); });
     private final BoolValue onJumpValue = new BoolValue("OnJump", false, () -> { return towerEnabled.get(); });
     private final BoolValue noMoveOnlyValue = new BoolValue("NoMove", true, () -> { return towerEnabled.get(); });
+    private final BoolValue noMoveFreezeValue = new BoolValue("NoMoveFreezePlayer", true, () -> { return towerEnabled.get() && noMoveOnlyValue.get(); });
     private final FloatValue towerTimerValue = new FloatValue("TowerTimer", 1F, 0.1F, 10F, () -> { return towerEnabled.get(); });
 
     // Jump mode
@@ -718,8 +719,11 @@ public class Scaffold extends Module {
                 launchY = (int)mc.thePlayer.posY;
 
                 if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
-                        mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir)
+                        mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir) {
+                    if (noMoveOnlyValue.get() && noMoveFreezeValue.get())
+                        MovementUtils.strafe(0);
                     move(event);
+                }
 
                 final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1D, mc.thePlayer.posZ);
                 if (mc.theWorld.getBlockState(blockPos).getBlock() instanceof BlockAir) {
