@@ -95,14 +95,16 @@ public class AsianHat extends Module {
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
         checkPosition(radius);
+
+        GL11.glPushMatrix();
+        GlStateManager.translate(viewX + posX, viewY + posY + height, viewZ + posZ);
+
         pre3D();
         
         if (hatRotation.get() && RotationUtils.serverRotation != null) {
             GlStateManager.rotate(RotationUtils.serverRotation.getYaw(), 0, 1, 0);
             GlStateManager.rotate(RotationUtils.serverRotation.getPitch(), 1, 0, 0);
         }
-
-        GlStateManager.translate(viewX + posX, viewY + posY + height, viewZ + posZ);
 
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
@@ -157,6 +159,7 @@ public class AsianHat extends Module {
         }
         
         post3D();
+        GL11.glPopMatrix();
     }
 
 	public final Color getColor(final Entity ent, final int index) {
