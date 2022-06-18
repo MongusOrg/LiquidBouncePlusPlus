@@ -173,8 +173,6 @@ public class AsianHat extends Module {
         GL11.glPopMatrix();
     }
 
-    public void drawAsianHat()
-
 	public final Color getColor(final Entity ent, final int index) {
 		switch (colorModeValue.get()) {
 			case "Custom":
