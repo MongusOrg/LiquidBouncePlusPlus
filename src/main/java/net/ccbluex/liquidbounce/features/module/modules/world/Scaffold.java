@@ -707,6 +707,8 @@ public class Scaffold extends Module {
         }
         
         mc.timer.timerSpeed = towerTimerValue.get();
+        if (noMoveOnlyValue.get() && noMoveFreezeValue.get())
+            mc.thePlayer.motionX = mc.thePlayer.motionZ = 0;
 
         if (towerPlaceModeValue.get().equalsIgnoreCase(eventState.getStateName())) place(true);
 
@@ -720,8 +722,6 @@ public class Scaffold extends Module {
 
                 if (towerModeValue.get().equalsIgnoreCase("verus") || !stopWhenBlockAbove.get() || BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX,
                         mc.thePlayer.posY + 2, mc.thePlayer.posZ)) instanceof BlockAir) {
-                    if (noMoveOnlyValue.get() && noMoveFreezeValue.get())
-                        MovementUtils.strafe(0);
                     move(event);
                 }
 
