@@ -125,6 +125,10 @@ public final class RenderUtils extends MinecraftInstance {
         return old + (current - old) * scale;
     }
 
+    public static double interpolate(double current, double old, double scale) {
+        return old + (current - old) * scale;
+    }
+
     public static int SkyRainbow(int var2, float st, float bright) {
         double v1 = Math.ceil(System.currentTimeMillis() + (long) (var2 * 109)) / 5;
         return Color.getHSBColor((double) ((float) ((v1 %= 360.0) / 360.0)) < 0.5 ? -((float) (v1 / 360.0)) : (float) (v1 / 360.0), st, bright).getRGB();
