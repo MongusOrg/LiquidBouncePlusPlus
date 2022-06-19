@@ -30,9 +30,11 @@ class Particle(var color: Color, var distX: Float, var distY: Float, var radius:
         if (canRotate && drawType != ShapeType.SOLID_CIRCLE && drawType != ShapeType.CIRCLE) {
             rotate += 10F * (1F - easeOut)
             GL11.glPushMatrix()
-            GL11.glRotatef(rotate, 0F, 0F, 1F)
             GL11.glTranslatef(x + distX * easeOut, y + distY * easeOut, 0F)
+            GL11.glPushMatrix()
+            GL11.glRotatef(rotate, 0F, 0F, 1F)
             drawType.performRendering(0F, 0F, radius, reColored)
+            GL11.glPopMatrix()
             GL11.glPopMatrix()
         } else
             drawType.performRendering(x + distX * easeOut, y + distY * easeOut, radius, reColored)

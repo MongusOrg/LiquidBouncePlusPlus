@@ -94,6 +94,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
                             if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.5F, 1.0F) else 0F), 
                         parDistX, parDistY, parSize, drawType))
                 }
+                gotDamaged = false
             }
 
             // render and removing system
@@ -143,7 +144,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
             "custom", "health" -> RenderUtils.drawRect(5F, 42F, length - maxHealthLength, 48F, targetInstance.barColor.rgb)
             else -> for (i in 0..(gradientLoopValue.get() - 1)) {
                 val barStart = i.toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
-                val barEnd = i.toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
+                val barEnd = (i + 1).toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                 RenderUtils.drawGradientSideways(5.0 + barStart, 42.0, 5.0 + barEnd, 48.0, getColorAtIndex(i), getColorAtIndex(i + 1))
             }
         }
