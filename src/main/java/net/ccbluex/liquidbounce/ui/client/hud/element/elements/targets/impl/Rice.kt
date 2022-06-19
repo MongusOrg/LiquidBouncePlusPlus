@@ -133,9 +133,10 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
         GL11.glEnable(GL11.GL_BLEND)
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
-        if (gradientRoundedBarValue.get())
-            RenderUtils.fastRoundedRect(5F, 42F, 5F + barWidth, 48F, 3F)
-        else
+        if (gradientRoundedBarValue.get()) {
+            if (barWidth > 0F)
+                RenderUtils.fastRoundedRect(5F, 42F, 5F + barWidth, 48F, 3F)
+        } else
             RenderUtils.quickDrawRect(5F, 42F, 5F + barWidth, 48F)
 
         GL11.glDisable(GL11.GL_BLEND)
