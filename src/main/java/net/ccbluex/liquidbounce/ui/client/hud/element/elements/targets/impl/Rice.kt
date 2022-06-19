@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.impl
 
+import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Target
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetStyle
@@ -12,7 +13,9 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.utils.Par
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.utils.ShapeType
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.darker
+import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.render.*
+import net.ccbluex.liquidbounce.utils.misc.RandomUtils
 import net.ccbluex.liquidbounce.value.*
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -57,15 +60,12 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
         updateAnim(entity.health)
 
         val font = Fonts.fontSFUI40
-        val name = "Name: ${convertedTarget.name}"
-        val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}"
+        val name = "Name: ${entity.name}"
+        val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"
         val healthName = decimalFormat2.format(easingHealth)
                     
         val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
-        val maxHealthLength = font.getStringWidth(decimalFormat2.format(convertedTarget.maxHealth)).toFloat()
-
-        val floatX = renderX.toFloat()
-        val floatY = renderY.toFloat()
+        val maxHealthLength = font.getStringWidth(decimalFormat2.format(entity.maxHealth)).toFloat()
 
         // background
         RenderUtils.drawRoundedRect(0F, 0F, 10F + length, 55F, 8F, targetInstance.bgColor.rgb)
@@ -88,7 +88,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
                     particleList.add(Particle(
                         BlendUtils.blendColors(
                             floatArrayOf(0F, 1F), 
-                            arrayOf<Color>(Color.white, barColor), 
+                            arrayOf<Color>(Color.white, targetInstance.barColor), 
                             if (RandomUtils.nextBoolean()) RandomUtils.nextFloat(0.5F, 1.0F) else 0F), 
                         parDistX, parDistY, parSize, drawType))
                 }
@@ -108,9 +108,9 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
         }
 
         // custom head 
-        val scaleHT = (convertedTarget.hurtTime.toFloat() / convertedTarget.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
-        if (mc.netHandler.getPlayerInfo(convertedTarget.uniqueID) != null) 
-            drawHead(mc.netHandler.getPlayerInfo(convertedTarget.uniqueID).locationSkin, 
+        val scaleHT = (entity.hurtTime.toFloat() / entity.maxHurtTime.coerceAtLeast(1).toFloat()).coerceIn(0F, 1F)
+        if (mc.netHandler.getPlayerInfo(entity.uniqueID) != null) 
+            drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 
                     5F + 15F * (scaleHT * 0.2F), 
                     5F + 15F * (scaleHT * 0.2F), 
                     1F - scaleHT * 0.2F, 
@@ -120,11 +120,11 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
 
         // player's info
         GlStateManager.resetColor()
-        font.drawString(name, 39F, 11F, getColor(-1))
-        font.drawString(info, 39F, 23F, getColor(-1))
+        font.drawString(name, 39F, 11F, getColor(-1).rgb)
+        font.drawString(info, 39F, 23F, getColor(-1).rgb)
 
         // gradient health bar
-        val barWidth = (length - 5F - maxHealthLength) * (easingHealth / convertedTarget.maxHealth.toFloat()).coerceIn(0F, 1F)
+        val barWidth = (length - 5F - maxHealthLength) * (easingHealth / entity.maxHealth.toFloat()).coerceIn(0F, 1F)
         Stencil.write(false)
         GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glEnable(GL11.GL_BLEND)
@@ -139,16 +139,16 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
         Stencil.erase(true)
         when (targetInstance.colorModeValue.get().toLowerCase()) {
             "custom", "health" -> RenderUtils.drawRect(5F, 42F, length - maxHealthLength, 48F, targetInstance.barColor.rgb)
-            else -> for (i in 0..(gradientAmountValue.get() - 1)) {
-                val barStart = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
-                val barEnd = i.toDouble() / gradientAmountValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
+            else -> for (i in 0..(gradientLoopValue.get() - 1)) {
+                val barStart = i.toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
+                val barEnd = i.toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                 RenderUtils.drawGradientSideways(5.0 + barStart, 42.0, 5.0 + barEnd, 48.0, getColorAtIndex(i), getColorAtIndex(i + 1))
             }
         }
         Stencil.dispose()
 
         GlStateManager.resetColor()
-        font.drawString(healthName, 10F + barWidth, 41F, -1)
+        font.drawString(healthName, 10F + barWidth, 41F, getColor(-1).rgb)
     }
 
     private fun getColorAtIndex(i: Int): Int {
@@ -157,9 +157,9 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
             "Sky" -> RenderUtils.SkyRainbow(i * gradientDistanceValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get())
             "Slowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), i * gradientDistanceValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get())!!.rgb
             "Mixer" -> ColorMixer.getMixedColor(i * gradientDistanceValue.get(), targetInstance.waveSecondValue.get()).rgb
-            "Fade" -> ColorUtils.fade(Color(redValue.get(), greenValue.get(), blueValue.get()), i * gradientDistanceValue.get(), 100).rgb
+            "Fade" -> ColorUtils.fade(Color(targetInstance.redValue.get(), targetInstance.greenValue.get(), targetInstance.blueValue.get()), i * gradientDistanceValue.get(), 100).rgb
             else -> -1
-        })
+        }).rgb
     }
 
     override fun handleDamage(entity: EntityPlayer) {
@@ -168,8 +168,8 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
 
     override fun handleBlur(entity: EntityPlayer) {
         val font = Fonts.fontSFUI40
-        val name = "Name: ${convertedTarget.name}"
-        val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}"            
+        val name = "Name: ${entity.name}"
+        val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"            
         val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
 
         GlStateManager.enableBlend()
@@ -184,8 +184,8 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
         entity ?: return Border(0F, 0F, 135F, 55F)
 
         val font = Fonts.fontSFUI40
-        val name = "Name: ${convertedTarget.name}"
-        val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(convertedTarget))}"            
+        val name = "Name: ${entity.name}"
+        val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"            
         val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
 
         return Border(0F, 0F, 10F + length, 55F)

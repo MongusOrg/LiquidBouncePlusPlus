@@ -72,8 +72,9 @@ enum class ShapeType(val typeName: String) {
     };
     abstract fun performRendering(x: Float, y: Float, rad: Float, col: Color)
     
-    @JvmStatic
-    public fun getTypeFromName(name: String): ShapeType? {
-        return values().find { it.typeName.equals(name, true) }
+    companion object {
+        fun getTypeFromName(name: String): ShapeType? {
+            return values().find { it.typeName.equals(name, true) }
+        }
     }
 }
