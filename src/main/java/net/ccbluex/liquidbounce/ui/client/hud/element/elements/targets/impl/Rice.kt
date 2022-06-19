@@ -31,6 +31,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
     val gradientRoundedBarValue = BoolValue("GradientRoundedBar", true, { targetInstance.styleValue.get().equals("Rice", true) })
 
     val riceParticle = BoolValue("Rice-Particle", true, { targetInstance.styleValue.get().equals("Rice", true) })
+    val riceParticleSpin = BoolValue("Rice-ParticleSpin", true, { targetInstance.styleValue.get().equals("Rice", true) && riceParticle.get() })
     val generateAmountValue = IntegerValue("GenerateAmount", 10, 1, 40, { targetInstance.styleValue.get().equals("Rice", true) && riceParticle.get() })
     val riceParticleCircle = ListValue("Circle-Particles", arrayOf("Outline", "Solid", "None"), "Solid", { targetInstance.styleValue.get().equals("Rice", true) && riceParticle.get() })
     val riceParticleRect = ListValue("Rect-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rice", true) && riceParticle.get() })
@@ -100,7 +101,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
 
             particleList.forEach { particle ->
                 if (particle.alpha > 0F)
-                    particle.render(20F, 20F, riceParticleFade.get(), riceParticleSpeed.get(), riceParticleFadingSpeed.get())
+                    particle.render(20F, 20F, riceParticleFade.get(), riceParticleSpeed.get(), riceParticleFadingSpeed.get(), riceParticleSpin.get())
                 else
                     deleteQueue.add(particle)
             }
