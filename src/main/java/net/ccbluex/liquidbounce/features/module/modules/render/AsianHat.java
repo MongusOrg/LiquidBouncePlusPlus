@@ -101,7 +101,7 @@ public class AsianHat extends Module {
         checkPosition(radius);
 
         GL11.glPushMatrix();
-        GlStateManager.translate(viewX + posX, viewY + posY + height - 0.3, viewZ + posZ);
+        GlStateManager.translate(viewX + posX, viewY + posY + height - 0.4, viewZ + posZ);
 
         pre3D();
         
@@ -132,7 +132,7 @@ public class AsianHat extends Module {
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
         // main section
-        worldrenderer.pos(0, 0.6, 0).color(r, g, b, al).endVertex();
+        worldrenderer.pos(0, 0.7, 0).color(r, g, b, al).endVertex();
 
         int i = 0;
         for (double[] smolPos : positions) {
@@ -142,15 +142,15 @@ public class AsianHat extends Module {
                 float g2 = colour2.getGreen() / 255.0F;
                 float b2 = colour2.getBlue() / 255.0F;
 
-                worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r2, g2, b2, Eal).endVertex();
+                worldrenderer.pos(smolPos[0], 0.4, smolPos[1]).color(r2, g2, b2, Eal).endVertex();
             } else {
-                worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r, g, b, Eal).endVertex();
+                worldrenderer.pos(smolPos[0], 0.4, smolPos[1]).color(r, g, b, Eal).endVertex();
             }
 
             i++;
 		}
 
-        worldrenderer.pos(0, 0.6, 0).color(r, g, b, al).endVertex();
+        worldrenderer.pos(0, 0.7, 0).color(r, g, b, al).endVertex();
         tessellator.draw();
 
         // border section
@@ -170,9 +170,9 @@ public class AsianHat extends Module {
                     float g2 = colour2.getGreen() / 255.0F;
                     float b2 = colour2.getBlue() / 255.0F;
 
-                    worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r2, g2, b2, lineAlp).endVertex();
+                    worldrenderer.pos(smolPos[0], 0.4, smolPos[1]).color(r2, g2, b2, lineAlp).endVertex();
                 } else {
-                    worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r, g, b, lineAlp).endVertex();
+                    worldrenderer.pos(smolPos[0], 0.4, smolPos[1]).color(r, g, b, lineAlp).endVertex();
                 }
 
                 i++;

@@ -39,36 +39,41 @@ class Particle(var color: Color, var distX: Float, var distY: Float, var radius:
     }
 }
 
-enum class ShapeType {
-    SOLID_CIRCLE {
+enum class ShapeType(val typeName: String) {
+    SOLID_CIRCLE("c_solid") {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
             RenderUtils.drawFilledCircle(x, y, rad, col)
         }
     },
-    CIRCLE {
+    CIRCLE("c_outline") {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
             RenderUtils.drawCircle(x, y, rad, 0.5F, 0, 360, col)
         }
     },
-    SOLID_RECT {
+    SOLID_RECT("r_solid") {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
             RenderUtils.drawRect(x - rad / 2F, y - rad / 2F, x + rad / 2F, y + rad / 2F, col.rgb)
         }
     },
-    RECT {
+    RECT("r_outline") {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
             RenderUtils.drawBorder(x - rad / 2F, y - rad / 2F, x + rad / 2F, y + rad / 2F, 0.5F, col.rgb)
         }
     },
-    SOLID_TRIANGLE {
+    SOLID_TRIANGLE("t_solid") {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
             RenderUtils.drawTriAngle(x, y, rad, 3F, col, true)
         }
     },
-    TRIANGLE {
+    TRIANGLE("t_outline") {
         override fun performRendering(x: Float, y: Float, rad: Float, col: Color) {
             RenderUtils.drawTriAngle(x, y, rad, 3F, col, false)
         }
     };
     abstract fun performRendering(x: Float, y: Float, rad: Float, col: Color)
+    
+    @JvmStatic
+    public fun getTypeFromName(name: String): ShapeType? {
+        return values().find { it.typeName.equals(name, true) }
+    }
 }

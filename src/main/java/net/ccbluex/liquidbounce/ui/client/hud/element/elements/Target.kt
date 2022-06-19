@@ -83,10 +83,11 @@ class Target : Element() {
     init {
         styleValue = ListValue("Style", addStyles(
             LiquidBounce(this),
-            Slowly(this),
+            Chill(this),
+            Rice(this),
             Exhibition(this),
             Remix(this),
-            Chill(this)
+            Slowly(this)
         ).toTypedArray(), "LiquidBounce")
     }
 
@@ -183,7 +184,8 @@ class Target : Element() {
     }
 
     override fun handleDamage(ent: EntityPlayer) {
-        getCurrentStyle(styleValue.get())?.handleDamage(ent)
+        if (mainTarget != null && ent == mainTarget)
+            getCurrentStyle(styleValue.get())?.handleDamage(ent)
     }
 
     fun getFadeProgress() = animProgress

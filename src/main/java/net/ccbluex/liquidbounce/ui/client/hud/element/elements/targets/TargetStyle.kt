@@ -77,11 +77,11 @@ abstract class TargetStyle(val name: String, val targetInstance: Target): Minecr
         glEnable(GL_DEPTH_TEST)
     }
 
-    fun drawHead(skin: ResourceLocation, x: Float, y: Float, scale: Float, width: Int, height: Int, red: Float, green: Float, blue: Float) {
+    fun drawHead(skin: ResourceLocation, x: Float, y: Float, scale: Float, width: Int, height: Int, red: Float, green: Float, blue: Float, alpha: Float = 1F) {
         glPushMatrix()
         glTranslatef(x, y, 0F)
         glScalef(scale, scale, scale)
-        glColor4f(red.coerceIn(0F, 1F), green.coerceIn(0F, 1F), blue.coerceIn(0F, 1F), 1F)
+        glColor4f(red.coerceIn(0F, 1F), green.coerceIn(0F, 1F), blue.coerceIn(0F, 1F), alpha.coerceIn(0F, 1F))
         mc.textureManager.bindTexture(skin)
         Gui.drawScaledCustomSizeModalRect(0, 0, 8F, 8F, 8, 8, width, height,
                 64F, 64F)
