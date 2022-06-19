@@ -56,9 +56,6 @@ public class AsianHat extends Module {
     private final List<double[]> positions = new ArrayList<>();
     private double lastRadius = 0;
 
-    private float lastYaw = 0;
-    private float lastPitch = 0;
-
     private void checkPosition(double radius) {
         if (radius != lastRadius) {
             // generate new positions
@@ -107,26 +104,19 @@ public class AsianHat extends Module {
         
         if (hatRotation.get()) {
             final Rotations rotMod = (Rotations) LiquidBounce.moduleManager.getModule(Rotations.class);
-            final boolean shouldRotateServerSide = rotMod != null && rotMod.shouldRotate();
 
-            float yaw_interpolate = RenderUtils.interpolate(
-                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getYaw() : entity.rotationYaw,
-                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? lastYaw : entity.prevRotationYaw,
-                partialTicks
-            );
-            float pitch_interpolate = RenderUtils.interpolate(
-                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getPitch() : entity.rotationPitch,
-                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? lastPitch : entity.prevRotationPitch,
-                partialTicks
-            );
+            float yaw = RenderUtils.interpolate(entity.rotationYaw, entity.prevRotationYaw, partialTicks);
+            float pitch = RenderUtils.interpolate(entity.rotationPitch, entity.prevRotationPitch, partialTicks);
 
-            if (RotationUtils.serverRotation != null) {
-                lastYaw = RotationUtils.serverRotation.getYaw();
-                lastPitch = RotationUtils.serverRotation.getPitch();
+            if (rotMod != null && rotMod.shouldRotate()) {
+                yaw = RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getYaw() : 
+                        (RotationUtils.serverRotation != null ? RotationUtils.serverRotation.getYaw() : yaw);
+                pitch = RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getPitch() : 
+                        (RotationUtils.serverRotation != null ? RotationUtils.serverRotation.getPitch() : pitch);
             }
 
-            GlStateManager.rotate(-yaw_interpolate, 0, 1, 0);
-            GlStateManager.rotate(pitch_interpolate, 1, 0, 0);
+            GlStateManager.rotate(-yaw, 0, 1, 0);
+            GlStateManager.rotate(pitch, 1, 0, 0);
         }
 
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);

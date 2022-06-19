@@ -33,8 +33,10 @@ class Rotations : Module() {
     }
     @EventTarget
     fun onPacket(event: PacketEvent) {
-        if (modeValue.get().equals("head", true) || !shouldRotate() || mc.thePlayer == null)
+        if (modeValue.get().equals("head", true) || !shouldRotate() || mc.thePlayer == null) {
+            playerYaw = null
             return
+        }
 
         val packet = event.packet
         if (packet is C03PacketPlayer && packet.rotating) {
