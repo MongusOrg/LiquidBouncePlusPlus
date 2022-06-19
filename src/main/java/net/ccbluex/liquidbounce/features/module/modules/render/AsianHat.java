@@ -56,6 +56,9 @@ public class AsianHat extends Module {
     private final List<double[]> positions = new ArrayList<>();
     private double lastRadius = 0;
 
+    private float lastYaw = 0;
+    private float lastPitch = 0;
+
     private void checkPosition(double radius) {
         if (radius != lastRadius) {
             // generate new positions
@@ -72,11 +75,18 @@ public class AsianHat extends Module {
         if (entity == null || (noFirstPerson.get() && mc.gameSettings.thirdPersonView == 0)) return;
 
         final AxisAlignedBB bb = entity.getEntityBoundingBox();
+        float partialTicks = event.getPartialTicks();
+
         double radius = bb.maxX - bb.minX;
 		double height = bb.maxY - bb.minY;
-		double posX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * event.getPartialTicks();
-	    double posY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * event.getPartialTicks();
-	    double posZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * event.getPartialTicks();
+
+		double posX = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+	    double posY = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+	    double posZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+
+        double viewX = -mc.getRenderManager().viewerPosX;
+        double viewY = -mc.getRenderManager().viewerPosY;
+        double viewZ = -mc.getRenderManager().viewerPosZ;
 
         Color colour = getColor(entity, 0);
         float r = colour.getRed() / 255.0F;
@@ -85,19 +95,13 @@ public class AsianHat extends Module {
         float al = colorAlphaValue.get() / 255.0F;
         float Eal = colorEndAlphaValue.get() / 255.0F;
 
-        float partialTicks = event.getPartialTicks();
-
-        double viewX = -mc.getRenderManager().viewerPosX;
-        double viewY = -mc.getRenderManager().viewerPosY;
-        double viewZ = -mc.getRenderManager().viewerPosZ;
-
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
 
         checkPosition(radius);
 
         GL11.glPushMatrix();
-        GlStateManager.translate(viewX + posX, viewY + posY + height - 0.5, viewZ + posZ);
+        GlStateManager.translate(viewX + posX, viewY + posY + height - 0.3, viewZ + posZ);
 
         pre3D();
         
@@ -107,14 +111,19 @@ public class AsianHat extends Module {
 
             float yaw_interpolate = RenderUtils.interpolate(
                 (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getYaw() : entity.rotationYaw,
-                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getYaw() : entity.prevRotationYaw,
-                event.getPartialTicks()
+                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? lastYaw : entity.prevRotationYaw,
+                partialTicks
             );
             float pitch_interpolate = RenderUtils.interpolate(
                 (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getPitch() : entity.rotationPitch,
-                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getPitch() : entity.prevRotationPitch,
-                event.getPartialTicks()
+                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? lastPitch : entity.prevRotationPitch,
+                partialTicks
             );
+
+            if (RotationUtils.serverRotation != null) {
+                lastYaw = RotationUtils.serverRotation.getYaw();
+                lastPitch = RotationUtils.serverRotation.getPitch();
+            }
 
             GlStateManager.rotate(-yaw_interpolate, 0, 1, 0);
             GlStateManager.rotate(pitch_interpolate, 1, 0, 0);
@@ -123,7 +132,7 @@ public class AsianHat extends Module {
         worldrenderer.begin(GL11.GL_POLYGON, DefaultVertexFormats.POSITION_COLOR);
 
         // main section
-        worldrenderer.pos(0, 0.8, 0).color(r, g, b, al).endVertex();
+        worldrenderer.pos(0, 0.6, 0).color(r, g, b, al).endVertex();
 
         int i = 0;
         for (double[] smolPos : positions) {
@@ -133,15 +142,15 @@ public class AsianHat extends Module {
                 float g2 = colour2.getGreen() / 255.0F;
                 float b2 = colour2.getBlue() / 255.0F;
 
-                worldrenderer.pos(smolPos[0], 0.5, smolPos[1]).color(r2, g2, b2, Eal).endVertex();
+                worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r2, g2, b2, Eal).endVertex();
             } else {
-                worldrenderer.pos(smolPos[0], 0.5, smolPos[1]).color(r, g, b, Eal).endVertex();
+                worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r, g, b, Eal).endVertex();
             }
 
             i++;
 		}
 
-        worldrenderer.pos(0, 0.8, 0).color(r, g, b, al).endVertex();
+        worldrenderer.pos(0, 0.6, 0).color(r, g, b, al).endVertex();
         tessellator.draw();
 
         // border section
@@ -161,9 +170,9 @@ public class AsianHat extends Module {
                     float g2 = colour2.getGreen() / 255.0F;
                     float b2 = colour2.getBlue() / 255.0F;
 
-                    worldrenderer.pos(smolPos[0], 0.5, smolPos[1]).color(r2, g2, b2, lineAlp).endVertex();
+                    worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r2, g2, b2, lineAlp).endVertex();
                 } else {
-                    worldrenderer.pos(smolPos[0], 0.5, smolPos[1]).color(r, g, b, lineAlp).endVertex();
+                    worldrenderer.pos(smolPos[0], 0.3, smolPos[1]).color(r, g, b, lineAlp).endVertex();
                 }
 
                 i++;
