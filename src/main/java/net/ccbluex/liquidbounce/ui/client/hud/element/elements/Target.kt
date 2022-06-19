@@ -49,6 +49,7 @@ class Target : Element() {
     val globalAnimSpeed = FloatValue("Global-AnimSpeed", 3F, 1F, 9F, { !noAnimValue.get() })
 
     val showWithChatOpen = BoolValue("Show-ChatOpen", true)
+    val resetBar = BoolValue("ResetBarWhenDisappear", false)
 
     val colorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "Sky", "Slowly", "Fade", "Mixer", "Health"), "Custom")
     val redValue = IntegerValue("Red", 252, 0, 255)
@@ -138,7 +139,13 @@ class Target : Element() {
         val borderWidth = returnBorder.x2 - returnBorder.x
         val borderHeight = returnBorder.y2 - returnBorder.y
 
-        if (mainTarget == null) return returnBorder
+        if (mainTarget == null) {
+            if (resetBar.get()) 
+                mainStyle.easingHealth = 0F
+            if (mainStyle is Rice)
+                mainStyle.particleList.clear()
+            return returnBorder
+        }
         val convertTarget = mainTarget!! as EntityPlayer
         
         val calcScaleX = animProgress * (4F / (borderWidth / 2F))

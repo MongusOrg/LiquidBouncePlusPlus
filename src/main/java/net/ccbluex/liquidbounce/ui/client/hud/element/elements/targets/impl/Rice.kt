@@ -55,7 +55,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
         }
     }
 
-    private val particleList = mutableListOf<Particle>()
+    val particleList = mutableListOf<Particle>()
     private var gotDamaged = false
 
     override fun drawTarget(entity: EntityPlayer) {
