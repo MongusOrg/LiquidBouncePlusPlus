@@ -102,16 +102,19 @@ public class AsianHat extends Module {
         pre3D();
         
         if (hatRotation.get()) {
+            final Rotations rotMod = (Rotations) LiquidBounce.moduleManager.getModule(Rotations.class);
+            final boolean shouldRotateServerSide = rotMod != null && rotMod.shouldRotate();
+
             float yaw_interpolate = RenderUtils.interpolate(
-                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getYaw() : entity.rotationYaw,
-                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getYaw() : entity.prevRotationYaw,
+                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getYaw() : entity.rotationYaw,
+                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getYaw() : entity.prevRotationYaw,
                 event.getPartialTicks()
-                );
+            );
             float pitch_interpolate = RenderUtils.interpolate(
-                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getPitch() : entity.rotationPitch,
-                RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getPitch() : entity.prevRotationPitch,
+                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getPitch() : entity.rotationPitch,
+                (shouldRotateServerSide && RotationUtils.serverRotation != null) ? RotationUtils.serverRotation.getPitch() : entity.prevRotationPitch,
                 event.getPartialTicks()
-                );
+            );
 
             GlStateManager.rotate(-yaw_interpolate, 0, 1, 0);
             GlStateManager.rotate(pitch_interpolate, 1, 0, 0);

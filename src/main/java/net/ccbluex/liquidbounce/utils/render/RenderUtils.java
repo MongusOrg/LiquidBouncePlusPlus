@@ -121,7 +121,7 @@ public final class RenderUtils extends MinecraftInstance {
         return frustrum.isBoundingBoxInFrustum(bb);
     }
 
-    public static double interpolate(double current, double old, double scale) {
+    public static float interpolate(float current, float old, float scale) {
         return old + (current - old) * scale;
     }
 

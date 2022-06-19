@@ -37,8 +37,8 @@ class Rotations : Module() {
             return
 
         val packet = event.packet
-        if (packet is C03PacketPlayer.C06PacketPlayerPosLook || packet is C03PacketPlayer.C05PacketPlayerLook) {
-            playerYaw = (packet as C03PacketPlayer).yaw
+        if (packet is C03PacketPlayer && packet.rotating) {
+            playerYaw = packet.yaw
             mc.thePlayer.renderYawOffset = packet.getYaw()
             mc.thePlayer.rotationYawHead = packet.getYaw()
         } else {
@@ -50,7 +50,7 @@ class Rotations : Module() {
 
     private fun getState(module: Class<*>) = LiquidBounce.moduleManager[module]!!.state
 
-    private fun shouldRotate(): Boolean {
+    fun shouldRotate(): Boolean {
         val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura
         val disabler = LiquidBounce.moduleManager.getModule(Disabler::class.java) as Disabler
         return getState(Scaffold::class.java) ||
