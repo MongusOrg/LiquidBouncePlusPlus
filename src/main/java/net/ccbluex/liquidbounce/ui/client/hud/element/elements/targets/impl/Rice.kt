@@ -184,6 +184,17 @@ class Rice(inst: Target): TargetStyle("Rice", inst) {
         GlStateManager.disableBlend()
     }
 
+    override fun handleShadowCut(entity: EntityPlayer) = handleBlur(entity)
+
+    override fun handleShadow(entity: EntityPlayer) {
+        val font = Fonts.fontSFUI40
+        val name = "Name: ${entity.name}"
+        val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"            
+        val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
+
+        RenderUtils.originalRoundedRect(0F, 0F, 10F + length, 55F, 8F, Color(0, 0, 0, 255).rgb)
+    }
+
     override fun getBorder(entity: EntityPlayer?): Border? {
         entity ?: return Border(0F, 0F, 135F, 55F)
 

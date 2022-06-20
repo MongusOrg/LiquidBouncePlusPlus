@@ -43,7 +43,7 @@ class Target : Element() {
     val blurStrength = FloatValue("Blur-Strength", 1F, 0.01F, 40F, { blurValue.get() })
 
     val shadowValue = BoolValue("Shadow", false)
-    val shadowStrength = FloatValue("Shadow-Strength", 1F, 0.01F, 40F, { blurValue.get() })
+    val shadowStrength = FloatValue("Shadow-Strength", 1F, 0.01F, 40F, { shadowValue.get() })
 
     val fadeValue = BoolValue("FadeAnim", false)
     val fadeSpeed = FloatValue("Fade-Speed", 1F, 0F, 5F, { fadeValue.get() })

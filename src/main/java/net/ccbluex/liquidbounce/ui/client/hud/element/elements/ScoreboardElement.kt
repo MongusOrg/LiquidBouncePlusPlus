@@ -21,6 +21,7 @@ import net.ccbluex.liquidbounce.utils.misc.StringUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.utils.render.ShadowUtils
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
 import net.ccbluex.liquidbounce.value.BoolValue
@@ -54,13 +55,16 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val backgroundColorAlphaValue = IntegerValue("Background-Alpha", 95, 0, 255)
 
     private val rectValue = BoolValue("Rect", false)
-    private val rectHeight = IntegerValue("Rect-Height", 1, 1, 10)
+    private val rectHeight = IntegerValue("Rect-Height", 1, 1, 10, { rectValue.get() })
 
     private val blurValue = BoolValue("Blur", false)
-    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { blurValue.get() })
+
+    private val shadowValue = BoolValue("Shadow", false)
+    private val shadowStrength = FloatValue("Shadow-Strength", 0F, 0F, 30F, { shadowValue.get() })
 
     private val bgRoundedValue = BoolValue("Rounded", false)
-    private val roundStrength = FloatValue("Rounded-Strength", 5F, 0F, 30F)
+    private val roundStrength = FloatValue("Rounded-Strength", 5F, 0F, 30F, { bgRoundedValue.get() })
 
     private val rectColorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "LiquidSlowly", "Fade", "Sky", "Mixer"), "Custom")
     
@@ -89,8 +93,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val hypickleRegex = Regex("[0-9][0-9]/[0-9][0-9]/[0-9][0-9]")
 
     override fun updateElement() {
-        if (garbageTimer.hasTimePassed(30000L) || cachedDomains.size > 50) { // prevent another kind of memory leak
-            cachedDomains.clear() // prevent memory leak
+        if (garbageTimer.hasTimePassed(30000L) || cachedDomains.size > 50) {
+            cachedDomains.clear()
             garbageTimer.reset()
         }
     }
@@ -171,6 +175,55 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
         val mixerColor = ColorMixer.getMixedColor(0, cRainbowSecValue.get()).rgb
 
         if (scoreCollection.size > 0) { // only draw background and rect whenever there's something on scoreboard
+            // shadow
+            if (shadowValue.get()) {
+                GL11.glTranslated(-renderX, -renderY, 0.0)
+                GL11.glScalef(1F, 1F, 1F)
+                GL11.glPushMatrix()
+                ShadowUtils.shadow(shadowStrength.get(), {
+                    GL11.glPushMatrix()
+                    GL11.glScalef(scale, scale, scale)
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                    if (bgRoundedValue.get())
+                        RenderUtils.originalRoundedRect(
+                            l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
+                            if (rectValue.get()) -2F - rectHeight.get().toFloat() else -2F, 
+                            if (side.horizontal == Side.Horizontal.LEFT) -5F else 5F, 
+                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), roundStrength.get(), Color(0, 0, 0, 255).rgb)
+                    else
+                        RenderUtils.newDrawRect(
+                            l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
+                            if (rectValue.get()) -2F - rectHeight.get().toFloat() else -2F, 
+                            if (side.horizontal == Side.Horizontal.LEFT) -5F else 5F, 
+                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), Color(0, 0, 0, 255).rgb)
+                    GL11.glPopMatrix()
+                }, {
+                    GL11.glPushMatrix()
+                    GL11.glScalef(scale, scale, scale)
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                    GlStateManager.enableBlend()
+                    GlStateManager.disableTexture2D()
+                    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+                    if (bgRoundedValue.get())
+                        RenderUtils.fastRoundedRect(
+                            l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
+                            if (rectValue.get()) -2F - rectHeight.get().toFloat() else -2F, 
+                            if (side.horizontal == Side.Horizontal.LEFT) -5F else 5F, 
+                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), roundStrength.get())
+                    else
+                        RenderUtils.quickDrawRect(
+                            l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
+                            if (rectValue.get()) -2F - rectHeight.get().toFloat() else -2F, 
+                            if (side.horizontal == Side.Horizontal.LEFT) -5F else 5F, 
+                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat())
+                    GlStateManager.enableTexture2D()
+                    GlStateManager.disableBlend()
+                    GL11.glPopMatrix()
+                })
+                GL11.glPopMatrix()
+                GL11.glScalef(scale, scale, scale)
+                GL11.glTranslated(renderX, renderY, 0.0)
+            }
             // blur
             if (blurValue.get()) {
                 GL11.glPushMatrix()
@@ -221,12 +274,12 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             // rect
             if (rectValue.get()) {
-                val rectColor = when {
-                    rectColorMode.equals("Sky", ignoreCase = true) -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
-                    rectColorMode.equals("Rainbow", ignoreCase = true) -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
-                    rectColorMode.equals("LiquidSlowly", ignoreCase = true) -> liquidSlowli
-                    rectColorMode.equals("Fade", ignoreCase = true) -> FadeColor
-                    rectColorMode.equals("Mixer", ignoreCase = true) -> mixerColor
+                val rectColor = when (rectColorMode.get().toLowerCase()) {
+                    "sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
+                    "rainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
+                    "liquidslowly" -> liquidSlowli
+                    "fade" -> FadeColor
+                    "mixer" -> mixerColor
                     else -> rectCustomColor
                 }       
 

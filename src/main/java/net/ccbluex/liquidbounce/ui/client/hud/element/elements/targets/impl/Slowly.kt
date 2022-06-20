@@ -48,6 +48,16 @@ class Slowly(inst: Target): TargetStyle("Slowly", inst) {
         GlStateManager.disableBlend()
     }
 
+    override fun handleShadowCut(entity: EntityPlayer) = handleBlur(entity)
+
+    override fun handleShadow(entity: EntityPlayer) {
+        val font = Fonts.minecraftFont
+        val healthString = "${decimalFormat2.format(entity.health)} ❤"
+        val length = 60.coerceAtLeast(font.getStringWidth(entity.name)).coerceAtLeast(font.getStringWidth(healthString)).toFloat() + 10F
+
+        RenderUtils.newDrawRect(0F, 0F, 32F + length, 36F, Color(0, 0, 0, 255).rgb)
+    }
+
     override fun getBorder(entity: EntityPlayer?): Border? {
         entity ?: return Border(0F, 0F, 102F, 36F)
         val font = Fonts.minecraftFont
