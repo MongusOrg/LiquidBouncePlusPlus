@@ -60,8 +60,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { blurValue.get() })
 
-    private val shadowValue = BoolValue("Shadow", false)
-    private val shadowStrength = FloatValue("Shadow-Strength", 0F, 0F, 30F, { shadowValue.get() })
+    private val shadowShaderValue = BoolValue("Shadow", false)
+    private val shadowStrength = FloatValue("Shadow-Strength", 0F, 0F, 30F, { shadowShaderValue.get() })
 
     private val bgRoundedValue = BoolValue("Rounded", false)
     private val roundStrength = FloatValue("Rounded-Strength", 5F, 0F, 30F, { bgRoundedValue.get() })
@@ -176,7 +176,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
         if (scoreCollection.size > 0) { // only draw background and rect whenever there's something on scoreboard
             // shadow
-            if (shadowValue.get()) {
+            if (shadowShaderValue.get()) {
                 GL11.glTranslated(-renderX, -renderY, 0.0)
                 GL11.glScalef(1F, 1F, 1F)
                 GL11.glPushMatrix()
@@ -274,14 +274,14 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             // rect
             if (rectValue.get()) {
-                val rectColor = when (rectColorMode.get().lowercase()) {
-                    "sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
-                    "rainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
-                    "liquidslowly" -> liquidSlowli
-                    "fade" -> FadeColor
-                    "mixer" -> mixerColor
+                val rectColor = when (rectColorMode.get()) {
+                    "Sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
+                    "Rainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
+                    "LiquidSlowly" -> liquidSlowli
+                    "Fade" -> FadeColor
+                    "Mixer" -> mixerColor
                     else -> rectCustomColor
-                }       
+                }
 
                 if (side.horizontal == Side.Horizontal.LEFT)
                     Gui.drawRect(l1 + 2, -2, -5, -2 - rectHeight.get(), rectColor)
