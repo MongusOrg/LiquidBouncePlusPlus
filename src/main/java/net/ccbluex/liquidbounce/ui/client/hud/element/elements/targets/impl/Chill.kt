@@ -103,7 +103,7 @@ class Chill(inst: Target): TargetStyle("Chill", inst) {
 
     override fun handleShadowCut(entity: EntityPlayer) = handleBlur(entity)
 
-    override fun handleBlur(entity: EntityPlayer) {
+    override fun handleShadow(entity: EntityPlayer) {
         val tWidth = (45F + Fonts.font40.getStringWidth(entity.name).coerceAtLeast(Fonts.font72.getStringWidth(decimalFormat.format(entity.health)))).coerceAtLeast(120F)
         RenderUtils.originalRoundedRect(0F, 0F, tWidth, 48F, 7F, Color(0, 0, 0, 255).rgb)
     }

@@ -274,7 +274,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             // rect
             if (rectValue.get()) {
-                val rectColor = when (rectColorMode.get().toLowerCase()) {
+                val rectColor = when (rectColorMode.get().lowercase()) {
                     "sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
                     "rainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
                     "liquidslowly" -> liquidSlowli
