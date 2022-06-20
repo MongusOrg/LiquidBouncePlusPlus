@@ -23,7 +23,7 @@ import java.awt.Color
 import kotlin.math.abs
 import kotlin.math.pow
 
-class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst) {
+class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst, true) {
 
     val hurtTimeAnim = BoolValue("HurtTimeAnim", true, { targetInstance.styleValue.get().equals("liquidbounce", true) })
     val borderColorMode = ListValue("Border-Color", arrayOf("Custom", "MatchBar", "None"), "None", { targetInstance.styleValue.get().equals("liquidbounce", true) })

@@ -23,7 +23,7 @@ import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-class Rice(inst: Target): TargetStyle("Rice", inst) {
+class Rice(inst: Target): TargetStyle("Rice", inst, true) {
 
     // Bar gradient
     val gradientLoopValue = IntegerValue("GradientLoop", 4, 1, 40, { targetInstance.styleValue.get().equals("Rice", true) })

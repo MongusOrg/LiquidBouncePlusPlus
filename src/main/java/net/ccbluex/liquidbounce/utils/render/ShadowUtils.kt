@@ -128,7 +128,7 @@ object ShadowUtils : MinecraftInstance() {
         GlStateManager.resetColor()
         GlStateManager.color(1F, 1F, 1F, 1F)
         GlStateManager.enableBlend()
-        GlStateManager.blendFunc(770, 771)
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
     }
 
 }

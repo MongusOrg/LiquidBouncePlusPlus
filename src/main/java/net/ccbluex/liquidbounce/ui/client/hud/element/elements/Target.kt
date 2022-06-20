@@ -157,7 +157,7 @@ class Target : Element() {
         val calcTranslateX = borderWidth / 2F * calcScaleX
         val calcTranslateY = borderHeight / 2F * calcScaleY
 
-        if (shadowValue.get()) {
+        if (shadowValue.get() && mainStyle.shaderSupport) {
             val floatX = renderX.toFloat()
             val floatY = renderY.toFloat()
 
@@ -188,7 +188,7 @@ class Target : Element() {
             GL11.glTranslated(renderX, renderY, 0.0)
         }
 
-        if (blurValue.get()) {
+        if (blurValue.get() && mainStyle.shaderSupport) {
             val floatX = renderX.toFloat()
             val floatY = renderY.toFloat()
 

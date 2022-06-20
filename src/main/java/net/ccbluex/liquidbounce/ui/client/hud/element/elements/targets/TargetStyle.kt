@@ -26,7 +26,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
-abstract class TargetStyle(val name: String, val targetInstance: Target): MinecraftInstance() {
+abstract class TargetStyle(val name: String, val targetInstance: Target, val shaderSupport: Boolean): MinecraftInstance() {
 
     var easingHealth = 0F
     val shieldIcon = ResourceLocation("liquidbounce+/shield.png")

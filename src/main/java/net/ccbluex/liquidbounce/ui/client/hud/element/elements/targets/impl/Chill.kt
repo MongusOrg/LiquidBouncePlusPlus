@@ -21,7 +21,7 @@ import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-class Chill(inst: Target): TargetStyle("Chill", inst) {
+class Chill(inst: Target): TargetStyle("Chill", inst, true) {
 
     val chillFontSpeed = FloatValue("Chill-FontSpeed", 0.5F, 0.01F, 1F, { targetInstance.styleValue.get().equals("chill", true) })
     val chillRoundValue = BoolValue("Chill-RoundedBar", true, { targetInstance.styleValue.get().equals("chill", true) })

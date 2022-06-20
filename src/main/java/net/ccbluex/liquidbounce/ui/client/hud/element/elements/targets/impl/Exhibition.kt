@@ -19,7 +19,7 @@ import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-class Exhibition(inst: Target): TargetStyle("Exhibition", inst) {
+class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
 
     override fun drawTarget(entity: EntityPlayer) {
         val font = Fonts.fontTahoma

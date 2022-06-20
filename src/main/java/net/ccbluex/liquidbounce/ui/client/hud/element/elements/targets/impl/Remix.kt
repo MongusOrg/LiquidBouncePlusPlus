@@ -19,7 +19,7 @@ import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-class Remix(inst: Target): TargetStyle("Remix", inst) {
+class Remix(inst: Target): TargetStyle("Remix", inst, false) {
 
     override fun drawTarget(entity: EntityPlayer) {
         updateAnim(entity.health)
