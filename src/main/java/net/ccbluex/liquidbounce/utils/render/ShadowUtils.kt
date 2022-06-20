@@ -46,9 +46,9 @@ object ShadowUtils : MinecraftInstance() {
             initFramebuffer!!.setFramebufferColor(0F, 0F, 0F, 0F)
             initFramebuffer!!.setFramebufferFilter(GL_LINEAR)
             shaderGroup = ShaderGroup(mc.textureManager, mc.getResourceManager(), initFramebuffer, blurDirectory)
-            shaderGroup!!.createBindFramebuffers(width * f, height * factor)
-            frameBuffer = shaderGroup.mainFramebuffer
-            resultBuffer = shaderGroup.getFramebufferRaw("braindead")
+            shaderGroup!!.createBindFramebuffers(width * factor, height * factor)
+            frameBuffer = shaderGroup!!.mainFramebuffer
+            resultBuffer = shaderGroup!!.getFramebufferRaw("braindead")
     
             lastWidth = width
             lastHeight = height
@@ -56,7 +56,7 @@ object ShadowUtils : MinecraftInstance() {
         if (lastStrength != strength) {
             lastStrength = strength
             for (i in 0..1)
-                shaderGroup.listShaders[i].shaderManager.getShaderUniform("Radius").set(strength)
+                shaderGroup!!.listShaders[i].shaderManager.getShaderUniform("Radius").set(strength)
         }
     }
 
