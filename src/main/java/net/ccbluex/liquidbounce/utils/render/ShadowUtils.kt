@@ -60,7 +60,7 @@ object ShadowUtils : MinecraftInstance() {
         }
     }
 
-    fun shadow(strength: Float, red: Float = 1F, green: Float = 1F, blue: Float = 1F, alpha: Float = 1F, drawMethod: (() -> Unit), cutMethod: (() -> Unit)) {
+    fun shadow(strength: Float, drawMethod: (() -> Unit), cutMethod: (() -> Unit), red: Float = 1F, green: Float = 1F, blue: Float = 1F, alpha: Float = 1F) {
         if (!OpenGlHelper.isFramebufferEnabled()) return
 
         val sc = ScaledResolution(mc)

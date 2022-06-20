@@ -180,10 +180,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                 GL11.glTranslated(-renderX, -renderY, 0.0)
                 GL11.glScalef(1F, 1F, 1F)
                 GL11.glPushMatrix()
-                ShadowUtils.shadow(shadowStrength.get(), backgroundColorRedValue.get().toFloat() / 255F,
-                                    backgroundColorGreenValue.get().toFloat() / 255F,
-                                    backgroundColorBlueValue.get().toFloat() / 255F,
-                                    1F, {
+                ShadowUtils.shadow(shadowStrength.get(), {
                     GL11.glPushMatrix()
                     GL11.glScalef(scale, scale, scale)
                     GL11.glTranslated(renderX, renderY, 0.0)
@@ -222,7 +219,10 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                     GlStateManager.enableTexture2D()
                     GlStateManager.disableBlend()
                     GL11.glPopMatrix()
-                })
+                }, backgroundColorRedValue.get().toFloat() / 255F,
+                    backgroundColorGreenValue.get().toFloat() / 255F,
+                    backgroundColorBlueValue.get().toFloat() / 255F,
+                    1F)
                 GL11.glPopMatrix()
                 GL11.glScalef(scale, scale, scale)
                 GL11.glTranslated(renderX, renderY, 0.0)
@@ -277,12 +277,12 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             // rect
             if (rectValue.get()) {
-                val rectColor = when {
-                    rectColorMode.get().equals("Sky", true) -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
-                    rectColorMode.get().equals("Rainbow", true) -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
-                    rectColorMode.get().equals("LiquidSlowly", true) -> liquidSlowli
-                    rectColorMode.get().equals("Fade", true) -> FadeColor
-                    rectColorMode.get().equals("Mixer", true) -> mixerColor
+                val rectColor = when (rectColorMode.toLowerCase()) {
+                    "sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
+                    "rainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
+                    "liquidslowly" -> liquidSlowli
+                    "fade" -> FadeColor
+                    "mixer" -> mixerColor
                     else -> rectCustomColor
                 }
 
