@@ -69,6 +69,7 @@ class Target : Element() {
     private val allValues: List<Value<*>>
         get() = listOf(styleValue, // style
                     blurValue, blurStrength, // blur
+                    shadowValue, shadowStrength, // shadow
                     fadeValue, fadeSpeed, // fade anim
                     noAnimValue, globalAnimSpeed, // global anim
                     showWithChatOpen, // if not found any target and chat is open then pick mc.thePlayer
