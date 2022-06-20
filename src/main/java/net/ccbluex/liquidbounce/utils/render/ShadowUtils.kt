@@ -52,6 +52,9 @@ object ShadowUtils : MinecraftInstance() {
     
             lastWidth = width
             lastHeight = height
+            lastStrength = strength
+            for (i in 0..1)
+                shaderGroup!!.listShaders[i].shaderManager.getShaderUniform("Radius").set(strength)
         }
         if (lastStrength != strength) {
             lastStrength = strength
@@ -60,7 +63,7 @@ object ShadowUtils : MinecraftInstance() {
         }
     }
 
-    fun shadow(strength: Float, drawMethod: (() -> Unit), cutMethod: (() -> Unit), red: Float = 1F, green: Float = 1F, blue: Float = 1F, alpha: Float = 1F) {
+    fun shadow(strength: Float, drawMethod: (() -> Unit), cutMethod: (() -> Unit), red: Int = 255, green: Int = 255, blue: Int = 255, alpha: Int = 255) {
         if (!OpenGlHelper.isFramebufferEnabled()) return
 
         val sc = ScaledResolution(mc)
@@ -101,17 +104,17 @@ object ShadowUtils : MinecraftInstance() {
 
         GlStateManager.enableBlend()
         GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        GlStateManager.color(red, green, blue, alpha)
+        GlStateManager.color(1F, 1F, 1F, 1F)
 
         resultBuffer!!.bindFramebufferTexture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR)
-        worldrenderer.pos(0.0, height.toDouble(), 0.0).tex(0.0, 0.0).color(255, 255, 255, 255).endVertex()
-        worldrenderer.pos(width.toDouble(), height.toDouble(), 0.0).tex(fr_width, 0.0).color(255, 255, 255, 255).endVertex()
-        worldrenderer.pos(width.toDouble(), 0.0, 0.0).tex(fr_width, fr_height).color(255, 255, 255, 255).endVertex()
-        worldrenderer.pos(0.0, 0.0, 0.0).tex(0.0, fr_height).color(255, 255, 255, 255).endVertex()
+        worldrenderer.pos(0.0, height.toDouble(), 0.0).tex(0.0, 0.0).color(red, green, blue, alpha).endVertex()
+        worldrenderer.pos(width.toDouble(), height.toDouble(), 0.0).tex(fr_width, 0.0).color(red, green, blue, alpha).endVertex()
+        worldrenderer.pos(width.toDouble(), 0.0, 0.0).tex(fr_width, fr_height).color(red, green, blue, alpha).endVertex()
+        worldrenderer.pos(0.0, 0.0, 0.0).tex(0.0, fr_height).color(red, green, blue, alpha).endVertex()
 
         tessellator.draw()
         resultBuffer!!.unbindFramebufferTexture()
@@ -120,7 +123,6 @@ object ShadowUtils : MinecraftInstance() {
         GlStateManager.enableAlpha()
         GlStateManager.enableDepth()
         GlStateManager.depthMask(true)
-        GlStateManager.enableTexture2D()
 
         Stencil.dispose()
         glPopMatrix()

@@ -182,8 +182,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                 GL11.glPushMatrix()
                 ShadowUtils.shadow(shadowStrength.get(), {
                     GL11.glPushMatrix()
-                    GL11.glScalef(scale, scale, scale)
                     GL11.glTranslated(renderX, renderY, 0.0)
+                    GL11.glScalef(scale, scale, scale)
                     if (bgRoundedValue.get())
                         RenderUtils.originalRoundedRect(
                             l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
@@ -199,8 +199,8 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                     GL11.glPopMatrix()
                 }, {
                     GL11.glPushMatrix()
-                    GL11.glScalef(scale, scale, scale)
                     GL11.glTranslated(renderX, renderY, 0.0)
+                    GL11.glScalef(scale, scale, scale)
                     GlStateManager.enableBlend()
                     GlStateManager.disableTexture2D()
                     GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
@@ -219,19 +219,16 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                     GlStateManager.enableTexture2D()
                     GlStateManager.disableBlend()
                     GL11.glPopMatrix()
-                }, backgroundColorRedValue.get().toFloat() / 255F,
-                    backgroundColorGreenValue.get().toFloat() / 255F,
-                    backgroundColorBlueValue.get().toFloat() / 255F,
-                    1F)
+                }, backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), 255)
                 GL11.glPopMatrix()
                 GL11.glScalef(scale, scale, scale)
                 GL11.glTranslated(renderX, renderY, 0.0)
             }
             // blur
             if (blurValue.get()) {
-                GL11.glPushMatrix()
-                GL11.glScalef(1F, 1F, 1F)
                 GL11.glTranslated(-renderX, -renderY, 0.0)
+                GL11.glScalef(1F, 1F, 1F)
+                GL11.glPushMatrix()
 
                 if (bgRoundedValue.get()) {
                     if (side.horizontal == Side.Horizontal.LEFT) 
@@ -249,9 +246,9 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                             renderX.toFloat() + 5F * scale, renderY.toFloat() + (maxHeight + fontRenderer.FONT_HEIGHT) * scale, blurStrength.get())
                 }
 
-                GL11.glTranslated(renderX, renderY, 0.0)
-                GL11.glScalef(scale, scale, scale)
                 GL11.glPopMatrix()
+                GL11.glScalef(scale, scale, scale)
+                GL11.glTranslated(renderX, renderY, 0.0)
             }
 
             // backyard
