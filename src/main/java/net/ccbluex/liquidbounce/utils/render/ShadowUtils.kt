@@ -1,0 +1,130 @@
+/*
+ * LiquidBounce+ Hacked Client
+ * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
+ * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * 
+ * This code belongs to WYSI-Foundation. Please give credits when using this in your repository.
+ */
+package net.ccbluex.liquidbounce.utils.render
+
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.WorldRenderer
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.client.shader.Framebuffer
+import net.minecraft.client.shader.ShaderGroup
+import net.minecraft.util.ResourceLocation
+import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE
+
+import java.io.IOException
+
+object ShadowUtils : MinecraftInstance() {
+
+    private var initFramebuffer: Framebuffer? = null
+    private var frameBuffer: Framebuffer? = null
+    var resultBuffer: Framebuffer? = null
+
+    private var shadowGroup: ShadowGroup? = null
+    private var lastWidth = 0
+    private var lastHeight = 0
+    private var lastStrength = 0F
+
+    private val blurDirectory = ResourceLocation("liquidbounce+/shadow.json")
+
+    @Throws(IOException.class)
+    fun initShaderIfRequired(sc: ScaledResolution, strength: Float) {
+        val width = sc.scaledWidth
+        val height = sc.scaledHeight
+        val factor = sc.scaleFactor
+        if (lastWidth != width || lastHeight != height
+            || initFramebuffer == null || frameBuffer == null || shadowGroup == null) {
+            initFramebuffer = Framebuffer(w * f, h * f, true)
+            initFramebuffer.setFramebufferColor(0F, 0F, 0F, 0F)
+            initFramebuffer.setFramebufferFilter(GL_LINEAR)
+            shadowGroup = ShaderGroup(mc.textureManager, mc.getResourceManager(), initFramebuffer, blurDirectory)
+            shadowGroup.createBindFramebuffers(w * f, h * f)
+            frameBuffer = shadowGroup.mainFramebuffer
+            resultBuffer = shadowGroup.getFramebufferRaw("braindead")
+    
+            lastWidth = width
+            lastHeight = height
+        }
+        if (lastStrength != strength) {
+            lastStrength = strength
+            for (i in 0..1)
+                shadowGroup.listShaders[i].shaderManager.getShaderUniform("Radius").set(strength)
+        }
+    }
+
+    fun shadow(strength: Float, drawMethod: () -> Unit, cutMethod: () -> Unit) {
+        if (!OpenGlHelper.isFramebufferEnabled()) return
+
+        val sc = ScaledResolution(mc)
+        val width = sc.scaledWidth
+        val height = sc.scaledHeight
+        initShaderIfRequired(sc, strength)
+
+        mc.getFramebuffer().unbindFramebuffer()
+        initFramebuffer.framebufferClear()
+        resultBuffer.framebufferClear()
+        initialFB.bindFramebuffer(true)
+        drawMethod()
+        frameBuffer.bindFramebuffer(true)
+        shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks)
+        mc.getFramebuffer().bindFramebuffer(true)
+
+        val fr_width = resultBuffer.framebufferWidth.toDouble() / resultBuffer.framebufferTextureWidth.toDouble()
+        val fr_height = resultBuffer.framebufferHeight.toDouble() / resultBuffer.framebufferTextureHeight.toDouble()
+
+        val tessellator = Tessellator.getInstance()
+        val worldrenderer = tessellator.getWorldRenderer()
+
+        GL11.glPushMatrix()
+        GlStateManager.disableLighting()
+        GlStateManager.disableAlpha()
+        GlStateManager.enableTexture2D()
+        GlStateManager.disableDepth()
+        GlStateManager.depthMask(false)
+        GlStateManager.colorMask(true, true, true, true)
+
+        Stencil.write(false)
+        cutMethod()
+        Stencil.erase(false)
+
+        GlStateManager.enableBlend()
+        GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F)
+
+        resultBuffer.bindFramebufferTexture()
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR)
+        worldrenderer.pos(0.0, height.toDouble(), 0.0).tex(0.0, 0.0).color(255, 255, 255, 255).endVertex()
+        worldrenderer.pos(width.toDouble(), height.toDouble(), 0.0).tex(fr_width, 0.0).color(255, 255, 255, 255).endVertex()
+        worldrenderer.pos(width.toDouble(), 0.0, 0.0).tex(fr_width, fr_height).color(255, 255, 255, 255).endVertex()
+        worldrenderer.pos(0.0, 0.0, 0.0).tex(0.0, fr_height).color(255, 255, 255, 255).endVertex()
+
+        tessellator.draw()
+        resultBuffer.unbindFramebufferTexture()
+
+        GlStateManager.disableBlend() 
+        GlStateManager.enableAlpha()
+        GlStateManager.enableDepth()
+        GlStateManager.depthMask(true)
+        GlStateManager.enableTexture2D()
+
+        Stencil.dispose()
+        GL11.glPopMatrix()
+
+        GlStateManager.resetColor()
+        GlStateManager.color(1F, 1F, 1F, 1F)
+        GlStateManager.enableBlend()
+        GlStateManager.blendFunc(770, 771)
+    }
+
+}

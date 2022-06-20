@@ -28,6 +28,10 @@ public class ShadowUtils {
     private static final Minecraft mc = Minecraft.getMinecraft();
     private static final ResourceLocation blurDirectory = new ResourceLocation("liquidbounce+/shadow.json");
 
+    public static Framebuffer getDrawingFramebuffer() {
+        return initialFB;
+    }
+
     public static void initBlur(final ScaledResolution sc, float strength) throws IOException {
         int w = sc.getScaledWidth();
         int h = sc.getScaledHeight();

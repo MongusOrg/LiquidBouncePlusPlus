@@ -40,7 +40,10 @@ class Target : Element() {
 
     // Global variables
     val blurValue = BoolValue("Blur", false)
-    val blurStrength = FloatValue("Blur-Strength", 1F, 0F, 40F, { blurValue.get() })
+    val blurStrength = FloatValue("Blur-Strength", 1F, 0.01F, 40F, { blurValue.get() })
+
+    val shadowValue = BoolValue("Shadow", false)
+    val shadowStrength = FloatValue("Shadow-Strength", 1F, 0.01F, 40F, { blurValue.get() })
 
     val fadeValue = BoolValue("FadeAnim", false)
     val fadeSpeed = FloatValue("Fade-Speed", 1F, 0F, 5F, { fadeValue.get() })
@@ -152,6 +155,37 @@ class Target : Element() {
         val calcScaleY = animProgress * (4F / (borderHeight / 2F))
         val calcTranslateX = borderWidth / 2F * calcScaleX
         val calcTranslateY = borderHeight / 2F * calcScaleY
+
+        if (shadowValue.get()) {
+            val floatX = renderX.toFloat()
+            val floatY = renderY.toFloat()
+
+            GL11.glTranslated(-renderX, -renderY, 0.0)
+            GL11.glPushMatrix()
+
+            ShadowUtils.shadow(shadowStrength.get(), {
+                GL11.glPushMatrix()
+                GL11.glTranslated(renderX, renderY, 0.0)
+                if (fadeValue.get()) {
+                    GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
+                    GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
+                }
+                mainStyle.handleShadowCut(convertTarget)
+                GL11.glPopMatrix()
+            }, {
+                GL11.glPushMatrix()
+                GL11.glTranslated(renderX, renderY, 0.0)
+                if (fadeValue.get()) {
+                    GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
+                    GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
+                }
+                mainStyle.handleShadow(convertTarget)
+                GL11.glPopMatrix()
+            })
+
+            GL11.glPopMatrix()
+            GL11.glTranslated(renderX, renderY, 0.0)
+        }
 
         if (blurValue.get()) {
             val floatX = renderX.toFloat()

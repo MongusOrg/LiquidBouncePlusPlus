@@ -49,6 +49,7 @@ abstract class TargetStyle(val name: String, val targetInstance: Target): Minecr
 
     open fun handleBlur(player: EntityPlayer) {}
     
+    open fun handleShadowCut(player: EntityPlayer) {}
     open fun handleShadow(player: EntityPlayer) {}
 
     /**
