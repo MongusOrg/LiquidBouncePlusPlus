@@ -376,15 +376,6 @@ public abstract class MixinItemRenderer {
                             GL11.glTranslated(Animations.blockPosX.get().doubleValue(), Animations.blockPosY.get().doubleValue(), Animations.blockPosZ.get().doubleValue());
                             final String z = Animations.Sword.get();
                             switch (z) {
-                                case "1.7": {
-                                    this.transformFirstPersonItem(f - 0.3F, f1);
-                                    if (Animations.RotateItems.get()) 
-                                        rotateItemAnim();
-                                    this.func_178103_d();
-                                    if (Animations.RotateItems.get()) 
-                                        rotateItemAnim();
-                                    break;
-                                }
                                 case "Normal": {
                                     this.transformFirstPersonItem(f + 0.1F, f1);
                                     if (Animations.RotateItems.get()) 
@@ -420,7 +411,15 @@ public abstract class MixinItemRenderer {
                                     this.func_178096_b(f, Animations.mcSwordPos.get());
                                     if (Animations.RotateItems.get()) 
                                         rotateItemAnim();
-                                    
+                                    this.func_178103_d();
+                                    if (Animations.RotateItems.get()) 
+                                        rotateItemAnim();
+                                    break;
+                                }
+                                case "Remix": {
+                                    this.transformFirstPersonItem(f, f1);
+                                    if (Animations.RotateItems.get()) 
+                                        rotateItemAnim();
                                     this.func_178103_d();
                                     if (Animations.RotateItems.get()) 
                                         rotateItemAnim();
