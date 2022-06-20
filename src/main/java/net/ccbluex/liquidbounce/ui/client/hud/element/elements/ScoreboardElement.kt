@@ -180,7 +180,10 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                 GL11.glTranslated(-renderX, -renderY, 0.0)
                 GL11.glScalef(1F, 1F, 1F)
                 GL11.glPushMatrix()
-                ShadowUtils.shadow(shadowStrength.get(), {
+                ShadowUtils.shadow(shadowStrength.get(), backgroundColorRedValue.get().toFloat() / 255F,
+                                    backgroundColorGreenValue.get().toFloat() / 255F,
+                                    backgroundColorBlueValue.get().toFloat() / 255F,
+                                    1F, {
                     GL11.glPushMatrix()
                     GL11.glScalef(scale, scale, scale)
                     GL11.glTranslated(renderX, renderY, 0.0)
@@ -189,13 +192,13 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                             l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
                             if (rectValue.get()) -2F - rectHeight.get().toFloat() else -2F, 
                             if (side.horizontal == Side.Horizontal.LEFT) -5F else 5F, 
-                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), roundStrength.get(), Color(0, 0, 0, 255).rgb)
+                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), roundStrength.get(), -1)
                     else
                         RenderUtils.newDrawRect(
                             l1.toFloat() + if (side.horizontal == Side.Horizontal.LEFT) 2F else -2F, 
                             if (rectValue.get()) -2F - rectHeight.get().toFloat() else -2F, 
                             if (side.horizontal == Side.Horizontal.LEFT) -5F else 5F, 
-                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), Color(0, 0, 0, 255).rgb)
+                            (maxHeight + fontRenderer.FONT_HEIGHT).toFloat(), -1)
                     GL11.glPopMatrix()
                 }, {
                     GL11.glPushMatrix()
@@ -274,12 +277,12 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
 
             // rect
             if (rectValue.get()) {
-                val rectColor = when (rectColorMode.get()) {
-                    "Sky" -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
-                    "Rainbow" -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
-                    "LiquidSlowly" -> liquidSlowli
-                    "Fade" -> FadeColor
-                    "Mixer" -> mixerColor
+                val rectColor = when {
+                    rectColorMode.get().equals("Sky", true) -> RenderUtils.SkyRainbow(0, saturationValue.get(), brightnessValue.get())
+                    rectColorMode.get().equals("Rainbow", true) -> RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), 0)
+                    rectColorMode.get().equals("LiquidSlowly", true) -> liquidSlowli
+                    rectColorMode.get().equals("Fade", true) -> FadeColor
+                    rectColorMode.get().equals("Mixer", true) -> mixerColor
                     else -> rectCustomColor
                 }
 

@@ -60,7 +60,7 @@ object ShadowUtils : MinecraftInstance() {
         }
     }
 
-    fun shadow(strength: Float, drawMethod: (() -> Unit), cutMethod: (() -> Unit)) {
+    fun shadow(strength: Float, red: Float = 1F, green: Float = 1F, blue: Float = 1F, alpha: Float = 1F, drawMethod: (() -> Unit), cutMethod: (() -> Unit)) {
         if (!OpenGlHelper.isFramebufferEnabled()) return
 
         val sc = ScaledResolution(mc)
@@ -101,7 +101,7 @@ object ShadowUtils : MinecraftInstance() {
 
         GlStateManager.enableBlend()
         GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F)
+        GlStateManager.color(red, green, blue, alpha)
 
         resultBuffer!!.bindFramebufferTexture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
