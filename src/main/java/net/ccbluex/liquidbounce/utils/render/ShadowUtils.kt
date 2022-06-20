@@ -7,7 +7,7 @@
  */
 package net.ccbluex.liquidbounce.utils.render
 
-import net.minecraft.client.Minecraft
+import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
@@ -46,7 +46,7 @@ object ShadowUtils : MinecraftInstance() {
             initFramebuffer!!.setFramebufferColor(0F, 0F, 0F, 0F)
             initFramebuffer!!.setFramebufferFilter(GL_LINEAR)
             shaderGroup = ShaderGroup(mc.textureManager, mc.getResourceManager(), initFramebuffer, blurDirectory)
-            shaderGroup.createBindFramebuffers(width * f, height * factor)
+            shaderGroup!!.createBindFramebuffers(width * f, height * factor)
             frameBuffer = shaderGroup.mainFramebuffer
             resultBuffer = shaderGroup.getFramebufferRaw("braindead")
     
@@ -73,16 +73,16 @@ object ShadowUtils : MinecraftInstance() {
         frameBuffer ?: return
 
         mc.getFramebuffer().unbindFramebuffer()
-        initFramebuffer.framebufferClear()
-        resultBuffer.framebufferClear()
-        initFramebuffer.bindFramebuffer(true)
+        initFramebuffer!!.framebufferClear()
+        resultBuffer!!.framebufferClear()
+        initFramebuffer!!.bindFramebuffer(true)
         drawMethod()
-        frameBuffer.bindFramebuffer(true)
-        shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks)
+        frameBuffer!!.bindFramebuffer(true)
+        shaderGroup!!.loadShaderGroup(mc.timer.renderPartialTicks)
         mc.getFramebuffer().bindFramebuffer(true)
 
-        val fr_width = resultBuffer.framebufferWidth.toDouble() / resultBuffer.framebufferTextureWidth.toDouble()
-        val fr_height = resultBuffer.framebufferHeight.toDouble() / resultBuffer.framebufferTextureHeight.toDouble()
+        val fr_width = resultBuffer!!.framebufferWidth.toDouble() / resultBuffer!!.framebufferTextureWidth.toDouble()
+        val fr_height = resultBuffer!!.framebufferHeight.toDouble() / resultBuffer!!.framebufferTextureHeight.toDouble()
 
         val tessellator = Tessellator.getInstance()
         val worldrenderer = tessellator.getWorldRenderer()
@@ -103,7 +103,7 @@ object ShadowUtils : MinecraftInstance() {
         GlStateManager.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F)
 
-        resultBuffer.bindFramebufferTexture()
+        resultBuffer!!.bindFramebufferTexture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
@@ -114,7 +114,7 @@ object ShadowUtils : MinecraftInstance() {
         worldrenderer.pos(0.0, 0.0, 0.0).tex(0.0, fr_height).color(255, 255, 255, 255).endVertex()
 
         tessellator.draw()
-        resultBuffer.unbindFramebufferTexture()
+        resultBuffer!!.unbindFramebufferTexture()
 
         GlStateManager.disableBlend() 
         GlStateManager.enableAlpha()

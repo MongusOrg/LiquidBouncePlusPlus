@@ -170,7 +170,7 @@ class Target : Element() {
                     GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
                     GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
                 }
-                mainStyle.handleShadowCut(convertTarget)
+                mainStyle.handleShadow(convertTarget)
                 GL11.glPopMatrix()
             }, {
                 GL11.glPushMatrix()
@@ -179,7 +179,7 @@ class Target : Element() {
                     GL11.glTranslatef(calcTranslateX, calcTranslateY, 0F)
                     GL11.glScalef(1F - calcScaleX, 1F - calcScaleY, 1F - calcScaleX)
                 }
-                mainStyle.handleShadow(convertTarget)
+                mainStyle.handleShadowCut(convertTarget)
                 GL11.glPopMatrix()
             })
 
