@@ -28,27 +28,27 @@ object ShadowUtils : MinecraftInstance() {
     private var frameBuffer: Framebuffer? = null
     var resultBuffer: Framebuffer? = null
 
-    private var shadowGroup: ShadowGroup? = null
+    private var shaderGroup: ShaderGroup? = null
     private var lastWidth = 0
     private var lastHeight = 0
     private var lastStrength = 0F
 
     private val blurDirectory = ResourceLocation("liquidbounce+/shadow.json")
 
-    @Throws(IOException.class)
+    @Throws(IOException::class)
     fun initShaderIfRequired(sc: ScaledResolution, strength: Float) {
         val width = sc.scaledWidth
         val height = sc.scaledHeight
         val factor = sc.scaleFactor
         if (lastWidth != width || lastHeight != height
-            || initFramebuffer == null || frameBuffer == null || shadowGroup == null) {
-            initFramebuffer = Framebuffer(w * f, h * f, true)
-            initFramebuffer.setFramebufferColor(0F, 0F, 0F, 0F)
-            initFramebuffer.setFramebufferFilter(GL_LINEAR)
-            shadowGroup = ShaderGroup(mc.textureManager, mc.getResourceManager(), initFramebuffer, blurDirectory)
-            shadowGroup.createBindFramebuffers(w * f, h * f)
-            frameBuffer = shadowGroup.mainFramebuffer
-            resultBuffer = shadowGroup.getFramebufferRaw("braindead")
+            || initFramebuffer == null || frameBuffer == null || shaderGroup == null) {
+            initFramebuffer = Framebuffer(width * factor, height * factor, true)
+            initFramebuffer!!.setFramebufferColor(0F, 0F, 0F, 0F)
+            initFramebuffer!!.setFramebufferFilter(GL_LINEAR)
+            shaderGroup = ShaderGroup(mc.textureManager, mc.getResourceManager(), initFramebuffer, blurDirectory)
+            shaderGroup.createBindFramebuffers(width * f, height * factor)
+            frameBuffer = shaderGroup.mainFramebuffer
+            resultBuffer = shaderGroup.getFramebufferRaw("braindead")
     
             lastWidth = width
             lastHeight = height
@@ -56,11 +56,11 @@ object ShadowUtils : MinecraftInstance() {
         if (lastStrength != strength) {
             lastStrength = strength
             for (i in 0..1)
-                shadowGroup.listShaders[i].shaderManager.getShaderUniform("Radius").set(strength)
+                shaderGroup.listShaders[i].shaderManager.getShaderUniform("Radius").set(strength)
         }
     }
 
-    fun shadow(strength: Float, drawMethod: () -> Unit, cutMethod: () -> Unit) {
+    fun shadow(strength: Float, drawMethod: (() -> Unit), cutMethod: (() -> Unit)) {
         if (!OpenGlHelper.isFramebufferEnabled()) return
 
         val sc = ScaledResolution(mc)
@@ -68,10 +68,14 @@ object ShadowUtils : MinecraftInstance() {
         val height = sc.scaledHeight
         initShaderIfRequired(sc, strength)
 
+        initFramebuffer ?: return
+        resultBuffer ?: return
+        frameBuffer ?: return
+
         mc.getFramebuffer().unbindFramebuffer()
         initFramebuffer.framebufferClear()
         resultBuffer.framebufferClear()
-        initialFB.bindFramebuffer(true)
+        initFramebuffer.bindFramebuffer(true)
         drawMethod()
         frameBuffer.bindFramebuffer(true)
         shaderGroup.loadShaderGroup(mc.timer.renderPartialTicks)
@@ -83,7 +87,7 @@ object ShadowUtils : MinecraftInstance() {
         val tessellator = Tessellator.getInstance()
         val worldrenderer = tessellator.getWorldRenderer()
 
-        GL11.glPushMatrix()
+        glPushMatrix()
         GlStateManager.disableLighting()
         GlStateManager.disableAlpha()
         GlStateManager.enableTexture2D()
@@ -119,7 +123,7 @@ object ShadowUtils : MinecraftInstance() {
         GlStateManager.enableTexture2D()
 
         Stencil.dispose()
-        GL11.glPopMatrix()
+        glPopMatrix()
 
         GlStateManager.resetColor()
         GlStateManager.color(1F, 1F, 1F, 1F)
