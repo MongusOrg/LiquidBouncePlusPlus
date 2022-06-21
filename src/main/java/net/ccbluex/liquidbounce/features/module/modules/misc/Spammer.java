@@ -46,8 +46,14 @@ public class Spammer extends Module {
         }
     };
 
-    private final TextValue messageValue = new TextValue("Message", LiquidBounce.CLIENT_NAME + " Client | liquidbounce(.net) | CCBlueX on yt");
+    private final TextValue messageValue = new TextValue("Message", "Example text");
     private final BoolValue customValue = new BoolValue("Custom", false);
+    private final TextValue blankText = new TextValue("Placeholder guide", "", () -> customValue.get());
+    private final TextValue guideFloat = new TextValue("%f", "Random float", () -> customValue.get());
+    private final TextValue guideInt = new TextValue("%i", "Random integer (max length 10000)", () -> customValue.get());
+    private final TextValue guideString = new TextValue("%s", "Random string (max length 9)", () -> customValue.get());
+    private final TextValue guideShortString = new TextValue("%ss", "Random short string (max length 5)", () -> customValue.get());
+    private final TextValue guideLongString = new TextValue("%ls", "Random long string (max length 16)", () -> customValue.get());
 
     private final MSTimer msTimer = new MSTimer();
     private long delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get());

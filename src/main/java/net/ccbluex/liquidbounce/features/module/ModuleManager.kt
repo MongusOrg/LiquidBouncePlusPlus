@@ -89,7 +89,7 @@ class ModuleManager : Listenable {
                 Blink::class.java,
                 NameProtect::class.java,
                 NoHurtCam::class.java,
-                MidClick::class.java,
+                MCF::class.java,
                 XRay::class.java,
                 Timer::class.java,
                 FreeCam::class.java,     
