@@ -30,7 +30,7 @@ class Step : Module() {
      */
 
     private val modeValue = ListValue("Mode", arrayOf(
-            "Vanilla", "Jump", "NCP", "MotionNCP", "OldNCP", "AAC", "LAAC", "AAC3.3.4", "Spartan", "Rewinside", "1.5Twillight"
+            "Vanilla", "Jump", "NCPPacket", "NCP", "MotionNCP", "OldNCP", "AAC", "LAAC", "AAC3.3.4", "Spartan", "Rewinside", "1.5Twillight"
     ), "NCP")
 
     private val heightValue = FloatValue("Height", 1F, 0.6F, 10F)
@@ -57,6 +57,9 @@ class Step : Module() {
     private val timer = MSTimer()
     private var usedTimer = false
 
+    private val ncp1Values = arrayOf(0.425, 0.821, 0.699, 0.599, 1.022, 1.372, 1.652, 1.869, 2.019, 1.919)
+    private val ncp2Values = arrayOf(0.42, 0.7532, 1.01, 1.093, 1.015)
+
     override fun onDisable() {
         mc.thePlayer ?: return
 
@@ -80,8 +83,6 @@ class Step : Module() {
                     && !mc.gameSettings.keyBindJump.isKeyDown -> {
                 fakeJump()
                 mc.thePlayer.motionY = jumpHeightValue.get().toDouble()
-
-
             }
 
             mode.equals("laac", true) -> if (mc.thePlayer.isCollidedHorizontally && !mc.thePlayer.isOnLadder
@@ -118,7 +119,7 @@ class Step : Module() {
                 }
             } else
                 isAACStep = false
-            //exploit that ac step
+            
             mode.equals("1.5Twillight", true) -> if (MovementUtils.isMoving() &&
                     mc.thePlayer.isCollidedHorizontally) {
                 ticks++
@@ -181,7 +182,7 @@ class Step : Module() {
         if (fly.state) {
             val flyMode = fly.modeValue.get()
 
-            if (flyMode.equals("Rewinside", ignoreCase = true)) {
+            if (flyMode.equals("Rewinside", true)) {
                 event.stepHeight = 0F
                 return
             }
@@ -191,9 +192,9 @@ class Step : Module() {
 
         // Set step to default in some cases
         if (!mc.thePlayer.onGround || !timer.hasTimePassed(delayValue.get().toLong()) ||
-                mode.equals("Jump", ignoreCase = true) || mode.equals("MotionNCP", ignoreCase = true)
-                || mode.equals("LAAC", ignoreCase = true) || mode.equals("AAC3.3.4", ignoreCase = true)
-                || mode.equals("AACv4", ignoreCase = true) || mode.equals("1.5Twillight", true)) {
+                mode.equals("Jump", true) || mode.equals("MotionNCP", true)
+                || mode.equals("LAAC", true) || mode.equals("AAC3.3.4", true)
+                || mode.equals("AACv4", true) || mode.equals("1.5Twillight", true)) {
             mc.thePlayer.stepHeight = 0.5F
             event.stepHeight = 0.5F
             return
@@ -224,7 +225,55 @@ class Step : Module() {
             val mode = modeValue.get()
 
             when {
-                mode.equals("NCP", ignoreCase = true) || mode.equals("AAC", ignoreCase = true) -> {
+                mode.equals("NCPPacket", true) -> {
+                    val rHeight = mc.thePlayer.entityBoundingBox.minY - stepY
+                    when {
+                        rHeight > 2.019 -> {
+                            ncp1Values.forEach {
+                                mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX, stepY + it, stepZ, false))
+                            }
+                            mc.thePlayer.motionX = 0.0
+                            mc.thePlayer.motionZ = 0.0
+                        }
+                        rHeight > 1.869 -> {
+                            for (i in 0..7)
+                                mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX, stepY + ncp1Values[i], stepZ, false))
+                            mc.thePlayer.motionX = 0.0
+                            mc.thePlayer.motionZ = 0.0
+                        }
+                        rHeight > 1.5 -> {
+                            for (i in 0..6)
+                                mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX, stepY + ncp1Values[i], stepZ, false))
+                            mc.thePlayer.motionX = 0.0
+                            mc.thePlayer.motionZ = 0.0
+                        }
+                        rHeight > 1.015 -> {
+                            ncp2Values.forEach {
+                                mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX, stepY + it, stepZ, false))
+                            }
+                            mc.thePlayer.motionX = 0.0
+                            mc.thePlayer.motionZ = 0.0
+                        }
+                        rHeight > 0.875 -> {
+                            mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX,
+                                    stepY + 0.41999998688698, stepZ, false))
+                            mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX,
+                                    stepY + 0.7531999805212, stepZ, false))
+                            mc.thePlayer.motionX = 0.0
+                            mc.thePlayer.motionZ = 0.0
+                        }
+                        rHeight > 0.6 -> {
+                            mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX,
+                                    stepY + 0.39, stepZ, false))
+                            mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(stepX,
+                                    stepY + 0.6938, stepZ, false))
+                            mc.thePlayer.motionX = 0.0
+                            mc.thePlayer.motionZ = 0.0
+                        }
+                    }
+                }
+
+                mode.equals("NCP", true) || mode.equals("AAC", true) -> {
                     fakeJump()
 
                     // Half legit step (1 packet missing) [COULD TRIGGER TOO MANY PACKETS]
@@ -235,7 +284,7 @@ class Step : Module() {
                     timer.reset()
                 }
 
-                mode.equals("Spartan", ignoreCase = true) -> {
+                mode.equals("Spartan", true) -> {
                     fakeJump()
 
                     if (spartanSwitch) {
@@ -257,7 +306,7 @@ class Step : Module() {
                     timer.reset()
                 }
 
-                mode.equals("Rewinside", ignoreCase = true) -> {
+                mode.equals("Rewinside", true) -> {
                     fakeJump()
 
                     // Vanilla step (3 packets) [COULD TRIGGER TOO MANY PACKETS]
@@ -285,7 +334,7 @@ class Step : Module() {
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
 
-        if (packet is C03PacketPlayer && isStep && modeValue.get().equals("OldNCP", ignoreCase = true)) {
+        if (packet is C03PacketPlayer && isStep && modeValue.get().equals("OldNCP", true)) {
             packet.y += 0.07
             isStep = false
         }

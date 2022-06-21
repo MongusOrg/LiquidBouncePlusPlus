@@ -125,32 +125,9 @@ class ClientRichPresence : MinecraftInstance() {
         }
     }
 
-    /**
-     * Load configuration from web
-     *
-     * @throws IOException If reading failed
-     */
     private fun loadConfiguration() {
-        /*
-        // Read from web and convert to json object
-        val json = JsonParser().parse(HttpUtils.get("${LiquidBounce.CLIENT_CLOUD}/discord.json"))
-
-        if (json !is JsonObject)
-            return
-
-        // Check has app id
-        if (json.has("appID"))
-            appID = json.get("appID").asLong
-
-        // Import all asset names
-        for ((key, value) in json.get("assets").asJsonObject.entrySet())
-            assets[key] = value.asString
-        */
-
         appID = 874149528486445106L
         assets["new"] = "new"
-        //assets["active"] = "active"
-        //assets["inactive"] = "inactive"
         assets["astolfo"] = "astolfo"
     }
 }

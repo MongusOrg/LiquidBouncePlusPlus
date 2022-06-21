@@ -53,6 +53,7 @@ class NoSlow : Module() {
     private val customOnGround = BoolValue("CustomOnGround", false, { modeValue.get().equals("custom", true) })
     private val customDelayValue = IntegerValue("CustomDelay", 60, 0, 1000, "ms", { modeValue.get().equals("custom", true) })
     private val testValue = BoolValue("SendPacket", false, { modeValue.get().equals("watchdog", true) })
+    private val ciucValue = BoolValue("CheckInUseCount", true, { modeValue.get().equals("blink", true) })
     private val packetTriggerValue = ListValue("PacketTrigger", arrayOf("PreRelease", "PostRelease"), "PostRelease", { modeValue.get().equals("blink", true) })
     private val debugValue = BoolValue("Debug", false, { modeValue.get().equals("watchdog", true) || modeValue.get().equals("blink", true) })
 
@@ -123,12 +124,7 @@ class NoSlow : Module() {
         }
         if (modeValue.get().equals("blink", true) && !(killAura.state && killAura.blockingStatus) && mc.thePlayer.itemInUse != null && mc.thePlayer.itemInUse.item != null) {
             val item = mc.thePlayer.itemInUse.item
-            if (mc.thePlayer.isUsingItem && (item is ItemFood || item is ItemBucketMilk || item is ItemPotion)) {
-                if (packet is C05PacketPlayerLook || packet is C03PacketPlayer) {
-                    event.cancelEvent()
-                    if (debugValue.get())
-                        ClientUtils.displayChatMessage("ignored no move packet")
-                }
+            if (mc.thePlayer.isUsingItem && (item is ItemFood || item is ItemBucketMilk || item is ItemPotion) && (!ciucValue.get() || mc.thePlayer.itemInUseCount >= 1)) {
                 if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook) {
                     if (mc.thePlayer.positionUpdateTicks >= 20 && packetTriggerValue.get().equals("postrelease", true)) {
                         (packet as C03PacketPlayer).x = lastX
@@ -143,7 +139,21 @@ class NoSlow : Module() {
                             PacketUtils.sendPacketNoEvent(C03PacketPlayer(lastOnGround))
                         blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
                         if (debugValue.get())
-                            ClientUtils.displayChatMessage("packet player added at ${blinkPackets.size - 1}")
+                            ClientUtils.displayChatMessage("packet player (movement) added at ${blinkPackets.size - 1}")
+                    }
+                } else if (packet is C05PacketPlayerLook) {
+                    event.cancelEvent()
+                    if (packetTriggerValue.get().equals("postrelease", true))
+                        PacketUtils.sendPacketNoEvent(C03PacketPlayer(lastOnGround))
+                    blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
+                    if (debugValue.get())
+                        ClientUtils.displayChatMessage("packet player (rotation) added at ${blinkPackets.size - 1}")
+                } else if (packet is C03PacketPlayer) {
+                    if (packetTriggerValue.get().equals("prerelease", true) || packet.onGround != lastOnGround) {
+                        event.cancelEvent()
+                        blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
+                        if (debugValue.get())
+                            ClientUtils.displayChatMessage("packet player (idle) added at ${blinkPackets.size - 1}")
                     }
                 }
                 if (packet is C0BPacketEntityAction) {
@@ -168,7 +178,7 @@ class NoSlow : Module() {
 
     @EventTarget
     fun onMotion(event: MotionEvent) {
-        if (!MovementUtils.isMoving())
+        if (!MovementUtils.isMoving() && !modeValue.get().equals("blink", true))
             return
 
         val heldItem = mc.thePlayer.heldItem

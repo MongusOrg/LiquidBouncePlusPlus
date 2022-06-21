@@ -27,7 +27,7 @@ import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 @ModuleInfo(name = "Criticals", description = "Automatically deals critical hits.", category = ModuleCategory.COMBAT)
 class Criticals : Module() {
 
-    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "Packet2", "NCPPacket", "NoGround", "Redesky", "AACv4", "AACv5", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Invalid", "VerusSmart"), "Packet")
+    val modeValue = ListValue("Mode", arrayOf("NewPacket", "Packet", "Packet2", "NCPPacket", "NoGround", "Redesky", "AACv4", "Hop", "TPHop", "Jump", "Visual", "Edit", "MiniPhase", "NanoPacket", "Non-Calculable", "Invalid", "VerusSmart"), "Packet")
     val delayValue = IntegerValue("Delay", 0, 0, 500, "ms")
     private val jumpHeightValue = FloatValue("JumpHeight", 0.42F, 0.1F, 0.42F)
     private val downYValue = FloatValue("DownY", 0f, 0f, 0.1F)
