@@ -35,7 +35,7 @@ class Ambience : Module() {
 
     @EventTarget
     fun onPacket(event: PacketEvent) {
-        if (packet is S03PacketTimeUpdate)
+        if (event.packet is S03PacketTimeUpdate)
             event.cancelEvent()
     }
     
