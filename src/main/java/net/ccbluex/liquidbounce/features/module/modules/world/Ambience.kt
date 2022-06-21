@@ -21,11 +21,11 @@ import net.minecraft.network.play.server.S03PacketTimeUpdate
 @ModuleInfo(name = "Ambience", description = "Change your world time and weather client-side.", category = ModuleCategory.WORLD)
 class Ambience : Module() {
     val timeModeValue = ListValue("Time", arrayOf("Static", "Cycle"), "Static")
-    val cycleSpeedValue = IntegerValue("CycleSpeed", -24, 1, 24, { timeModeValue.get().equals("cycle", true) })
+    val cycleSpeedValue = IntegerValue("CycleSpeed", 1, -24, 24, { timeModeValue.get().equals("cycle", true) })
     val staticTimeValue = IntegerValue("StaticTime", 18000, 0, 24000, { timeModeValue.get().equals("static", true) })
     val weatherModeValue = ListValue("Weather", arrayOf("Clear", "Rain", "NoModification"), "Clear")
-    val rainStrengthValue = FloatValue("RainStrength", 0.01F, 0.1F, 1F)
-    val tagValue = ListValue("Tag", arrayOf("TimeOnly", "Simplified", "Detailed", "None"), "Simplified")
+    val rainStrengthValue = FloatValue("RainStrength", 0.1F, 0.01F, 1F, { weatherModeValue.get().equals("rain", true) })
+    val tagValue = ListValue("Tag", arrayOf("TimeOnly", "Simplified", "Detailed", "None"), "TimeOnly")
 
     private var timeCycle = 0L
 

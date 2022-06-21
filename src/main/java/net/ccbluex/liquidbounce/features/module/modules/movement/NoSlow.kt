@@ -29,6 +29,7 @@ import net.minecraft.network.play.INetHandlerPlayServer
 import net.minecraft.network.play.client.C0BPacketEntityAction
 import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
+import net.minecraft.network.play.client.C03PacketPlayer.C05PacketPlayerLook
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook
 import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
@@ -52,6 +53,7 @@ class NoSlow : Module() {
     private val customOnGround = BoolValue("CustomOnGround", false, { modeValue.get().equals("custom", true) })
     private val customDelayValue = IntegerValue("CustomDelay", 60, 0, 1000, "ms", { modeValue.get().equals("custom", true) })
     private val testValue = BoolValue("SendPacket", false, { modeValue.get().equals("watchdog", true) })
+    private val packetTriggerValue = BoolValue("PacketTrigger", arrayOf("PreRelease", "PostRelease"), "PostRelease", { modeValue.get().equals("blink", true) })
     private val debugValue = BoolValue("Debug", false, { modeValue.get().equals("watchdog", true) || modeValue.get().equals("blink", true) })
 
     // Soulsand
@@ -122,8 +124,13 @@ class NoSlow : Module() {
         if (modeValue.get().equals("blink", true) && !(killAura.state && killAura.blockingStatus) && mc.thePlayer.itemInUse != null && mc.thePlayer.itemInUse.item != null) {
             val item = mc.thePlayer.itemInUse.item
             if (mc.thePlayer.isUsingItem && (item is ItemFood || item is ItemBucketMilk || item is ItemPotion)) {
+                if (packet is C05PacketPlayerLook || packet is C03PacketPlayer) {
+                    event.cancelEvent()
+                    if (debugValue.get())
+                        ClientUtils.displayChatMessage("ignored no move packet")
+                }
                 if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook) {
-                    if (mc.thePlayer.positionUpdateTicks >= 20) {
+                    if (mc.thePlayer.positionUpdateTicks >= 20 && packetTriggerValue.get().equals("postrelease", true)) {
                         (packet as C03PacketPlayer).x = lastX
                         (packet as C03PacketPlayer).y = lastY
                         (packet as C03PacketPlayer).z = lastZ
@@ -132,7 +139,8 @@ class NoSlow : Module() {
                             ClientUtils.displayChatMessage("pos update reached 20")
                     } else {
                         event.cancelEvent()
-                        mc.netHandler.addToSendQueue(C03PacketPlayer(lastOnGround))
+                        if (packetTriggerValue.get().equals("postrelease", true))
+                            PacketUtils.sendPacketNoEvent(C03PacketPlayer(lastOnGround))
                         blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
                         if (debugValue.get())
                             ClientUtils.displayChatMessage("packet player added at ${blinkPackets.size - 1}")
@@ -144,6 +152,16 @@ class NoSlow : Module() {
                     if (debugValue.get())
                         ClientUtils.displayChatMessage("packet action added at ${blinkPackets.size - 1}")
                 }   
+                if (packet is C07PacketPlayerDigging && packetTriggerValue.get().equals("prerelease", true)) {
+                    if (blinkPackets.size > 0) {
+                        blinkPackets.forEach {
+                            PacketUtils.sendPacketNoEvent(it)
+                        }
+                        if (debugValue.get())
+                            ClientUtils.displayChatMessage("sent ${blinkPackets.size} packets.")
+                        blinkPackets.clear()
+                    }
+                }
             }
         }
     }
@@ -173,7 +191,7 @@ class NoSlow : Module() {
                     lastY = event.y
                     lastZ = event.z
                     lastOnGround = event.onGround
-                    if (blinkPackets.size > 0) {
+                    if (blinkPackets.size > 0 && packetTriggerValue.get().equals("postrelease", true)) {
                         blinkPackets.forEach {
                             PacketUtils.sendPacketNoEvent(it)
                         }
