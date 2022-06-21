@@ -8,11 +8,15 @@ package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 import de.enzaxd.viaforge.ViaForge;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.JumpEvent;
+import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.movement.AirJump;
 import net.ccbluex.liquidbounce.features.module.modules.movement.LiquidWalk;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoJumpDelay;
+import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
 import net.ccbluex.liquidbounce.features.module.modules.render.AntiBlind;
+import net.ccbluex.liquidbounce.utils.MovementUtils;
+import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -105,7 +109,15 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
             this.motionY += (double) ((float) (this.getActivePotionEffect(Potion.jump).getAmplifier() + 1) * 0.1F);
 
         if (this.isSprinting()) {
-            float f = this.rotationYaw * 0.017453292F;
+            final KillAura auraMod = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
+            final Sprint sprintMod = (KillAura) LiquidBounce.moduleManager.getModule(Sprint.class);
+            float yaw = this.rotationYaw;
+            if (Patcher.jumpPatch.get())
+                if (auraMod.getState() && auraMod.getRotationStrafeValue().get().equalsIgnoreCase("strict") && auraMod.getTarget() != null)
+                    yaw = RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getYaw() : (RotationUtils.serverRotation != null ? RotationUtils.serverRotation.getYaw() : yaw);
+                else if (sprintMod.getState() && sprintMod.getAllDirectionsValue().get() && sprintMod.getMoveDirPatchValue().get())
+                    yaw = MovementUtils.getRawDirection();
+            float f = yaw * 0.017453292F;
             this.motionX -= (double) (MathHelper.sin(f) * 0.2F);
             this.motionZ += (double) (MathHelper.cos(f) * 0.2F);
         }

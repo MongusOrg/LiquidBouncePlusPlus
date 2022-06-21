@@ -24,6 +24,10 @@ import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.item.*
+import net.minecraft.network.Packet
+import net.minecraft.network.play.INetHandlerPlayServer
+import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
+import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook
 import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
 import net.minecraft.network.play.client.C09PacketHeldItemChange
@@ -34,7 +38,7 @@ import net.minecraft.util.EnumFacing
 @ModuleInfo(name = "NoSlow", spacedName = "No Slow", category = ModuleCategory.MOVEMENT, description = "Prevent you from getting slowed down by items (swords, foods, etc.) and liquids.")
 class NoSlow : Module() {
     private val msTimer = MSTimer()
-    private val modeValue = ListValue("PacketMode", arrayOf("Vanilla", "Custom", "Watchdog", "OldWatchdog", "OldHypixel", "NCP", "AAC", "AAC5"), "Vanilla")
+    private val modeValue = ListValue("PacketMode", arrayOf("Vanilla", "Watchdog", "OldWatchdog", "OldHypixel", "Blink", "Experimental", "NCP", "AAC", "AAC5", "Custom"), "Vanilla")
     private val blockForwardMultiplier = FloatValue("BlockForwardMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val blockStrafeMultiplier = FloatValue("BlockStrafeMultiplier", 1.0F, 0.2F, 1.0F, "x")
     private val consumeForwardMultiplier = FloatValue("ConsumeForwardMultiplier", 1.0F, 0.2F, 1.0F, "x")
@@ -52,8 +56,26 @@ class NoSlow : Module() {
     val soulsandValue = BoolValue("Soulsand", true)
     val liquidPushValue = BoolValue("LiquidPush", true)
 
-    override fun onDisable() {
+    private val blinkPackets = mutableListOf<Packet<INetHandlerPlayServer>>()
+    private var lastX = 0.0
+    private var lastY = 0.0
+    private var lastZ = 0.0
+    private var lastOnGround = false
+
+    private var fasterDelay = false
+    private var placeDelay = 0L
+    private val timer = MSTimer()
+
+    override fun onEnable() {
+        blinkPackets.clear()
         msTimer.reset()
+    }   
+
+    override fun onDisable() {
+        blinkPackets.forEach {
+            PacketUtils.sendPacketNoEvent(it)
+        }
+        blinkPackets.clear()
     }
 
     override val tag: String?
@@ -87,11 +109,31 @@ class NoSlow : Module() {
 
     @EventTarget
     fun onPacket(event: PacketEvent) {
-        if (modeValue.get().equals("watchdog", true) && event.packet is S30PacketWindowItems && (mc.thePlayer.isUsingItem() || mc.thePlayer.isBlocking())) {
-            event.cancelEvent()
+        val packet = event.packet
+        val killAura = LiquidBounce.moduleManager[KillAura::class.java]!! as KillAura
 
+        if (modeValue.get().equals("watchdog", true) && packet is S30PacketWindowItems && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking)) {
+            event.cancelEvent()
             if (debugValue.get())
                 ClientUtils.displayChatMessage("detected reset item packet")
+        }
+        if (modeValue.get().equals("blink", true) && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && (!killAura.state || !killAura.blockingStatus)) {
+            if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook) {
+                if (mc.thePlayer.positionUpdateTicks >= 20) {
+                    packet.x = lastX
+                    packet.y = lastY
+                    packet.z = lastZ
+                    packet.onGround = lastOnGround
+                } else {
+                    event.cancelEvent()
+                    PacketUtils.sendPacketNoEvent(C03PacketPlayer(lastOnGround))
+                }
+                blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
+            }
+            if (packet is C0BPacketEntityAction) {
+                event.cancelEvent()
+                blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
+            }   
         }
     }
 
@@ -103,52 +145,64 @@ class NoSlow : Module() {
         val heldItem = mc.thePlayer.heldItem
         val killAura = LiquidBounce.moduleManager[KillAura::class.java]!! as KillAura
 
-        if(modeValue.get().equals("aac5", true)) {
-            if (event.eventState == EventState.POST && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking() || killAura.blockingStatus)) {
+        when (modeValue.get().toLowerCase()) {
+            "aac5" -> if (event.eventState == EventState.POST && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking || killAura.blockingStatus)) {
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0f, 0f, 0f))
             }
-        } else if (modeValue.get().equals("watchdog", true)) {
-            if (testValue.get() && (!killAura.state || !killAura.blockingStatus) 
+            "watchdog" -> if (testValue.get() && (!killAura.state || !killAura.blockingStatus) 
                 && event.eventState == EventState.PRE
                 && mc.thePlayer.getItemInUse() != null && mc.thePlayer.getItemInUse().getItem() != null) {
                 val item = mc.thePlayer.getItemInUse().getItem()
                 if (mc.thePlayer.isUsingItem && (item is ItemFood || item is ItemBucketMilk || item is ItemPotion) && mc.thePlayer.getItemInUseCount() >= 1)
                     PacketUtils.sendPacketNoEvent(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
             }
-        } else {
-            if (!mc.thePlayer.isBlocking && !killAura.blockingStatus) {
-                return
+            "blink" -> {
+                if (!mc.thePlayer.isUsingItem || !mc.thePlayer.isBlocking || (killAura.state && killAura.blockingStatus)) {
+                    lastX = event.x
+                    lastY = event.y
+                    lastZ = event.z
+                    lastOnGround = event.onGround
+                }
             }
-            when(modeValue.get().toLowerCase()) {
-                "aac" -> {
-                    if(mc.thePlayer.ticksExisted % 3 == 0) {
-                        sendPacket(event, true, false, false, 0, false)
-                    } else {
-                        sendPacket(event, false, true, false, 0, false)
+            "experimental" -> {
+                if ((mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && timer.hasTimePassed(delay)) {
+                    mc.playerController.syncCurrentPlayItem()
+                    mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
+                    if (event.eventState == EventState.POST) {
+                        delay = 200L
+                        if (fasterDelay) {
+                            delay = 100L
+                            fasterDelay = false
+                        } else
+                            fasterDelay = true
+                        timer.reset()
                     }
                 }
-
-                "custom" -> {
-                    sendPacket(event, customRelease.get(), customPlace.get(), customDelayValue.get() > 0, customDelayValue.get().toLong(), customOnGround.get())
-                }
-
-                "ncp" -> {
-                    sendPacket(event, true, true, false, 0, false)
-                }
-
-                "oldwatchdog" -> {
-                    if (mc.thePlayer.ticksExisted % 2 == 0) {
-                        sendPacket(event, true, false, false, 50, true)
-                    } else {
-                        sendPacket(event, false, true, false, 0, true, true)
+            }
+            else -> {
+                if (!mc.thePlayer.isBlocking && !killAura.blockingStatus)
+                    return
+                when (modeValue.get().toLowerCase()) {
+                    "aac" -> {
+                        if (mc.thePlayer.ticksExisted % 3 == 0)
+                            sendPacket(event, true, false, false, 0, false)
+                        else
+                            sendPacket(event, false, true, false, 0, false)
                     }
-                }
-
-                "oldhypixel" -> {
-                    if (event.eventState == EventState.PRE)
-                        mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(-1, -1, -1), EnumFacing.DOWN))
-                    else
-                        mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
+                    "ncp" -> sendPacket(event, true, true, false, 0, false)
+                    "oldwatchdog" -> {
+                        if (mc.thePlayer.ticksExisted % 2 == 0)
+                            sendPacket(event, true, false, false, 50, true)
+                        else
+                            sendPacket(event, false, true, false, 0, true, true)
+                    }
+                    "oldhypixel" -> {
+                        if (event.eventState == EventState.PRE)
+                            mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos(-1, -1, -1), EnumFacing.DOWN))
+                        else
+                            mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, null, 0.0f, 0.0f, 0.0f))
+                    }
+                    "custom" -> sendPacket(event, customRelease.get(), customPlace.get(), customDelayValue.get() > 0, customDelayValue.get().toLong(), customOnGround.get())
                 }
             }
         }

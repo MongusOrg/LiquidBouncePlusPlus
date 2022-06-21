@@ -7,7 +7,6 @@ package net.ccbluex.liquidbounce.features.module.modules.movement
 
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.EventTarget
-import net.ccbluex.liquidbounce.event.JumpEvent
 import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.event.UpdateEvent
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
@@ -27,9 +26,8 @@ import net.minecraft.util.Vec3
 class Sprint : Module() {
 
     val allDirectionsValue = BoolValue("AllDirections", true)
-    val noPacketPatchValue = BoolValue("AllDirections-NoPacketsPatch", true, { allDirectionsValue.get() })
-    val moveDirPatchValue = BoolValue("AllDirections-MoveDirPatch", false, { allDirectionsValue.get() })
-    val jumpDirPatchValue = BoolValue("MoveDirPatch-JumpOnly", true, { allDirectionsValue.get() && moveDirPatchValue.get() })
+    val noPacketPatchValue = BoolValue("AllDir-NoPacketsPatch", true, { allDirectionsValue.get() })
+    val moveDirPatchValue = BoolValue("AllDir-MoveDirPatch", false, { allDirectionsValue.get() })
     val blindnessValue = BoolValue("Blindness", true)
     val foodValue = BoolValue("Food", true)
 
@@ -45,19 +43,6 @@ class Sprint : Module() {
             if (packet is C0BPacketEntityAction && (packet.getAction() == C0BPacketEntityAction.Action.STOP_SPRINTING || packet.getAction() == C0BPacketEntityAction.Action.START_SPRINTING)) {
                 event.cancelEvent()
             }
-        }
-    }
-
-    @EventTarget
-    fun onJump(event: JumpEvent) {
-        if (allDirectionsValue.get() && moveDirPatchValue.get() && jumpDirPatchValue.get() && !modified) {
-            event.cancelEvent()
-            var prevYaw = mc.thePlayer.rotationYaw
-            mc.thePlayer.rotationYaw = MovementUtils.getRawDirection()
-            modified = true
-            mc.thePlayer.jump()
-            mc.thePlayer.rotationYaw = prevYaw
-            modified = false
         }
     }
 
@@ -78,7 +63,7 @@ class Sprint : Module() {
         if (allDirectionsValue.get() || mc.thePlayer.movementInput.moveForward >= 0.8F)
             mc.thePlayer.setSprinting(true)
 
-        if (allDirectionsValue.get() && moveDirPatchValue.get() && !jumpDirPatchValue.get() && killAura.target == null)
+        if (allDirectionsValue.get() && moveDirPatchValue.get() && killAura.target == null)
             RotationUtils.setTargetRotation(Rotation(MovementUtils.getRawDirection(), mc.thePlayer.rotationPitch))
     }
 

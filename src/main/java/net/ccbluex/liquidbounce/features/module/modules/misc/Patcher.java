@@ -18,6 +18,7 @@ import java.util.HashMap;
 public class Patcher extends Module {
 
     public static final BoolValue noHitDelay = new BoolValue("NoHitDelay", false);
+    public static final BoolValue jumpPatch = new BoolValue("JumpFix", true);
     public static final BoolValue chatPosition = new BoolValue("ChatPosition1.12", true);
     public static final BoolValue silentNPESP = new BoolValue("SilentNPE-SpawnPlayer", true);
 
