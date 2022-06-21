@@ -29,7 +29,9 @@ class Ambience : Module() {
 
     private var timeCycle = 0L
 
-    fun onEnable() = timeCycle = 0L
+    override fun onEnable() {
+        timeCycle = 0L
+    }
     
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
@@ -47,7 +49,7 @@ class Ambience : Module() {
             mc.theWorld.setRainStrength(if (weatherModeValue.get().equals("clear", true)) 0F else rainStrengthValue.get())
     }
 
-    val tag: String?
+    override val tag: String?
         get() = when (tagValue.get().toLowerCase()) {
             "timeonly" -> if (timeModeValue.get().equals("static", true)) staticTimeValue.get().toString() else timeCycle.toString()
             "simplified" -> "${if (timeModeValue.get().equals("static", true)) staticTimeValue.get().toString() else timeCycle.toString()}, ${weatherModeValue.get()}"
