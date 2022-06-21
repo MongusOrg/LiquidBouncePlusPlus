@@ -20,10 +20,10 @@ class SpinBot : Module() {
     private val pitchJitterTimer = IntegerValue("PitchJitterTimer", 1, 1, 40, " tick(s)")
     private val yawSpinSpeed = FloatValue("YawSpinSpeed", 5F, -90F, 90F, "°")
 
-    val pitch = 0F
-    private val lastSpin = 0F
-    private val yawTimer = 0
-    private val pitchTimer = 0
+    var pitch = 0F
+    private var lastSpin = 0F
+    private var yawTimer = 0
+    private var pitchTimer = 0
 
     override fun onDisable() {
         pitch = -4.9531336E7f
@@ -46,7 +46,10 @@ class SpinBot : Module() {
                     else
                         yaw = mc.thePlayer.rotationYaw - 180F
                 }
-                "spin" -> yaw = (lastSpin += yawSpinSpeed.get())
+                "spin" -> {
+                    lastSpin += yawSpinSpeed.get()
+                    yaw = lastSpin
+                }
             }
             mc.thePlayer.renderYawOffset = yaw
             mc.thePlayer.rotationYawHead = yaw
