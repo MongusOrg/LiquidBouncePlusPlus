@@ -32,6 +32,12 @@ class Ambience : Module() {
     override fun onEnable() {
         timeCycle = 0L
     }
+
+    @EventTarget
+    fun onPacket(event: PacketEvent) {
+        if (packet is S03PacketTimeUpdate)
+            event.cancelEvent()
+    }
     
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
