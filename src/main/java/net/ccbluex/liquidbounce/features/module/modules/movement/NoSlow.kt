@@ -119,28 +119,32 @@ class NoSlow : Module() {
             if (debugValue.get())
                 ClientUtils.displayChatMessage("detected reset item packet")
         }
-        if (modeValue.get().equals("blink", true) && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && !(killAura.state && killAura.blockingStatus)) {
-            if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook) {
-                if (mc.thePlayer.positionUpdateTicks >= 20) {
-                    (packet as C03PacketPlayer).x = lastX
-                    (packet as C03PacketPlayer).y = lastY
-                    (packet as C03PacketPlayer).z = lastZ
-                    (packet as C03PacketPlayer).onGround = lastOnGround
-                    if (debugValue.get())
-                        ClientUtils.displayChatMessage("pos update reached 20")
-                } else {
+        if (modeValue.get().equals("blink", true) && !(killAura.state && killAura.blockingStatus) && mc.thePlayer.itemInUse != null && mc.thePlayer.itemInUse.item != null) {
+            val item = mc.thePlayer.itemInUse.item
+            if (mc.thePlayer.isUsingItem && (item is ItemFood || item is ItemBucketMilk || item is ItemPotion)) {
+                if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook) {
+                    if (mc.thePlayer.positionUpdateTicks >= 20) {
+                        (packet as C03PacketPlayer).x = lastX
+                        (packet as C03PacketPlayer).y = lastY
+                        (packet as C03PacketPlayer).z = lastZ
+                        (packet as C03PacketPlayer).onGround = lastOnGround
+                        if (debugValue.get())
+                            ClientUtils.displayChatMessage("pos update reached 20")
+                    } else {
+                        event.cancelEvent()
+                        mc.netHandler.addToSendQueue(C03PacketPlayer(lastOnGround))
+                        blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
+                        if (debugValue.get())
+                            ClientUtils.displayChatMessage("packet player added at ${blinkPackets.size - 1}")
+                    }
+                }
+                if (packet is C0BPacketEntityAction) {
                     event.cancelEvent()
                     blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
                     if (debugValue.get())
-                        ClientUtils.displayChatMessage("packet player added at ${blinkPackets.size - 1}")
-                }
+                        ClientUtils.displayChatMessage("packet action added at ${blinkPackets.size - 1}")
+                }   
             }
-            if (packet is C0BPacketEntityAction) {
-                event.cancelEvent()
-                blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
-                if (debugValue.get())
-                    ClientUtils.displayChatMessage("packet action added at ${blinkPackets.size - 1}")
-            }   
         }
     }
 
@@ -158,17 +162,25 @@ class NoSlow : Module() {
             }
             "watchdog" -> if (testValue.get() && (!killAura.state || !killAura.blockingStatus) 
                 && event.eventState == EventState.PRE
-                && mc.thePlayer.getItemInUse() != null && mc.thePlayer.getItemInUse().getItem() != null) {
-                val item = mc.thePlayer.getItemInUse().getItem()
+                && mc.thePlayer.itemInUse != null && mc.thePlayer.itemInUse.item != null) {
+                val item = mc.thePlayer.itemInUse.item
                 if (mc.thePlayer.isUsingItem && (item is ItemFood || item is ItemBucketMilk || item is ItemPotion) && mc.thePlayer.getItemInUseCount() >= 1)
                     PacketUtils.sendPacketNoEvent(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
             }
             "blink" -> {
-                if (!mc.thePlayer.isUsingItem && !mc.thePlayer.isBlocking) {
+                if (event.eventState == EventState.PRE && !mc.thePlayer.isUsingItem && !mc.thePlayer.isBlocking) {
                     lastX = event.x
                     lastY = event.y
                     lastZ = event.z
                     lastOnGround = event.onGround
+                    if (blinkPackets.size > 0) {
+                        blinkPackets.forEach {
+                            PacketUtils.sendPacketNoEvent(it)
+                        }
+                        if (debugValue.get())
+                            ClientUtils.displayChatMessage("sent ${blinkPackets.size} packets.")
+                        blinkPackets.clear()
+                    }
                 }
             }
             "experimental" -> {
