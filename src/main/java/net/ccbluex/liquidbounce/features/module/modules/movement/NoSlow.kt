@@ -26,6 +26,8 @@ import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.item.*
 import net.minecraft.network.Packet
 import net.minecraft.network.play.INetHandlerPlayServer
+import net.minecraft.network.play.client.C0BPacketEntityAction
+import net.minecraft.network.play.client.C03PacketPlayer
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition
 import net.minecraft.network.play.client.C03PacketPlayer.C06PacketPlayerPosLook
 import net.minecraft.network.play.client.C07PacketPlayerDigging
@@ -120,10 +122,10 @@ class NoSlow : Module() {
         if (modeValue.get().equals("blink", true) && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && (!killAura.state || !killAura.blockingStatus)) {
             if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook) {
                 if (mc.thePlayer.positionUpdateTicks >= 20) {
-                    packet.x = lastX
-                    packet.y = lastY
-                    packet.z = lastZ
-                    packet.onGround = lastOnGround
+                    (packet as C03PacketPlayer).x = lastX
+                    (packet as C03PacketPlayer).y = lastY
+                    (packet as C03PacketPlayer).z = lastZ
+                    (packet as C03PacketPlayer).onGround = lastOnGround
                 } else {
                     event.cancelEvent()
                     PacketUtils.sendPacketNoEvent(C03PacketPlayer(lastOnGround))
@@ -165,13 +167,13 @@ class NoSlow : Module() {
                 }
             }
             "experimental" -> {
-                if ((mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && timer.hasTimePassed(delay)) {
+                if ((mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && timer.hasTimePassed(placeDelay)) {
                     mc.playerController.syncCurrentPlayItem()
                     mc.netHandler.addToSendQueue(C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN))
                     if (event.eventState == EventState.POST) {
-                        delay = 200L
+                        placeDelay = 200L
                         if (fasterDelay) {
-                            delay = 100L
+                            placeDelay = 100L
                             fasterDelay = false
                         } else
                             fasterDelay = true
