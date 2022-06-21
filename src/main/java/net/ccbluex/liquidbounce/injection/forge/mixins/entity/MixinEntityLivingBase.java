@@ -110,7 +110,7 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
         if (this.isSprinting()) {
             final KillAura auraMod = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
-            final Sprint sprintMod = (KillAura) LiquidBounce.moduleManager.getModule(Sprint.class);
+            final Sprint sprintMod = (Sprint) LiquidBounce.moduleManager.getModule(Sprint.class);
             float yaw = this.rotationYaw;
             if (Patcher.jumpPatch.get())
                 if (auraMod.getState() && auraMod.getRotationStrafeValue().get().equalsIgnoreCase("strict") && auraMod.getTarget() != null)
