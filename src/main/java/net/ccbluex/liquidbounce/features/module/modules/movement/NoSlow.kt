@@ -52,7 +52,7 @@ class NoSlow : Module() {
     private val customOnGround = BoolValue("CustomOnGround", false, { modeValue.get().equals("custom", true) })
     private val customDelayValue = IntegerValue("CustomDelay", 60, 0, 1000, "ms", { modeValue.get().equals("custom", true) })
     private val testValue = BoolValue("SendPacket", false, { modeValue.get().equals("watchdog", true) })
-    private val debugValue = BoolValue("Debug", false, { modeValue.get().equals("watchdog", true) })
+    private val debugValue = BoolValue("Debug", false, { modeValue.get().equals("watchdog", true) || modeValue.get().equals("blink", true) })
 
     // Soulsand
     val soulsandValue = BoolValue("Soulsand", true)
@@ -119,22 +119,27 @@ class NoSlow : Module() {
             if (debugValue.get())
                 ClientUtils.displayChatMessage("detected reset item packet")
         }
-        if (modeValue.get().equals("blink", true) && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && (!killAura.state || !killAura.blockingStatus)) {
+        if (modeValue.get().equals("blink", true) && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking) && !(killAura.state && killAura.blockingStatus)) {
             if (packet is C04PacketPlayerPosition || packet is C06PacketPlayerPosLook) {
                 if (mc.thePlayer.positionUpdateTicks >= 20) {
                     (packet as C03PacketPlayer).x = lastX
                     (packet as C03PacketPlayer).y = lastY
                     (packet as C03PacketPlayer).z = lastZ
                     (packet as C03PacketPlayer).onGround = lastOnGround
+                    if (debugValue.get())
+                        ClientUtils.displayChatMessage("pos update reached 20")
                 } else {
                     event.cancelEvent()
-                    PacketUtils.sendPacketNoEvent(C03PacketPlayer(lastOnGround))
+                    blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
+                    if (debugValue.get())
+                        ClientUtils.displayChatMessage("packet player added at ${blinkPackets.size - 1}")
                 }
-                blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
             }
             if (packet is C0BPacketEntityAction) {
                 event.cancelEvent()
                 blinkPackets.add(packet as Packet<INetHandlerPlayServer>)
+                if (debugValue.get())
+                    ClientUtils.displayChatMessage("packet action added at ${blinkPackets.size - 1}")
             }   
         }
     }
@@ -159,7 +164,7 @@ class NoSlow : Module() {
                     PacketUtils.sendPacketNoEvent(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
             }
             "blink" -> {
-                if (!mc.thePlayer.isUsingItem || !mc.thePlayer.isBlocking || (killAura.state && killAura.blockingStatus)) {
+                if (!mc.thePlayer.isUsingItem && !mc.thePlayer.isBlocking) {
                     lastX = event.x
                     lastY = event.y
                     lastZ = event.z
