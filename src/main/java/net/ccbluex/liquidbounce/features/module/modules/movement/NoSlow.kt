@@ -53,7 +53,7 @@ class NoSlow : Module() {
     private val customOnGround = BoolValue("CustomOnGround", false, { modeValue.get().equals("custom", true) })
     private val customDelayValue = IntegerValue("CustomDelay", 60, 0, 1000, "ms", { modeValue.get().equals("custom", true) })
     private val testValue = BoolValue("SendPacket", false, { modeValue.get().equals("watchdog", true) })
-    private val packetTriggerValue = BoolValue("PacketTrigger", arrayOf("PreRelease", "PostRelease"), "PostRelease", { modeValue.get().equals("blink", true) })
+    private val packetTriggerValue = ListValue("PacketTrigger", arrayOf("PreRelease", "PostRelease"), "PostRelease", { modeValue.get().equals("blink", true) })
     private val debugValue = BoolValue("Debug", false, { modeValue.get().equals("watchdog", true) || modeValue.get().equals("blink", true) })
 
     // Soulsand
