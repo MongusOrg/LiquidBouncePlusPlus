@@ -93,7 +93,7 @@ object ToolDropdown {
         RenderUtils.originalRoundedRect(x - 0.5F, y - 0.5F, x + width + 0.5F, y + width + 0.5F, 3F, borderColor)
         RenderUtils.originalRoundedRect(x, y, x + width, y + width, 3F, mainColor)
         if (state) {
-            GL11.glColor4f(0.094F, 0.094F, 0.094F, 1F)
+            glColor4f(0.094F, 0.094F, 0.094F, 1F)
             RenderUtils.drawLine(x + width / 4F, y + width / 2F, x + width / 2.05F, y + width / 4F * 3F, 0.5F)
             RenderUtils.drawLine(x + width / 2.05F, y + width / 4F * 3F, x + width / 3.99F * 3F, y + width / 4F, 0.5F)
         }
