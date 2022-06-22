@@ -33,7 +33,9 @@ class SpinBot : Module() {
     }
 
     @EventTarget
-    fun onUpdate(event: UpdateEvent) {
+    fun onRender3D(event: Render3DEvent) {
+        mc.thePlayer ?: return
+        
         if (!yawMode.get().equals("none", true)) {
             var yaw = 0F
             when (yawMode.get().toLowerCase()) {
