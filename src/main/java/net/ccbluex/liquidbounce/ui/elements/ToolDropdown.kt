@@ -12,6 +12,7 @@ import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.*
 import net.minecraft.client.gui.GuiButton
+import net.minecraft.client.renderer.GlStateManager.resetColor
 import java.awt.Color
 import org.lwjgl.opengl.GL11.*
 
@@ -28,6 +29,8 @@ object ToolDropdown {
         if (!dropState && fullHeight == 0F) return
         fullHeight = AnimationUtils.animate(if (dropState) 100F else 0F, fullHeight, 0.01F * RenderUtils.deltaTime.toFloat())
 
+        resetColor()
+
         glPushMatrix()
         RenderUtils.makeScissorBox(button.xPosition.toFloat(), button.yPosition.toFloat() + 20F, button.xPosition.toFloat() + bWidth, button.yPosition.toFloat() + 20F + fullHeight)
         glEnable(GL_SCISSOR_TEST)
@@ -39,11 +42,11 @@ object ToolDropdown {
         Fonts.font35.drawString("Block FML Proxy Packets", 4F, 47F, if (AntiForge.enabled) -1 else gray)
         Fonts.font35.drawString("Block Payload Packets", 4F, 67F, if (AntiForge.enabled) -1 else gray)
         Fonts.font35.drawString("BungeeCord Spoof", 4F, 87F, -1)
-        drawToggleSwitch(bWidth - 20F, 6F, 16F, 8F, AntiForge.enabled)
-        drawCheckbox(bWidth - 12F, 26F, 8F, AntiForge.blockFML)
-        drawCheckbox(bWidth - 12F, 46F, 8F, AntiForge.blockProxyPacket)
-        drawCheckbox(bWidth - 12F, 66F, 8F, AntiForge.blockPayloadPackets)
-        drawToggleSwitch(bWidth - 20F, 86F, 16F, 8F, BungeeCordSpoof.enabled)
+        drawToggleSwitch(bWidth - 24F, 5F, 20F, 10F, AntiForge.enabled)
+        drawCheckbox(bWidth - 14F, 25F, 10F, AntiForge.blockFML)
+        drawCheckbox(bWidth - 14F, 45F, 10F, AntiForge.blockProxyPacket)
+        drawCheckbox(bWidth - 14F, 65F, 10F, AntiForge.blockPayloadPackets)
+        drawToggleSwitch(bWidth - 24F, 85F, 20F, 10F, BungeeCordSpoof.enabled)
         glPopMatrix()
         glDisable(GL_SCISSOR_TEST)
         glPopMatrix()
@@ -76,22 +79,23 @@ object ToolDropdown {
     fun drawToggleSwitch(x: Float, y: Float, width: Float, height: Float, state: Boolean) {
         val borderColor = if (state) Color(0, 140, 255).rgb else Color(160, 160, 160).rgb
         val mainColor = if (state) borderColor else Color(24, 24, 24).rgb
-        RenderUtils.originalRoundedRect(x - 0.25F, y - 0.25F, x + width + 0.25F, y + height + 0.25F, (height + 0.5F) / 2F, borderColor)
-        RenderUtils.originalRoundedRect(x - 0.25F, y - 0.25F, x + width + 0.25F, y + height + 0.25F, (height + 0.5F) / 2F, mainColor)
+        RenderUtils.originalRoundedRect(x - 0.5F, y - 0.5F, x + width + 0.5F, y + height + 0.5F, (height + 1F) / 2F, borderColor)
+        RenderUtils.originalRoundedRect(x, y, x + width, y + height, height / 2F, mainColor)
         if (state)
-            RenderUtils.drawFilledCircle(x + width - 2F - (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(24, 24, 24))
+            RenderUtils.drawFilledCircle(x + width - 1F - (height - 2F) / 2F, y + 1F + (height - 2F) / 2F, (height - 2F) / 2F, Color(24, 24, 24))
         else
-            RenderUtils.drawFilledCircle(x + 2F - (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(0, 140, 255))
+            RenderUtils.drawFilledCircle(x + 1F + (height - 2F) / 2F, y + 1F + (height - 2F) / 2F, (height - 2F) / 2F, Color(160, 160, 160))
     }
 
     fun drawCheckbox(x: Float, y: Float, width: Float, state: Boolean) {
         val borderColor = if (state) Color(0, 140, 255).rgb else Color(160, 160, 160).rgb
         val mainColor = if (state) borderColor else Color(24, 24, 24).rgb
-        RenderUtils.originalRoundedRect(x - 0.25F, y - 0.25F, x + width + 0.25F, y + width + 0.25F, 2F, borderColor)
-        RenderUtils.originalRoundedRect(x - 0.25F, y - 0.25F, x + width + 0.25F, y + width + 0.25F, 2F, mainColor)
+        RenderUtils.originalRoundedRect(x - 0.5F, y - 0.5F, x + width + 0.5F, y + width + 0.5F, 3F, borderColor)
+        RenderUtils.originalRoundedRect(x, y, x + width, y + width, 3F, mainColor)
         if (state) {
-            RenderUtils.drawLine(x / 4F, y / 2F, x / 2.05F, y / 4F * 3F, 0.5F)
-            RenderUtils.drawLine(x / 2.05F, y / 4F * 3F, x / 3.99F * 3F, y / 4F, 0.5F)
+            GL11.glColor4f(0.094F, 0.094F, 0.094F, 1F)
+            RenderUtils.drawLine(x + width / 4F, y + width / 2F, x + width / 2.05F, y + width / 4F * 3F, 0.5F)
+            RenderUtils.drawLine(x + width / 2.05F, y + width / 4F * 3F, x + width / 3.99F * 3F, y + width / 4F, 0.5F)
         }
     }
 

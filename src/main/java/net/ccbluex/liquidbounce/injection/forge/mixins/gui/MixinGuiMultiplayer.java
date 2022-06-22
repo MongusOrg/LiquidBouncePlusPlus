@@ -58,10 +58,11 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
         ToolDropdown.handleDraw(toolButton);
     }
 
-    @Inject(method = "mouseClicked", at = @At("TAIL"))
+    @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
     private void injectToolClick(int mouseX, int mouseY, int mouseButton, CallbackInfo callbackInfo) {
         if (mouseButton == 0)
-            ToolDropdown.handleClick(mouseX, mouseY, toolButton);
+            if (ToolDropdown.handleClick(mouseX, mouseY, toolButton))
+                callbackInfo.cancel();
     }
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
