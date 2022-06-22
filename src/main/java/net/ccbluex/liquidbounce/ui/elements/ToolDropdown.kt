@@ -53,7 +53,7 @@ object ToolDropdown {
     }
 
     @JvmStatic
-    fun handleClick(mouseX: Int, mouseY: Int, button: GuiButton) {
+    fun handleClick(mouseX: Int, mouseY: Int, button: GuiButton): Boolean {
         val bX = button.xPosition.toFloat()
         val bY = button.yPosition.toFloat()
         val bWidth = button.getButtonWidth().toFloat()
@@ -66,7 +66,9 @@ object ToolDropdown {
                 isMouseOver(mouseX, mouseY, bX, bY + 100F, bWidth, 20F) -> BungeeCordSpoof.enabled = !BungeeCordSpoof.enabled
             }
             LiquidBounce.fileManager.saveConfig(LiquidBounce.fileManager.valuesConfig)
+            return true
         }
+        return false
     }
 
     private fun isMouseOver(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float) = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height
