@@ -20,6 +20,7 @@ object ToolDropdown {
     private var fullHeight = 0F
     private var dropState = false
 
+    @JvmStatic
     fun handleDraw(button: GuiButton) {
         val gray = Color(100, 100, 100).rgb
         val bWidth = button.getButtonWidth().toFloat()
@@ -48,6 +49,7 @@ object ToolDropdown {
         glPopMatrix()
     }
 
+    @JvmStatic
     fun handleClick(mouseX: Int, mouseY: Int, button: GuiButton) {
         val bX = button.xPosition.toFloat()
         val bY = button.yPosition.toFloat()
