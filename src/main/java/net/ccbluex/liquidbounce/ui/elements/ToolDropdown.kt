@@ -21,6 +21,8 @@ object ToolDropdown {
     private var fullHeight = 0F
     private var dropState = false
 
+    private val expandIcon = ResourceLocation("liquidbounce+/expand.png")
+
     @JvmStatic
     fun handleDraw(button: GuiButton) {
         val gray = Color(100, 100, 100).rgb
@@ -29,6 +31,13 @@ object ToolDropdown {
         if (!dropState && fullHeight == 0F) return
         fullHeight = AnimationUtils.animate(if (dropState) 100F else 0F, fullHeight, 0.01F * RenderUtils.deltaTime.toFloat())
 
+        glPushMatrix()
+        glTranslatef(button.xPosition.toFloat() + button.getButtonWidth().toFloat() - 12F, button.yPosition.toFloat() + 10F, 0F)
+        glPushMatrix()
+        glRotatef(180F * (fullHeight / 100F), 0F, 0F, 1F)
+        RenderUtils.drawImage(expandIcon, -8, -8, 16, 16)
+        glPopMatrix()
+        glPopMatrix()
         resetColor()
 
         glPushMatrix()
@@ -84,9 +93,9 @@ object ToolDropdown {
         RenderUtils.originalRoundedRect(x - 0.5F, y - 0.5F, x + width + 0.5F, y + height + 0.5F, (height + 1F) / 2F, borderColor)
         RenderUtils.originalRoundedRect(x, y, x + width, y + height, height / 2F, mainColor)
         if (state)
-            RenderUtils.drawFilledCircle(x + width - 1F - (height - 2F) / 2F, y + 1F + (height - 2F) / 2F, (height - 2F) / 2F, Color(24, 24, 24))
+            RenderUtils.drawFilledCircle(x + width - 2F - (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(24, 24, 24))
         else
-            RenderUtils.drawFilledCircle(x + 1F + (height - 2F) / 2F, y + 1F + (height - 2F) / 2F, (height - 2F) / 2F, Color(160, 160, 160))
+            RenderUtils.drawFilledCircle(x + 2F + (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(160, 160, 160))
     }
 
     fun drawCheckbox(x: Float, y: Float, width: Float, state: Boolean) {
@@ -96,8 +105,10 @@ object ToolDropdown {
         RenderUtils.originalRoundedRect(x, y, x + width, y + width, 3F, mainColor)
         if (state) {
             glColor4f(0.094F, 0.094F, 0.094F, 1F)
-            RenderUtils.drawLine(x + width / 4F, y + width / 2F, x + width / 2.05F, y + width / 4F * 3F, 0.5F)
-            RenderUtils.drawLine(x + width / 2.05F, y + width / 4F * 3F, x + width / 3.99F * 3F, y + width / 4F, 0.5F)
+            RenderUtils.drawLine(x + width / 4F, y + width / 2F, x + width / 2.05F, y + width / 4F * 3F, 1F)
+            RenderUtils.drawLine(x + width / 2.05F, y + width / 4F * 3F, x + width / 3.99F * 3F, y + width / 4F, 1F)
+            resetColor()
+            glColor4f(1F, 1F, 1F, 1F)
         }
     }
 
