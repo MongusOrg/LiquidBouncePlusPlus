@@ -26,9 +26,7 @@ class BungeeCordSpoof : MinecraftInstance(), Listenable {
 
     private fun getRandomIpPart(): String = RANDOM.nextInt(256).toString()
 
-    override fun handleEvents(): Boolean {
-        return true
-    }
+    override fun handleEvents(): Boolean = true
 
     companion object {
         private val RANDOM = Random()
