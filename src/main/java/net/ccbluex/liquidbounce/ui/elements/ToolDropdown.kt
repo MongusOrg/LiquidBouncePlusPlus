@@ -29,23 +29,23 @@ object ToolDropdown {
         val gray = Color(100, 100, 100).rgb
         val bWidth = button.getButtonWidth().toFloat()
 
-        if (!dropState && fullHeight == 0F) return
-        fullHeight = AnimationUtils.animate(if (dropState) 100F else 0F, fullHeight, 0.01F * RenderUtils.deltaTime.toFloat())
-
         glPushMatrix()
-        glTranslatef(button.xPosition.toFloat() + button.getButtonWidth().toFloat() - 12F, button.yPosition.toFloat() + 10F, 0F)
+        glTranslatef(button.xPosition.toFloat() + button.getButtonWidth().toFloat() - 10F, button.yPosition.toFloat() + 10F, 0F)
         glPushMatrix()
         glRotatef(180F * (fullHeight / 100F), 0F, 0F, 1F)
-        RenderUtils.drawImage(expandIcon, -8, -8, 16, 16)
+        RenderUtils.drawImage(expandIcon, -6, -6, 12, 12)
         glPopMatrix()
         glPopMatrix()
         resetColor()
+
+        if (!dropState && fullHeight == 0F) return
+        fullHeight = AnimationUtils.animate(if (dropState) 100F else 0F, fullHeight, 0.01F * RenderUtils.deltaTime.toFloat())
 
         glPushMatrix()
         RenderUtils.makeScissorBox(button.xPosition.toFloat(), button.yPosition.toFloat() + 20F, button.xPosition.toFloat() + bWidth, button.yPosition.toFloat() + 20F + fullHeight)
         glEnable(GL_SCISSOR_TEST)
         glPushMatrix()
-        glTranslatef(button.xPosition.toFloat(), button.yPosition.toFloat() + 20F, 0F)
+        glTranslatef(button.xPosition.toFloat(), button.yPosition.toFloat() + 20F - (100F - fullHeight), 0F)
         RenderUtils.newDrawRect(0F, 0F, bWidth, 100F, Color(24, 24, 24).rgb)
         Fonts.font35.drawString("AntiForge", 4F, 7F, -1)
         Fonts.font35.drawString("Block FML", 4F, 27F, if (AntiForge.enabled) -1 else gray)
@@ -106,8 +106,8 @@ object ToolDropdown {
         RenderUtils.originalRoundedRect(x, y, x + width, y + width, 3F, mainColor)
         if (state) {
             glColor4f(0.094F, 0.094F, 0.094F, 1F)
-            RenderUtils.drawLine(x + width / 4F, y + width / 2F, x + width / 2.05F, y + width / 4F * 3F, 1F)
-            RenderUtils.drawLine(x + width / 2.05F, y + width / 4F * 3F, x + width / 3.99F * 3F, y + width / 4F, 1F)
+            RenderUtils.drawLine(x + width / 4F, y + width / 2F, x + width / 2.05F, y + width / 4F * 3F, 2F)
+            RenderUtils.drawLine(x + width / 2.05F, y + width / 4F * 3F, x + width / 3.99F * 3F, y + width / 4F, 2F)
             resetColor()
             glColor4f(1F, 1F, 1F, 1F)
         }
