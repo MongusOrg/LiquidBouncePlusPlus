@@ -1246,7 +1246,7 @@ public final class RenderUtils extends MinecraftInstance {
         glPopMatrix();
     }
 
-    public static void drawLine(final double float, final double float, final float x1, final float y1, final float width) {
+    public static void drawLine(final float x, final float y, final float x1, final float y1, final float width) {
         glDisable(GL_TEXTURE_2D);
         glLineWidth(width);
         glBegin(GL_LINES);
