@@ -76,9 +76,9 @@ object ToolDropdown {
         RenderUtils.originalRoundedRect(x - 0.25F, y - 0.25F, x + width + 0.25F, y + height + 0.25F, (height + 0.5F) / 2F, borderColor)
         RenderUtils.originalRoundedRect(x - 0.25F, y - 0.25F, x + width + 0.25F, y + height + 0.25F, (height + 0.5F) / 2F, mainColor)
         if (state)
-            RenderUtils.drawFilledCircle(x + width - 2F - (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(24, 24, 24).rgb)
+            RenderUtils.drawFilledCircle(x + width - 2F - (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(24, 24, 24))
         else
-            RenderUtils.drawFilledCircle(x + 2F - (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(0, 140, 255).rgb)
+            RenderUtils.drawFilledCircle(x + 2F - (height - 4F) / 2F, y + 2F + (height - 4F) / 2F, (height - 4F) / 2F, Color(0, 140, 255))
     }
 
     fun drawCheckbox(x: Float, y: Float, width: Float, state: Boolean) {
