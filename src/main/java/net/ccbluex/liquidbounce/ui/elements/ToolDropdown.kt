@@ -13,6 +13,7 @@ import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.*
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.renderer.GlStateManager.resetColor
+import net.minecraft.util.ResourceLocation
 import java.awt.Color
 import org.lwjgl.opengl.GL11.*
 
