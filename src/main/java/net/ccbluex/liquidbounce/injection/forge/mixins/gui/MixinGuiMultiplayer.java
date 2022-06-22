@@ -30,7 +30,7 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
 
     @Inject(method = "initGui", at = @At("RETURN"))
     private void initGui(CallbackInfo callbackInfo) {
-        buttonList.add(toolButton = new GuiButton(997, 5, 8, 98, 20, "Tools"));
+        buttonList.add(toolButton = new GuiButton(997, 5, 8, 138, 20, "Tools"));
         buttonList.add(viaSlider = new GuiSlider(1337, width - 104, 8, 98, 20, "Version: ", "", 0, ProtocolCollection.values().length - 1, ProtocolCollection.values().length - 1 - getProtocolIndex(ViaForge.getInstance().getVersion()), false, true,
                         guiSlider -> {
                             ViaForge.getInstance().setVersion(ProtocolCollection.values()[ProtocolCollection.values().length - 1 - guiSlider.getValueInt()].getVersion().getVersion());
@@ -62,6 +62,12 @@ public abstract class MixinGuiMultiplayer extends MixinGuiScreen {
     private void injectToolClick(int mouseX, int mouseY, int mouseButton, CallbackInfo callbackInfo) {
         if (mouseButton == 0)
             ToolDropdown.handleClick(mouseX, mouseY, toolButton);
+    }
+
+    @Inject(method = "actionPerformed", at = @At("HEAD"))
+    private void actionPerformed(GuiButton button, CallbackInfo callbackInfo) {
+        if (button.id == 997)
+            ToolDropdown.toggleState();
     }
     
 }

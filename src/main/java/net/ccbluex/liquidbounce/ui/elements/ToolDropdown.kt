@@ -34,11 +34,11 @@ object ToolDropdown {
         glPushMatrix()
         glTranslatef(button.xPosition.toFloat(), button.yPosition.toFloat() + 20F, 0F)
         RenderUtils.newDrawRect(0F, 0F, bWidth, 100F, Color(24, 24, 24).rgb)
-        Fonts.font40.drawString("AntiForge", 4F, 5F, -1)
-        Fonts.font40.drawString("Block FML", 4F, 25F, if (AntiForge.enabled) -1 else gray)
-        Fonts.font40.drawString("Block FML Proxy Packets", 4F, 45F, if (AntiForge.enabled) -1 else gray)
-        Fonts.font40.drawString("Block Payload Packets", 4F, 65F, if (AntiForge.enabled) -1 else gray)
-        Fonts.font40.drawString("BungeeCord Spoof", 4F, 85F, -1)
+        Fonts.font35.drawString("AntiForge", 4F, 7F, -1)
+        Fonts.font35.drawString("Block FML", 4F, 27F, if (AntiForge.enabled) -1 else gray)
+        Fonts.font35.drawString("Block FML Proxy Packets", 4F, 47F, if (AntiForge.enabled) -1 else gray)
+        Fonts.font35.drawString("Block Payload Packets", 4F, 67F, if (AntiForge.enabled) -1 else gray)
+        Fonts.font35.drawString("BungeeCord Spoof", 4F, 87F, -1)
         drawToggleSwitch(bWidth - 20F, 6F, 16F, 8F, AntiForge.enabled)
         drawCheckbox(bWidth - 12F, 26F, 8F, AntiForge.blockFML)
         drawCheckbox(bWidth - 12F, 46F, 8F, AntiForge.blockProxyPacket)
@@ -54,7 +54,7 @@ object ToolDropdown {
         val bX = button.xPosition.toFloat()
         val bY = button.yPosition.toFloat()
         val bWidth = button.getButtonWidth().toFloat()
-        if (isMouseOver(mouseX, mouseY, bX, bY + 20F, bWidth, fullHeight)) {
+        if (dropState && isMouseOver(mouseX, mouseY, bX, bY + 20F, bWidth, fullHeight)) {
             when {
                 isMouseOver(mouseX, mouseY, bX, bY + 20F, bWidth, 20F) -> AntiForge.enabled = !AntiForge.enabled
                 isMouseOver(mouseX, mouseY, bX, bY + 40F, bWidth, 20F) -> AntiForge.blockFML = !AntiForge.blockFML
@@ -68,6 +68,7 @@ object ToolDropdown {
 
     private fun isMouseOver(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float) = mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height
 
+    @JvmStatic
     fun toggleState() {
         dropState = !dropState
     }
