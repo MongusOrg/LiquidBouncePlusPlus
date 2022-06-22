@@ -38,7 +38,9 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 side: Side = Side(Horizontal.RIGHT, Vertical.UP)) : Element(x, y, scale, side) {
     private val colorModeValue = ListValue("Color", arrayOf("Custom", "Random", "Sky", "CRainbow", "LiquidSlowly", "Fade", "Mixer"), "Custom")
     private val blurValue = BoolValue("Blur", false)
-    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F)
+    private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { blurValue.get() })
+    private val shadowShaderValue = BoolValue("Shadow", false)
+    private val shadowStrength = FloatValue("Shadow-Strength", 0F, 0F, 30F, { shadowShaderValue.get() })
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
@@ -202,6 +204,41 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
         when (side.horizontal) {
             Horizontal.RIGHT, Horizontal.MIDDLE -> {
+                if (shadowShaderValue.get()) {
+                    GL11.glTranslated(-renderX, -renderY, 0.0)
+                    GL11.glPushMatrix()
+                    ShadowUtils.shadow(shadowStrength.get(), {
+                        GL11.glPushMatrix()
+                        GL11.glTranslated(renderX, renderY, 0.0)
+                        modules.forEachIndexed { index, module ->
+                            val xPos = -module.slide - 2
+                            RenderUtils.newDrawRect(
+                                    xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
+                                    module.arrayY,
+                                    if (rectRightValue.get().equals("right", true)) -1F else 0F,
+                                    module.arrayY + textHeight,
+                                    -1
+                            )
+                        }
+                        GL11.glPopMatrix()
+                    }, {
+                        GL11.glPushMatrix()
+                        GL11.glTranslated(renderX, renderY, 0.0)
+                        modules.forEachIndexed { index, module ->
+                            val xPos = -module.slide - 2
+                            RenderUtils.quickDrawRect(
+                                    xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
+                                    module.arrayY,
+                                    if (rectRightValue.get().equals("right", true)) -1F else 0F,
+                                    module.arrayY + textHeight
+                            )
+                        }
+                        GL11.glPopMatrix()
+                    }, backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), 255)
+                    GL11.glPopMatrix()
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                }
+
                 if (blurValue.get()) {
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
@@ -324,6 +361,47 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
             }
 
             Horizontal.LEFT -> {
+                if (shadowShaderValue.get()) {
+                    GL11.glTranslated(-renderX, -renderY, 0.0)
+                    GL11.glPushMatrix()
+                    ShadowUtils.shadow(shadowStrength.get(), {
+                        GL11.glPushMatrix()
+                        GL11.glTranslated(renderX, renderY, 0.0)
+                        modules.forEachIndexed { index, module ->
+                            var displayString = getModName(module)
+                            val width = fontRenderer.getStringWidth(displayString)
+                            val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
+
+                            RenderUtils.newDrawRect(
+                                    0F,
+                                    module.arrayY,
+                                    xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
+                                    module.arrayY + textHeight,
+                                    -1
+                            )
+                        }
+                        GL11.glPopMatrix()
+                    }, {
+                        GL11.glPushMatrix()
+                        GL11.glTranslated(renderX, renderY, 0.0)
+                        modules.forEachIndexed { index, module ->
+                            var displayString = getModName(module)
+                            val width = fontRenderer.getStringWidth(displayString)
+                            val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
+
+                            RenderUtils.quickDrawRect(
+                                    0F,
+                                    module.arrayY,
+                                    xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
+                                    module.arrayY + textHeight
+                            )
+                        }
+                        GL11.glPopMatrix()
+                    }, backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), 255)
+                    GL11.glPopMatrix()
+                    GL11.glTranslated(renderX, renderY, 0.0)
+                }
+
                 if (blurValue.get()) {
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
