@@ -41,8 +41,6 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         slideX = 0F
         fade = 0F
         sliderX = 0F
-        //lastAnimTick = System.currentTimeMillis()
-        //alrUpdate = false
         super.initGui()
     }
 
@@ -55,7 +53,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         drawBackground(0)
         GL11.glPushMatrix()
         renderSwitchButton()
-        Fonts.font40.drawStringWithShadow("${LiquidBounce.CLIENT_NAME} build ${LiquidBounce.CLIENT_VERSION}", 2F, height - 12F, -1)
+        Fonts.font40.drawStringWithShadow("${LiquidBounce.CLIENT_NAME} build ${LiquidBounce.CLIENT_VERSION} | lbpro.ml", 2F, height - 12F, -1)
         Fonts.font40.drawStringWithShadow(creditInfo, width - 3F - Fonts.font40.getStringWidth(creditInfo), height - 12F, -1)
         if (useParallax) moveMouseEffect(mouseX, mouseY, 10F)
         GlStateManager.disableAlpha()
@@ -138,10 +136,6 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
-        else 
-            Fonts.font35.drawCenteredString("gg", width / 2F, staticY + 30F, Color(255, 50, 70).rgb)
-
-        Fonts.font35.drawCenteredString("Check out new website: lbpro.ml and lbforum.cf by codepatch!", width / 2F, staticY + 41F, -1)
 
         if (shouldAnimate) {
             if (fade == 0F)
