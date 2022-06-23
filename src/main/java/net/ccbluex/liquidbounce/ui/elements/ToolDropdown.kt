@@ -31,9 +31,11 @@ object ToolDropdown {
 
         glPushMatrix()
         glTranslatef(button.xPosition.toFloat() + button.getButtonWidth().toFloat() - 10F, button.yPosition.toFloat() + 10F, 0F)
+        if (button.isMouseOver())
+            glTranslatef(0F, if (dropState) -1F else 1F, 0F)
         glPushMatrix()
         glRotatef(180F * (fullHeight / 100F), 0F, 0F, 1F)
-        RenderUtils.drawImage(expandIcon, -6, -6, 12, 12)
+        RenderUtils.drawImage(expandIcon, -4, -4, 8, 8)
         glPopMatrix()
         glPopMatrix()
         resetColor()
