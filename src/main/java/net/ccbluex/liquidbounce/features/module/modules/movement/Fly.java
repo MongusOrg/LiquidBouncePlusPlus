@@ -970,7 +970,7 @@ public class Fly extends Module {
                 int current = mc.thePlayer.inventory.currentItem;
                 if (event.getEventState() == EventState.PRE) {
                     if (wdState == 1 && mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(0, -1, 0).expand(0, 0, 0)).isEmpty()) {
-                        PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(expectItemStack - 36));
+                        PacketUtils.sendPacketNoEvent(new C09PacketHeldItemChange(expectItemStack));
                         wdState = 2;
                     }
 
