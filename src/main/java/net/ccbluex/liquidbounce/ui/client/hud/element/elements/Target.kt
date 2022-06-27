@@ -52,7 +52,7 @@ class Target : Element() {
     val globalAnimSpeed = FloatValue("Global-AnimSpeed", 3F, 1F, 9F, { !noAnimValue.get() })
 
     val showWithChatOpen = BoolValue("Show-ChatOpen", true)
-    val resetBar = BoolValue("ResetBarWhenDisappear", false)
+    val resetBar = BoolValue("ResetBarWhenHiding", false)
 
     val colorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "Sky", "Slowly", "Fade", "Mixer", "Health"), "Custom")
     val redValue = IntegerValue("Red", 252, 0, 255)
@@ -66,23 +66,11 @@ class Target : Element() {
     val bgBlueValue = IntegerValue("Background-Blue", 0, 0, 255)
     val bgAlphaValue = IntegerValue("Background-Alpha", 160, 0, 255)
 
-    private val allValues: List<Value<*>>
-        get() = listOf(styleValue, // style
-                    blurValue, blurStrength, // blur
-                    shadowValue, shadowStrength, // shadow
-                    fadeValue, fadeSpeed, // fade anim
-                    noAnimValue, globalAnimSpeed, // global anim
-                    showWithChatOpen, // if not found any target and chat is open then pick mc.thePlayer
-                    colorModeValue, // color mode
-                    redValue, greenValue, blueValue, // global rgb
-                    saturationValue, brightnessValue, waveSecondValue, // wave colors stuffs
-                    bgRedValue, bgGreenValue, bgBlueValue, bgAlphaValue) // background global rgba 
-
     override val values: List<Value<*>>
         get() {
-            val retrieveList = mutableListOf<Value<*>>()
-            styleList.forEach { retrieveList.addAll(it.values) }
-            return allValues + retrieveList
+            val valueList = mutableListOf<Value<*>>()
+            styleList.forEach { valueList.addAll(it.values) }
+            return super.values.toMutableList() + valueList
         }
 
     init {
