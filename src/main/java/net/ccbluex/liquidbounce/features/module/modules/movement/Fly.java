@@ -169,6 +169,9 @@ public class Fly extends Module {
     private final FloatValue mineplexSpeedValue = new FloatValue("MineplexSpeed", 1F, 0.5F, 10F, () -> modeValue.get().equalsIgnoreCase("mineplex"));
     private final IntegerValue neruxVaceTicks = new IntegerValue("NeruxVace-Ticks", 6, 0, 20, () -> modeValue.get().equalsIgnoreCase("neruxvace"));
 
+    // General
+    private final BoolValue resetMotionValue = new BoolValue("ResetMotion", true);
+
     // Visuals
     private final BoolValue fakeDmgValue = new BoolValue("FakeDamage", true);
     private final BoolValue bobbingValue = new BoolValue("Bobbing", true);
@@ -444,14 +447,14 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
 
-        if ((!mode.toUpperCase().startsWith("AAC") && !mode.equalsIgnoreCase("Hypixel") &&
+        if (resetMotionValue.get() && (!mode.toUpperCase().startsWith("AAC") && !mode.equalsIgnoreCase("Hypixel") &&
                 !mode.equalsIgnoreCase("CubeCraft") && !mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus") && !mode.equalsIgnoreCase("Jump") && !mode.equalsIgnoreCase("creative")) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
             mc.thePlayer.motionZ = 0;
         }
 
-        if (boostTicks > 0 && mode.equalsIgnoreCase("Verus")) {
+        if (resetMotionValue.get() && boostTicks > 0 && mode.equalsIgnoreCase("Verus")) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionZ = 0;
         }
