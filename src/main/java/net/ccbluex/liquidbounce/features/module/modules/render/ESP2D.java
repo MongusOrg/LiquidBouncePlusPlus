@@ -67,6 +67,7 @@ public final class ESP2D extends Module {
    public final BoolValue armorItems = new BoolValue("ArmorItems", true);
    public final BoolValue armorDur = new BoolValue("ArmorDurability", true, () -> armorItems.get());
    public final BoolValue tagsValue = new BoolValue("Tags", true);
+   public final BoolValue tagsBGValue = new BoolValue("Tags-Background", true, () -> tagsValue.get());
    public final BoolValue itemTagsValue = new BoolValue("Item-Tags", true);
    public final BoolValue clearNameValue = new BoolValue("Use-Clear-Name", false);
    public final BoolValue absorption = new BoolValue("Render-Absorption", true);
@@ -315,14 +316,19 @@ public final class ESP2D extends Module {
 
                if (living && tagsValue.get()) {
                   entityLivingBase = (EntityLivingBase) entity;
+                  if (tagsBGValue.get())
+                     RenderUtils.drawRect(posX + (endPosX - posX) / 2F - 2F * fontScaleValue.get(), posY - 1F - (mc.fontRendererObj.FONT_HEIGHT + 2F) * fontScaleValue.get(), posX + (endPosX - posX) / 2F + (mc.fontRendererObj.getStringWidth(clearNameValue.get() ? entityLivingBase.getName() : entityLivingBase.getDisplayName().getFormattedText()) + 2F) * fontScaleValue.get(), posY - 1F + 2F * fontScaleValue.get(), 0xA0000000);
                   drawScaledCenteredString(clearNameValue.get() ? entityLivingBase.getName() : entityLivingBase.getDisplayName().getFormattedText(), posX + (endPosX - posX) / 2F, posY - 1F - mc.fontRendererObj.FONT_HEIGHT * fontScaleValue.get(), fontScaleValue.get(), -1);
                }
 
                if (itemTagsValue.get()) {
                   if (living) {
                      entityLivingBase = (EntityLivingBase) entity;
-                     if (entityLivingBase.getHeldItem() != null && entityLivingBase.getHeldItem().getItem() != null) 
+                     if (entityLivingBase.getHeldItem() != null && entityLivingBase.getHeldItem().getItem() != null) {
+                        if (tagsBGValue.get())
+                           RenderUtils.drawRect(posX + (endPosX - posX) / 2F - 2F * fontScaleValue.get(), endPosY + 1F - 2F * fontScaleValue.get(), posX + (endPosX - posX) / 2F + (mc.fontRendererObj.getStringWidth(entityLivingBase.getHeldItem().getDisplayName()) + 2F) * fontScaleValue.get(), endPosY + 1F + (mc.fontRendererObj.FONT_HEIGHT + 2F) * fontScaleValue.get(), 0xA0000000);
                         drawScaledCenteredString(entityLivingBase.getHeldItem().getDisplayName(), posX + (endPosX - posX) / 2F, endPosY + 1F, fontScaleValue.get(), -1);
+                     }
                   } else if (entity instanceof EntityItem) {
                      drawScaledCenteredString(((EntityItem)entity).getEntityItem().getDisplayName(), posX + (endPosX - posX) / 2F, endPosY + 1F, fontScaleValue.get(), -1);
                   }
