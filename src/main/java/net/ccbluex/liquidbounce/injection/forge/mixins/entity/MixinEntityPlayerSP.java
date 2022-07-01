@@ -12,7 +12,7 @@ import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.AntiHunger;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.PortalMenu;
 import net.ccbluex.liquidbounce.features.module.modules.misc.AntiDesync;
-import net.ccbluex.liquidbounce.features.module.modules.movement.GuiMove;
+import net.ccbluex.liquidbounce.features.module.modules.movement.InvMove;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Fly;
 import net.ccbluex.liquidbounce.features.module.modules.movement.LongJump;
@@ -151,7 +151,7 @@ public abstract class MixinEntityPlayerSP extends MixinAbstractClientPlayer {
             MotionEvent event = new MotionEvent(this.posX, this.getEntityBoundingBox().minY, this.posZ, this.rotationYaw, this.rotationPitch, this.onGround);
             LiquidBounce.eventManager.callEvent(event);
 
-            final GuiMove inventoryMove = (GuiMove) LiquidBounce.moduleManager.getModule(GuiMove.class);
+            final InvMove inventoryMove = (InvMove) LiquidBounce.moduleManager.getModule(InvMove.class);
             final Sneak sneak = (Sneak) LiquidBounce.moduleManager.getModule(Sneak.class);
             final boolean fakeSprint = (inventoryMove.getState() && inventoryMove.getAacAdditionProValue().get()) || LiquidBounce.moduleManager.getModule(AntiHunger.class).getState() || (sneak.getState() && (!MovementUtils.isMoving() || !sneak.stopMoveValue.get()) && sneak.modeValue.get().equalsIgnoreCase("MineSecure"));
 

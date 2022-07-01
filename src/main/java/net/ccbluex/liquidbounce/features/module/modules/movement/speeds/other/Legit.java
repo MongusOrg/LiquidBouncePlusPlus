@@ -6,7 +6,7 @@
 package net.ccbluex.liquidbounce.features.module.modules.movement.speeds.other;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
-import net.ccbluex.liquidbounce.features.module.modules.movement.GuiMove;
+import net.ccbluex.liquidbounce.features.module.modules.movement.InvMove;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.ccbluex.liquidbounce.features.module.modules.movement.speeds.SpeedMode;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
@@ -23,7 +23,7 @@ public class Legit extends SpeedMode {
 
     @Override
     public void onMotion() {
-        final GuiMove invMove = (GuiMove) LiquidBounce.moduleManager.getModule(GuiMove.class);
+        final InvMove invMove = (InvMove) LiquidBounce.moduleManager.getModule(InvMove.class);
         mc.gameSettings.keyBindJump.pressed = ((MovementUtils.isMoving() || GameSettings.isKeyDown(mc.gameSettings.keyBindJump)) && (mc.inGameHasFocus || (invMove.getState() && !(mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiIngameMenu) && (!invMove.getNoDetectableValue().get() || !(mc.currentScreen instanceof GuiContainer)))));
     }
 

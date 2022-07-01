@@ -56,7 +56,7 @@ class ModuleManager : Listenable {
                 Fly::class.java,
                 ClickGUI::class.java,
                 HighJump::class.java,
-                GuiMove::class.java,
+                InvMove::class.java,
                 NoSlow::class.java,
                 LiquidWalk::class.java,
                 Strafe::class.java,
