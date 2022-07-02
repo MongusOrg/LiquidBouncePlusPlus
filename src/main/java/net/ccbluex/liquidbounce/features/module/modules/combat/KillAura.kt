@@ -95,6 +95,7 @@ class KillAura : Module() {
 
     // Modes
     private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin", "None"), "BackTrack")
+
     private val spinHurtTimeValue = IntegerValue("Spin-HitHurtTime", 10, 0, 10, { rotations.get().equals("spin", true) })
 
     // Spin Speed
@@ -112,10 +113,25 @@ class KillAura : Module() {
         }
     }
 
+    // Turn Speed
+    private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f, "°", { !rotations.get().equals("none", true) }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = minTurnSpeed.get()
+            if (v > newValue) set(v)
+        }
+    }
+
+    private val minTurnSpeed: FloatValue = object : FloatValue("MinTurnSpeed", 180f, 0f, 180f, "°", { !rotations.get().equals("none", true) }) {
+        override fun onChanged(oldValue: Float, newValue: Float) {
+            val v = maxTurnSpeed.get()
+            if (v < newValue) set(v)
+        }
+    }
+
     private val noSendRot = BoolValue("NoSendRotation", true, { rotations.get().equals("spin", true) })
     private val noHitCheck = BoolValue("NoHitCheck", false, { !rotations.get().equals("none", true) })
 
-    private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime"), "Distance")
+    private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor", "HurtResistance", "HurtTime", "HealthAbsorption", "RegenAmplifier"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
 
     //reverted in old LB. idk why they removed it.
@@ -151,21 +167,6 @@ class KillAura : Module() {
 
     // Bypass
     private val aacValue = BoolValue("AAC", false)
-
-    // Turn Speed
-    private val maxTurnSpeed: FloatValue = object : FloatValue("MaxTurnSpeed", 180f, 0f, 180f, "°", { !rotations.get().equals("none", true) }) {
-        override fun onChanged(oldValue: Float, newValue: Float) {
-            val v = minTurnSpeed.get()
-            if (v > newValue) set(v)
-        }
-    }
-
-    private val minTurnSpeed: FloatValue = object : FloatValue("MinTurnSpeed", 180f, 0f, 180f, "°", { !rotations.get().equals("none", true) }) {
-        override fun onChanged(oldValue: Float, newValue: Float) {
-            val v = maxTurnSpeed.get()
-            if (v < newValue) set(v)
-        }
-    }
 
     private val silentRotationValue = BoolValue("SilentRotation", true, { !rotations.get().equals("none", true) })
     val rotationStrafeValue = ListValue("Strafe", arrayOf("Off", "Strict", "Silent"), "Off")
@@ -641,6 +642,7 @@ class KillAura : Module() {
 
         // Find possible targets
         val targets = mutableListOf<EntityLivingBase>()
+        val lookingTargets = mutableListOf<EntityLivingBase>()
 
         for (entity in mc.theWorld.loadedEntityList) {
             if (entity !is EntityLivingBase || !isEnemy(entity) || (switchMode && prevTargetEntities.contains(entity.entityId))/* || (!focusEntityName.isEmpty() && !focusEntityName.contains(entity.name.toLowerCase()))*/)
@@ -659,6 +661,10 @@ class KillAura : Module() {
             "health" -> targets.sortBy { it.health } // Sort by health
             "direction" -> targets.sortBy { RotationUtils.getRotationDifference(it) } // Sort by FOV
             "livingtime" -> targets.sortBy { -it.ticksExisted } // Sort by existence
+            "hurtresistance" -> targets.sortBy { it.hurtResistantTime } // Sort by armor hurt time
+            "hurttime" -> targets.sortBy { it.hurtTime } // Sort by hurt time
+            "healthabsorption" -> targets.sortBy { it.health + it.absorptionAmount } // Sort by full health with absorption effect
+            "regenamplifier" -> targets.sortBy { if (it.isPotionActive(Potion.regeneration)) it.getActivePotionEffect(Potion.regeneration).amplifier else -1 }
         }
 
         var found = false

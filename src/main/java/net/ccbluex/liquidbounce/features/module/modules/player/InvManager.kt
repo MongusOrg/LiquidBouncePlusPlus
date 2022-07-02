@@ -68,6 +68,7 @@ class InvManager : Module() {
     private val hotbarValue = BoolValue("Hotbar", true)
     private val randomSlotValue = BoolValue("RandomSlot", false)
     private val sortValue = BoolValue("Sort", true)
+    private val cleanGarbageValue = BoolValue("CleanGarbage", true)
     private val itemDelayValue = IntegerValue("ItemDelay", 0, 0, 5000, "ms")
     private val ignoreVehiclesValue = BoolValue("IgnoreVehicles", false)
     private val onlyPositivePotionValue = BoolValue("OnlyPositivePotion", false)
@@ -183,17 +184,16 @@ class InvManager : Module() {
                 val armorSlot = 3 - i
                 val oldArmor: ItemStack? = mc.thePlayer.inventory.armorItemInSlot(armorSlot)
                 if (oldArmor == null || oldArmor.item !is ItemArmor || ItemHelper.compareArmor(ArmorPart(oldArmor, -1), ArmorPart, nbtArmorPriority.get(), goal) < 0) {
-                    if (oldArmor != null && move(8 - armorSlot, true)) {
+                    if (oldArmor != null && move(8 - armorSlot, true))
                         return
-                    }
-                    if (mc.thePlayer.inventory.armorItemInSlot(armorSlot) == null && move(ArmorPart.slot, false)) {
+
+                    if (mc.thePlayer.inventory.armorItemInSlot(armorSlot) == null && move(ArmorPart.slot, false))
                         return
-                    }
                 }
             }
         }
 
-        while (InventoryUtils.CLICK_TIMER.hasTimePassed(delay)) {
+        if (cleanGarbageValue.get()) while (InventoryUtils.CLICK_TIMER.hasTimePassed(delay)) {
             val garbageItems = garbageQueue.keys.toMutableList()
 
             // Shuffle items

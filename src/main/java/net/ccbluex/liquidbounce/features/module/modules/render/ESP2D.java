@@ -255,19 +255,18 @@ public final class ESP2D extends Module {
                if (living) {
                   entityLivingBase = (EntityLivingBase)entity;
                   if (health) {
-                     armorValue = entityLivingBase.getHealth();
-                     itemDurability = entityLivingBase.getMaxHealth();
-                     if (armorValue > itemDurability) {
-                        armorValue = itemDurability;
-                     }
+                     healthValue = entityLivingBase.getHealth();
+                     maxHealthValue = entityLivingBase.getMaxHealth();
+                     if (healthValue > maxHealthValue)
+                        healthValue = maxHealthValue;
 
-                     durabilityWidth = (double)(armorValue / itemDurability);
+                     durabilityWidth = (double)(healthValue / maxHealthValue);
                      textWidth = (endPosY - posY) * durabilityWidth; 
-                     String healthDisplay = dFormat.format(armorValue) + " §c❤";
+                     String healthDisplay = dFormat.format(healthValue) + " §c❤";
                      if (healthNumber.get()) drawScaledString(healthDisplay, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                      RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
-                     if (armorValue > 0.0F) {
-                        int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
+                     if (healthValue > 0.0F) {
+                        int healthColor = BlendUtils.getHealthColor(healthValue, maxHealthValue).getRGB();
                         RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - textWidth, healthColor);
                         tagY = entityLivingBase.getAbsorptionAmount();
                         if (absorption.get() && tagY > 0.0F) {
@@ -319,7 +318,7 @@ public final class ESP2D extends Module {
                   String entName = clearNameValue.get() ? entityLivingBase.getName() : entityLivingBase.getDisplayName().getFormattedText();
                   if (tagsBGValue.get())
                      RenderUtils.newDrawRect(posX + (endPosX - posX) / 2F - (mc.fontRendererObj.getStringWidth(entName) / 2F + 2F) * fontScaleValue.get(), posY - 1F - (mc.fontRendererObj.FONT_HEIGHT + 2F) * fontScaleValue.get(), posX + (endPosX - posX) / 2F + (mc.fontRendererObj.getStringWidth(entName) / 2F + 2F) * fontScaleValue.get(), posY - 1F + 2F * fontScaleValue.get(), 0xA0000000);
-                  drawScaledCenteredString(, posX + (endPosX - posX) / 2F, posY - 1F - mc.fontRendererObj.FONT_HEIGHT * fontScaleValue.get(), fontScaleValue.get(), -1);
+                  drawScaledCenteredString(entName, posX + (endPosX - posX) / 2F, posY - 1F - mc.fontRendererObj.FONT_HEIGHT * fontScaleValue.get(), fontScaleValue.get(), -1);
                }
 
                if (itemTagsValue.get()) {
