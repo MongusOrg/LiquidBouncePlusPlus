@@ -36,7 +36,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         font.drawString(entity.name, 46, 5, getColor(-1).rgb)
 
         val barLength = 70F * (entity.health / entity.maxHealth).coerceIn(0F, 1F)
-        RenderUtils.drawRect(45F, 14F, 45F + 80F, 18F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker(0.4F)).rgb)
+        RenderUtils.drawRect(45F, 14F, 45F + 70F, 18F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker(0.4F)).rgb)
         RenderUtils.drawRect(45F, 14F, 45F + barLength, 18F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
 
         for (i in 0..9)

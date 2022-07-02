@@ -70,7 +70,7 @@ public class Fonts {
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
         fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 35));
-        fontVerdana = new TTFFontRenderer(getFont("Verdana.ttf", 7));
+        fontVerdana = new TTFFontRenderer(getFont("Verdana.ttf", 14));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
