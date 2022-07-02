@@ -42,11 +42,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         for (i in 0..9)
             RenderUtils.drawRectBasedBorder(45F + i * 7F, 14F, 45F + (i + 1) * 7F, 18F, 0.5F, getColor(Color.black).rgb)
 
-        GL11.glPushMatrix()
-        GL11.glTranslatef(46F, 21F, 0F)
-        GL11.glScalef(0.5f, 0.5f, 0.5f)
-        Fonts.fontVerdana.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 0, 0, getColor(-1).rgb)
-        GL11.glPopMatrix()
+        Fonts.fontVerdana.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 46F, 21F, getColor(-1).rgb)
 
         GlStateManager.resetColor()
         GL11.glPushMatrix()
