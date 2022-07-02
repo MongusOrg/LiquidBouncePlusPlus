@@ -35,15 +35,15 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
 
         font.drawString(entity.name, 46, 5, getColor(-1).rgb)
 
-        val barLength = 80F * (entity.health / entity.maxHealth).coerceIn(0F, 1F)
+        val barLength = 70F * (entity.health / entity.maxHealth).coerceIn(0F, 1F)
         RenderUtils.drawRect(45F, 14F, 45F + 80F, 18F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth).darker(0.4F)).rgb)
         RenderUtils.drawRect(45F, 14F, 45F + barLength, 18F, getColor(BlendUtils.getHealthColor(entity.health, entity.maxHealth)).rgb)
 
         for (i in 0..9)
-            RenderUtils.drawRectBasedBorder(45F + i * 8F, 14F, 45F + (i + 1) * 8F, 18F, 0.5F, getColor(Color.black).rgb)
+            RenderUtils.drawRectBasedBorder(45F + i * 7F, 14F, 45F + (i + 1) * 7F, 18F, 0.5F, getColor(Color.black).rgb)
 
         GL11.glPushMatrix()
-        GL11.glTranslatef(46F, 22F, 0F)
+        GL11.glTranslatef(46F, 21F, 0F)
         GL11.glScalef(0.5f, 0.5f, 0.5f)
         Fonts.fontVerdana.drawString("HP: ${entity.health.toInt()} | Dist: ${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 0, 0, getColor(-1).rgb)
         GL11.glPopMatrix()
