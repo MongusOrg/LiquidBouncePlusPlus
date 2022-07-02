@@ -13,7 +13,7 @@ import static net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer.
 public class ColorElement extends IntegerValue {
 
     public ColorElement(int counter, Material m, IntegerValue basis) {
-        super("Color" + counter + "-" + m.getColorName(), 255, 0, 255, () -> { return (basis.get() >= counter); });
+        super("Color" + counter + "-" + m.getColorName(), 255, 0, 255, () -> (basis.get() >= counter));
     }
 
     public ColorElement(int counter, Material m) {

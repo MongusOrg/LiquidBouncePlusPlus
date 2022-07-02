@@ -112,41 +112,41 @@ public class Fly extends Module {
     private final FloatValue vanillaSpeedValue = new FloatValue("Speed", 2F, 0F, 5F, () -> { 
         return (modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("damage") || modeValue.get().equalsIgnoreCase("pearl") || modeValue.get().equalsIgnoreCase("aac5-vanilla") || modeValue.get().equalsIgnoreCase("bugspartan") || modeValue.get().equalsIgnoreCase("keepalive") || modeValue.get().equalsIgnoreCase("derp"));
     });
-    private final FloatValue vanillaVSpeedValue = new FloatValue("V-Speed", 2F, 0F, 5F, () -> { return modeValue.get().equalsIgnoreCase("motion"); });
-    private final FloatValue vanillaMotionYValue = new FloatValue("Y-Motion", 0F, -1F, 1F, () -> { return modeValue.get().equalsIgnoreCase("motion"); });
-    private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
+    private final FloatValue vanillaVSpeedValue = new FloatValue("V-Speed", 2F, 0F, 5F, () -> modeValue.get().equalsIgnoreCase("motion"));
+    private final FloatValue vanillaMotionYValue = new FloatValue("Y-Motion", 0F, -1F, 1F, () -> modeValue.get().equalsIgnoreCase("motion"));
+    private final BoolValue vanillaKickBypassValue = new BoolValue("KickBypass", false, () -> modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"));
 
-    private final BoolValue groundSpoofValue = new BoolValue("GroundSpoof", false, () -> { return modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"); });
+    private final BoolValue groundSpoofValue = new BoolValue("GroundSpoof", false, () -> modeValue.get().equalsIgnoreCase("motion") || modeValue.get().equalsIgnoreCase("creative"));
 
-    private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
+    private final FloatValue ncpMotionValue = new FloatValue("NCPMotion", 0F, 0F, 1F, () -> modeValue.get().equalsIgnoreCase("ncp"));
 
     // Verus
-    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Jump"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verus"); });
-    private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual", () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
-    private final BoolValue verusReDamageValue = new BoolValue("Verus-ReDamage", true, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none") && !verusDmgModeValue.get().equalsIgnoreCase("jump"); });
-    private final IntegerValue verusReDmgTickValue = new IntegerValue("Verus-ReDamage-Ticks", 20, 0, 300, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none") && !verusDmgModeValue.get().equalsIgnoreCase("jump") && verusReDamageValue.get(); });
-    private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false, () -> { return modeValue.get().equalsIgnoreCase("verus"); });
-    private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F, () -> { return modeValue.get().equalsIgnoreCase("verus") && verusVisualValue.get(); });
-    private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
-    private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
-    private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300, () -> { return modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"); });
-    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false, () -> { return modeValue.get().equalsIgnoreCase("verus"); });
+    private final ListValue verusDmgModeValue = new ListValue("Verus-DamageMode", new String[]{"None", "Instant", "InstantC06", "Jump"}, "None", () -> modeValue.get().equalsIgnoreCase("verus"));
+    private final ListValue verusBoostModeValue = new ListValue("Verus-BoostMode", new String[]{"Static", "Gradual"}, "Gradual", () -> modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"));
+    private final BoolValue verusReDamageValue = new BoolValue("Verus-ReDamage", true, () -> modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none") && !verusDmgModeValue.get().equalsIgnoreCase("jump"));
+    private final IntegerValue verusReDmgTickValue = new IntegerValue("Verus-ReDamage-Ticks", 20, 0, 300, () -> modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none") && !verusDmgModeValue.get().equalsIgnoreCase("jump") && verusReDamageValue.get());
+    private final BoolValue verusVisualValue = new BoolValue("Verus-VisualPos", false, () -> modeValue.get().equalsIgnoreCase("verus"));
+    private final FloatValue verusVisualHeightValue = new FloatValue("Verus-VisualHeight", 0.42F, 0F, 1F, () -> modeValue.get().equalsIgnoreCase("verus") && verusVisualValue.get());
+    private final FloatValue verusSpeedValue = new FloatValue("Verus-Speed", 5F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"));
+    private final FloatValue verusTimerValue = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"));
+    private final IntegerValue verusDmgTickValue = new IntegerValue("Verus-Ticks", 20, 0, 300, () -> modeValue.get().equalsIgnoreCase("verus") && !verusDmgModeValue.get().equalsIgnoreCase("none"));
+    private final BoolValue verusSpoofGround = new BoolValue("Verus-SpoofGround", false, () -> modeValue.get().equalsIgnoreCase("verus"));
 
     // AAC
-    private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
-    private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
-    private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
-    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise", "Other"}, "Original", () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); }); // Original is from UnlegitMC/FDPClient.
-    private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20, () -> { return modeValue.get().equalsIgnoreCase("aac5-vanilla"); });
+    private final BoolValue aac5NoClipValue = new BoolValue("AAC5-NoClip", true, () -> modeValue.get().equalsIgnoreCase("aac5-vanilla"));
+    private final BoolValue aac5NofallValue = new BoolValue("AAC5-NoFall", true, () -> modeValue.get().equalsIgnoreCase("aac5-vanilla"));
+    private final BoolValue aac5UseC04Packet = new BoolValue("AAC5-UseC04", true, () -> modeValue.get().equalsIgnoreCase("aac5-vanilla"));
+    private final ListValue aac5Packet = new ListValue("AAC5-Packet", new String[]{"Original", "Rise", "Other"}, "Original", () -> modeValue.get().equalsIgnoreCase("aac5-vanilla")); // Original is from UnlegitMC/FDPClient.
+    private final IntegerValue aac5PursePacketsValue = new IntegerValue("AAC5-Purse", 7, 3, 20, () -> modeValue.get().equalsIgnoreCase("aac5-vanilla"));
 
-    private final IntegerValue clipDelay = new IntegerValue("Clip-DelayTick", 25, 1, 50, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final FloatValue clipH = new FloatValue("Clip-Horizontal", 7.9F, 0, 10, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final FloatValue clipV = new FloatValue("Clip-Vertical", 1.75F, -10, 10, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final FloatValue clipMotionY = new FloatValue("Clip-MotionY", 0F, -2, 2, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final FloatValue clipTimer = new FloatValue("Clip-Timer", 1F, 0.08F, 10F, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final BoolValue clipGroundSpoof = new BoolValue("Clip-GroundSpoof", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final BoolValue clipCollisionCheck = new BoolValue("Clip-CollisionCheck", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
-    private final BoolValue clipNoMove = new BoolValue("Clip-NoMove", true, () -> { return modeValue.get().equalsIgnoreCase("clip"); });
+    private final IntegerValue clipDelay = new IntegerValue("Clip-DelayTick", 25, 1, 50, () -> modeValue.get().equalsIgnoreCase("clip"));
+    private final FloatValue clipH = new FloatValue("Clip-Horizontal", 7.9F, 0, 10, () -> modeValue.get().equalsIgnoreCase("clip"));
+    private final FloatValue clipV = new FloatValue("Clip-Vertical", 1.75F, -10, 10, () -> modeValue.get().equalsIgnoreCase("clip"));
+    private final FloatValue clipMotionY = new FloatValue("Clip-MotionY", 0F, -2, 2, () -> modeValue.get().equalsIgnoreCase("clip"));
+    private final FloatValue clipTimer = new FloatValue("Clip-Timer", 1F, 0.08F, 10F, () -> modeValue.get().equalsIgnoreCase("clip"));
+    private final BoolValue clipGroundSpoof = new BoolValue("Clip-GroundSpoof", true, () -> modeValue.get().equalsIgnoreCase("clip"));
+    private final BoolValue clipCollisionCheck = new BoolValue("Clip-CollisionCheck", true, () -> modeValue.get().equalsIgnoreCase("clip"));
+    private final BoolValue clipNoMove = new BoolValue("Clip-NoMove", true, () -> modeValue.get().equalsIgnoreCase("clip"));
 
     // Pearl
     private final ListValue pearlActivateCheck = new ListValue("PearlActiveCheck", new String[] { "Teleport", "Damage" }, "Teleport" , () -> modeValue.get().equalsIgnoreCase("pearl"));
@@ -175,7 +175,7 @@ public class Fly extends Module {
     // Visuals
     private final BoolValue fakeDmgValue = new BoolValue("FakeDamage", true);
     private final BoolValue bobbingValue = new BoolValue("Bobbing", true);
-    private final FloatValue bobbingAmountValue = new FloatValue("BobbingAmount", 0.2F, 0F, 1F, () -> { return bobbingValue.get(); });
+    private final FloatValue bobbingAmountValue = new FloatValue("BobbingAmount", 0.2F, 0F, 1F, () -> bobbingValue.get());
     private final BoolValue markValue = new BoolValue("Mark", true);
 
     private BlockPos lastPosition;

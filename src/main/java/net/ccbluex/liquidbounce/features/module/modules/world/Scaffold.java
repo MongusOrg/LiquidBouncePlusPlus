@@ -61,27 +61,27 @@ public class Scaffold extends Module {
     private final BoolValue towerEnabled = new BoolValue("EnableTower", false);
     private final ListValue towerModeValue = new ListValue("TowerMode", new String[] {
             "Jump", "Motion", "ConstantMotion", "MotionTP", "Packet", "Teleport", "AAC3.3.9", "AAC3.6.4", "Verus"
-    }, "Motion", () -> { return towerEnabled.get(); });
+    }, "Motion", () -> towerEnabled.get());
     private final ListValue towerPlaceModeValue = new ListValue("Tower-PlaceTiming", new String[]{"Pre", "Post"}, "Post");
-    private final BoolValue stopWhenBlockAbove = new BoolValue("StopWhenBlockAbove", false, () -> { return towerEnabled.get(); });
-    private final BoolValue onJumpValue = new BoolValue("OnJump", false, () -> { return towerEnabled.get(); });
-    private final BoolValue noMoveOnlyValue = new BoolValue("NoMove", true, () -> { return towerEnabled.get(); });
-    private final BoolValue noMoveFreezeValue = new BoolValue("NoMoveFreezePlayer", true, () -> { return towerEnabled.get() && noMoveOnlyValue.get(); });
-    private final FloatValue towerTimerValue = new FloatValue("TowerTimer", 1F, 0.1F, 10F, () -> { return towerEnabled.get(); });
+    private final BoolValue stopWhenBlockAbove = new BoolValue("StopWhenBlockAbove", false, () -> towerEnabled.get());
+    private final BoolValue onJumpValue = new BoolValue("OnJump", false, () -> towerEnabled.get());
+    private final BoolValue noMoveOnlyValue = new BoolValue("NoMove", true, () -> towerEnabled.get());
+    private final BoolValue noMoveFreezeValue = new BoolValue("NoMoveFreezePlayer", true, () -> towerEnabled.get() && noMoveOnlyValue.get());
+    private final FloatValue towerTimerValue = new FloatValue("TowerTimer", 1F, 0.1F, 10F, () -> towerEnabled.get());
 
     // Jump mode
-    private final FloatValue jumpMotionValue = new FloatValue("JumpMotion", 0.42F, 0.3681289F, 0.79F, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Jump"); });
-    private final IntegerValue jumpDelayValue = new IntegerValue("JumpDelay", 0, 0, 20, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Jump"); });
+    private final FloatValue jumpMotionValue = new FloatValue("JumpMotion", 0.42F, 0.3681289F, 0.79F, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Jump"));
+    private final IntegerValue jumpDelayValue = new IntegerValue("JumpDelay", 0, 0, 20, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Jump"));
 
     // ConstantMotion
-    private final FloatValue constantMotionValue = new FloatValue("ConstantMotion", 0.42F, 0.1F, 1F, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("ConstantMotion"); });
-    private final FloatValue constantMotionJumpGroundValue = new FloatValue("ConstantMotionJumpGround", 0.79F, 0.76F, 1F, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("ConstantMotion"); });
+    private final FloatValue constantMotionValue = new FloatValue("ConstantMotion", 0.42F, 0.1F, 1F, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("ConstantMotion"));
+    private final FloatValue constantMotionJumpGroundValue = new FloatValue("ConstantMotionJumpGround", 0.79F, 0.76F, 1F, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("ConstantMotion"));
 
     // Teleport
-    private final FloatValue teleportHeightValue = new FloatValue("TeleportHeight", 1.15F, 0.1F, 5F, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"); });
-    private final IntegerValue teleportDelayValue = new IntegerValue("TeleportDelay", 0, 0, 20, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"); });
-    private final BoolValue teleportGroundValue = new BoolValue("TeleportGround", true, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"); });
-    private final BoolValue teleportNoMotionValue = new BoolValue("TeleportNoMotion", false, () -> { return towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"); });
+    private final FloatValue teleportHeightValue = new FloatValue("TeleportHeight", 1.15F, 0.1F, 5F, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"));
+    private final IntegerValue teleportDelayValue = new IntegerValue("TeleportDelay", 0, 0, 20, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"));
+    private final BoolValue teleportGroundValue = new BoolValue("TeleportGround", true, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"));
+    private final BoolValue teleportNoMotionValue = new BoolValue("TeleportNoMotion", false, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Teleport"));
 
     /**
      * OPTIONS (Scaffold)
@@ -116,7 +116,7 @@ public class Scaffold extends Module {
 
     // AutoBlock
     private final ListValue autoBlockMode = new ListValue("AutoBlock", new String[]{"Spoof", "Switch", "Off"}, "Spoof");
-    private final BoolValue stayAutoBlock = new BoolValue("StayAutoBlock", false, () -> { return !autoBlockMode.get().equalsIgnoreCase("off"); });
+    private final BoolValue stayAutoBlock = new BoolValue("StayAutoBlock", false, () -> !autoBlockMode.get().equalsIgnoreCase("off"));
 
     //make sprint compatible with tower.add sprint tricks
     public final ListValue sprintModeValue = new ListValue("SprintMode",  new String[]{"Same", "Ground", "Air", "Off"}, "Off");
@@ -128,21 +128,21 @@ public class Scaffold extends Module {
 
     // Eagle
     private final BoolValue eagleValue = new BoolValue("Eagle", false);
-    private final BoolValue eagleSilentValue = new BoolValue("EagleSilent", false, () -> { return eagleValue.get(); });
-    private final IntegerValue blocksToEagleValue = new IntegerValue("BlocksToEagle", 0, 0, 10, () -> { return eagleValue.get(); });
-    private final FloatValue eagleEdgeDistanceValue = new FloatValue("EagleEdgeDistance", 0.2F, 0F, 0.5F, "m", () -> { return eagleValue.get(); });
+    private final BoolValue eagleSilentValue = new BoolValue("EagleSilent", false, () -> eagleValue.get());
+    private final IntegerValue blocksToEagleValue = new IntegerValue("BlocksToEagle", 0, 0, 10, () -> eagleValue.get());
+    private final FloatValue eagleEdgeDistanceValue = new FloatValue("EagleEdgeDistance", 0.2F, 0F, 0.5F, "m", () -> eagleValue.get());
 
     // Expand
-    private final BoolValue omniDirectionalExpand = new BoolValue("OmniDirectionalExpand", true, () -> { return modeValue.get().equalsIgnoreCase("expand"); });
-    private final IntegerValue expandLengthValue = new IntegerValue("ExpandLength", 5, 1, 6, " blocks", () -> { return modeValue.get().equalsIgnoreCase("expand"); });
+    private final BoolValue omniDirectionalExpand = new BoolValue("OmniDirectionalExpand", true, () -> modeValue.get().equalsIgnoreCase("expand"));
+    private final IntegerValue expandLengthValue = new IntegerValue("ExpandLength", 5, 1, 6, " blocks", () -> modeValue.get().equalsIgnoreCase("expand"));
 
     // Rotations
     private final BoolValue rotationsValue = new BoolValue("Rotations", true);
-    private final BoolValue noHitCheckValue = new BoolValue("NoHitCheck", false, () -> { return rotationsValue.get(); });
+    private final BoolValue noHitCheckValue = new BoolValue("NoHitCheck", false, () -> rotationsValue.get());
     public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Spin", "Custom"}, "Normal"); // searching reason
     public final ListValue rotationLookupValue = new ListValue("RotationLookup", new String[]{"Normal", "AAC", "Same"}, "Normal");
 
-    private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, "°", () -> { return rotationsValue.get(); }) {
+    private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, "°", () -> rotationsValue.get(); }) {
         @Override
         protected void onChanged(final Float oldValue, final Float newValue) {
             final float i = minTurnSpeed.get();
@@ -152,7 +152,7 @@ public class Scaffold extends Module {
         }
     };
 
-    private final FloatValue minTurnSpeed = new FloatValue("MinTurnSpeed", 180F, 0F, 180F, "°", () -> { return rotationsValue.get(); }) {
+    private final FloatValue minTurnSpeed = new FloatValue("MinTurnSpeed", 180F, 0F, 180F, "°", () -> rotationsValue.get(); }) {
         @Override
         protected void onChanged(final Float oldValue, final Float newValue) {
             final float i = maxTurnSpeed.get();
@@ -162,55 +162,55 @@ public class Scaffold extends Module {
         }
     };
 
-    private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F, "°", () -> { return rotationModeValue.get().toLowerCase().startsWith("static"); });
+    private final FloatValue staticPitchValue = new FloatValue("Static-Pitch", 86F, 80F, 90F, "°", () -> rotationModeValue.get().toLowerCase().startsWith("static"));
 
-    private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
-    private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("custom"); });
+    private final FloatValue customYawValue = new FloatValue("Custom-Yaw", 135F, -180F, 180F, "°", () -> rotationModeValue.get().equalsIgnoreCase("custom"));
+    private final FloatValue customPitchValue = new FloatValue("Custom-Pitch", 86F, -90F, 90F, "°", () -> rotationModeValue.get().equalsIgnoreCase("custom"));
 
-    private final FloatValue speenSpeedValue = new FloatValue("Spin-Speed", 5F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("spin"); });
-    private final FloatValue speenPitchValue = new FloatValue("Spin-Pitch", 90F, -90F, 90F, "°", () -> { return rotationModeValue.get().equalsIgnoreCase("spin"); });
+    private final FloatValue speenSpeedValue = new FloatValue("Spin-Speed", 5F, -90F, 90F, "°", () -> rotationModeValue.get().equalsIgnoreCase("spin"));
+    private final FloatValue speenPitchValue = new FloatValue("Spin-Pitch", 90F, -90F, 90F, "°", () -> rotationModeValue.get().equalsIgnoreCase("spin"));
 
     private final BoolValue keepRotOnJumpValue = new BoolValue("KeepRotOnJump", true, () -> (!rotationModeValue.get().equalsIgnoreCase("normal") && !rotationModeValue.get().equalsIgnoreCase("aac")));
 
-    private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false, () -> { return rotationsValue.get(); });
-    private final IntegerValue keepLengthValue = new IntegerValue("KeepRotationLength", 0, 0, 20, () -> { return rotationsValue.get() && !keepRotationValue.get(); });
+    private final BoolValue keepRotationValue = new BoolValue("KeepRotation", false, () -> rotationsValue.get());
+    private final IntegerValue keepLengthValue = new IntegerValue("KeepRotationLength", 0, 0, 20, () -> rotationsValue.get() && !keepRotationValue.get());
     private final ListValue placeConditionValue = new ListValue("Place-Condition", new String[] {"Air", "FallDown", "NegativeMotion", "Always"}, "Always");
 
     private final BoolValue rotationStrafeValue = new BoolValue("RotationStrafe", false);
 
     // Zitter
-    private final BoolValue zitterValue = new BoolValue("Zitter", false, () -> { return !isTowerOnly(); });
-    private final ListValue zitterModeValue = new ListValue("ZitterMode", new String[]{"Teleport", "Smooth"}, "Teleport", () -> { return !isTowerOnly() && zitterValue.get(); });
-    private final FloatValue zitterSpeed = new FloatValue("ZitterSpeed", 0.13F, 0.1F, 0.3F, () -> { return !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("teleport"); });
-    private final FloatValue zitterStrength = new FloatValue("ZitterStrength", 0.072F, 0.05F, 0.2F, () -> { return !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("teleport"); });
-    private final IntegerValue zitterDelay = new IntegerValue("ZitterDelay", 100, 0, 500, "ms", () -> { return !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("smooth"); });
+    private final BoolValue zitterValue = new BoolValue("Zitter", false, () -> !isTowerOnly());
+    private final ListValue zitterModeValue = new ListValue("ZitterMode", new String[]{"Teleport", "Smooth"}, "Teleport", () -> !isTowerOnly() && zitterValue.get());
+    private final FloatValue zitterSpeed = new FloatValue("ZitterSpeed", 0.13F, 0.1F, 0.3F, () -> !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("teleport"));
+    private final FloatValue zitterStrength = new FloatValue("ZitterStrength", 0.072F, 0.05F, 0.2F, () -> !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("teleport"));
+    private final IntegerValue zitterDelay = new IntegerValue("ZitterDelay", 100, 0, 500, "ms", () -> !isTowerOnly() && zitterValue.get() && zitterModeValue.get().equalsIgnoreCase("smooth"));
 
     // Game
-    private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F, () -> { return !isTowerOnly(); });
+    private final FloatValue timerValue = new FloatValue("Timer", 1F, 0.1F, 10F, () -> !isTowerOnly());
     public final FloatValue speedModifierValue = new FloatValue("SpeedModifier", 1F, 0, 2F, "x");
     public final FloatValue xzMultiplier = new FloatValue("XZ-Multiplier", 1F, 0F, 4F, "x");
     private final BoolValue customSpeedValue = new BoolValue("CustomSpeed", false);
-    private final FloatValue customMoveSpeedValue = new FloatValue("CustomMoveSpeed", 0.3F, 0, 5F, () -> { return customSpeedValue.get(); });
+    private final FloatValue customMoveSpeedValue = new FloatValue("CustomMoveSpeed", 0.3F, 0, 5F, () -> customSpeedValue.get());
 
     // Safety
-    private final BoolValue sameYValue = new BoolValue("SameY", false, () -> { return !towerEnabled.get(); });
-    private final BoolValue autoJumpValue = new BoolValue("AutoJump", false, () -> { return !isTowerOnly(); });
-    private final BoolValue smartSpeedValue = new BoolValue("SmartSpeed", false, () -> { return !isTowerOnly(); });
+    private final BoolValue sameYValue = new BoolValue("SameY", false, () -> !towerEnabled.get());
+    private final BoolValue autoJumpValue = new BoolValue("AutoJump", false, () -> !isTowerOnly());
+    private final BoolValue smartSpeedValue = new BoolValue("SmartSpeed", false, () -> !isTowerOnly());
     private final BoolValue safeWalkValue = new BoolValue("SafeWalk", true);
-    private final BoolValue airSafeValue = new BoolValue("AirSafe", false, () -> { return safeWalkValue.get(); });
+    private final BoolValue airSafeValue = new BoolValue("AirSafe", false, () -> safeWalkValue.get());
     private final BoolValue autoDisableSpeedValue = new BoolValue("AutoDisable-Speed", true);
 
     // Visuals
     public final ListValue counterDisplayValue = new ListValue("Counter", new String[]{"Off", "Simple", "Advanced", "Sigma", "Novoline"}, "Simple");
 
     private final BoolValue markValue = new BoolValue("Mark", false);
-    private final IntegerValue redValue = new IntegerValue("Red", 0, 0, 255, () -> { return markValue.get(); });
-    private final IntegerValue greenValue = new IntegerValue("Green", 120, 0, 255, () -> { return markValue.get(); });
-    private final IntegerValue blueValue = new IntegerValue("Blue", 255, 0, 255, () -> { return markValue.get(); });
-    private final IntegerValue alphaValue = new IntegerValue("Alpha", 120, 0, 255, () -> { return markValue.get(); });
+    private final IntegerValue redValue = new IntegerValue("Red", 0, 0, 255, () -> markValue.get());
+    private final IntegerValue greenValue = new IntegerValue("Green", 120, 0, 255, () -> markValue.get());
+    private final IntegerValue blueValue = new IntegerValue("Blue", 255, 0, 255, () -> markValue.get());
+    private final IntegerValue alphaValue = new IntegerValue("Alpha", 120, 0, 255, () -> markValue.get());
 
-    private final BoolValue blurValue = new BoolValue("Blur-Advanced", false, () -> { return counterDisplayValue.get().equalsIgnoreCase("advanced"); });
-    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 30F, "x", () -> { return counterDisplayValue.get().equalsIgnoreCase("advanced"); });
+    private final BoolValue blurValue = new BoolValue("Blur-Advanced", false, () -> counterDisplayValue.get().equalsIgnoreCase("advanced"));
+    private final FloatValue blurStrength = new FloatValue("Blur-Strength", 1F, 0F, 30F, "x", () -> counterDisplayValue.get().equalsIgnoreCase("advanced"));
 
     /**
      * MODULE

@@ -118,7 +118,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue ncpModeValue = new ListValue("NCP-Mode", new String[]{"BHop", "FHop", "SBHop", "Hop", "YPort"}, "BHop", () -> { return typeValue.get().equalsIgnoreCase("ncp"); }) {
+    public final ListValue ncpModeValue = new ListValue("NCP-Mode", new String[]{"BHop", "FHop", "SBHop", "Hop", "YPort"}, "BHop", () -> typeValue.get().equalsIgnoreCase("ncp"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -156,7 +156,7 @@ public class Speed extends Module {
         "Hop4.3.8",
         "YPort",
         "YPort2"
-        }, "4Hop", () -> { return typeValue.get().equalsIgnoreCase("aac"); }) {
+        }, "4Hop", () -> typeValue.get().equalsIgnoreCase("aac"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -171,7 +171,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable", "Custom"}, "Stable", () -> { return typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable", "Custom"}, "Stable", () -> typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -186,7 +186,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue spectreModeValue = new ListValue("Spectre-Mode", new String[]{"BHop", "LowHop", "OnGround"}, "BHop", () -> { return typeValue.get().equalsIgnoreCase("spectre"); }) {
+    public final ListValue spectreModeValue = new ListValue("Spectre-Mode", new String[]{"BHop", "LowHop", "OnGround"}, "BHop", () -> typeValue.get().equalsIgnoreCase("spectre"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -201,7 +201,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "GWEN", "HiveHop", "MineplexGround", "TeleportCubeCraft"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("other"); }) {
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "GWEN", "HiveHop", "MineplexGround", "TeleportCubeCraft"}, "Boost", () -> typeValue.get().equalsIgnoreCase("other"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -216,7 +216,7 @@ public class Speed extends Module {
         }
     };
     
-    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop", "Hard"}, "Hop", () -> { return typeValue.get().equalsIgnoreCase("verus"); }) {
+    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop", "Hard"}, "Hop", () -> typeValue.get().equalsIgnoreCase("verus"); }) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -238,35 +238,35 @@ public class Speed extends Module {
     public final FloatValue customSpeedValue = new FloatValue("StrSpeed", 0.42f, 0.2f, 2f, () -> getModeName().equalsIgnoreCase("hypixelcustom"));
     public final FloatValue motionYValue = new FloatValue("MotionY", 0.42f, 0f, 2f, () -> getModeName().equalsIgnoreCase("hypixelcustom"));
 
-    public final FloatValue verusTimer = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> { return getModeName().equalsIgnoreCase("verushard"); });
+    public final FloatValue verusTimer = new FloatValue("Verus-Timer", 1F, 0.1F, 10F, () -> getModeName().equalsIgnoreCase("verushard"));
 
-    public final FloatValue speedValue = new FloatValue("CustomSpeed", 1.6f, 0.2f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final FloatValue launchSpeedValue = new FloatValue("CustomLaunchSpeed", 1.6f, 0.2f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final FloatValue addYMotionValue = new FloatValue("CustomAddYMotion", 0f, 0f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final FloatValue yValue = new FloatValue("CustomY", 0f, 0f, 4f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final FloatValue upTimerValue = new FloatValue("CustomUpTimer", 1f, 0.1f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final FloatValue downTimerValue = new FloatValue("CustomDownTimer", 1f, 0.1f, 2f, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final ListValue strafeValue = new ListValue("CustomStrafe", new String[] {"Strafe", "Boost", "Plus", "PlusOnlyUp", "Non-Strafe"}, "Boost", () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final IntegerValue groundStay = new IntegerValue("CustomGroundStay", 0, 0, 10, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final BoolValue groundResetXZValue = new BoolValue("CustomGroundResetXZ", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final BoolValue resetXZValue = new BoolValue("CustomResetXZ", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final BoolValue resetYValue = new BoolValue("CustomResetY", false, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
-    public final BoolValue doLaunchSpeedValue = new BoolValue("CustomDoLaunchSpeed", true, () -> { return typeValue.get().equalsIgnoreCase("custom"); });
+    public final FloatValue speedValue = new FloatValue("CustomSpeed", 1.6f, 0.2f, 2f, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final FloatValue launchSpeedValue = new FloatValue("CustomLaunchSpeed", 1.6f, 0.2f, 2f, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final FloatValue addYMotionValue = new FloatValue("CustomAddYMotion", 0f, 0f, 2f, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final FloatValue yValue = new FloatValue("CustomY", 0f, 0f, 4f, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final FloatValue upTimerValue = new FloatValue("CustomUpTimer", 1f, 0.1f, 2f, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final FloatValue downTimerValue = new FloatValue("CustomDownTimer", 1f, 0.1f, 2f, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final ListValue strafeValue = new ListValue("CustomStrafe", new String[] {"Strafe", "Boost", "Plus", "PlusOnlyUp", "Non-Strafe"}, "Boost", () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final IntegerValue groundStay = new IntegerValue("CustomGroundStay", 0, 0, 10, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final BoolValue groundResetXZValue = new BoolValue("CustomGroundResetXZ", false, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final BoolValue resetXZValue = new BoolValue("CustomResetXZ", false, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final BoolValue resetYValue = new BoolValue("CustomResetY", false, () -> typeValue.get().equalsIgnoreCase("custom"));
+    public final BoolValue doLaunchSpeedValue = new BoolValue("CustomDoLaunchSpeed", true, () -> typeValue.get().equalsIgnoreCase("custom"));
 
-    public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false, () -> { return typeValue.get().equalsIgnoreCase("other"); });
+    public final BoolValue jumpStrafe = new BoolValue("JumpStrafe", false, () -> typeValue.get().equalsIgnoreCase("other"));
 
-    public final BoolValue sendJumpValue = new BoolValue("SendJump", true, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")); });
-    public final BoolValue recalcValue = new BoolValue("ReCalculate", true, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && sendJumpValue.get() && !getModeName().equalsIgnoreCase("hypixelcustom")); });
-    public final FloatValue glideStrengthValue = new FloatValue("GlideStrength", 0.03F, 0F, 0.05F, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")); });
-    public final FloatValue moveSpeedValue = new FloatValue("MoveSpeed", 1.47F, 1F, 1.7F, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")); });
-    public final FloatValue jumpYValue = new FloatValue("JumpY", 0.42F, 0F, 1F, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")); });
-    public final FloatValue baseStrengthValue = new FloatValue("BaseMultiplier", 1F, 0.5F, 1F, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")); });
-    public final FloatValue baseTimerValue = new FloatValue("BaseTimer", 1.5F, 1F, 3F, () -> { return getModeName().equalsIgnoreCase("hypixelboost"); });
-    public final FloatValue baseMTimerValue = new FloatValue("BaseMultiplierTimer", 1F, 0F, 3F, () -> { return getModeName().equalsIgnoreCase("hypixelboost"); });
-    public final BoolValue bypassWarning = new BoolValue("BypassWarning", true, () -> { return (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")); });
+    public final BoolValue sendJumpValue = new BoolValue("SendJump", true, () -> (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")));
+    public final BoolValue recalcValue = new BoolValue("ReCalculate", true, () -> (typeValue.get().equalsIgnoreCase("hypixel") && sendJumpValue.get() && !getModeName().equalsIgnoreCase("hypixelcustom")));
+    public final FloatValue glideStrengthValue = new FloatValue("GlideStrength", 0.03F, 0F, 0.05F, () -> (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")));
+    public final FloatValue moveSpeedValue = new FloatValue("MoveSpeed", 1.47F, 1F, 1.7F, () -> (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")));
+    public final FloatValue jumpYValue = new FloatValue("JumpY", 0.42F, 0F, 1F, () -> (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")));
+    public final FloatValue baseStrengthValue = new FloatValue("BaseMultiplier", 1F, 0.5F, 1F, () -> (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")));
+    public final FloatValue baseTimerValue = new FloatValue("BaseTimer", 1.5F, 1F, 3F, () -> getModeName().equalsIgnoreCase("hypixelboost"));
+    public final FloatValue baseMTimerValue = new FloatValue("BaseMultiplierTimer", 1F, 0F, 3F, () -> getModeName().equalsIgnoreCase("hypixelboost"));
+    public final BoolValue bypassWarning = new BoolValue("BypassWarning", true, () -> (typeValue.get().equalsIgnoreCase("hypixel") && !getModeName().equalsIgnoreCase("hypixelcustom")));
 
-    public final FloatValue portMax = new FloatValue("AAC-PortLength", 1, 1, 20, () -> { return typeValue.get().equalsIgnoreCase("aac"); });
-    public final FloatValue aacGroundTimerValue = new FloatValue("AACGround-Timer", 3F, 1.1F, 10F, () -> { return typeValue.get().equalsIgnoreCase("aac"); });
+    public final FloatValue portMax = new FloatValue("AAC-PortLength", 1, 1, 20, () -> typeValue.get().equalsIgnoreCase("aac"));
+    public final FloatValue aacGroundTimerValue = new FloatValue("AACGround-Timer", 3F, 1.1F, 10F, () -> typeValue.get().equalsIgnoreCase("aac"));
 
     public final FloatValue cubecraftPortLengthValue = new FloatValue("CubeCraft-PortLength", 1F, 0.1F, 2F, () -> getModeName().equalsIgnoreCase("teleportcubecraft"));
     public final FloatValue mineplexGroundSpeedValue = new FloatValue("MineplexGround-Speed", 0.5F, 0.1F, 1F, () -> getModeName().equalsIgnoreCase("mineplexground"));

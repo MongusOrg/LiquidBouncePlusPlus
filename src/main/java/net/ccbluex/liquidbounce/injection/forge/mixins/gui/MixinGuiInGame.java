@@ -126,7 +126,7 @@ public abstract class MixinGuiInGame extends MixinGui {
         }
     }
 
-    @Inject(method = "renderTooltip", at = @At("RETURN"))
+    @Inject(method = "renderTooltip", at = @At("TAIL"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
             LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));

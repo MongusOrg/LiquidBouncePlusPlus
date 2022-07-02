@@ -26,40 +26,45 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemEnderPearl;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.*;
+import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 
 @ModuleInfo(name = "LongJump", spacedName = "Long Jump", description = "Allows you to jump further.", category = ModuleCategory.MOVEMENT)
 public class LongJump extends Module {
 
-    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "Damage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "VerusDmg", "Pearl"}, "NCP");
+    private final ListValue modeValue = new ListValue("Mode", new String[] {"NCP", "Damage", "AACv1", "AACv2", "AACv3", "AACv4", "Mineplex", "Mineplex2", "Mineplex3", "RedeskyMaki", "Redesky", "InfiniteRedesky", "MatrixFlag", "VerusDmg", "Pearl"}, "NCP");
     private final BoolValue autoJumpValue = new BoolValue("AutoJump", false);
 
-    private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> { return modeValue.get().equalsIgnoreCase("ncp"); });
+    private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> modeValue.get().equalsIgnoreCase("ncp"));
 
-    private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
-    private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
-    private final IntegerValue redeskyTickValue = new IntegerValue("Redesky-Ticks", 21, 1, 25, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
-    private final FloatValue redeskyYMultiplier = new FloatValue("Redesky-YMultiplier", 0.77F, 0.1F, 1F, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
-    private final FloatValue redeskyXZMultiplier = new FloatValue("Redesky-XZMultiplier", 0.9F, 0.1F, 1F, () -> { return modeValue.get().equalsIgnoreCase("redesky"); });
-    private final FloatValue redeskyTimerBoostStartValue = new FloatValue("Redesky-TimerBoostStart", 1.85F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
-    private final FloatValue redeskyTimerBoostEndValue = new FloatValue("Redesky-TimerBoostEnd", 1.0F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
-    private final IntegerValue redeskyTimerBoostSlowDownSpeedValue = new IntegerValue("Redesky-TimerBoost-SlowDownSpeed", 2, 1, 10, () -> { return modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get(); });
+    private final FloatValue matrixBoostValue = new FloatValue("MatrixFlag-Boost", 1.95F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
+    private final FloatValue matrixHeightValue = new FloatValue("MarixFlag-Height", 5F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
+    private final BoolValue matrixKeepAliveValue = new BoolValue("MatrixFlag-KeepAlive", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
 
-    private final ListValue verusDmgModeValue = new ListValue("VerusDmg-DamageMode", new String[]{"Instant", "InstantC06", "Jump"}, "None", () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
-    private final FloatValue verusBoostValue = new FloatValue("VerusDmg-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
-    private final FloatValue verusHeightValue = new FloatValue("VerusDmg-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
-    private final FloatValue verusTimerValue = new FloatValue("VerusDmg-Timer", 1F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("verusdmg"); });
+    private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
+    private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
+    private final IntegerValue redeskyTickValue = new IntegerValue("Redesky-Ticks", 21, 1, 25, () -> modeValue.get().equalsIgnoreCase("redesky"));
+    private final FloatValue redeskyYMultiplier = new FloatValue("Redesky-YMultiplier", 0.77F, 0.1F, 1F, () -> modeValue.get().equalsIgnoreCase("redesky"));
+    private final FloatValue redeskyXZMultiplier = new FloatValue("Redesky-XZMultiplier", 0.9F, 0.1F, 1F, () -> modeValue.get().equalsIgnoreCase("redesky"));
+    private final FloatValue redeskyTimerBoostStartValue = new FloatValue("Redesky-TimerBoostStart", 1.85F, 0.05F, 10F, () -> modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get());
+    private final FloatValue redeskyTimerBoostEndValue = new FloatValue("Redesky-TimerBoostEnd", 1.0F, 0.05F, 10F, () -> modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get());
+    private final IntegerValue redeskyTimerBoostSlowDownSpeedValue = new IntegerValue("Redesky-TimerBoost-SlowDownSpeed", 2, 1, 10, () -> modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get());
 
-    private final FloatValue pearlBoostValue = new FloatValue("Pearl-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("pearl"); });
-    private final FloatValue pearlHeightValue = new FloatValue("Pearl-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("pearl"); });
-    private final FloatValue pearlTimerValue = new FloatValue("Pearl-Timer", 1F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("pearl"); });
+    private final ListValue verusDmgModeValue = new ListValue("VerusDmg-DamageMode", new String[]{"Instant", "InstantC06", "Jump"}, "None", () -> modeValue.get().equalsIgnoreCase("verusdmg"));
+    private final FloatValue verusBoostValue = new FloatValue("VerusDmg-Boost", 4.25F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("verusdmg"));
+    private final FloatValue verusHeightValue = new FloatValue("VerusDmg-Height", 0.42F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("verusdmg"));
+    private final FloatValue verusTimerValue = new FloatValue("VerusDmg-Timer", 1F, 0.05F, 10F, () -> modeValue.get().equalsIgnoreCase("verusdmg"));
 
-    private final FloatValue damageBoostValue = new FloatValue("Damage-Boost", 4.25F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("damage"); });
-    private final FloatValue damageHeightValue = new FloatValue("Damage-Height", 0.42F, 0F, 10F, () -> { return modeValue.get().equalsIgnoreCase("damage"); });
-    private final FloatValue damageTimerValue = new FloatValue("Damage-Timer", 1F, 0.05F, 10F, () -> { return modeValue.get().equalsIgnoreCase("damage"); });
-    private final BoolValue damageNoMoveValue = new BoolValue("Damage-NoMove", false, () -> { return modeValue.get().equalsIgnoreCase("damage"); });
-    private final BoolValue damageARValue = new BoolValue("Damage-AutoReset", false, () -> { return modeValue.get().equalsIgnoreCase("damage"); });
+    private final FloatValue pearlBoostValue = new FloatValue("Pearl-Boost", 4.25F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("pearl"));
+    private final FloatValue pearlHeightValue = new FloatValue("Pearl-Height", 0.42F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("pearl"));
+    private final FloatValue pearlTimerValue = new FloatValue("Pearl-Timer", 1F, 0.05F, 10F, () -> modeValue.get().equalsIgnoreCase("pearl"));
+
+    private final FloatValue damageBoostValue = new FloatValue("Damage-Boost", 4.25F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("damage"));
+    private final FloatValue damageHeightValue = new FloatValue("Damage-Height", 0.42F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("damage"));
+    private final FloatValue damageTimerValue = new FloatValue("Damage-Timer", 1F, 0.05F, 10F, () -> modeValue.get().equalsIgnoreCase("damage"));
+    private final BoolValue damageNoMoveValue = new BoolValue("Damage-NoMove", false, () -> modeValue.get().equalsIgnoreCase("damage"));
+    private final BoolValue damageARValue = new BoolValue("Damage-AutoReset", false, () -> modeValue.get().equalsIgnoreCase("damage"));
 
     private boolean jumped;
     private boolean canBoost;
@@ -72,18 +77,23 @@ public class LongJump extends Module {
     private int verusJumpTimes = 0;
     private int pearlState = 0;
 
+    private double lastMotX, lastMotY, lastMotZ;
+    private boolean flagResponse = false;
+    private boolean flagged = false;
+
     private MSTimer dmgTimer = new MSTimer();
 
     public void onEnable() {
         if (mc.thePlayer == null) return;
-        if (modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get()) {
+        if (modeValue.get().equalsIgnoreCase("redesky") && redeskyTimerBoostValue.get())
             currentTimer = redeskyTimerBoostStartValue.get();
-        }
 
         ticks = 0;
         verusDmged = false;
         hpxDamage = false;
         damaged = false;
+        flagged = false;
+        flagResponse = false;
         pearlState = 0;
         verusJumpTimes = 0;
 
@@ -119,6 +129,14 @@ public class LongJump extends Module {
 
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
+        if (modeValue.get().equalsIgnoreCase("matrixflag") && !flagged) {
+            MovementUtils.strafe(matrixBoostValue.get());
+            mc.thePlayer.motionY = matrixHeightValue.get();
+
+            if (matrixKeepAliveValue.get())
+                mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
+        }
+
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
             if (mc.thePlayer.hurtTime > 0 && !verusDmged) {
                 verusDmged = true;
@@ -338,6 +356,19 @@ public class LongJump extends Module {
             if (mode.equalsIgnoreCase("verusdmg") && verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5) {
                 packetPlayer.onGround = false;
             }
+        }
+        if (event.getPacket() instanceof S08PacketPlayerPosLook) {
+            flagged = true;
+            flagResponse = true;
+            lastMotX = mc.thePlayer.motionX;
+            lastMotY = mc.thePlayer.motionY;
+            lastMotZ = mc.thePlayer.motionZ;
+        }
+        if (event.getPacket() instanceof C06PacketPlayerPosLook && flagResponse) {
+            flagResponse = false;
+            mc.thePlayer.motionX = lastMotX;
+            mc.thePlayer.motionY = lastMotY;
+            mc.thePlayer.motionZ = lastMotZ;
         }
     }
 
