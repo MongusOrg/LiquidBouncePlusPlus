@@ -47,7 +47,7 @@ public class Fonts {
     @FontDetails(fontName = "Tahoma Bold", fontSize = 35)
     public static GameFontRenderer fontTahoma;
 
-    @FontDetails(fontName = "Verdana", fontSize = 24)
+    @FontDetails(fontName = "Verdana", fontSize = 30)
     public static GameFontRenderer fontVerdana;
 
     @FontDetails(fontName = "Minecraft Font")
@@ -69,8 +69,8 @@ public class Fonts {
         fontSFUI35 = new GameFontRenderer(getFont("sfui.ttf", 35));
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
-        fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 40));
-        fontVerdana = new GameFontRenderer(getFont("Verdana.ttf", 22));
+        fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 35));
+        fontVerdana = new GameFontRenderer(getFont("Verdana.ttf", 30));
 
         try {
             CUSTOM_FONT_RENDERERS.clear();
