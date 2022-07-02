@@ -327,7 +327,7 @@ public final class ESP2D extends Module {
                         String itemName = entityLivingBase.getHeldItem().getDisplayName();
                         if (tagsBGValue.get())
                            RenderUtils.newDrawRect(posX + (endPosX - posX) / 2F - (mc.fontRendererObj.getStringWidth(itemName) / 2F + 2F) * fontScaleValue.get(), endPosY + 1F - 2F * fontScaleValue.get(), posX + (endPosX - posX) / 2F + (mc.fontRendererObj.getStringWidth(itemName) / 2F + 2F) * fontScaleValue.get(), endPosY + 1F + (mc.fontRendererObj.FONT_HEIGHT + 2F) * fontScaleValue.get(), 0xA0000000);
-                        drawScaledCenteredString(entName, posX + (endPosX - posX) / 2F, endPosY + 1F, fontScaleValue.get(), -1);
+                        drawScaledCenteredString(itemName, posX + (endPosX - posX) / 2F, endPosY + 1F, fontScaleValue.get(), -1);
                      }
                   } else if (entity instanceof EntityItem) {
                      String entName = ((EntityItem) entity).getEntityItem().getDisplayName();
