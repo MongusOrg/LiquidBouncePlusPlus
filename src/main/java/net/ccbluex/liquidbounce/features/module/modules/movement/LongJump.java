@@ -364,7 +364,7 @@ public class LongJump extends Module {
             lastMotY = mc.thePlayer.motionY;
             lastMotZ = mc.thePlayer.motionZ;
         }
-        if (event.getPacket() instanceof C06PacketPlayerPosLook && flagResponse) {
+        if (event.getPacket() instanceof C03PacketPlayer.C06PacketPlayerPosLook && flagResponse) {
             flagResponse = false;
             mc.thePlayer.motionX = lastMotX;
             mc.thePlayer.motionY = lastMotY;
