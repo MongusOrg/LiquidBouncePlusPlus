@@ -118,7 +118,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue ncpModeValue = new ListValue("NCP-Mode", new String[]{"BHop", "FHop", "SBHop", "Hop", "YPort"}, "BHop", () -> typeValue.get().equalsIgnoreCase("ncp"); }) {
+    public final ListValue ncpModeValue = new ListValue("NCP-Mode", new String[]{"BHop", "FHop", "SBHop", "Hop", "YPort"}, "BHop", () -> typeValue.get().equalsIgnoreCase("ncp")) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -156,7 +156,7 @@ public class Speed extends Module {
         "Hop4.3.8",
         "YPort",
         "YPort2"
-        }, "4Hop", () -> typeValue.get().equalsIgnoreCase("aac"); }) {
+        }, "4Hop", () -> typeValue.get().equalsIgnoreCase("aac")) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -171,7 +171,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable", "Custom"}, "Stable", () -> typeValue.get().equalsIgnoreCase("hypixel"); }) { // the worst hypixel bypass ever existed
+    public final ListValue hypixelModeValue = new ListValue("Hypixel-Mode", new String[]{"Boost", "Stable", "Custom"}, "Stable", () -> typeValue.get().equalsIgnoreCase("hypixel")) { // the worst hypixel bypass ever existed
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -186,7 +186,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue spectreModeValue = new ListValue("Spectre-Mode", new String[]{"BHop", "LowHop", "OnGround"}, "BHop", () -> typeValue.get().equalsIgnoreCase("spectre"); }) {
+    public final ListValue spectreModeValue = new ListValue("Spectre-Mode", new String[]{"BHop", "LowHop", "OnGround"}, "BHop", () -> typeValue.get().equalsIgnoreCase("spectre")) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -201,7 +201,7 @@ public class Speed extends Module {
         }
     };
 
-    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "GWEN", "HiveHop", "MineplexGround", "TeleportCubeCraft"}, "Boost", () -> typeValue.get().equalsIgnoreCase("other"); }) {
+    public final ListValue otherModeValue = new ListValue("Other-Mode", new String[]{"YPort", "YPort2", "Boost", "Frame", "MiJump", "OnGround", "SlowHop", "Jump", "Legit", "AEMine", "GWEN", "HiveHop", "MineplexGround", "TeleportCubeCraft"}, "Boost", () -> typeValue.get().equalsIgnoreCase("other")) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -216,7 +216,7 @@ public class Speed extends Module {
         }
     };
     
-    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop", "Hard"}, "Hop", () -> typeValue.get().equalsIgnoreCase("verus"); }) {
+    public final ListValue verusModeValue = new ListValue("Verus-Mode", new String[]{"Hop", "LowHop", "Hard"}, "Hop", () -> typeValue.get().equalsIgnoreCase("verus")) {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
