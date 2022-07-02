@@ -255,23 +255,22 @@ public final class ESP2D extends Module {
                if (living) {
                   entityLivingBase = (EntityLivingBase)entity;
                   if (health) {
-                     healthValue = entityLivingBase.getHealth();
-                     maxHealthValue = entityLivingBase.getMaxHealth();
-                     if (healthValue > maxHealthValue)
-                        healthValue = maxHealthValue;
+                     armorValue = entityLivingBase.getHealth();
+                     itemDurability = entityLivingBase.getMaxHealth();
+                     if (armorValue > itemDurability)
+                        armorValue = itemDurability;
 
-                     durabilityWidth = (double)(healthValue / maxHealthValue);
+                     durabilityWidth = (double)(armorValue / itemDurability);
                      textWidth = (endPosY - posY) * durabilityWidth; 
-                     String healthDisplay = dFormat.format(healthValue) + " §c❤";
+                     String healthDisplay = dFormat.format(armorValue) + " §c❤";
                      if (healthNumber.get()) drawScaledString(healthDisplay, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                      RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
-                     if (healthValue > 0.0F) {
-                        int healthColor = BlendUtils.getHealthColor(healthValue, maxHealthValue).getRGB();
+                     if (armorValue > 0.0F) {
+                        int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
                         RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - textWidth, healthColor);
                         tagY = entityLivingBase.getAbsorptionAmount();
-                        if (absorption.get() && tagY > 0.0F) {
+                        if (absorption.get() && tagY > 0.0F)
                            RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - (endPosY - posY) / 6.0D * (double)tagY / 2.0D, (new Color(Potion.absorption.getLiquidColor())).getRGB());
-                        }
                      }
                   }
                }
