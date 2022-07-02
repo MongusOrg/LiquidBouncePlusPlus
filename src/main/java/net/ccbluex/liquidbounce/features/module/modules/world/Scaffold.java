@@ -142,7 +142,7 @@ public class Scaffold extends Module {
     public final ListValue rotationModeValue = new ListValue("RotationMode", new String[]{"Normal", "AAC", "Static", "Static2", "Static3", "Spin", "Custom"}, "Normal"); // searching reason
     public final ListValue rotationLookupValue = new ListValue("RotationLookup", new String[]{"Normal", "AAC", "Same"}, "Normal");
 
-    private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, "°", () -> rotationsValue.get(); }) {
+    private final FloatValue maxTurnSpeed = new FloatValue("MaxTurnSpeed", 180F, 0F, 180F, "°", () -> rotationsValue.get()) {
         @Override
         protected void onChanged(final Float oldValue, final Float newValue) {
             final float i = minTurnSpeed.get();
@@ -152,7 +152,7 @@ public class Scaffold extends Module {
         }
     };
 
-    private final FloatValue minTurnSpeed = new FloatValue("MinTurnSpeed", 180F, 0F, 180F, "°", () -> rotationsValue.get(); }) {
+    private final FloatValue minTurnSpeed = new FloatValue("MinTurnSpeed", 180F, 0F, 180F, "°", () -> rotationsValue.get()) {
         @Override
         protected void onChanged(final Float oldValue, final Float newValue) {
             final float i = maxTurnSpeed.get();
