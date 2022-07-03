@@ -74,12 +74,12 @@ class SuperheroFX : Module() {
 
 }
 class FXParticle(val posX: Double, val posY: Double, val posZ: Double): MinecraftInstance() {
-    val messageString: String = listOf("kaboom", "bam", "zap", "smash", "fatality", "kapow", "wham").random()
-    val color: Color = Color(RandomUtils.nextInt(0, 255), RandomUtils.nextInt(0, 255), RandomUtils.nextInt(0, 255))
+    private val messageString: String = listOf("kaboom", "bam", "zap", "smash", "fatality", "kapow", "wham").random()
+    private val color: Color = Color(RandomUtils.nextInt(0, 255), RandomUtils.nextInt(0, 255), RandomUtils.nextInt(0, 255))
 
-    var fadeTimer = MSTimer()
-    val stringLength = Fonts.fontBangers.getStringWidth(messageString).toDouble()
-    val fontHeight = Fonts.fontBangers.FONT_HEIGHT.toDouble()
+    private val fadeTimer = MSTimer()
+    private val stringLength = Fonts.fontBangers.getStringWidth(messageString).toDouble()
+    private val fontHeight = Fonts.fontBangers.FONT_HEIGHT.toDouble()
 
     var canRemove = false
 
@@ -87,9 +87,8 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         val renderManager = mc.renderManager ?: return
         val alpha = (if (fadeTimer.hasTimePassed(500L)) fadeTimer.hasTimeLeft(1000L) else 500L - fadeTimer.hasTimeLeft(500L)).toFloat().coerceIn(0F, 500F) / 500F
         val progress = (if (fadeTimer.hasTimePassed(500L)) abs(fadeTimer.hasTimeLeft(500L) - 500L) else 500L - fadeTimer.hasTimeLeft(500L)).toFloat().coerceIn(0F, 1000F) / 500F
-        val transX = stringLength / 2.0 * progress.toDouble()
-        val transY = fontHeight / 2.0 * progress.toDouble()
         val textY = if (mc.gameSettings.thirdPersonView == 2) -1.0f else 1.0f
+        ClientUtils.displayChatMessage("$progress, $alpha")
         if (progress >= 2F) {
             canRemove = true
             return
@@ -97,7 +96,7 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         GlStateManager.pushMatrix()
         GlStateManager.enablePolygonOffset()
         GlStateManager.doPolygonOffset(1.0f, -1500000.0f)
-        GL11.glTranslated(posX - transX - renderManager.renderPosX, posY - transY - renderManager.renderPosY, posZ - renderManager.renderPosZ)
+        GL11.glTranslated(posX - renderManager.renderPosX, posY - renderManager.renderPosY, posZ - renderManager.renderPosZ)
         GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f)
         GL11.glScalef(-0.03F, -0.03F, 0.03F)
         GlStateManager.rotate(renderManager.playerViewX, textY, 0.0f, 0.0f)
