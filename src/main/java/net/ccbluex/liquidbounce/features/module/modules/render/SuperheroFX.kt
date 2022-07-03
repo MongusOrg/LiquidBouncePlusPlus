@@ -43,12 +43,15 @@ class SuperheroFX : Module() {
     fun onEntityDamage(event: EntityDamageEvent) {
         val entity = event.damagedEntity
         if (mc.theWorld.loadedEntityList.contains(entity) && generateTimer.hasTimePassed(500L)) {
+            val dirX = RandomUtils.nextDouble(-0.5, 0.5)
+            val dirZ = RandomUtils.nextDouble(-0.5, 0.5)
             generateTimer.reset()
             textParticles.add(
                 FXParticle(
-                    entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1,
+                    entity.posX + dirX,
                     entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0,
-                    entity.posZ - 0.5 + Random(System.currentTimeMillis() + 1L).nextInt(5).toDouble() * 0.1
+                    entity.posZ + dirZ,
+                    dirX, dirZ
                 )
             )
         }
@@ -68,16 +71,13 @@ class SuperheroFX : Module() {
     }
 
 }
-class FXParticle(val posX: Double, val posY: Double, val posZ: Double): MinecraftInstance() {
+class FXParticle(val posX: Double, val posY: Double, val posZ: Double, val animHDir: Double, val animVDir: Double): MinecraftInstance() {
     private val messageString: String = listOf("kaboom", "bam", "zap", "smash", "fatality", "kapow", "wham").random()
     private val color: Color = listOf(Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW).random()
 
     private val fadeTimer = MSTimer()
     private val stringLength = Fonts.fontBangers.getStringWidth(messageString).toDouble()
     private val fontHeight = Fonts.fontBangers.FONT_HEIGHT.toDouble()
-
-    private val animHDir = RandomUtils.nextDouble(-0.5, 0.5)
-    private val animVDir = RandomUtils.nextDouble(-0.5, 0.5)
 
     var canRemove = false
     private var firstDraw = true
@@ -100,7 +100,7 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         GlStateManager.pushMatrix()
         GlStateManager.enablePolygonOffset()
         GlStateManager.doPolygonOffset(1.0f, -1500000.0f)
-        GL11.glTranslated(posX + animHDir * progress - offsetX - renderManager.renderPosX, posY + animVDir * progress - offsetY - renderManager.renderPosY, posZ + animHDir * progress - offsetX - renderManager.renderPosZ)
+        GL11.glTranslated(posX + animHDir * progress - offsetX - renderManager.renderPosX, posY + animVDir * progress - offsetY - renderManager.renderPosY, posZ - renderManager.renderPosZ)
         GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f)
         GL11.glScalef(progress * -0.02F, progress * -0.02F, progress * 0.02F)
         GlStateManager.rotate(textY * renderManager.playerViewX, 1.0f, 0.0f, 0.0f)
