@@ -47,7 +47,7 @@ class SuperheroFX : Module() {
             textParticles.add(
                 FXParticle(
                     entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1,
-                    entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0,
+                    entity.entityBoundingBox.minY + RandomUtils.nextDouble(0.0, entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY),
                     entity.posZ - 0.5 + Random(System.currentTimeMillis() + 1L).nextInt(5).toDouble() * 0.1
                 )
             )
@@ -76,8 +76,8 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
     private val stringLength = Fonts.fontBangers.getStringWidth(messageString).toDouble()
     private val fontHeight = Fonts.fontBangers.FONT_HEIGHT.toDouble()
 
-    private val animHDir = RandomUtils.nextDouble(-1.0, 1.0)
-    private val animVDir = RandomUtils.nextDouble(-1.0, 1.0)
+    private val animHDir = RandomUtils.nextDouble(-0.5, 0.5)
+    private val animVDir = RandomUtils.nextDouble(-0.5, 0.5)
 
     var canRemove = false
     private var firstDraw = true
@@ -91,6 +91,8 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         val alpha = (if (fadeTimer.hasTimePassed(250L)) fadeTimer.hasTimeLeft(500L) else 250L - fadeTimer.hasTimeLeft(250L)).toFloat().coerceIn(0F, 250F) / 250F
         val progress = (if (fadeTimer.hasTimePassed(250L)) abs(fadeTimer.hasTimeLeft(250L) - 250L) else 250L - fadeTimer.hasTimeLeft(250L)).toFloat().coerceIn(0F, 500F) / 250F
         val textY = if (mc.gameSettings.thirdPersonView != 2) -1.0f else 1.0f
+        val offsetX = stringLength / 2.0 * 0.02 * progress.toDouble()
+        val offsetY = fontHeight / 2.0 * 0.02 * progress.toDouble()
         if (progress >= 2F) {
             canRemove = true
             return
@@ -98,12 +100,12 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         GlStateManager.pushMatrix()
         GlStateManager.enablePolygonOffset()
         GlStateManager.doPolygonOffset(1.0f, -1500000.0f)
-        GL11.glTranslated(posX + animHDir * progress - renderManager.renderPosX, posY + animVDir * progress - renderManager.renderPosY, posZ - renderManager.renderPosZ)
+        GL11.glTranslated(posX + animHDir * progress - offsetX - renderManager.renderPosX, posY + animVDir * progress - offsetY - renderManager.renderPosY, posZ - renderManager.renderPosZ)
         GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f)
-        GL11.glScalef(progress * -0.03F, progress * -0.03F, progress * 0.03F)
+        GL11.glScalef(progress * -0.02F, progress * -0.02F, progress * 0.02F)
         GlStateManager.rotate(textY * renderManager.playerViewX, 1.0f, 0.0f, 0.0f)
         GL11.glDepthMask(false)
-        Fonts.fontBangers.drawString(messageString, 0.5F, 0.5F, Color(0F, 0F, 0F, alpha * 0.75F).rgb)
+        Fonts.fontBangers.drawString(messageString, 0.25F, 0.25F, Color(0F, 0F, 0F, alpha * 0.75F).rgb)
         Fonts.fontBangers.drawString(messageString, 0F, 0F, ColorUtils.reAlpha(color, alpha).rgb)
         GL11.glColor4f(187.0f, 255.0f, 255.0f, 1.0f)
         GL11.glDepthMask(true)
