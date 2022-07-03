@@ -43,7 +43,7 @@ public class LongJump extends Module {
     private final FloatValue matrixHeightValue = new FloatValue("MarixFlag-Height", 5F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final BoolValue matrixKeepAliveValue = new BoolValue("MatrixFlag-KeepAlive", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final BoolValue matrixJBAValue = new BoolValue("MatrixFlag-JumpBeforeActivation", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
-    private final ListValue matrixJumpValue = new ListValue("MatrixFlag-Jump", new String[] {"Pre", "Post", "Off"}, "Pre", () -> modeValue.get().equalsIgnoreCase("matrixflag"));
+    private final BoolValue matrixJumpValue = new BoolValue("MatrixFlag-KeepJump", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
 
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
     private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
@@ -144,7 +144,7 @@ public class LongJump extends Module {
     public void onUpdate(final UpdateEvent event) {
         if (modeValue.get().equalsIgnoreCase("matrixflag")) {
             if (hasFell && !flagged) {
-                if (matrixJumpValue.get().equalsIgnoreCase("pre"))
+                if (matrixJumpValue.get())
                     mc.thePlayer.jump();
 
                 MovementUtils.strafe(matrixBoostValue.get());
@@ -152,11 +152,12 @@ public class LongJump extends Module {
 
                 if (matrixKeepAliveValue.get())
                     mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
-
-                if (matrixJumpValue.get().equalsIgnoreCase("post"))
-                    mc.thePlayer.jump();
-            } else if (mc.thePlayer.fallDistance > 0)
-                hasFell = true;
+            } else {
+                mc.thePlayer.motionX *= 0.8;
+                mc.thePlayer.motionZ *= 0.8;
+                if (mc.thePlayer.fallDistance > 0)
+                    hasFell = true;
+            }
             return;
         }
 

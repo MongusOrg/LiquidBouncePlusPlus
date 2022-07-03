@@ -268,12 +268,12 @@ public final class ESP2D extends Module {
                      textWidth = (endPosY - posY) * durabilityWidth; 
                      String healthDisplay = dFormat.format(entityLivingBase.getHealth()) + " §c❤";
                      String healthPercent = ((int) ((entityLivingBase.getHealth() / itemDurability) * 100F)) + "%";
-                     if (healthNumber.get() && (!hoverValue.get() || isHoveringEntity(entity)))
+                     if (healthNumber.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution)))
                         drawScaledString(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent, posX - 4.0 - mc.fontRendererObj.getStringWidth(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                      RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
                      if (hpBarMode.get().equalsIgnoreCase("dot")) {
                         Stencil.write(false);
-                        double idk = (endPosY - posY) / 10.0;
+                        double idk = (endPosY - posY + 0.5) / 10.0;
                         for (double kl = 0; kl < 10; kl++)
                            RenderUtils.drawRectBasedBorder(posX - 3.25F, posY - 0.25F + (idk * kl), posX - 1.75F, posY - 0.25F + (idk * (kl + 1.0)), 0.5F, -1);
                         Stencil.erase(false);
@@ -304,7 +304,7 @@ public final class ESP2D extends Module {
                         int maxDamage = itemStack.getMaxDamage();
                         itemDurability = (float)(maxDamage - itemStack.getItemDamage());
                         durabilityWidth = (endPosY - posY) * (double)itemDurability / (double)maxDamage;
-                        if (armorNumber.get() && (!hoverValue.get() || isHoveringEntity(entity))) 
+                        if (armorNumber.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution))) 
                            drawScaledString(((int) itemDurability) + "", endPosX + 4.0, (endPosY - durabilityWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                         RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
                         RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(70, 70, 250).getRGB());
@@ -313,7 +313,7 @@ public final class ESP2D extends Module {
                }
 
                
-               if (isPlayer && armorItems.get() && (!hoverValue.get() || isHoveringEntity(entity))) {
+               if (isPlayer && armorItems.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution))) {
                   entityLivingBase = (EntityLivingBase) entity;
                   EntityPlayer player = (EntityPlayer) entityLivingBase;
                   double yDist = (double)(endPosY - posY) / 4.0D;
@@ -360,6 +360,10 @@ public final class ESP2D extends Module {
       entityRenderer.setupOverlayRendering();
    }
 
+   private boolean isHovering(double minX, double maxX, double minY, double maxY, ScaledResolution sc) {
+      return sc.getScaledWidth() / 2 >= minX && sc.getScaledWidth() / 2 < maxX && sc.getScaledHeight() / 2 >= minY && sc.getScaledHeight() / 2 < maxY;
+   }
+
    private void drawScaledString(String text, double x, double y, double scale, int color) {
       GlStateManager.pushMatrix();
       GlStateManager.translate(x, y, x);
@@ -386,10 +390,6 @@ public final class ESP2D extends Module {
       GlStateManager.disableRescaleNormal();
       GlStateManager.disableBlend();
       GlStateManager.popMatrix();
-   }
-
-   private boolean isHoveringEntity(Entity ent) {
-      return ent != null && (ent == mc.thePlayer || (mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null && mc.objectMouseOver.entityHit == ent));
    }
 
    private void collectEntities() {
