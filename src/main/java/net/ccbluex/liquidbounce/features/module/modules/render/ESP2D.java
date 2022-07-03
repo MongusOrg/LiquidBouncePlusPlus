@@ -273,8 +273,8 @@ public final class ESP2D extends Module {
                      if (hpBarMode.get().equalsIgnoreCase("dot")) {
                         Stencil.write(false);
                         double idk = (endPosY - posY) / 10.0;
-                        for (int i = 0; i < 10; i++)
-                           RenderUtils.drawRectBasedBorder(posX - 3.25F, posY - 0.25F + idk * i, posX - 1.75F, posY - 0.25F + idk * (i + 1), 0.25F, 0);
+                        for (int kl = 0; kl < 10; kl++)
+                           RenderUtils.drawRectBasedBorder(posX - 3.25F, posY - 0.25F + idk * kl, posX - 1.75F, posY - 0.25F + idk * (kl + 1), 0.25F, 0);
                         Stencil.erase(false);
                      }
                      RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
