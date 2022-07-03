@@ -12,6 +12,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import net.ccbluex.liquidbounce.LiquidBounce;
+import net.ccbluex.liquidbounce.event.EntityDamageEvent;
 import net.ccbluex.liquidbounce.event.EntityMovementEvent;
 import net.ccbluex.liquidbounce.features.module.modules.misc.AntiExploit;
 import net.ccbluex.liquidbounce.features.module.modules.misc.Patcher;
@@ -199,8 +200,10 @@ public abstract class MixinNetHandlerPlayClient {
     public void handleDamagePacket(S19PacketEntityStatus packetIn, CallbackInfo callbackInfo) {
         if (packetIn.getOpCode() == 2) {
             Entity entity = packetIn.getEntity(this.clientWorldController);
-            if (entity != null && entity instanceof EntityPlayer) {
-                LiquidBounce.hud.handleDamage((EntityPlayer) entity);
+            if (entity != null) {
+                LiquidBounce.eventManager.callEvent(new EntityDamageEvent(entity));
+                if (entity instanceof EntityPlayer)
+                    LiquidBounce.hud.handleDamage((EntityPlayer) entity);
             }
         }
     }

@@ -35,6 +35,8 @@ class FreeCam : Module() {
     private var oldY = 0.0
     private var oldZ = 0.0
 
+    private var lastOnGround = false
+
     private val posLook = PosLookInstance()
 
     override fun onEnable() {
@@ -43,6 +45,7 @@ class FreeCam : Module() {
         oldX = mc.thePlayer.posX
         oldY = mc.thePlayer.posY
         oldZ = mc.thePlayer.posZ
+        lastOnGround = mc.thePlayer.onGround
 
         fakePlayer = EntityOtherPlayerMP(mc.theWorld, mc.thePlayer.gameProfile)
         fakePlayer!!.clonePlayer(mc.thePlayer, true)
@@ -58,11 +61,9 @@ class FreeCam : Module() {
         mc.thePlayer ?: return
         fakePlayer ?: return
 
-        if (undetectableValue.get()) {
-            mc.thePlayer.posX = fakePlayer!!.posX
-            mc.thePlayer.posY = fakePlayer!!.posY
-            mc.thePlayer.posZ = fakePlayer!!.posZ
-        }
+        mc.thePlayer.posX = fakePlayer!!.posX
+        mc.thePlayer.posY = fakePlayer!!.posY
+        mc.thePlayer.posZ = fakePlayer!!.posZ
 
         mc.theWorld.removeEntityFromWorld(fakePlayer!!.entityId)
         fakePlayer = null
@@ -97,11 +98,12 @@ class FreeCam : Module() {
         if (undetectableValue.get()) {
             if (packet is C04PacketPlayerPosition || packet is C05PacketPlayerLook) {
                 event.cancelEvent()
-                mc.netHandler.addToSendQueue(C03PacketPlayer(fakePlayer!!.onGround))
+                mc.netHandler.addToSendQueue(C03PacketPlayer(lastOnGround))
             } else if (packet is C06PacketPlayerPosLook) {
                 if (posLook.equalFlag(packet)) {
                     fakePlayer!!.setPosition(packet.x, packet.y, packet.z)
                     fakePlayer!!.onGround = packet.onGround
+                    lastOnGround = packet.onGround
                     fakePlayer!!.rotationYaw = packet.yaw
                     fakePlayer!!.rotationPitch = packet.pitch
                     fakePlayer!!.rotationYawHead = packet.yaw
@@ -110,12 +112,12 @@ class FreeCam : Module() {
                     packet.x = fakePlayer!!.posX
                     packet.y = fakePlayer!!.posY
                     packet.z = fakePlayer!!.posZ
-                    packet.onGround = fakePlayer!!.onGround
+                    packet.onGround = lastOnGround
                     packet.yaw = fakePlayer!!.rotationYaw
                     packet.pitch = fakePlayer!!.rotationPitch
                 } else {
                     event.cancelEvent()
-                    mc.netHandler.addToSendQueue(C03PacketPlayer(fakePlayer!!.onGround))
+                    mc.netHandler.addToSendQueue(C03PacketPlayer(lastOnGround))
                 }
             }
         } else if (packet is C03PacketPlayer)

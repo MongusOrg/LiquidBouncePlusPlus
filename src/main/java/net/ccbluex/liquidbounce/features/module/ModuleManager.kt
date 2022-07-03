@@ -208,7 +208,8 @@ class ModuleManager : Listenable {
                 HoverDetails::class.java,
                 AutoBreak::class.java,
                 CivBreak::class.java,
-                Nuker::class.java
+                Nuker::class.java,
+                SuperheroFX::class.java
         )
 
         registerModule(Fucker)

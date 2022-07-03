@@ -27,63 +27,62 @@ import kotlin.math.abs
 
 @ModuleInfo(name = "DamageParticle", spacedName = "Damage Particle", description = "Allows you to see targets damage.", category = ModuleCategory.RENDER)
 class DamageParticle : Module() {
-    private val healthData=HashMap<Int,Float>()
-    private val particles=ArrayList<SingleParticle>()
+    private val healthData = HashMap<Int, Float>()
+    private val particles = ArrayList<SingleParticle>()
 
-    private val aliveTicks= IntegerValue("AliveTicks",20,10,50)
-    private val sizeValue= IntegerValue("Size",3,1,7)
+    private val aliveTicks = IntegerValue("AliveTicks", 20, 10, 50)
+    private val sizeValue = IntegerValue("Size", 3, 1, 7)
     private val customColor = BoolValue("CustomColor", false)
     private val red = IntegerValue("Red", 255, 0, 255, { customColor.get() })
     private val green = IntegerValue("Green", 255, 0, 255, { customColor.get() })
     private val blue = IntegerValue("Blue", 255, 0, 255, { customColor.get() })
 
     @EventTarget
-    fun onUpdate(event: UpdateEvent){
-        synchronized(particles){
-            for(entity in mc.theWorld.loadedEntityList){
-                if(entity is EntityLivingBase && EntityUtils.isSelected(entity,true)){
-                    val lastHealth=healthData.getOrDefault(entity.entityId,entity.maxHealth)
+    fun onUpdate(event: UpdateEvent) {
+        synchronized(particles) {
+            for (entity in mc.theWorld.loadedEntityList) {
+                if (entity is EntityLivingBase && EntityUtils.isSelected(entity, true)) {
+                    val lastHealth = healthData.getOrDefault(entity.entityId, entity.maxHealth)
                     healthData[entity.entityId] = entity.health
-                    if(lastHealth==entity.health) continue
+                    if (lastHealth == entity.health) continue
 
-                    val prefix=if (!customColor.get()) (if(lastHealth>entity.health){"§c"}else{"§a"}) else (if(lastHealth>entity.health){"-"}else{"+"})
-                    particles.add(SingleParticle(prefix+BigDecimal(abs(lastHealth-entity.health).toDouble()).setScale(1,BigDecimal.ROUND_HALF_UP).toDouble()
-                        ,entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1
-                        ,entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0
-                        ,entity.posZ - 0.5 + Random(System.currentTimeMillis() + 1L).nextInt(5).toDouble() * 0.1)
+                    val prefix = if (!customColor.get()) (if (lastHealth > entity.health) "§c" else "§a") else (if (lastHealth > entity.health) "-" else "+")
+                    particles.add(SingleParticle(prefix + BigDecimal(abs(lastHealth - entity.health).toDouble()).setScale(1, BigDecimal.ROUND_HALF_UP).toDouble(),
+                        entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1,
+                        entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0,
+                        entity.posZ - 0.5 + Random(System.currentTimeMillis() + 1L).nextInt(5).toDouble() * 0.1)
                     )
                 }
             }
 
-            val needRemove=ArrayList<SingleParticle>()
-            for(particle in particles){
+            val needRemove = ArrayList<SingleParticle>()
+            for (particle in particles) {
                 particle.ticks++
-                if(particle.ticks>aliveTicks.get()){
+                if (particle.ticks>aliveTicks.get())
                     needRemove.add(particle)
-                }
             }
-            for(particle in needRemove){
+
+            for (particle in needRemove)
                 particles.remove(particle)
-            }
         }
     }
 
     @EventTarget
-    fun onRender3d(event: Render3DEvent){
-        synchronized(particles){
-            val renderManager=mc.renderManager
-            val size = sizeValue.get()*0.01
+    fun onRender3d(event: Render3DEvent) {
+        synchronized(particles) {
+            val renderManager = mc.renderManager
+            val size = sizeValue.get() * 0.01
 
-            for(particle in particles){
-                val n: Double = particle.posX - renderManager.renderPosX
-                val n2: Double = particle.posY - renderManager.renderPosY
-                val n3: Double = particle.posZ - renderManager.renderPosZ
+            for (particle in particles) {
+                val n = particle.posX - renderManager.renderPosX
+                val n2 = particle.posY - renderManager.renderPosY
+                val n3 = particle.posZ - renderManager.renderPosZ
                 GlStateManager.pushMatrix()
                 GlStateManager.enablePolygonOffset()
                 GlStateManager.doPolygonOffset(1.0f, -1500000.0f)
                 GlStateManager.translate(n.toFloat(), n2.toFloat(), n3.toFloat())
                 GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f)
-                val textY = if (mc.gameSettings.thirdPersonView == 2) { -1.0f } else { 1.0f }
+                val textY = if (mc.gameSettings.thirdPersonView == 2) -1.0f else 1.0f
 
                 GlStateManager.rotate(renderManager.playerViewX, textY, 0.0f, 0.0f)
                 GlStateManager.scale(-size, -size, size)
@@ -104,12 +103,12 @@ class DamageParticle : Module() {
     }
 
     @EventTarget
-    fun onWorld(event: WorldEvent){
+    fun onWorld(event: WorldEvent) {
         particles.clear()
         healthData.clear()
     }
 }
 
-class SingleParticle(val str:String,val posX:Double,val posY:Double,val posZ:Double){
-    var ticks=0
+class SingleParticle(val str: String, val posX: Double, val posY: Double, val posZ: Double) {
+    var ticks = 0
 }
