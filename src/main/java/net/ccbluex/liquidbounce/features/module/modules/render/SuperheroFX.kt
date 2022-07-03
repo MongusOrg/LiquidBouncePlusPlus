@@ -82,11 +82,16 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
     private val fontHeight = Fonts.fontBangers.FONT_HEIGHT.toDouble()
 
     var canRemove = false
+    private var firstDraw = true
 
     fun draw() {
         val renderManager = mc.renderManager ?: return
-        val alpha = (if (fadeTimer.hasTimePassed(500L)) fadeTimer.hasTimeLeft(1000L) else 500L - fadeTimer.hasTimeLeft(500L)).toFloat().coerceIn(0F, 500F) / 500F
-        val progress = (if (fadeTimer.hasTimePassed(500L)) abs(fadeTimer.hasTimeLeft(500L) - 500L) else 500L - fadeTimer.hasTimeLeft(500L)).toFloat().coerceIn(0F, 1000F) / 500F
+        if (firstDraw) {
+            fadeTimer.reset()
+            firstDraw = false
+        }
+        val alpha = (if (fadeTimer.hasTimePassed(1000L)) fadeTimer.hasTimeLeft(2000L) else 1000L - fadeTimer.hasTimeLeft(1000L)).toFloat().coerceIn(0F, 1000F) / 1000F
+        val progress = (if (fadeTimer.hasTimePassed(1000L)) abs(fadeTimer.hasTimeLeft(1000L) - 1000L) else 1000L - fadeTimer.hasTimeLeft(1000L)).toFloat().coerceIn(0F, 2000F) / 1000F
         val textY = if (mc.gameSettings.thirdPersonView == 2) -1.0f else 1.0f
         ClientUtils.displayChatMessage("$progress, $alpha")
         if (progress >= 2F) {
