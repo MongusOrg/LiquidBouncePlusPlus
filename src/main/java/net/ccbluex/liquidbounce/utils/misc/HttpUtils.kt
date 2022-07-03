@@ -34,7 +34,7 @@ object HttpUtils {
         val httpConnection = URL(url).openConnection() as HttpURLConnection
 
         httpConnection.requestMethod = method
-        httpConnection.connectTimeout = 2000
+        httpConnection.connectTimeout = 10000
         httpConnection.readTimeout = 10000
 
         httpConnection.setRequestProperty("User-Agent", agent)

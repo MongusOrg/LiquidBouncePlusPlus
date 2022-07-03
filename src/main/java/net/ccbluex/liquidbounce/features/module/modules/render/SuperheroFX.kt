@@ -16,8 +16,9 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.MinecraftInstance
+import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.EntityUtils
+import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.timer.MSTimer
@@ -34,6 +35,8 @@ import kotlin.math.abs
 @ModuleInfo(name = "SuperheroFX", spacedName = "Superhero FX", description = "Creates comic-like words as flying particles.", category = ModuleCategory.RENDER)
 class SuperheroFX : Module() {
 
+    private val debugValue = BoolValue("Debug", false)
+
     private val textParticles = mutableListOf<FXParticle>()
 
     @EventTarget
@@ -43,6 +46,7 @@ class SuperheroFX : Module() {
     fun onEntityDamage(event: EntityDamageEvent) {
         val entity = event.damagedEntity
         if (mc.theWorld.loadedEntityList.contains(entity)) {
+            ClientUtils.displayChatMessage("added particle")
             textParticles.add(
                 FXParticle(
                     entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1,
@@ -58,9 +62,11 @@ class SuperheroFX : Module() {
         val removeList = mutableListOf<FXParticle>()
         for (particle in textParticles) {
             if (particle.canRemove) {
+                ClientUtils.displayChatMessage("removed")
                 removeList.add(particle)
                 continue
             }
+            ClientUtils.displayChatMessage("drawn")
             particle.draw()
         }
         textParticles.removeAll(removeList)
@@ -91,9 +97,9 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         GlStateManager.pushMatrix()
         GlStateManager.enablePolygonOffset()
         GlStateManager.doPolygonOffset(1.0f, -1500000.0f)
-        GL11.glTranslated(posX - transX - renderManager.renderPosX, posY - transY - renderManager.renderPosY, posZ - transX - renderManager.renderPosZ)
+        GL11.glTranslated(posX - transX - renderManager.renderPosX, posY - transY - renderManager.renderPosY, posZ - renderManager.renderPosZ)
         GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f)
-        GL11.glScalef(-progress * 0.03F, -progress * 0.03F, progress * 0.03F)
+        GL11.glScalef(-0.03F, -0.03F, 0.03F)
         GlStateManager.rotate(renderManager.playerViewX, textY, 0.0f, 0.0f)
         GL11.glDepthMask(false)
         Fonts.fontBangers.drawStringWithShadow(messageString, 0F, 0F, ColorUtils.reAlpha(color, alpha).rgb)
