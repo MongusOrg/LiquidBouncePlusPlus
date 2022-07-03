@@ -30,7 +30,7 @@ class FreeCam : Module() {
     private val noClipValue = BoolValue("NoClip", true)
     val undetectableValue = BoolValue("Undetectable", true)
 
-    private val fakePlayer: EntityOtherPlayerMP? = null
+    private var fakePlayer: EntityOtherPlayerMP? = null
     private var oldX = 0.0
     private var oldY = 0.0
     private var oldZ = 0.0
