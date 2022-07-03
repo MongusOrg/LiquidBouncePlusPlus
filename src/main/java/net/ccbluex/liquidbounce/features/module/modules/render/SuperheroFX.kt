@@ -37,16 +37,18 @@ class SuperheroFX : Module() {
     private val textParticles = mutableListOf<FXParticle>()
 
     @EventTarget
-    fun onWorld(event: WorldClient) = textParticles.clear()
+    fun onWorld(event: WorldEvent) = textParticles.clear()
 
     @EventTarget
     fun onEntityDamage(event: EntityDamageEvent) {
-        if (mc.theWorld.loadedEntityList.contains(event.damagedEntity)) {
+        val entity = event.damagedEntity
+        if (mc.theWorld.loadedEntityList.contains(entity)) {
             textParticles.add(
                 FXParticle(
-                    entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1
-                    entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0
-                    entity.posZ - 0.5 + Random(System.currentTimeMillis() + 1L).nextInt(5).toDouble() * 0.1)
+                    entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1,
+                    entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0,
+                    entity.posZ - 0.5 + Random(System.currentTimeMillis() + 1L).nextInt(5).toDouble() * 0.1
+                )
             )
         }
     }
@@ -76,6 +78,7 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
     var canRemove = false
 
     fun draw() {
+        val renderManager = mc.renderManager ?: return
         val alpha = (if (fadeTimer.hasTimePassed(500L)) fadeTimer.hasTimeLeft(1000L) else 500L - fadeTimer.hasTimeLeft(500L)).toFloat().coerceIn(0F, 500F) / 500F
         val progress = (if (fadeTimer.hasTimePassed(500L)) abs(fadeTimer.hasTimeLeft(500L) - 500L) else 500L - fadeTimer.hasTimeLeft(500L)).toFloat().coerceIn(0F, 1000F) / 500F
         val transX = stringLength / 2.0 * progress.toDouble()
@@ -88,7 +91,7 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         GlStateManager.pushMatrix()
         GlStateManager.enablePolygonOffset()
         GlStateManager.doPolygonOffset(1.0f, -1500000.0f)
-        GL11.glTranslated(posX - transX - mc.renderManager.renderPosX, posY - transY - mc.renderManager.renderPosY, posZ - transX - mc.renderManager.renderPosZ)
+        GL11.glTranslated(posX - transX - renderManager.renderPosX, posY - transY - renderManager.renderPosY, posZ - transX - renderManager.renderPosZ)
         GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f)
         GL11.glScalef(-progress * 0.03F, -progress * 0.03F, progress * 0.03F)
         GlStateManager.rotate(renderManager.playerViewX, textY, 0.0f, 0.0f)
