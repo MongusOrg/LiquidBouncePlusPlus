@@ -16,9 +16,7 @@ public class PosLookInstance {
     private float yaw = 0;
     private float pitch = 0;
 
-    public PosLookInstance() {
-        
-    }
+    public PosLookInstance() {}
 
     public PosLookInstance(double a, double b, double c, float d, float e) {
         this.x = a;

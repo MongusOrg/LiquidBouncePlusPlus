@@ -131,6 +131,8 @@ class KillAura : Module() {
     private val noSendRot = BoolValue("NoSendRotation", true, { rotations.get().equals("spin", true) })
     private val noHitCheck = BoolValue("NoHitCheck", false, { !rotations.get().equals("none", true) })
 
+    private val blinkCheck = BoolValue("BlinkCheck", true)
+
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor", "HurtResistance", "HurtTime", "HealthAbsorption", "RegenAmplifier"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
 
@@ -1007,7 +1009,7 @@ class KillAura : Module() {
      */
     private val cancelRun: Boolean
         get() = mc.thePlayer.isSpectator || !isAlive(mc.thePlayer)
-                || LiquidBounce.moduleManager[Blink::class.java]!!.state || LiquidBounce.moduleManager[FreeCam::class.java]!!.state || 
+                || (blinkCheck.get() && LiquidBounce.moduleManager[Blink::class.java]!!.state) || LiquidBounce.moduleManager[FreeCam::class.java]!!.state || 
                 (noScaffValue.get() && LiquidBounce.moduleManager[Scaffold::class.java]!!.state)
 
     /**

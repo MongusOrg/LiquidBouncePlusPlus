@@ -20,6 +20,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification;
 import net.ccbluex.liquidbounce.utils.ClientUtils;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
 import net.ccbluex.liquidbounce.utils.PacketUtils;
+import net.ccbluex.liquidbounce.utils.PosLookInstance;
 import net.ccbluex.liquidbounce.utils.timer.MSTimer;
 import net.ccbluex.liquidbounce.value.*;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -41,6 +42,8 @@ public class LongJump extends Module {
     private final FloatValue matrixBoostValue = new FloatValue("MatrixFlag-Boost", 1.95F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final FloatValue matrixHeightValue = new FloatValue("MarixFlag-Height", 5F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final BoolValue matrixKeepAliveValue = new BoolValue("MatrixFlag-KeepAlive", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
+    private final BoolValue matrixJBAValue = new BoolValue("MatrixFlag-JumpBeforeActivation", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
+    private final ListValue matrixJumpValue = new ListValue("MatrixFlag-Jump", new String[] {"Pre", "Post", "Off"}, "Pre", () -> modeValue.get().equalsIgnoreCase("matrixflag"));
 
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
     private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
@@ -78,11 +81,11 @@ public class LongJump extends Module {
     private int pearlState = 0;
 
     private double lastMotX, lastMotY, lastMotZ;
-    private boolean flagResponse = false;
     private boolean flagged = false;
     private boolean hasFell = false;
 
     private MSTimer dmgTimer = new MSTimer();
+    private PosLookInstance posLookInstance = new PosLookInstance();
 
     public void onEnable() {
         if (mc.thePlayer == null) return;
@@ -94,12 +97,12 @@ public class LongJump extends Module {
         hpxDamage = false;
         damaged = false;
         flagged = false;
-        flagResponse = false;
         hasFell = false;
         pearlState = 0;
         verusJumpTimes = 0;
 
         dmgTimer.reset();
+        posLookInstance.reset();
 
         double x = mc.thePlayer.posX;
         double y = mc.thePlayer.posY;
@@ -128,19 +131,30 @@ public class LongJump extends Module {
             }
         }
 
-        if (modeValue.get().equalsIgnoreCase("matrixflag") && mc.thePlayer.onGround)
-            mc.thePlayer.jump();
+        if (modeValue.get().equalsIgnoreCase("matrixflag")) {
+            if (matrixJBAValue.get()) {
+                if (mc.thePlayer.onGround)
+                    mc.thePlayer.jump();
+            } else
+                hasFell = true;
+        }
     }
 
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
-        if (modeValue.get().equalsIgnoreCase("matrixflag") && !flagged) {
-            if (hasFell) {
+        if (modeValue.get().equalsIgnoreCase("matrixflag")) {
+            if (hasFell && !flagged) {
+                if (matrixJumpValue.get().equalsIgnoreCase("pre"))
+                    mc.thePlayer.jump();
+
                 MovementUtils.strafe(matrixBoostValue.get());
                 mc.thePlayer.motionY = matrixHeightValue.get();
 
                 if (matrixKeepAliveValue.get())
                     mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
+
+                if (matrixJumpValue.get().equalsIgnoreCase("post"))
+                    mc.thePlayer.jump();
             } else if (mc.thePlayer.fallDistance > 0)
                 hasFell = true;
             return;
@@ -331,9 +345,9 @@ public class LongJump extends Module {
             }
         }
 
-        if(autoJumpValue.get() && mc.thePlayer.onGround && MovementUtils.isMoving()) {
-                jumped = true;
-                mc.thePlayer.jump();
+        if (autoJumpValue.get() && mc.thePlayer.onGround && MovementUtils.isMoving()) {
+            jumped = true;
+            mc.thePlayer.jump();
         }
     }
 
@@ -368,16 +382,18 @@ public class LongJump extends Module {
         }
         if (event.getPacket() instanceof S08PacketPlayerPosLook) {
             flagged = true;
-            flagResponse = true;
+            posLookInstance.set((S08PacketPlayerPosLook) event.getPacket());
             lastMotX = mc.thePlayer.motionX;
             lastMotY = mc.thePlayer.motionY;
             lastMotZ = mc.thePlayer.motionZ;
         }
-        if (event.getPacket() instanceof C03PacketPlayer.C06PacketPlayerPosLook && flagResponse) {
-            flagResponse = false;
-            mc.thePlayer.motionX = lastMotX;
-            mc.thePlayer.motionY = lastMotY;
-            mc.thePlayer.motionZ = lastMotZ;
+        if (event.getPacket() instanceof C03PacketPlayer.C06PacketPlayerPosLook) {
+            if (posLookInstance.equalFlag((C03PacketPlayer.C06PacketPlayerPosLook) event.getPacket())) {
+                posLookInstance.reset();
+                mc.thePlayer.motionX = lastMotX;
+                mc.thePlayer.motionY = lastMotY;
+                mc.thePlayer.motionZ = lastMotZ;
+            }
         }
     }
 

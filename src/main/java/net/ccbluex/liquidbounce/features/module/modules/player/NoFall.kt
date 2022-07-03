@@ -47,7 +47,7 @@ import kotlin.math.sqrt
 
 @ModuleInfo(name = "NoFall", spacedName = "No Fall", description = "Prevents you from taking fall damage.", category = ModuleCategory.PLAYER)
 class NoFall : Module() {
-    val typeValue = ListValue("Type", arrayOf("Edit", "Packet", "MLG", "AAC", "Spartan", "CubeCraft", "Hypixel", "Phase", "Verus", "Medusa", "Motion", "Matrix"), "Edit")
+    val typeValue = ListValue("Type", arrayOf("Edit", "Packet", "MLG", "AAC", "Spartan", "CubeCraft", "Hypixel", "Phase", "Verus", "Medusa", "Motion", "Matrix", "Vulcan"), "Edit")
 
     val editMode = ListValue("Edit-Mode", arrayOf("Always", "Default", "Smart", "NoGround", "Damage"), "Always", { typeValue.get().equals("edit", true) })
     private val packetMode = ListValue("Packet-Mode", arrayOf("Default", "Smart"), "Default", { typeValue.get().equals("packet", true) })
@@ -91,6 +91,10 @@ class NoFall : Module() {
     private var modifiedTimer = false
     private var packetModify = false
     private var needSpoof = false
+    private var doSpoof = false
+    private var nextSpoof = false
+    private var vulcantNoFall = true
+    private var vulcanNoFall = false
     private var lastFallDistRounded = 0
 
     override fun onEnable() {
@@ -111,6 +115,8 @@ class NoFall : Module() {
         isDmgFalling = false
         matrixFlagWait = 0
         aac4FlagCooldown.reset()
+        nextSpoof = false
+        doSpoof = false
     }
     
     override fun onDisable() {
@@ -133,6 +139,12 @@ class NoFall : Module() {
         matrixFlagWait = 0
         aac4FlagCooldown.reset()
         mc.timer.timerSpeed = 1.0f
+    }
+
+    @EventTarget
+    fun onWorld(event: WorldEvent) {
+        vulcantNoFall = true
+        vulcanNoFall = false
     }
 
     @EventTarget(ignoreCondition = true)
@@ -208,7 +220,7 @@ class NoFall : Module() {
                     if (mc.thePlayer.fallDistance - mc.thePlayer.motionY > 3F) {
                         mc.thePlayer.fallDistance = 0.0f
                         matrixSend = true
-                        mc.timer.timerSpeed = 0.45f
+                        mc.timer.timerSpeed = 0.5f
                         modifiedTimer = true
                     }
                 }
@@ -332,6 +344,7 @@ class NoFall : Module() {
                         Timer().schedule(100L) {
                             try {
                                 mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(fallPos.x.toDouble(), fallPos.y.toDouble(), fallPos.z.toDouble(), true))
+                                mc.thePlayer.setPosition(fallPos.x.toDouble(), fallPos.y.toDouble(), fallPos.z.toDouble())
                             } catch (e: Exception) {
                                 // ignore, may leave unexpectedly.
                             }
@@ -355,6 +368,24 @@ class NoFall : Module() {
                     matrixFallTicks++
                 } else if (mc.thePlayer.onGround)
                     matrixFallTicks = 1
+            }
+            "vulcan" -> {
+                if (!vulcanNoFall && mc.thePlayer.fallDistance > 3.25)
+                    vulcanNoFall = true
+                if (vulcanNoFall && vulcantNoFall && mc.thePlayer.onGround)
+                    vulcantNoFall = false
+                if (vulcantNoFall) return // Possible flag
+                if (nextSpoof) {
+                    mc.thePlayer.motionY = -0.1
+                    mc.thePlayer.fallDistance = -0.1F
+                    MovementUtils.strafe(0.3F)
+                    nextSpoof = false
+                }
+                if (mc.thePlayer.fallDistance > 3.5625F) {
+                    mc.thePlayer.fallDistance = 0F
+                    doSpoof = true
+                    nextSpoof = true
+                }
             }
         }
     }
@@ -484,7 +515,16 @@ class NoFall : Module() {
         if (packet is C03PacketPlayer) {
             if (matrixSend) {
                 matrixSend = false
+                event.cancelEvent()
                 PacketUtils.sendPacketNoEvent(C03PacketPlayer.C04PacketPlayerPosition(packet.x, packet.y, packet.z, true))
+                PacketUtils.sendPacketNoEvent(C03PacketPlayer.C04PacketPlayerPosition(packet.x, packet.y, packet.z, false))
+            } 
+            
+            if (doSpoof) {
+                packet.onGround = true
+                doSpoof = false
+                packet.y = Math.round(mc.thePlayer.posY * 2).toDouble() / 2
+                mc.thePlayer.setPosition(mc.thePlayer.posX, packet.y, mc.thePlayer.posZ)
             }
 
             if (typeValue.get().equals("edit", true)) {

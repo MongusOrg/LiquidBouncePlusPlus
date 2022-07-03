@@ -28,9 +28,10 @@ import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
 import net.ccbluex.liquidbounce.utils.item.ItemUtils;
-import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.utils.render.BlendUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
+import net.ccbluex.liquidbounce.utils.render.Stencil;
+import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -61,11 +62,14 @@ public final class ESP2D extends Module {
    public final BoolValue outline = new BoolValue("Outline", true);
    public final ListValue boxMode = new ListValue("Mode", new String[]{"Box", "Corners"}, "Box");
    public final BoolValue healthBar = new BoolValue("Health-bar", true);
+   public final ListValue hpBarMode = new ListValue("HBar-Mode", new String[]{"Dot", "Line"}, "Dot", () -> healthBar.get());
    public final BoolValue armorBar = new BoolValue("Armor-bar", true);
    public final BoolValue healthNumber = new BoolValue("HealthNumber", true, () -> healthBar.get());
-   public final BoolValue armorNumber = new BoolValue("ArmorNumber", true, () -> armorBar.get());
+   public final ListValue hpMode = new ListValue("HP-Mode", new String[]{"Health", "Percent"}, "Health", () -> healthBar.get() && healthNumber.get());
+   public final BoolValue armorNumber = new BoolValue("ItemArmorNumber", true, () -> armorBar.get());
    public final BoolValue armorItems = new BoolValue("ArmorItems", true);
    public final BoolValue armorDur = new BoolValue("ArmorDurability", true, () -> armorItems.get());
+   public final BoolValue hoverValue = new BoolValue("Details-HoverOnly", false);
    public final BoolValue tagsValue = new BoolValue("Tags", true);
    public final BoolValue tagsBGValue = new BoolValue("Tags-Background", true, () -> tagsValue.get());
    public final BoolValue itemTagsValue = new BoolValue("Item-Tags", true);
@@ -262,8 +266,17 @@ public final class ESP2D extends Module {
 
                      durabilityWidth = (double)(armorValue / itemDurability);
                      textWidth = (endPosY - posY) * durabilityWidth; 
-                     String healthDisplay = dFormat.format(armorValue) + " §c❤";
-                     if (healthNumber.get()) drawScaledString(healthDisplay, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
+                     String healthDisplay = dFormat.format(entityLivingBase.getHealth()) + " §c❤";
+                     String healthPercent = ((int) ((entityLivingBase.getHealth() / itemDurability) * 100F)) + "%";
+                     if (healthNumber.get() && (!hoverValue.get() || isHoveringEntity(entity)))
+                        drawScaledString(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
+                     if (hpBarMode.get().equalsIgnoreCase("dot")) {
+                        Stencil.write(false);
+                        double idk = (endPosY - posY) / 10.0;
+                        for (int i = 0; i < 10; i++)
+                           RenderUtils.drawRectBasedBorder(posX - 3.25F, posY - 0.25F + idk * i, posX - 1.75F, posY - 0.25F + idk * (i + 1), 0.25F, 0);
+                        Stencil.erase(false);
+                     }
                      RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
                      if (armorValue > 0.0F) {
                         int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
@@ -272,6 +285,8 @@ public final class ESP2D extends Module {
                         if (absorption.get() && tagY > 0.0F)
                            RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - (endPosY - posY) / 6.0D * (double)tagY / 2.0D, (new Color(Potion.absorption.getLiquidColor())).getRGB());
                      }
+                     if (hpBarMode.get().equalsIgnoreCase("dot"))
+                        Stencil.dispose();
                   }
                }
 
@@ -282,23 +297,23 @@ public final class ESP2D extends Module {
                      double armorWidth = (endPosY - posY) * (double)armorValue / 20.0D;
                      RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
                      if (armorValue > 0.0F)
-                        RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(40, 40, 230).getRGB());
+                        RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(70, 70, 250).getRGB());
                   } else if (entity instanceof EntityItem) {
                      ItemStack itemStack = ((EntityItem)entity).getEntityItem();
                      if (itemStack.isItemStackDamageable()) {
                         int maxDamage = itemStack.getMaxDamage();
                         itemDurability = (float)(maxDamage - itemStack.getItemDamage());
                         durabilityWidth = (endPosY - posY) * (double)itemDurability / (double)maxDamage;
-                        if (armorNumber.get()) 
+                        if (armorNumber.get() && (!hoverValue.get() || isHoveringEntity(entity))) 
                            drawScaledString(((int) itemDurability) + "", endPosX + 4.0, (endPosY - durabilityWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                         RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
-                        RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(40, 40, 230).getRGB());
+                        RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(70, 70, 250).getRGB());
                      }
                   }
                }
 
                
-               if (isPlayer && armorItems.get()) {
+               if (isPlayer && armorItems.get() && (!hoverValue.get() || isHoveringEntity(entity))) {
                   entityLivingBase = (EntityLivingBase) entity;
                   EntityPlayer player = (EntityPlayer) entityLivingBase;
                   double yDist = (double)(endPosY - posY) / 4.0D;
@@ -371,6 +386,10 @@ public final class ESP2D extends Module {
       GlStateManager.disableRescaleNormal();
       GlStateManager.disableBlend();
       GlStateManager.popMatrix();
+   }
+
+   private boolean isHoveringEntity(Entity ent) {
+      return ent != null && mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null && mc.objectMouseOver.entityHit == ent;
    }
 
    private void collectEntities() {
