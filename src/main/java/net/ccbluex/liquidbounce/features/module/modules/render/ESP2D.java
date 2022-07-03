@@ -269,15 +269,15 @@ public final class ESP2D extends Module {
                      String healthDisplay = dFormat.format(entityLivingBase.getHealth()) + " §c❤";
                      String healthPercent = ((int) ((entityLivingBase.getHealth() / itemDurability) * 100F)) + "%";
                      if (healthNumber.get() && (!hoverValue.get() || isHoveringEntity(entity)))
-                        drawScaledString(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent, posX - 4.0 - mc.fontRendererObj.getStringWidth(healthDisplay) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
+                        drawScaledString(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent, posX - 4.0 - mc.fontRendererObj.getStringWidth(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
+                     RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
                      if (hpBarMode.get().equalsIgnoreCase("dot")) {
                         Stencil.write(false);
                         double idk = (endPosY - posY) / 10.0;
-                        for (int kl = 0; kl < 10; kl++)
-                           RenderUtils.drawRectBasedBorder(posX - 3.25F, posY - 0.25F + idk * kl, posX - 1.75F, posY - 0.25F + idk * (kl + 1), 0.25F, 0);
+                        for (double kl = 0; kl < 10; kl++)
+                           RenderUtils.drawRectBasedBorder(posX - 3.25F, posY - 0.25F + (idk * kl), posX - 1.75F, posY - 0.25F + (idk * (kl + 1.0)), 0.5F, -1);
                         Stencil.erase(false);
                      }
-                     RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
                      if (armorValue > 0.0F) {
                         int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
                         RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - textWidth, healthColor);
@@ -389,7 +389,7 @@ public final class ESP2D extends Module {
    }
 
    private boolean isHoveringEntity(Entity ent) {
-      return ent != null && mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null && mc.objectMouseOver.entityHit == ent;
+      return ent != null && (ent == mc.thePlayer || (mc.objectMouseOver != null && mc.objectMouseOver.entityHit != null && mc.objectMouseOver.entityHit == ent));
    }
 
    private void collectEntities() {
