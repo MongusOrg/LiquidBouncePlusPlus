@@ -47,7 +47,7 @@ class SuperheroFX : Module() {
             textParticles.add(
                 FXParticle(
                     entity.posX - 0.5 + Random(System.currentTimeMillis()).nextInt(5).toDouble() * 0.1,
-                    entity.entityBoundingBox.minY + RandomUtils.nextDouble(0.0, entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY),
+                    entity.entityBoundingBox.minY + (entity.entityBoundingBox.maxY - entity.entityBoundingBox.minY) / 2.0,
                     entity.posZ - 0.5 + Random(System.currentTimeMillis() + 1L).nextInt(5).toDouble() * 0.1
                 )
             )
@@ -100,7 +100,7 @@ class FXParticle(val posX: Double, val posY: Double, val posZ: Double): Minecraf
         GlStateManager.pushMatrix()
         GlStateManager.enablePolygonOffset()
         GlStateManager.doPolygonOffset(1.0f, -1500000.0f)
-        GL11.glTranslated(posX + animHDir * progress - offsetX - renderManager.renderPosX, posY + animVDir * progress - offsetY - renderManager.renderPosY, posZ - renderManager.renderPosZ)
+        GL11.glTranslated(posX + animHDir * progress - offsetX - renderManager.renderPosX, posY + animVDir * progress - offsetY - renderManager.renderPosY, posZ + animHDir * progress - offsetX - renderManager.renderPosZ)
         GlStateManager.rotate(-renderManager.playerViewY, 0.0f, 1.0f, 0.0f)
         GL11.glScalef(progress * -0.02F, progress * -0.02F, progress * 0.02F)
         GlStateManager.rotate(textY * renderManager.playerViewX, 1.0f, 0.0f, 0.0f)
