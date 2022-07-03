@@ -143,15 +143,17 @@ public class LongJump extends Module {
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
         if (modeValue.get().equalsIgnoreCase("matrixflag")) {
-            if (hasFell && !flagged) {
-                if (matrixJumpValue.get())
-                    mc.thePlayer.jump();
+            if (hasFell) {
+                if (!flagged) {
+                    if (matrixJumpValue.get())
+                        mc.thePlayer.jump();
 
-                MovementUtils.strafe(matrixBoostValue.get());
-                mc.thePlayer.motionY = matrixHeightValue.get();
+                    MovementUtils.strafe(matrixBoostValue.get());
+                    mc.thePlayer.motionY = matrixHeightValue.get();
 
-                if (matrixKeepAliveValue.get())
-                    mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
+                    if (matrixKeepAliveValue.get())
+                        mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
+                }
             } else {
                 mc.thePlayer.motionX *= 0.8;
                 mc.thePlayer.motionZ *= 0.8;
@@ -384,6 +386,7 @@ public class LongJump extends Module {
         if (event.getPacket() instanceof S08PacketPlayerPosLook) {
             flagged = true;
             posLookInstance.set((S08PacketPlayerPosLook) event.getPacket());
+            ClientUtils.displayChatMessage("§e§lPreparing...");
             lastMotX = mc.thePlayer.motionX;
             lastMotY = mc.thePlayer.motionY;
             lastMotZ = mc.thePlayer.motionZ;
@@ -391,6 +394,7 @@ public class LongJump extends Module {
         if (event.getPacket() instanceof C03PacketPlayer.C06PacketPlayerPosLook) {
             if (posLookInstance.equalFlag((C03PacketPlayer.C06PacketPlayerPosLook) event.getPacket())) {
                 posLookInstance.reset();
+                ClientUtils.displayChatMessage("§a§lLaunched!");
                 mc.thePlayer.motionX = lastMotX;
                 mc.thePlayer.motionY = lastMotY;
                 mc.thePlayer.motionZ = lastMotZ;
