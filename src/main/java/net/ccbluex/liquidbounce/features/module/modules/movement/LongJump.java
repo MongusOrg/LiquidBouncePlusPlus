@@ -80,6 +80,7 @@ public class LongJump extends Module {
     private double lastMotX, lastMotY, lastMotZ;
     private boolean flagResponse = false;
     private boolean flagged = false;
+    private boolean hasFell = false;
 
     private MSTimer dmgTimer = new MSTimer();
 
@@ -94,6 +95,7 @@ public class LongJump extends Module {
         damaged = false;
         flagged = false;
         flagResponse = false;
+        hasFell = false;
         pearlState = 0;
         verusJumpTimes = 0;
 
@@ -125,16 +127,23 @@ public class LongJump extends Module {
                 }
             }
         }
+
+        if (modeValue.get().equalsIgnoreCase("matrixflag") && mc.thePlayer.onGround)
+            mc.thePlayer.jump();
     }
 
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
         if (modeValue.get().equalsIgnoreCase("matrixflag") && !flagged) {
-            MovementUtils.strafe(matrixBoostValue.get());
-            mc.thePlayer.motionY = matrixHeightValue.get();
+            if (hasFell) {
+                MovementUtils.strafe(matrixBoostValue.get());
+                mc.thePlayer.motionY = matrixHeightValue.get();
 
-            if (matrixKeepAliveValue.get())
-                mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
+                if (matrixKeepAliveValue.get())
+                    mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
+            } else if (mc.thePlayer.motionY < -0.05)
+                hasFell = true;
+            return;
         }
 
         if (modeValue.get().equalsIgnoreCase("verusdmg")) {
