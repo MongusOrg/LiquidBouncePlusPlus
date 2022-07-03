@@ -155,8 +155,8 @@ public class LongJump extends Module {
                         mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
                 }
             } else {
-                mc.thePlayer.motionX *= 0.8;
-                mc.thePlayer.motionZ *= 0.8;
+                mc.thePlayer.motionX *= 0.2;
+                mc.thePlayer.motionZ *= 0.2;
                 if (mc.thePlayer.fallDistance > 0)
                     hasFell = true;
             }
@@ -386,7 +386,6 @@ public class LongJump extends Module {
         if (event.getPacket() instanceof S08PacketPlayerPosLook) {
             flagged = true;
             posLookInstance.set((S08PacketPlayerPosLook) event.getPacket());
-            ClientUtils.displayChatMessage("§e§lPreparing...");
             lastMotX = mc.thePlayer.motionX;
             lastMotY = mc.thePlayer.motionY;
             lastMotZ = mc.thePlayer.motionZ;
