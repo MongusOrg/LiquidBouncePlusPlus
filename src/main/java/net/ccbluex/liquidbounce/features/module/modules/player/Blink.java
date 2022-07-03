@@ -37,7 +37,7 @@ public class Blink extends Module {
     private boolean disableLogger;
     private final LinkedList<double[]> positions = new LinkedList<>();
 
-    private final BoolValue pulseValue = new BoolValue("Pulse", false);
+    public final BoolValue pulseValue = new BoolValue("Pulse", false);
     private final BoolValue c0FValue = new BoolValue("C0FCancel", false);
     private final IntegerValue pulseDelayValue = new IntegerValue("PulseDelay", 1000, 500, 5000, "ms");
 
