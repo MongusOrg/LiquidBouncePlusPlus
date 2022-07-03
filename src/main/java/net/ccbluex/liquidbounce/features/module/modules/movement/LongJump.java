@@ -141,7 +141,7 @@ public class LongJump extends Module {
 
                 if (matrixKeepAliveValue.get())
                     mc.getNetHandler().addToSendQueue(new C00PacketKeepAlive());
-            } else if (mc.thePlayer.motionY < -0.05)
+            } else if (mc.thePlayer.fallDistance > 0)
                 hasFell = true;
             return;
         }
