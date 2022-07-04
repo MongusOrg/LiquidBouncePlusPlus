@@ -30,13 +30,14 @@ import net.ccbluex.liquidbounce.value.*
 import net.minecraft.block.Block
 import net.minecraft.block.BlockAir
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.minecraft.util.BlockPos
 import net.minecraft.util.EnumFacing
 import net.minecraft.util.Vec3
 import java.awt.Color
 
-@ModuleInfo(name = "Fucker", description = "Destroys selected blocks around you. (aka.  IDNuker)", category = ModuleCategory.WORLD)
+@ModuleInfo(name = "Fucker", description = "Destroys selected blocks around you. (aka. IDNuker)", category = ModuleCategory.WORLD)
 object Fucker : Module() {
 
     /**
@@ -71,6 +72,8 @@ object Fucker : Module() {
     private val coolDownTimer = MSTimer()
     var currentDamage = 0F
 
+    private var lastWorld: WorldClient? = null
+
     override fun onEnable() {
         if (toggleResetCDValue.get()) coolDownTimer.reset()
         firstPos = null
@@ -79,8 +82,11 @@ object Fucker : Module() {
 
     @EventTarget
     fun onWorld(event: WorldEvent) {
-        firstPos = null
-        firstPosBed = null
+        if (event.worldClient != lastWorld) {
+            firstPos = null
+            firstPosBed = null
+        }
+        lastWorld = event.worldClient
     }
 
     @EventTarget

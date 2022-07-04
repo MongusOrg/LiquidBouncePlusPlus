@@ -39,11 +39,13 @@ class AutoPlay : Module() {
 
     private var clicking = false
     private var queued = false
+    private var waitForLobby = false
 
     override fun onEnable() {
         clickState = 0
         clicking = false
         queued = false
+        waitForLobby = false
     }
 
     @EventTarget
@@ -161,13 +163,18 @@ class AutoPlay : Module() {
                 }
                 "minefc/heromc_bedwars" -> {
                     if (text.contains("Bạn đã bị loại!", false) 
-                        || text.contains("đã thắng trò chơi", false) 
-                        || (autoStartValue.get() && text.contains("¡Hiển thị", false))
-                        || (replayWhenKickedValue.get() && text.contains("[Anticheat] You have been kicked from the server!", false)))
+                        || text.contains("đã thắng trò chơi", false)) {
+                        mc.thePlayer.sendChatMessage("/bw leave")
+                        waitForLobby = true
+                    }
+                    if (((waitForLobby || autoStartValue.get()) && text.contains("¡Hiển thị", false))
+                        || (replayWhenKickedValue.get() && text.contains("[Anticheat] You have been kicked from the server!", false))) {
                         queueAutoPlay {
                             mc.thePlayer.sendChatMessage("/bw join ${bwModeValue.get()}")
                         }
-                    if (showGuiWhenFailedValue.get() && text.contains("giây", false)) {
+                        waitForLobby = false
+                    }
+                    if (showGuiWhenFailedValue.get() && text.contains("giây", false) && text.contains("thất bại", false)) {
                         LiquidBounce.hud.addNotification(Notification("Failed to join, showing GUI...", Notification.Type.ERROR, 1000L))
                         mc.thePlayer.sendChatMessage("/bw gui ${bwModeValue.get()}")
                     }
@@ -177,9 +184,8 @@ class AutoPlay : Module() {
     }
 
     private fun queueAutoPlay(delay: Long = delayValue.get().toLong() * 1000, runnable: () -> Unit) {
-        if (queued) {
+        if (queued)
             return
-        }
         queued = true
         AutoDisable.handleGameEnd()
         if (this.state) {
