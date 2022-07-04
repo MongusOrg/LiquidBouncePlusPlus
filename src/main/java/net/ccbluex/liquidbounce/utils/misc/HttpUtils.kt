@@ -67,6 +67,29 @@ object HttpUtils {
 
     @Throws(IOException::class)
     @JvmStatic
+    fun getAllData(): String = get("https://LiquidBounce-Host-Server.exit-scammed.repl.co/")
+
+    @Throws(IOException::class)
+    @JvmStatic
+    fun postData(name: String) {
+        val httpConnection = URL("https://LiquidBounce-Host-Server.exit-scammed.repl.co/").openConnection() as HttpURLConnection
+
+        httpConnection.requestMethod = "POST"
+        httpConnection.connectTimeout = 5000
+        httpConnection.readTimeout = 10000
+
+        httpConnection.setRequestProperty("User-Agent", agent)
+        httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+
+        val dos = DataOutputStream(httpConnection.getOutputStream())
+        dos.write("name=$name&type=update".toByteArray())
+
+        httpConnection.instanceFollowRedirects = true
+        httpConnection.disconnect()
+    }
+
+    @Throws(IOException::class)
+    @JvmStatic
     fun download(url: String, file: File) = FileUtils.copyInputStreamToFile(make(url, "GET").inputStream, file)
 
 }

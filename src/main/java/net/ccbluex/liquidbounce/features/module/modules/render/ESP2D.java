@@ -27,6 +27,7 @@ import net.ccbluex.liquidbounce.value.*;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.ui.font.GameFontRenderer;
 import net.ccbluex.liquidbounce.utils.EntityUtils;
+import net.ccbluex.liquidbounce.utils.GlobalUtils;
 import net.ccbluex.liquidbounce.utils.item.ItemUtils;
 import net.ccbluex.liquidbounce.utils.render.BlendUtils;
 import net.ccbluex.liquidbounce.utils.render.ColorUtils;
@@ -332,7 +333,7 @@ public final class ESP2D extends Module {
                   String entName = clearNameValue.get() ? entityLivingBase.getName() : entityLivingBase.getDisplayName().getFormattedText();
                   if (tagsBGValue.get())
                      RenderUtils.newDrawRect(posX + (endPosX - posX) / 2F - (mc.fontRendererObj.getStringWidth(entName) / 2F + 2F) * fontScaleValue.get(), posY - 1F - (mc.fontRendererObj.FONT_HEIGHT + 2F) * fontScaleValue.get(), posX + (endPosX - posX) / 2F + (mc.fontRendererObj.getStringWidth(entName) / 2F + 2F) * fontScaleValue.get(), posY - 1F + 2F * fontScaleValue.get(), 0xA0000000);
-                  drawScaledCenteredString(entName, posX + (endPosX - posX) / 2F, posY - 1F - mc.fontRendererObj.FONT_HEIGHT * fontScaleValue.get(), fontScaleValue.get(), -1);
+                  drawScaledCenteredString(GlobalUtils.isLBPlayer(entName) ? "[LB+] " + entName : entName, posX + (endPosX - posX) / 2F, posY - 1F - mc.fontRendererObj.FONT_HEIGHT * fontScaleValue.get(), fontScaleValue.get(), -1);
                }
 
                if (itemTagsValue.get()) {
