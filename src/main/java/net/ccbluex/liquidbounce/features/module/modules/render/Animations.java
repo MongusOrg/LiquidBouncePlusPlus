@@ -16,7 +16,7 @@ import net.ccbluex.liquidbounce.value.ListValue;
 @ModuleInfo(name = "Animations", description = "Render items Animations", category = ModuleCategory.RENDER)
 public class Animations extends Module {
 
-    //some ListValue
+    // some ListValue
     public static final ListValue Sword = new ListValue("Style", new String[]{
             "Normal", "SlideDown1", "SlideDown2" , "Slide", "Minecraft", "Remix",
             "Avatar", "Tap1", "Tap2", "Poke", "Push1", "Push2" , "Up" , "Shield", "Akrien", "VisionFX", "Swong",
@@ -31,12 +31,12 @@ public class Animations extends Module {
     public static final FloatValue itemPosY = new FloatValue("ItemY", 0f, -1f, 1f);
     public static final FloatValue itemPosZ = new FloatValue("ItemZ", 0f, -1f, 1f);
 
-    //change Position Blocking Sword
+    // change Position Blocking Sword
     public static final FloatValue blockPosX = new FloatValue("BlockingX", 0f, -1f, 1f);
     public static final FloatValue blockPosY = new FloatValue("BlockingY", 0f, -1f, 1f);
     public static final FloatValue blockPosZ = new FloatValue("BlockingZ", 0f, -1f, 1f);
 
-    //modify item swing and rotate
+    // modify item swing and rotate
     public static final IntegerValue SpeedSwing = new IntegerValue("Swing-Speed", 4, 0, 20);
     public static final BoolValue RotateItems = new BoolValue("Rotate-Items", false);
     public static final FloatValue SpeedRotate = new FloatValue("Rotate-Speed", 1f, 0f, 10f, () -> RotateItems.get() || Sword.get().equalsIgnoreCase("smoothfloat") || Sword.get().equalsIgnoreCase("rotate360"));
@@ -49,7 +49,7 @@ public class Animations extends Module {
     public static final FloatValue customRotate2 = new FloatValue("RotateYAxis", 0, -180, 180, () -> RotateItems.get() && transformFirstPersonRotate.get().equalsIgnoreCase("custom"));
     public static final FloatValue customRotate3 = new FloatValue("RotateZAxis", 0, -180, 180, () -> RotateItems.get() && transformFirstPersonRotate.get().equalsIgnoreCase("custom"));
 
-    //custom animation sword
+    // custom animation sword
     public static final FloatValue mcSwordPos =  new FloatValue("MCPosOffset", 0.45f, 0, 0.5f, () -> Sword.get().equalsIgnoreCase("minecraft"));
 
     // fake blocking
@@ -58,8 +58,11 @@ public class Animations extends Module {
     // block not everything
     public static final BoolValue blockEverything = new BoolValue("Block-Everything", false);
 
-    //gui animations
+    // gui animations
     public static final ListValue guiAnimations = new ListValue("Container-Animation", new String[]{"None", "Zoom", "VSlide", "HSlide", "HVSlide", "Smooth"}, "None");
     public static final ListValue tabAnimations = new ListValue("Tab-Animation", new String[]{"None", "Zoom", "Slide"}, "Zoom");
+
+    // block crack
+    public static final BoolValue noBlockParticles = new BoolValue("NoBlockParticles", false);
 
 }
