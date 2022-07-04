@@ -32,7 +32,7 @@ class GuiKeybindHelper(val prevGui: GuiScreen) : GuiScreen() {
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
-        drawBackground(0)
+        drawDefaultBackground()
         Fonts.font40.drawCenteredString("Pressed key:", width / 2F, height / 2F - 12F, Color.LIGHT_GRAY.rgb)
         Fonts.font72.drawCenteredString(if (pressedKey == 0) "Listening..." else Keyboard.getKeyName(pressedKey), width / 2F, height / 2F, -1)
         super.drawScreen(mouseX, mouseY, partialTicks)

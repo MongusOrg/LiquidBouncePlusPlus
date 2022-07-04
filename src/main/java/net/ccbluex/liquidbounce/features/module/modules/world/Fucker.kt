@@ -10,11 +10,13 @@ import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.Render3DEvent
 import net.ccbluex.liquidbounce.event.Render2DEvent
 import net.ccbluex.liquidbounce.event.UpdateEvent
+import net.ccbluex.liquidbounce.event.WorldEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
 import net.ccbluex.liquidbounce.features.module.modules.player.AutoTool
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.RotationUtils
 import net.ccbluex.liquidbounce.utils.block.BlockUtils.getBlock
@@ -42,6 +44,7 @@ object Fucker : Module() {
      */
 
     private val blockValue = BlockValue("Block", 26)
+    private val ignoreFirstBlockValue = BoolValue("IgnoreFirstDetection", false)
     private val renderValue = ListValue("Render-Mode", arrayOf("Box", "Outline", "2D", "None"), "Box")
     private val throughWallsValue = ListValue("ThroughWalls", arrayOf("None", "Raycast", "Around"), "None")
     private val rangeValue = FloatValue("Range", 5F, 1F, 7F, "m")
@@ -55,11 +58,12 @@ object Fucker : Module() {
     private val noHitValue = BoolValue("NoAura", false)
     private val toggleResetCDValue = BoolValue("ResetCoolDownWhenToggled", false)
 
-
     /**
      * VALUES
      */
 
+    private var firstPos: BlockPos? = null
+    private var firstPosBed: BlockPos? = null
     private var pos: BlockPos? = null
     private var oldPos: BlockPos? = null
     private var blockHitDelay = 0
@@ -69,6 +73,14 @@ object Fucker : Module() {
 
     override fun onEnable() {
         if (toggleResetCDValue.get()) coolDownTimer.reset()
+        firstPos = null
+        firstPosBed = null
+    }
+
+    @EventTarget
+    fun onWorld(event: WorldEvent) {
+        firstPos = null
+        firstPosBed = null
     }
 
     @EventTarget
@@ -273,7 +285,23 @@ object Fucker : Module() {
             }
         }
 
-        return nearestBlock
+        if (ignoreFirstBlockValue.get() && nearestBlock != null) {
+            if (firstPos == null) {
+                firstPos = nearestBlock
+                LiquidBounce.hud.addNotification(Notification("Found first ${getBlockName(targetID)} block at ${nearestBlock!!.x.toInt()} ${nearestBlock!!.y.toInt()} ${nearestBlock!!.z.toInt()}", Notification.Type.SUCCESS))
+            }
+            if (targetID == 26 && firstPos != null && firstPosBed == null) { // bed
+                when (true) {
+                    firstPos!!.east() != null && Block.getBlockById(firstPos!!.east()) == 26 -> firstPosBed = firstPos!!.east()
+                    firstPos!!.west() != null && Block.getBlockById(firstPos!!.west()) == 26 -> firstPosBed = firstPos!!.west()
+                    firstPos!!.south() != null && Block.getBlockById(firstPos!!.south()) == 26 -> firstPosBed = firstPos!!.south()
+                    firstPos!!.north() != null && Block.getBlockById(firstPos!!.north()) == 26 -> firstPosBed = firstPos!!.north()
+                }
+                if (firstPosBed != null)
+                    LiquidBounce.hud.addNotification(Notification("Found second Bed block at ${firstPosBed!!.x.toInt()} ${firstPosBed!!.y.toInt()} ${firstPosBed!!.z.toInt()}", Notification.Type.SUCCESS))
+            }
+        }
+        return if (ignoreFirstBlockValue.get() && (firstPos == nearestBlock || firstPosBed == nearestBlock)) null else nearestBlock
     }
 
     /**

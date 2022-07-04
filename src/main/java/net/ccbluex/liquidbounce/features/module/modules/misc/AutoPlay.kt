@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
+import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.event.ClickEvent
@@ -29,7 +30,11 @@ import kotlin.concurrent.schedule
 @ModuleInfo(name = "AutoPlay", spacedName = "Auto Play", description = "Automatically move you to another game after finishing it.", category = ModuleCategory.MISC)
 class AutoPlay : Module() {
     private var clickState = 0
-    private val modeValue = ListValue("Server", arrayOf("RedeSky", "BlocksMC", "Minemora", "Hypixel", "Jartex"), "RedeSky")
+    private val modeValue = ListValue("Server", arrayOf("RedeSky", "BlocksMC", "Minemora", "Hypixel", "Jartex", "MineFC/HeroMC_Bedwars"), "RedeSky")
+    private val bwModeValue = ListValue("Mode", arrayOf("SOLO", "4v4v4v4"), "4v4v4v4", { modeValue.get().equals("minefc/heromc_bedwars", true) })
+    private val autoStartValue = BoolValue("AutoStartAtLobby", true, { modeValue.get().equals("minefc/heromc_bedwars", true) })
+    private val replayWhenKickedValue = BoolValue("ReplayWhenKicked", true, { modeValue.get().equals("minefc/heromc_bedwars", true) })
+    private val showGuiWhenFailedValue = BoolValue("ShowGuiWhenFailed", true, { modeValue.get().equals("minefc/heromc_bedwars", true) })
     private val delayValue = IntegerValue("JoinDelay", 3, 0, 7, " seconds")
 
     private var clicking = false
@@ -153,6 +158,19 @@ class AutoPlay : Module() {
                         }
                     }
                     process(packet.chatComponent)
+                }
+                "minefc/heromc_bedwars" -> {
+                    if (text.contains("Bạn đã bị loại!", false) 
+                        || text.contains("đã thắng trò chơi", false) 
+                        || (autoStartValue.get() && text.contains("¡Hiển thị", false))
+                        || (replayWhenKickedValue.get() && text.contains("[Anticheat] You have been kicked from the server!", false)))
+                        queueAutoPlay {
+                            mc.thePlayer.sendChatMessage("/bw join ${bwModeValue.get()}")
+                        }
+                    if (showGuiWhenFailedValue.get() && text.contains("giây", false)) {
+                        LiquidBounce.hud.addNotification(Notification("Failed to join, showing GUI...", Notification.Type.ERROR, 1000L))
+                        mc.thePlayer.sendChatMessage("/bw gui ${bwModeValue.get()}")
+                    }
                 }
             }
         }
