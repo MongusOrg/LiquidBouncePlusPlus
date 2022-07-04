@@ -31,7 +31,10 @@ object GlobalUtils : MinecraftInstance(), Listenable {
                     try {
                         onlinePlayers = HttpUtils.getAllData()
                     } catch (e: Exception) {
-                        LiquidBounce.hud.addNotification(Notification("Error while checking online players.", Notification.Type.ERROR))
+                        e.printStackTrace()
+                        try {
+                            LiquidBounce.hud.addNotification(Notification("Error while checking online players.", Notification.Type.ERROR))
+                        } catch (ignore: Exception) {}
                     }
                     checkTimer.reset()
                 }

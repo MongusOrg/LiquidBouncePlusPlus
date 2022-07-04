@@ -82,10 +82,12 @@ object HttpUtils {
         httpConnection.setRequestProperty("User-Agent", DEFAULT_AGENT)
         httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
 
+        httpConnection.instanceFollowRedirects = true
+        httpConnection.doOutput = true
+
         val dos = DataOutputStream(httpConnection.getOutputStream())
         dos.write("name=$name&type=update".toByteArray())
 
-        httpConnection.instanceFollowRedirects = true
         httpConnection.disconnect()
     }
 
