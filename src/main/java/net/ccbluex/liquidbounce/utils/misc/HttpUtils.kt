@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.utils.misc
 
 import org.apache.commons.io.FileUtils
+import java.io.DataOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -78,7 +79,7 @@ object HttpUtils {
         httpConnection.connectTimeout = 5000
         httpConnection.readTimeout = 10000
 
-        httpConnection.setRequestProperty("User-Agent", agent)
+        httpConnection.setRequestProperty("User-Agent", DEFAULT_AGENT)
         httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
 
         val dos = DataOutputStream(httpConnection.getOutputStream())
