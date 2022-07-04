@@ -46,6 +46,7 @@ class AutoPot : Module() {
     private val regenValue = BoolValue("Heal", true)
     private val utilityValue = BoolValue("Utility", true)
     private val smartValue = BoolValue("Smart", true)
+    private val smartTimeoutValue = IntegerValue("SmartTimeout", 2000, 500, 5000, "ms", { smartValue.get() })
 
     private val spoofInvValue = BoolValue("InvSpoof", false)
     private val spoofDelayValue = IntegerValue("InvDelay", 500, 500, 5000, "ms", { spoofInvValue.get() })
@@ -59,6 +60,7 @@ class AutoPot : Module() {
     private var throwTimer = MSTimer()
     private var resetTimer = MSTimer()
     private var invTimer = MSTimer()
+    private var timeoutTimer = MSTimer()
 
     private val throwQueue = arrayListOf<Int>()
 
@@ -75,6 +77,7 @@ class AutoPot : Module() {
         rotated = false
         throwTimer.reset()
         resetTimer.reset()
+        timeoutTimer.reset()
         invTimer.reset()
         throwQueue.clear()
     }
@@ -92,11 +95,20 @@ class AutoPot : Module() {
     @EventTarget(priority = 2)
     fun onMotion(event: MotionEvent) {
         if (event.eventState == EventState.PRE) {
-            if (smartValue.get() && !throwQueue.isEmpty())
+            if (smartValue.get() && !throwQueue.isEmpty()) {
                 for (k in throwQueue.indices.reversed()) {
-                    if (mc.thePlayer.isPotionActive(throwQueue[k]))
+                    if (mc.thePlayer.isPotionActive(throwQueue[k])) {
                         throwQueue.removeAt(k)
+                        timeoutTimer.reset()
+                    }
                 }
+                if (timeoutTimer.hasTimePassed(smartTimeoutValue.get().toLong())) {
+                    debug("reached timeout, clearing queue")
+                    throwQueue.clear()
+                    timeoutTimer.reset()
+                }
+            } else
+                timeoutTimer.reset()
 
             if (spoofInvValue.get() && mc.currentScreen !is GuiContainer && !throwing) {
                 if (invTimer.hasTimePassed(spoofDelayValue.get().toLong())) {
@@ -159,10 +171,9 @@ class AutoPot : Module() {
                 val potionEffects = getPotionFromSlot(potIndex)
                 if (potionEffects != null) {
                     val potionIds = potionEffects!!.map { it.potionID }
+                    
                     if (smartValue.get()) 
-                        potionIds.filter { !throwQueue.contains(it) }.forEach {
-                            throwQueue.add(it)
-                        }
+                        potionIds.filter { !throwQueue.contains(it) }.forEach { throwQueue.add(it) }
 
                     mc.netHandler.addToSendQueue(C09PacketHeldItemChange(potIndex - 36))
                     mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.heldItem))

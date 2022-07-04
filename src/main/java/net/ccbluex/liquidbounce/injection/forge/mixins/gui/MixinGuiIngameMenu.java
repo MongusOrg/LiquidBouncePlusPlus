@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.gui;
 
+import net.ccbluex.liquidbounce.ui.client.GuiKeybindHelper;
 import net.ccbluex.liquidbounce.utils.ServerUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -21,16 +22,16 @@ public abstract class MixinGuiIngameMenu extends MixinGuiScreen {
         if(!this.mc.isIntegratedServerRunning())
             this.buttonList.add(new GuiButton(1337, this.width / 2 - 100, this.height / 4 + 128, "Reconnect"));
 
-        //wdl.WDLHooks.injectWDLButtons((GuiIngameMenu) (Object) this, this.buttonList);
+        this.buttonList.add(new GuiButton(727, this.width / 2 - 100, this.height - 30, "Keybind Helper"));
     }
 
     @Inject(method = "actionPerformed", at = @At("HEAD"))
     private void actionPerformed(GuiButton button, CallbackInfo callbackInfo) {
-        //wdl.WDLHooks.handleWDLButtonClick((GuiIngameMenu) (Object) this, button);
-
         if(button.id == 1337) {
             mc.theWorld.sendQuittingDisconnectingPacket();
             ServerUtils.connectToLastServer();
         }
+        if (button.id == 727)
+            mc.displayGuiScreen(new GuiKeybindHelper((GuiIngameMenu) (Object) this));
     }
 }

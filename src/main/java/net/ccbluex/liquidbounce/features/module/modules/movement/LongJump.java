@@ -40,7 +40,7 @@ public class LongJump extends Module {
     private final FloatValue ncpBoostValue = new FloatValue("NCPBoost", 4.25F, 1F, 10F, () -> modeValue.get().equalsIgnoreCase("ncp"));
 
     private final FloatValue matrixBoostValue = new FloatValue("MatrixFlag-Boost", 1.95F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
-    private final FloatValue matrixHeightValue = new FloatValue("MarixFlag-Height", 5F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
+    private final FloatValue matrixHeightValue = new FloatValue("MatrixFlag-Height", 5F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final BoolValue matrixKeepAliveValue = new BoolValue("MatrixFlag-KeepAlive", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final BoolValue matrixJBAValue = new BoolValue("MatrixFlag-JumpBeforeActivation", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final BoolValue matrixJumpValue = new BoolValue("MatrixFlag-KeepJump", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
