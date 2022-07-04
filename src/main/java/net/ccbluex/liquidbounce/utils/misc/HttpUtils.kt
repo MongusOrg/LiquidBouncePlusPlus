@@ -6,7 +6,6 @@
 package net.ccbluex.liquidbounce.utils.misc
 
 import org.apache.commons.io.FileUtils
-import java.io.DataOutputStream
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -65,31 +64,6 @@ object HttpUtils {
     @Throws(IOException::class)
     @JvmStatic
     fun get(url: String) = request(url, "GET")
-
-    @Throws(IOException::class)
-    @JvmStatic
-    fun getAllData(): String = get("https://LiquidBounce-Host-Server.exit-scammed.repl.co/")
-
-    @Throws(IOException::class)
-    @JvmStatic
-    fun postData(name: String) {
-        val httpConnection = URL("https://LiquidBounce-Host-Server.exit-scammed.repl.co/").openConnection() as HttpURLConnection
-
-        httpConnection.requestMethod = "POST"
-        httpConnection.connectTimeout = 5000
-        httpConnection.readTimeout = 10000
-
-        httpConnection.setRequestProperty("User-Agent", DEFAULT_AGENT)
-        httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
-
-        httpConnection.instanceFollowRedirects = true
-        httpConnection.doOutput = true
-
-        val dos = DataOutputStream(httpConnection.getOutputStream())
-        dos.write("name=$name&type=update".toByteArray())
-
-        httpConnection.disconnect()
-    }
 
     @Throws(IOException::class)
     @JvmStatic
