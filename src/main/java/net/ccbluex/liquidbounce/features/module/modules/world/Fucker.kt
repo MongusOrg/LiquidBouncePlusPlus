@@ -46,6 +46,7 @@ object Fucker : Module() {
 
     private val blockValue = BlockValue("Block", 26)
     private val ignoreFirstBlockValue = BoolValue("IgnoreFirstDetection", false)
+    private val resetOnWorldValue = BoolValue("ResetOnWorldChange", false, { ignoreFirstBlockValue.get() })
     private val renderValue = ListValue("Render-Mode", arrayOf("Box", "Outline", "2D", "None"), "Box")
     private val throughWallsValue = ListValue("ThroughWalls", arrayOf("None", "Raycast", "Around"), "None")
     private val rangeValue = FloatValue("Range", 5F, 1F, 7F, "m")
@@ -82,7 +83,7 @@ object Fucker : Module() {
 
     @EventTarget
     fun onWorld(event: WorldEvent) {
-        if (event.worldClient != lastWorld) {
+        if (event.worldClient != lastWorld && resetOnWorldValue.get()) {
             firstPos = null
             firstPosBed = null
         }
