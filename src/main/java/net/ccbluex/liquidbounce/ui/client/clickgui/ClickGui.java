@@ -313,14 +313,6 @@ public class ClickGui extends GuiScreen {
             }
         }
 
-        if (Mouse.hasWheel()) {
-            int wheel = Mouse.getDWheel();
-
-            for (int i = panels.size() - 1; i >= 0; i--)
-                if (panels.get(i).handleScroll(mouseX, mouseY, wheel))
-                    break;
-        }
-
         GlStateManager.disableLighting();
         RenderHelper.disableStandardItemLighting();
 
@@ -344,6 +336,15 @@ public class ClickGui extends GuiScreen {
         AWTFontRenderer.Companion.setAssumeNonVolatile(false);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+
+        int i = Mouse.getEventDWheel();
+        for (int i = panels.size() - 1; i >= 0; i--)
+            if (panels.get(i).handleScroll(mouseX, mouseY, wheel))
+                break;
     }
 
     @Override
