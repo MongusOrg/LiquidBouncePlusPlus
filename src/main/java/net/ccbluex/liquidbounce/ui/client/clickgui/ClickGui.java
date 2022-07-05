@@ -341,7 +341,7 @@ public class ClickGui extends GuiScreen {
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
 
-        int i = Mouse.getEventDWheel();
+        int wheel = Mouse.getEventDWheel();
         for (int i = panels.size() - 1; i >= 0; i--)
             if (panels.get(i).handleScroll(mouseX, mouseY, wheel))
                 break;
