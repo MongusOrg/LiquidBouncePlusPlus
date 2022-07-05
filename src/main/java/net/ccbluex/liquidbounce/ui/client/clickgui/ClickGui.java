@@ -313,13 +313,11 @@ public class ClickGui extends GuiScreen {
             }
         }
 
-        if (Mouse.hasWheel()) {
-            int wheel = Mouse.getEventDWheel();
-
+        int wheel = Mouse.getDWheel();
+        if (wheel != 0)
             for (int i = panels.size() - 1; i >= 0; i--)
                 if (panels.get(i).handleScroll(mouseX, mouseY, wheel))
                     break;
-        }
 
         GlStateManager.disableLighting();
         RenderHelper.disableStandardItemLighting();
