@@ -25,7 +25,7 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
             side: Side = Side(Side.Horizontal.MIDDLE, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
 
     private val modeValue = ListValue("Mode", arrayOf("LiquidBounce", "Exhibition"), "LiquidBounce")
-    private val alignment = ListValue("Alignment", arrayOf("Horizontal", "Vertical"), "Horizontal", { modeValue.get().equals("LiquidBounce", true) })
+    private val alignment = ListValue("Alignment", arrayOf("Horizontal", "Vertical"), "Horizontal")
 
     /**
      * Draw element
