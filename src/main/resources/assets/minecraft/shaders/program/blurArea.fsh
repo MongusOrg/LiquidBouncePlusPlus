@@ -13,34 +13,9 @@ uniform vec2 BlurCoord;
 uniform float Radius;
 
 float SCurve (float x) {
-
-
     // ---- by CeeJayDK
-
     x = x * 2.0 - 1.0;
     return -x * abs(x) * 0.5 + x + 0.5;
-
-    //return dot(vec3(-x, 2.0, 1.0 ),vec3(abs(x), x, 1.0)) * 0.5; // possibly faster version
-
-
-
-
-    // ---- original for posterity
-
-    // How to do this without if-then-else?
-    // +edited the too steep curve value
-
-    // if (value < 0.5)
-    // {
-    //    return value * value * 2.0;
-    // }
-
-    // else
-    // {
-    // 	value -= 1.0;
-
-    // 	return 1.0 - value * value * 2.0;
-    // }
 }
 
 vec4 BlurH (sampler2D source, vec2 size, vec2 uv, float radius) {
