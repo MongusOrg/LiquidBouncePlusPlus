@@ -42,7 +42,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         for (i in 0..9)
             RenderUtils.drawRectBasedBorder(45F + i * 7F, 14F, 45F + (i + 1) * 7F, 18F, 0.5F, getColor(Color.black).rgb)
 
-        Fonts.fontVerdana.drawString("HP:${entity.health.toInt()} | Dist:${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 44.5F, 19.5F, getColor(-1).rgb)
+        Fonts.fontVerdana.drawString("HP:${entity.health.toInt()} | Dist:${mc.thePlayer.getDistanceToEntityBox(entity).toInt()}", 44.5F, 21F, getColor(-1).rgb)
 
         GlStateManager.resetColor()
         GL11.glPushMatrix()
@@ -60,7 +60,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         for (index in 3 downTo 0) {
             val stack = entity.inventory.armorInventory[index] ?: continue
 
-            if (stack.getItem() == null)
+            if (stack.item == null)
                 continue
 
             renderItem.renderItemIntoGUI(stack, x, y)
@@ -71,7 +71,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         }
 
         val mainStack = entity.heldItem
-        if (mainStack != null && mainStack.getItem() != null) {
+        if (mainStack != null && mainStack.item != null) {
             renderItem.renderItemIntoGUI(mainStack, x, y)
             renderItem.renderItemOverlays(mc.fontRendererObj, mainStack, x, y)
             RenderUtils.drawExhiEnchants(mainStack, x.toFloat(), y.toFloat())

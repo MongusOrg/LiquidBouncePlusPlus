@@ -275,7 +275,7 @@ public final class ESP2D extends Module {
                             if (armorValue > 0.0F) {
                                 int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
                                 double deltaY = endPosY - posY;
-                                if (hpBarMode.get().equalsIgnoreCase("dot") && deltaY >= 80) { // revert back to normal bar if the height is too low
+                                if (hpBarMode.get().equalsIgnoreCase("dot") && deltaY >= 60) { // revert back to normal bar if the height is too low
                                     for (double k = 0; k < 10; k++) {
                                         double reratio = MathHelper.clamp_double(armorValue - k * (itemDurability / 10D), 0D, itemDurability / 10D) / (itemDurability / 10D);
                                         double hei = (deltaY / 10D - 0.5) * reratio;
