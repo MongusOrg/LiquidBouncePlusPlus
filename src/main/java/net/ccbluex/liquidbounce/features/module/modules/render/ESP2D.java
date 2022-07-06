@@ -277,8 +277,8 @@ public final class ESP2D extends Module {
                                 if (hpBarMode.get().equalsIgnoreCase("dot"))
                                     for (double k = 0; k < 10; k++) {
                                         double reratio = MathHelper.clamp_double(armorValue - k * (itemDurability / 10D), 0D, itemDurability / 10D) / (itemDurability / 10D);
-                                        double hei = ((endPosY - posY) / 10D - 0.1) * reratio;
-                                        RenderUtils.newDrawRect(posX - 3.0D, endPosY + (endPosY - posY) / 10D * k, posX - 2.0D, endPosY + (endPosY - posY) / 10D * k + hei, healthColor);
+                                        double hei = ((endPosY - posY) / 10D - 0.5) * reratio;
+                                        RenderUtils.newDrawRect(posX - 3.0D, endPosY - (endPosY - posY) / 10D * k, posX - 2.0D, endPosY - (endPosY - posY) / 10D * k - hei, healthColor);
                                     }
                                 else
                                     RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - textWidth, healthColor);
