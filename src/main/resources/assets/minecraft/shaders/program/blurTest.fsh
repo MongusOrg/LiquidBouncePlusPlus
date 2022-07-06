@@ -17,6 +17,7 @@ void main() {
     float totalWeight = 0.0;
     for (float r = -Radius; r <= Radius; r += 1.0) {
         vec4 mainTexture = texture(DiffuseSampler, texCoord + oneTexel * r * BlurDir);
+        if (mainTexture.a <= 0.0) continue;
         blurred += mainTexture.rgb;
         totalAlpha += mainTexture.a;
         totalWeight += 1.0;
