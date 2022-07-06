@@ -1166,7 +1166,6 @@ public final class RenderUtils extends MinecraftInstance {
 
     public static void drawExhiEnchants(ItemStack stack, float x, float y) {
         RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableTexture2D();
         GlStateManager.resetColor();
         GlStateManager.color(1, 1, 1, 1);
         GlStateManager.pushMatrix();
@@ -1235,7 +1234,6 @@ public final class RenderUtils extends MinecraftInstance {
         }
         GlStateManager.enableDepth();
         GlStateManager.popMatrix();
-        GlStateManager.enableTexture2D();
         RenderHelper.enableStandardItemLighting();
     }
 
