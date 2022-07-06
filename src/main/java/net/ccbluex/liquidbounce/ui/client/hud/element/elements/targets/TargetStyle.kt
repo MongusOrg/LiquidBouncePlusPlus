@@ -40,7 +40,7 @@ abstract class TargetStyle(val name: String, val targetInstance: Target, val sha
             "background" -> targetInstance.bgColor
             "custom" -> Color(targetInstance.shadowColorRedValue.get(), targetInstance.shadowColorGreenValue.get(), targetInstance.shadowColorBlueValue.get())
             else -> targetInstance.barColor
-        }, 1F - animProgress)
+        }, 1F - targetInstance.animProgress)
 
     abstract fun drawTarget(entity: EntityPlayer)
     abstract fun getBorder(entity: EntityPlayer?): Border?
