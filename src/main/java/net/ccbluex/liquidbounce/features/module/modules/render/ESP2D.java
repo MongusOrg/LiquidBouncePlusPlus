@@ -272,21 +272,13 @@ public final class ESP2D extends Module {
                             if (healthNumber.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution)))
                                 drawScaledString(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent, posX - 4.0 - mc.fontRendererObj.getStringWidth(hpMode.get().equalsIgnoreCase("health") ? healthDisplay : healthPercent) * fontScaleValue.get(), (endPosY - textWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                             RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
-
-                            if (hpBarMode.get().equalsIgnoreCase("dot")) {
-                                Stencil.write(false);
-                                double idk = (endPosY - posY + 0.5) / 10.0;
-                                for (double kl = 0; kl < 10; kl++)
-                                    RenderUtils.drawRectBasedBorder(posX - 3.25F, posY - 0.25F + (idk * kl), posX - 1.75F, posY - 0.25F + (idk * (kl + 1.0)), 0.5F, -1);
-                                Stencil.erase(false);
-                            }
                             if (armorValue > 0.0F) {
                                 int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
                                 if (hpBarMode.get().equalsIgnoreCase("dot"))
                                     for (double k = 0; k < 10; k++) {
                                         double reratio = MathHelper.clamp_double(armorValue - k * (itemDurability / 10D), 0D, itemDurability / 10D) / (itemDurability / 10D);
-                                        double height = ((endPosY - posY) / 10D - 0.25) * reratio;
-                                        RenderUtils.newDrawRect(posX - 3.0D, endPosY + (endPosY - posY) / 10D * k, posX - 2.0D, endPosY + (endPosY - posY) / 10D * k + height, healthColor);
+                                        double hei = ((endPosY - posY) / 10D - 0.1) * reratio;
+                                        RenderUtils.newDrawRect(posX - 3.0D, endPosY + (endPosY - posY) / 10D * k, posX - 2.0D, endPosY + (endPosY - posY) / 10D * k + hei, healthColor);
                                     }
                                 else
                                     RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - textWidth, healthColor);
