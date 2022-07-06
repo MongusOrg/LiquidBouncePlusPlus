@@ -40,7 +40,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { blurValue.get() })
     private val shadowShaderValue = BoolValue("Shadow", false)
-    private val shadowStrength = FloatValue("Shadow-Strength", 0F, 0F, 30F, { shadowShaderValue.get() })
+    private val shadowStrength = IntegerValue("Shadow-Strength", 1, 1, 30, { shadowShaderValue.get() })
     private val shadowColorMode = ListValue("Shadow-Color", arrayOf("Background", "Text", "Custom"), "Background", { shadowShaderValue.get() })
     private val shadowColorRedValue = IntegerValue("Shadow-Red", 0, 0, 255, { shadowShaderValue.get() && shadowColorMode.get().equals("custom", true) })
     private val shadowColorGreenValue = IntegerValue("Shadow-Green", 111, 0, 255, { shadowShaderValue.get() && shadowColorMode.get().equals("custom", true) })
@@ -211,7 +211,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 if (shadowShaderValue.get()) {
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
-                    ShadowUtils.shadow(shadowStrength.get(), {
+                    ShadowUtils.shadow(shadowStrength.get().toFloat(), {
                         GL11.glPushMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                         modules.forEachIndexed { index, module ->
@@ -219,7 +219,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             RenderUtils.newDrawRect(
                                     xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
                                     module.arrayY,
-                                    (if (rectRightValue.get().equals("right", true)) -1F else 0F) - 1F,
+                                    if (rectRightValue.get().equals("right", true)) -1F else 0F,
                                     module.arrayY + textHeight,
                                     when (shadowColorMode.get().toLowerCase()) {
                                         "background" -> Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get()).rgb
@@ -395,7 +395,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                 if (shadowShaderValue.get()) {
                     GL11.glTranslated(-renderX, -renderY, 0.0)
                     GL11.glPushMatrix()
-                    ShadowUtils.shadow(shadowStrength.get(), {
+                    ShadowUtils.shadow(shadowStrength.get().toFloat(), {
                         GL11.glPushMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
                         modules.forEachIndexed { index, module ->
@@ -406,7 +406,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             RenderUtils.newDrawRect(
                                     0F,
                                     module.arrayY,
-                                    (xPos + width + if (rectLeftValue.get().equals("right", true)) 3F else 2F) + 1F,
+                                    xPos + width + if (rectLeftValue.get().equals("right", true)) 3F else 2F,
                                     module.arrayY + textHeight,
                                     when (shadowColorMode.get().toLowerCase()) {
                                         "background" -> Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get()).rgb

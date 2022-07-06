@@ -25,6 +25,7 @@ import net.minecraft.potion.Potion
 class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
               side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
 
+    private val anotherStyle = BoolValue("New", false)
     private val fontValue = FontValue("Font", Fonts.font35)
     private val shadow = BoolValue("Shadow", true)
 
@@ -56,7 +57,11 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
                 else -> "I"
             }
 
-            val name = "${I18n.format(potion.name)} $number§f: §7${Potion.getDurationString(effect)}"
+            val duration = if (effect.isPotionDurationMax) 30 else effect.duration / 20
+            val name = if (anotherStyle.get())
+                            "${I18n.format(potion.name)} $number ${if (duration < 15) "§c" else if (duration < 30) "§6" else "§7"}${Potion.getDurationString(effect)}"
+                        else 
+                            "${I18n.format(potion.name)} $number§f: §7${Potion.getDurationString(effect)}"
             val stringWidth = fontRenderer.getStringWidth(name).toFloat()
 
             if (side.horizontal == Side.Horizontal.RIGHT) {

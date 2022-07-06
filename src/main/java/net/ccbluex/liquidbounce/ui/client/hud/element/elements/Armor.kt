@@ -13,6 +13,7 @@ import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.block.material.Material
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.RenderHelper
 import org.lwjgl.opengl.GL11
 
 /**
@@ -40,6 +41,8 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
             var x = 1
             var y = if (isInsideWater) -10 else 0
 
+            RenderHelper.enableGUIStandardItemLighting()
+            
             for (index in 3 downTo 0) {
                 val stack = mc.thePlayer.inventory.armorInventory[index] ?: continue
 
@@ -66,7 +69,8 @@ class Armor(x: Double = -8.0, y: Double = 57.0, scale: Float = 1F,
                     RenderUtils.drawExhiEnchants(mainStack, x.toFloat(), y.toFloat())
                 }
             }
-
+            
+            RenderHelper.disableStandardItemLighting()
             GlStateManager.enableAlpha()
             GlStateManager.disableBlend()
             GlStateManager.disableLighting()
