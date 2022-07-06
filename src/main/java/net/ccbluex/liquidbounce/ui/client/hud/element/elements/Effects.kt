@@ -78,8 +78,8 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
             }
             
             when (side.vertical) {
-                Side.Vertical.UP -> y -= fontRenderer.FONT_HEIGHT
-                Side.Vertical.DOWN -> y += fontRenderer.FONT_HEIGHT
+                Side.Vertical.UP -> y -= fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
+                Side.Vertical.DOWN -> y += fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
             }
         }
 

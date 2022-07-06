@@ -47,6 +47,9 @@ public class Fonts {
     @FontDetails(fontName = "Tahoma Bold", fontSize = 35)
     public static GameFontRenderer fontTahoma;
 
+    @FontDetails(fontName = "Tahoma Bold", fontSize = 30)
+    public static GameFontRenderer fontTahoma30;
+
     public static TTFFontRenderer fontVerdana;
 
     @FontDetails(fontName = "Bangers", fontSize = 45)
@@ -72,6 +75,7 @@ public class Fonts {
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
         fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 35));
+        fontTahoma30 = new GameFontRenderer(getFont("TahomaBold.ttf", 30));
         fontVerdana = new TTFFontRenderer(getFont("Verdana.ttf", 10));
         fontBangers = new GameFontRenderer(getFont("Bangers-Regular.ttf", 45));
 
