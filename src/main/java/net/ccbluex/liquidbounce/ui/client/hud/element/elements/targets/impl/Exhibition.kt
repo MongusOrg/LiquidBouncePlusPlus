@@ -74,7 +74,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         if (mainStack != null && mainStack.getItem() != null) {
             renderItem.renderItemIntoGUI(mainStack, x, y)
             renderItem.renderItemOverlays(mc.fontRendererObj, mainStack, x, y)
-            RenderUtils.drawExhiEnchants
+            RenderUtils.drawExhiEnchants(stack, x.toFloat(), y.toFloat())
         }
 
         RenderHelper.disableStandardItemLighting()
