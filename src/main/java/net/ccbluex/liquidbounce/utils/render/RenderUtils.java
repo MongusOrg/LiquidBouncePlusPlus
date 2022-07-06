@@ -1165,8 +1165,7 @@ public final class RenderUtils extends MinecraftInstance {
     }
 
     public static void drawExhiEnchants(ItemStack stack, float x, float y) {
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.disableLighting();
+        RenderHelper.disableGUIStandardItemLighting();
         GlStateManager.disableDepth();
         GlStateManager.disableBlend();
         GlStateManager.resetColor();
@@ -1176,15 +1175,15 @@ public final class RenderUtils extends MinecraftInstance {
             int unb = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
             int thorn = EnchantmentHelper.getEnchantmentLevel(Enchantment.thorns.effectId, stack);
             if (prot > 0) {
-                drawExhiOutlined(prot + "", drawExhiOutlined("P", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(prot), getMainColor(prot), true);
+                drawExhiOutlined(prot + "", drawExhiOutlined("P", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(prot), getMainColor(prot), true);
                 y += 4;
             }
             if (unb > 0) {
-                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(unb),getMainColor(unb), true);
+                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(unb),getMainColor(unb), true);
                 y += 4;
             }
             if (thorn > 0) {
-                drawExhiOutlined(thorn + "", drawExhiOutlined("T", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(thorn), getMainColor(thorn), true);
+                drawExhiOutlined(thorn + "", drawExhiOutlined("T", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(thorn), getMainColor(thorn), true);
                 y += 4;
             }
         }
@@ -1194,19 +1193,19 @@ public final class RenderUtils extends MinecraftInstance {
             int flame = EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack);
             int unb = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
             if (power > 0) {
-                drawExhiOutlined(power + "", drawExhiOutlined("Pow", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(power), getMainColor(power), true);
+                drawExhiOutlined(power + "", drawExhiOutlined("Pow", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(power), getMainColor(power), true);
                 y += 4;
             }
             if (punch > 0) {
-                drawExhiOutlined(punch + "", drawExhiOutlined("Pun", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(punch), getMainColor(punch), true);
+                drawExhiOutlined(punch + "", drawExhiOutlined("Pun", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(punch), getMainColor(punch), true);
                 y += 4;
             }
             if (flame > 0) {
-                drawExhiOutlined(flame + "", drawExhiOutlined("F", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(flame), getMainColor(flame), true);
+                drawExhiOutlined(flame + "", drawExhiOutlined("F", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(flame), getMainColor(flame), true);
                 y += 4;
             }
             if (unb > 0) {
-                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(unb), getMainColor(unb), true);
+                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(unb), getMainColor(unb), true);
                 y += 4;
             }
         }
@@ -1216,44 +1215,33 @@ public final class RenderUtils extends MinecraftInstance {
             int fire = EnchantmentHelper.getEnchantmentLevel(Enchantment.fireAspect.effectId, stack);
             int unb = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
             if (sharp > 0) {
-                drawExhiOutlined(sharp + "", drawExhiOutlined("S", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(sharp), getMainColor(sharp), true);
+                drawExhiOutlined(sharp + "", drawExhiOutlined("S", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(sharp), getMainColor(sharp), true);
                 y += 4;
             }
             if (kb > 0) {
-                drawExhiOutlined(kb + "", drawExhiOutlined("K", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(kb), getMainColor(kb), true);
+                drawExhiOutlined(kb + "", drawExhiOutlined("K", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(kb), getMainColor(kb), true);
                 y += 4;
             }
             if (fire > 0) {
-                drawExhiOutlined(fire + "", drawExhiOutlined("F", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(fire), getMainColor(fire), true);
+                drawExhiOutlined(fire + "", drawExhiOutlined("F", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(fire), getMainColor(fire), true);
                 y += 4;
             }
             if (unb > 0) {
-                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(unb), getMainColor(unb), true);
+                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 1F, darkBorder, -1, true), y, 1F, getBorderColor(unb), getMainColor(unb), true);
                 y += 4;
             }
         }
-        GlStateManager.enableLighting();
         GlStateManager.enableDepth();
-        RenderHelper.enableStandardItemLighting();
+        RenderHelper.enableGUIStandardItemLighting();
     }
 
     private static float drawExhiOutlined(String text, float x, float y, float borderWidth, int borderColor, int mainColor, boolean drawText) {
-        float red = (float)(borderColor >> 16 & 255) / 255.0F;
-        float blue = (float)(borderColor >> 8 & 255) / 255.0F;
-        float green = (float)(borderColor & 255) / 255.0F;
-        float _red = (float)(mainColor >> 16 & 255) / 255.0F;
-        float _blue = (float)(mainColor >> 8 & 255) / 255.0F;
-        float _green = (float)(mainColor & 255) / 255.0F;
-        GlStateManager.color(red, green, blue, 1);
         Fonts.fontVerdana.drawString(text, x - borderWidth, y, borderColor);
         Fonts.fontVerdana.drawString(text, x + borderWidth, y, borderColor);
         Fonts.fontVerdana.drawString(text, x, y - borderWidth, borderColor);
         Fonts.fontVerdana.drawString(text, x, y + borderWidth, borderColor);
-        if (drawText) {
-            GlStateManager.color(_red, _green, _blue, 1);
+        if (drawText)
             Fonts.fontVerdana.drawString(text, x, y, mainColor);
-        }
-        GlStateManager.color(1, 1, 1, 1);
         return x + Fonts.fontVerdana.getWidth(text) + borderWidth - 2;
     }
 
