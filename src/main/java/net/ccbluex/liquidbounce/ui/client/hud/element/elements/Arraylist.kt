@@ -41,6 +41,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { blurValue.get() })
     private val shadowShaderValue = BoolValue("Shadow", false)
     private val shadowStrength = FloatValue("Shadow-Strength", 0F, 0F, 30F, { shadowShaderValue.get() })
+    private val shadowColorMode = ListValue("Shadow-Color", arrayOf("Background", "Text", "Default"), "Background")
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
@@ -217,10 +218,37 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                     module.arrayY,
                                     if (rectRightValue.get().equals("right", true)) -1F else 0F,
                                     module.arrayY + textHeight,
-                                    -1
+                                    when (shadowColorMode.get().toLowerCase()) {
+                                        "background" -> -1
+                                        "text" -> {
+                                            val moduleColor = Color.getHSBColor(module.hue, saturation, brightness).rgb
+
+                                            var Sky = RenderUtils.SkyRainbow(counter[0] * (skyDistanceValue.get() * 50), saturationValue.get(), brightnessValue.get())
+                                            var CRainbow = RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), counter[0] * (50 * cRainbowDistValue.get()))
+                                            var FadeColor = ColorUtils.fade(Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get()), index * fadeDistanceValue.get(), 100).rgb
+                                            counter[0] = counter[0] - 1 
+
+                                            val test = ColorUtils.LiquidSlowly(System.nanoTime(), index * liquidSlowlyDistanceValue.get(), saturationValue.get(), brightnessValue.get())?.rgb
+                                            var LiquidSlowly : Int = test!!
+
+                                            val mixerColor = ColorMixer.getMixedColor(-index * mixerDistValue.get() * 10, mixerSecValue.get()).rgb
+
+                                            when {
+                                                colorMode.equals("Random", ignoreCase = true) -> moduleColor
+                                                colorMode.equals("Sky", ignoreCase = true) -> Sky
+                                                colorMode.equals("CRainbow", ignoreCase = true) -> CRainbow
+                                                colorMode.equals("LiquidSlowly", ignoreCase = true) -> LiquidSlowly
+                                                colorMode.equals("Fade", ignoreCase = true) -> FadeColor
+                                                colorMode.equals("Mixer", ignoreCase = true) -> mixerColor
+                                                else -> customColor
+                                            }
+                                        }
+                                        else -> Color.black.rgb
+                                    }
                             )
                         }
                         GL11.glPopMatrix()
+                        counter[0] = 0
                     }, {
                         GL11.glPushMatrix()
                         GL11.glTranslated(renderX, renderY, 0.0)
@@ -234,7 +262,9 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             )
                         }
                         GL11.glPopMatrix()
-                    }, backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), 255)
+                    }, if (shadowColorMode.get().equals("background", true)) backgroundColorRedValue.get() else 255, 
+                    if (shadowColorMode.get().equals("background", true)) backgroundColorGreenValue.get() else 255, 
+                    if (shadowColorMode.get().equals("background", true)) backgroundColorBlueValue.get() else 255, 255)
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
@@ -377,7 +407,33 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                     module.arrayY,
                                     xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
                                     module.arrayY + textHeight,
-                                    -1
+                                    when (shadowColorMode.get().toLowerCase()) {
+                                        "background" -> -1
+                                        "text" -> {
+                                            val moduleColor = Color.getHSBColor(module.hue, saturation, brightness).rgb
+
+                                            var Sky = RenderUtils.SkyRainbow(counter[0] * (skyDistanceValue.get() * 50), saturationValue.get(), brightnessValue.get())
+                                            var CRainbow = RenderUtils.getRainbowOpaque(cRainbowSecValue.get(), saturationValue.get(), brightnessValue.get(), counter[0] * (50 * cRainbowDistValue.get()))
+                                            var FadeColor = ColorUtils.fade(Color(colorRedValue.get(), colorGreenValue.get(), colorBlueValue.get(), colorAlphaValue.get()), index * fadeDistanceValue.get(), 100).rgb
+                                            counter[0] = counter[0] - 1 
+
+                                            val test = ColorUtils.LiquidSlowly(System.nanoTime(), index * liquidSlowlyDistanceValue.get(), saturationValue.get(), brightnessValue.get())?.rgb
+                                            var LiquidSlowly : Int = test!!
+
+                                            val mixerColor = ColorMixer.getMixedColor(-index * mixerDistValue.get() * 10, mixerSecValue.get()).rgb
+
+                                            when {
+                                                colorMode.equals("Random", ignoreCase = true) -> moduleColor
+                                                colorMode.equals("Sky", ignoreCase = true) -> Sky
+                                                colorMode.equals("CRainbow", ignoreCase = true) -> CRainbow
+                                                colorMode.equals("LiquidSlowly", ignoreCase = true) -> LiquidSlowly
+                                                colorMode.equals("Fade", ignoreCase = true) -> FadeColor
+                                                colorMode.equals("Mixer", ignoreCase = true) -> mixerColor
+                                                else -> customColor
+                                            }
+                                        }
+                                        else -> Color.black.rgb
+                                    }
                             )
                         }
                         GL11.glPopMatrix()
@@ -397,7 +453,9 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             )
                         }
                         GL11.glPopMatrix()
-                    }, backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get(), 255)
+                    }, if (shadowColorMode.get().equals("background", true)) backgroundColorRedValue.get() else 255, 
+                    if (shadowColorMode.get().equals("background", true)) backgroundColorGreenValue.get() else 255, 
+                    if (shadowColorMode.get().equals("background", true)) backgroundColorBlueValue.get() else 255, 255)
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
