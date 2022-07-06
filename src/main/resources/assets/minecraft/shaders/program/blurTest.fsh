@@ -13,10 +13,12 @@ uniform float Radius;
 void main() {
     vec4 blurred = vec4(.0);
     float roughCalc = Radius * 2.0 + 1.0;
+    float weight = 0.0;
     for (float r = -Radius; r <= Radius; r += 1.0) {
         vec4 mainTexture = texture(DiffuseSampler, texCoord + oneTexel * r * BlurDir);
         if (mainTexture.a <= 0.0) continue;
         blurred += mainTexture;
+        weight += 1.0;
     }   
-    gl_FragColor = vec4(blurred / roughCalc);
+    gl_FragColor = vec4(blurred.r / weight, blurred.g / weight, blurred.b / weight, blurred / roughCalc);
 }
