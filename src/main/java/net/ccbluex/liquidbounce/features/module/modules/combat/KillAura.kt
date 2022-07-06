@@ -302,7 +302,11 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onMotion(event: MotionEvent) {
+        val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!! as TargetStrafe
         if (event.eventState == EventState.POST) {
+            if (rotationStrafeValue.get().equals("Off", true) || targetStrafe.state)
+                update()
+
             target ?: return
             currentTarget ?: return
 
@@ -313,9 +317,6 @@ class KillAura : Module() {
             if (autoBlockModeValue.get().equals("AfterTick", true) && canBlock)
                 startBlocking(currentTarget!!, hitable)
         }
-
-        if (rotationStrafeValue.get().equals("Off", true))
-            update()
     }
 
 
@@ -325,39 +326,13 @@ class KillAura : Module() {
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
         val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!! as TargetStrafe
-        if (rotationStrafeValue.get().equals("Off", true) && !targetStrafe.state)
+        if (rotationStrafeValue.get().equals("Off", true) || targetStrafe.state)
             return
 
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {
-            if (targetStrafe.canStrafe) {
-                val (yaw) = RotationUtils.targetRotation ?: return
-                var strafe = event.strafe
-                var forward = event.forward
-                val friction = event.friction
-
-                var f = strafe * strafe + forward * forward
-
-                if (f >= 1.0E-4F) {
-                    f = MathHelper.sqrt_float(f)
-
-                    if (f < 1.0F)
-                        f = 1.0F
-
-                    f = friction / f
-                    strafe *= f
-                    forward *= f
-
-                    val yawSin = MathHelper.sin((yaw * Math.PI / 180F).toFloat())
-                    val yawCos = MathHelper.cos((yaw * Math.PI / 180F).toFloat())
-
-                    mc.thePlayer.motionX += strafe * yawCos - forward * yawSin
-                    mc.thePlayer.motionZ += forward * yawCos + strafe * yawSin
-                }
-                event.cancelEvent()
-            }
-            else when (rotationStrafeValue.get().toLowerCase()) {
+            when (rotationStrafeValue.get().toLowerCase()) {
                 "strict" -> {
                     val (yaw) = RotationUtils.targetRotation ?: return
                     var strafe = event.strafe

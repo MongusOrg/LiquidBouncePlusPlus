@@ -40,6 +40,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { blurValue.get() })
     private val shadowShaderValue = BoolValue("Shadow", false)
+    private val shadowNoCutValue = BoolValue("Shadow-NoCut", false)
     private val shadowStrength = IntegerValue("Shadow-Strength", 1, 1, 30, { shadowShaderValue.get() })
     private val shadowColorMode = ListValue("Shadow-Color", arrayOf("Background", "Text", "Custom"), "Background", { shadowShaderValue.get() })
     private val shadowColorRedValue = IntegerValue("Shadow-Red", 0, 0, 255, { shadowShaderValue.get() && shadowColorMode.get().equals("custom", true) })
@@ -253,18 +254,20 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         GL11.glPopMatrix()
                         counter[0] = 0
                     }, {
-                        GL11.glPushMatrix()
-                        GL11.glTranslated(renderX, renderY, 0.0)
-                        modules.forEachIndexed { index, module ->
-                            val xPos = -module.slide - 2
-                            RenderUtils.quickDrawRect(
-                                    xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
-                                    module.arrayY,
-                                    if (rectRightValue.get().equals("right", true)) -1F else 0F,
-                                    module.arrayY + textHeight
-                            )
+                        if (!shadowNoCutValue.get()) {
+                            GL11.glPushMatrix()
+                            GL11.glTranslated(renderX, renderY, 0.0)
+                            modules.forEachIndexed { index, module ->
+                                val xPos = -module.slide - 2
+                                RenderUtils.quickDrawRect(
+                                        xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
+                                        module.arrayY,
+                                        if (rectRightValue.get().equals("right", true)) -1F else 0F,
+                                        module.arrayY + textHeight
+                                )
+                            }
+                            GL11.glPopMatrix()
                         }
-                        GL11.glPopMatrix()
                     })
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
@@ -439,21 +442,23 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                         }
                         GL11.glPopMatrix()
                     }, {
-                        GL11.glPushMatrix()
-                        GL11.glTranslated(renderX, renderY, 0.0)
-                        modules.forEachIndexed { index, module ->
-                            var displayString = getModName(module)
-                            val width = fontRenderer.getStringWidth(displayString)
-                            val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
+                        if (!shadowNoCutValue.get()) {
+                            GL11.glPushMatrix()
+                            GL11.glTranslated(renderX, renderY, 0.0)
+                            modules.forEachIndexed { index, module ->
+                                var displayString = getModName(module)
+                                val width = fontRenderer.getStringWidth(displayString)
+                                val xPos = -(width - module.slide) + if (rectLeftValue.get().equals("left", true)) 3 else 2
 
-                            RenderUtils.quickDrawRect(
-                                    0F,
-                                    module.arrayY,
-                                    xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
-                                    module.arrayY + textHeight
-                            )
+                                RenderUtils.quickDrawRect(
+                                        0F,
+                                        module.arrayY,
+                                        xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
+                                        module.arrayY + textHeight
+                                )
+                            }
+                            GL11.glPopMatrix()
                         }
-                        GL11.glPopMatrix()
                     })
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
