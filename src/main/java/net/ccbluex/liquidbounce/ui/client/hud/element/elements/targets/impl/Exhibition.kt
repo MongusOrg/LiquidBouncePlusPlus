@@ -23,7 +23,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
 
     override fun drawTarget(entity: EntityPlayer) {
         val font = Fonts.fontTahoma
-        val minWidth = 126F.coerceAtLeast(40F + font.getStringWidth(entity.name))
+        val minWidth = 126F.coerceAtLeast(47F + font.getStringWidth(entity.name))
 
         RenderUtils.drawExhiRect(0F, 0F, minWidth, 45F, 1F - targetInstance.getFadeProgress())
 
@@ -55,7 +55,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         val renderItem = mc.renderItem
 
         var x = 45
-        var y = 27
+        var y = 28
 
         for (index in 3 downTo 0) {
             val stack = entity.inventory.armorInventory[index] ?: continue
@@ -88,7 +88,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
         entity ?: return Border(0F, 0F, 126F, 45F)
 
         val font = Fonts.fontTahoma
-        val minWidth = 126F.coerceAtLeast(40F + font.getStringWidth(entity.name))
+        val minWidth = 126F.coerceAtLeast(47F + font.getStringWidth(entity.name))
 
         return Border(0F, 0F, minWidth, 45F)
     }
