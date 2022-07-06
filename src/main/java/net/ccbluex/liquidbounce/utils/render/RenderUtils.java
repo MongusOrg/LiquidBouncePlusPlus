@@ -1253,14 +1253,14 @@ public final class RenderUtils extends MinecraftInstance {
 
     private static int getBorderColor(int level) {
         if (level == 2)
-            return 0x8055FF55;
+            return 0x7055FF55;
         if (level == 3)
-            return 0x8000AAAA;
+            return 0x7000AAAA;
         if (level == 4)
-            return 0x80AA0000;
+            return 0x70AA0000;
         if (level >= 5)
-            return 0x80FFAA00;
-        return 0x80FFFFFF;
+            return 0x70FFAA00;
+        return 0x70FFFFFF;
     }
 
     public static void glColor(final int red, final int green, final int blue, final int alpha) {
