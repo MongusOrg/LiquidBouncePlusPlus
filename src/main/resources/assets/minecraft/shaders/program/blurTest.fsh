@@ -20,5 +20,5 @@ void main() {
         blurred += mainTexture;
         weight += 1.0;
     }   
-    gl_FragColor = vec4(blurred.r / weight, blurred.g / weight, blurred.b / weight, blurred / roughCalc);
+    gl_FragColor = vec4(blurred.r / weight, blurred.g / weight, blurred.b / weight, blurred.a / roughCalc);
 }
