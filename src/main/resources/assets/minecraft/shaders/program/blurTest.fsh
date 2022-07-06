@@ -21,5 +21,5 @@ void main() {
         totalAlpha += mainTexture.a;
         weight += vec3(1.0, 1.0, 1.0);
     }   
-    gl_FragColor = vec4(blurred.r / weight.r, blurred.g / weight.g, blurred.b / weight.b, totalAlpha / roughCalc);
-} // i think i fixed the shader, big thanks to https://stackoverflow.com/questions/35476142/gaussian-blur-handle-with-alpha-transparency
+    gl_FragColor = vec4(blurred.r / weight.r, blurred.g / weight.g, blurred.b / weight.b, totalAlpha / roughCalc * 2.0);
+}
