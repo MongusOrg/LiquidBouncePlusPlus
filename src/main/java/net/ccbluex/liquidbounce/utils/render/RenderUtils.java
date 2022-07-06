@@ -1166,21 +1166,25 @@ public final class RenderUtils extends MinecraftInstance {
 
     public static void drawExhiEnchants(ItemStack stack, float x, float y) {
         RenderHelper.disableStandardItemLighting();
+        GlStateManager.resetColor();
+        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.pushMatrix();
+        GlStateManager.disableDepth();
         final int darkBorder = 0xFF000000;
         if (stack.getItem() instanceof ItemArmor) {
             int prot = EnchantmentHelper.getEnchantmentLevel(Enchantment.protection.effectId, stack);
             int unb = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
             int thorn = EnchantmentHelper.getEnchantmentLevel(Enchantment.thorns.effectId, stack);
             if (prot > 0) {
-                drawExhiOutlined(prot + "", drawExhiOutlined("P", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(prot), -1, true);
+                drawExhiOutlined(prot + "", drawExhiOutlined("P", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(prot), getMainColor(prot), true);
                 y += 8;
             }
             if (unb > 0) {
-                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(unb), -1, true);
+                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(unb),getMainColor(unb), true);
                 y += 8;
             }
             if (thorn > 0) {
-                drawExhiOutlined(thorn + "", drawExhiOutlined("T", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(thorn), -1, true);
+                drawExhiOutlined(thorn + "", drawExhiOutlined("T", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(thorn), getMainColor(thorn), true);
                 y += 8;
             }
         }
@@ -1190,19 +1194,19 @@ public final class RenderUtils extends MinecraftInstance {
             int flame = EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack);
             int unb = EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, stack);
             if (power > 0) {
-                drawExhiOutlined(power + "", drawExhiOutlined("Pow", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(power), -1, true);
+                drawExhiOutlined(power + "", drawExhiOutlined("Pow", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(power), getMainColor(power), true);
                 y += 8;
             }
             if (punch > 0) {
-                drawExhiOutlined(punch + "", drawExhiOutlined("Pun", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(punch), -1, true);
+                drawExhiOutlined(punch + "", drawExhiOutlined("Pun", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(punch), getMainColor(punch), true);
                 y += 8;
             }
             if (flame > 0) {
-                drawExhiOutlined(flame + "", drawExhiOutlined("F", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(flame), -1, true);
+                drawExhiOutlined(flame + "", drawExhiOutlined("F", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(flame), getMainColor(flame), true);
                 y += 8;
             }
             if (unb > 0) {
-                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(unb), -1, true);
+                drawExhiOutlined(unb + "", drawExhiOutlined("U", x, y, 0.5F, darkBorder, -1, true), y, 0.5F, getBorderColor(unb), getMainColor(unb), true);
                 y += 8;
             }
         }
@@ -1228,6 +1232,9 @@ public final class RenderUtils extends MinecraftInstance {
                 y += 8;
             }
         }
+        GlStateManager.enableDepth();
+        GlStateManager.popMatrix();
+        RenderUtils.enableStandardItemLighting();
     }
 
     private static float drawExhiOutlined(String text, float x, float y, float borderWidth, int borderColor, int mainColor, boolean drawText) {
@@ -1242,19 +1249,19 @@ public final class RenderUtils extends MinecraftInstance {
 
     private static int getMainColor(int level) {
         if (level == 4)
-            return 0xAA0000;
+            return 0xFFAA0000;
         return -1;
     }
 
     private static int getBorderColor(int level) {
         if (level == 2)
-            return 0x55FF55;
+            return 0xFF55FF55;
         if (level == 3)
-            return 0x00AAAA;
+            return 0xFF00AAAA;
         if (level == 4)
-            return 0xAA0000;
-        if (level == 5)
-            return 0xFFFF55;
+            return 0xFFAA0000;
+        if (level >= 5)
+            return 0xFFFFFF55;
         return -1;
     }
 
