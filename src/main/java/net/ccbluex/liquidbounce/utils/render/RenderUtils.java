@@ -1165,7 +1165,7 @@ public final class RenderUtils extends MinecraftInstance {
     }
 
     public static void drawExhiEnchants(ItemStack stack, float x, float y) {
-        RenderHelper.disableGUIStandardItemLighting();
+        RenderHelper.disableStandardItemLighting();
         GlStateManager.disableDepth();
         GlStateManager.disableBlend();
         GlStateManager.resetColor();
