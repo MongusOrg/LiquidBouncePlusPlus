@@ -365,7 +365,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                         }
                     if (side.horizontal == Side.Horizontal.LEFT) {
                         when (domainShadowValue.get().toLowerCase()) {
-                            "none" -> domainFontValue.get().drawString(name.get(z).toString(), -3F + domainFontValue.get().getStringWidth(stringZ).toFloat(), height.toFloat() + domainFontYValue.get(), typeColor)
+                            "none" -> domainFontValue.get().drawString(name.get(z).toString(), -3F + domainFontValue.get().getStringWidth(stringZ).toFloat(), height.toFloat() + domainFontYValue.get(), typeColor, false)
                             "default" -> domainFontValue.get().drawStringWithShadow(name.get(z).toString(), -3F + domainFontValue.get().getStringWidth(stringZ).toFloat(), height.toFloat() + domainFontYValue.get(), typeColor)
                             "outline" -> {
                                 domainFontValue.get().drawString(name.get(z).toString(), -3F + domainFontValue.get().getStringWidth(stringZ).toFloat() - 0.5F, height.toFloat() + domainFontYValue.get(), Color.black.rgb, shadowValue.get())
@@ -377,7 +377,7 @@ class ScoreboardElement(x: Double = 5.0, y: Double = 0.0, scale: Float = 1F,
                         }
                     } else {
                         when (domainShadowValue.get().toLowerCase()) {
-                            "none" -> domainFontValue.get().drawString(name.get(z).toString(), l1.toFloat() + domainFontValue.get().getStringWidth(stringZ), height.toFloat() + domainFontYValue.get(), typeColor)
+                            "none" -> domainFontValue.get().drawString(name.get(z).toString(), l1.toFloat() + domainFontValue.get().getStringWidth(stringZ), height.toFloat() + domainFontYValue.get(), typeColor, false)
                             "default" -> domainFontValue.get().drawStringWithShadow(name.get(z).toString(), l1.toFloat() + domainFontValue.get().getStringWidth(stringZ), height.toFloat() + domainFontYValue.get(), typeColor)
                             "outline" -> {
                                 domainFontValue.get().drawString(name.get(z).toString(), l1.toFloat() + domainFontValue.get().getStringWidth(stringZ) - 0.5F, height.toFloat() + domainFontYValue.get(), Color.black.rgb, shadowValue.get())
