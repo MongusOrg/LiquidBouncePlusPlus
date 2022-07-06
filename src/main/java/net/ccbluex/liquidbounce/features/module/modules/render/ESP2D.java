@@ -274,13 +274,14 @@ public final class ESP2D extends Module {
                             RenderUtils.newDrawRect(posX - 3.5D, posY - 0.5D, posX - 1.5D, endPosY + 0.5D, background);
                             if (armorValue > 0.0F) {
                                 int healthColor = BlendUtils.getHealthColor(armorValue, itemDurability).getRGB();
-                                if (hpBarMode.get().equalsIgnoreCase("dot"))
+                                double deltaY = endPosY - posY;
+                                if (hpBarMode.get().equalsIgnoreCase("dot") && deltaY >= 80) { // revert back to normal bar if the height is too low
                                     for (double k = 0; k < 10; k++) {
                                         double reratio = MathHelper.clamp_double(armorValue - k * (itemDurability / 10D), 0D, itemDurability / 10D) / (itemDurability / 10D);
-                                        double hei = ((endPosY - posY) / 10D - 0.5) * reratio;
-                                        RenderUtils.newDrawRect(posX - 3.0D, endPosY - (endPosY - posY) / 10D * k, posX - 2.0D, endPosY - (endPosY - posY) / 10D * k - hei, healthColor);
+                                        double hei = (deltaY / 10D - 0.5) * reratio;
+                                        RenderUtils.newDrawRect(posX - 3.0D, endPosY - (deltaY + 0.5) / 10D * k, posX - 2.0D, endPosY - (deltaY + 0.5) / 10D * k - hei, healthColor);
                                     }
-                                else
+                                } else
                                     RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - textWidth, healthColor);
                                 tagY = entityLivingBase.getAbsorptionAmount();
                                 if (absorption.get() && tagY > 0.0F)

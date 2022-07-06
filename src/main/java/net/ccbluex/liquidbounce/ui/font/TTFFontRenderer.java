@@ -50,7 +50,7 @@ public class TTFFontRenderer {
     /**
      * The margin on each texture.
      */
-    private static final int MARGIN = 3;
+    private static final int MARGIN = 0;
 
     /**
      * The character that invokes color in a string when rendered.

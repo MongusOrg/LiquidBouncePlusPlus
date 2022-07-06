@@ -65,6 +65,7 @@ class Exhibition(inst: Target): TargetStyle("Exhibition", inst, false) {
 
             renderItem.renderItemIntoGUI(stack, x, y)
             renderItem.renderItemOverlays(mc.fontRendererObj, stack, x, y)
+            RenderUtils.drawExhiEnchants(stack, x.toFloat(), y.toFloat())
 
             x += 16
         }
