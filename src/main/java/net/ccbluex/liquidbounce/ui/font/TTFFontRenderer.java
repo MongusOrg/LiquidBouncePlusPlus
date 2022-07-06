@@ -290,6 +290,7 @@ public class TTFFontRenderer {
         float b = (float)(color & 255) / 255F;
 
         GlStateManager.color(r / multiplier, g / multiplier, b / multiplier, a);
+        GL11.glColor4f(r / multiplier, g / multiplier, b / multiplier, a);
 
         // Loops through the text.
         for (int i = 0; i < length; i++) {

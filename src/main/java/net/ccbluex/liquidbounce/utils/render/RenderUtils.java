@@ -1236,10 +1236,10 @@ public final class RenderUtils extends MinecraftInstance {
     }
 
     private static float drawExhiOutlined(String text, float x, float y, float borderWidth, int borderColor, int mainColor, boolean drawText) {
-        Fonts.fontVerdana.drawString(text, x - borderWidth, y - borderWidth, borderColor);
+        /*Fonts.fontVerdana.drawString(text, x - borderWidth, y - borderWidth, borderColor);
         Fonts.fontVerdana.drawString(text, x - borderWidth, y + borderWidth, borderColor);
         Fonts.fontVerdana.drawString(text, x + borderWidth, y - borderWidth, borderColor);
-        Fonts.fontVerdana.drawString(text, x + borderWidth, y + borderWidth, borderColor);
+        Fonts.fontVerdana.drawString(text, x + borderWidth, y + borderWidth, borderColor);*/
         Fonts.fontVerdana.drawString(text, x, y - borderWidth, borderColor);
         Fonts.fontVerdana.drawString(text, x, y + borderWidth, borderColor);
         Fonts.fontVerdana.drawString(text, x - borderWidth, y, borderColor);
