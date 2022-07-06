@@ -1236,7 +1236,7 @@ public final class RenderUtils extends MinecraftInstance {
         GlStateManager.enableDepth();
         GlStateManager.popMatrix();
         GlStateManager.enableTexture2D();
-        RenderUtils.enableStandardItemLighting();
+        RenderHelper.enableStandardItemLighting();
     }
 
     private static float drawExhiOutlined(String text, float x, float y, float borderWidth, int borderColor, int mainColor, boolean drawText) {
