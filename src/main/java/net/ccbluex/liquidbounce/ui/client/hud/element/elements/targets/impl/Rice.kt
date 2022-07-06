@@ -192,7 +192,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
         val info = "Distance: ${decimalFormat2.format(mc.thePlayer.getDistanceToEntityBox(entity))}"            
         val length = (font.getStringWidth(name).coerceAtLeast(font.getStringWidth(info)).toFloat() + 40F).coerceAtLeast(125F)
 
-        RenderUtils.originalRoundedRect(0F, 0F, 10F + length, 55F, 8F, Color(0, 0, 0, 255).rgb)
+        RenderUtils.originalRoundedRect(0F, 0F, 10F + length, 55F, 8F, shadowOpaque.rgb)
     }
 
     override fun getBorder(entity: EntityPlayer?): Border? {

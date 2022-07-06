@@ -44,6 +44,11 @@ class Target : Element() {
 
     val shadowValue = BoolValue("Shadow", false)
     val shadowStrength = FloatValue("Shadow-Strength", 1F, 0.01F, 40F, { shadowValue.get() })
+    val shadowColorMode = ListValue("Shadow-Color", arrayOf("Background", "Custom", "Bar"), "Background", { shadowValue.get() })
+
+    val shadowColorRedValue = IntegerValue("Shadow-Red", 0, 0, 255, { shadowValue.get() && shadowColorMode.get().equals("custom", true) })
+    val shadowColorGreenValue = IntegerValue("Shadow-Green", 111, 0, 255, { shadowValue.get() && shadowColorMode.get().equals("custom", true) })
+    val shadowColorBlueValue = IntegerValue("Shadow-Blue", 255, 0, 255, { shadowValue.get() && shadowColorMode.get().equals("custom", true) })
 
     val fadeValue = BoolValue("FadeAnim", false)
     val fadeSpeed = FloatValue("Fade-Speed", 1F, 0F, 5F, { fadeValue.get() })

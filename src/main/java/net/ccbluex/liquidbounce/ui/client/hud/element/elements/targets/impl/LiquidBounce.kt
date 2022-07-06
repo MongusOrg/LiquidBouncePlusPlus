@@ -115,7 +115,7 @@ class LiquidBounce(inst: Target): TargetStyle("LiquidBounce", inst, true) {
                         .coerceAtLeast(118)
                         .toFloat()
 
-        RenderUtils.newDrawRect(0F, 0F, width, 36F, Color(0, 0, 0, 255).rgb)
+        RenderUtils.newDrawRect(0F, 0F, width, 36F, shadowOpaque.rgb)
     }
 
     override fun getBorder(entity: EntityPlayer?): Border? {

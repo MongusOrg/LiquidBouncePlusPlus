@@ -63,7 +63,7 @@ object ShadowUtils : MinecraftInstance() {
         }
     }
 
-    fun shadow(strength: Float, drawMethod: (() -> Unit), cutMethod: (() -> Unit), red: Int = 255, green: Int = 255, blue: Int = 255, alpha: Int = 255) {
+    fun shadow(strength: Float, drawMethod: (() -> Unit), cutMethod: (() -> Unit)) {
         if (!OpenGlHelper.isFramebufferEnabled()) return
 
         val sc = ScaledResolution(mc)
@@ -111,10 +111,10 @@ object ShadowUtils : MinecraftInstance() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR)
-        worldrenderer.pos(0.0, height.toDouble(), 0.0).tex(0.0, 0.0).color(red, green, blue, alpha).endVertex()
-        worldrenderer.pos(width.toDouble(), height.toDouble(), 0.0).tex(fr_width, 0.0).color(red, green, blue, alpha).endVertex()
-        worldrenderer.pos(width.toDouble(), 0.0, 0.0).tex(fr_width, fr_height).color(red, green, blue, alpha).endVertex()
-        worldrenderer.pos(0.0, 0.0, 0.0).tex(0.0, fr_height).color(red, green, blue, alpha).endVertex()
+        worldrenderer.pos(0.0, height.toDouble(), 0.0).tex(0.0, 0.0).color(255, 255, 255, 255).endVertex()
+        worldrenderer.pos(width.toDouble(), height.toDouble(), 0.0).tex(fr_width, 0.0).color(255, 255, 255, 255).endVertex()
+        worldrenderer.pos(width.toDouble(), 0.0, 0.0).tex(fr_width, fr_height).color(255, 255, 255, 255).endVertex()
+        worldrenderer.pos(0.0, 0.0, 0.0).tex(0.0, fr_height).color(255, 255, 255, 255).endVertex()
 
         tessellator.draw()
         resultBuffer!!.unbindFramebufferTexture()

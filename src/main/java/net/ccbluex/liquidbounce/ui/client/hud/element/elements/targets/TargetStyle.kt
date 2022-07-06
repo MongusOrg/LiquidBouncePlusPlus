@@ -35,6 +35,13 @@ abstract class TargetStyle(val name: String, val targetInstance: Target, val sha
     val decimalFormat2 = DecimalFormat("##0.0", DecimalFormatSymbols(Locale.ENGLISH))
     val decimalFormat3 = DecimalFormat("0.#", DecimalFormatSymbols(Locale.ENGLISH))
 
+    val shadowOpaque: Color
+        get() = ColorUtils.reAlpha(when (targetInstance.shadowColorMode.get().toLowerCase()) {
+            "background" -> targetInstance.bgColor
+            "custom" -> Color(targetInstance.shadowColorRedValue.get(), targetInstance.shadowColorGreenValue.get(), targetInstance.shadowColorBlueValue.get())
+            else -> targetInstance.barColor
+        }, 1F - animProgress)
+
     abstract fun drawTarget(entity: EntityPlayer)
     abstract fun getBorder(entity: EntityPlayer?): Border?
     

@@ -41,7 +41,10 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 30F, { blurValue.get() })
     private val shadowShaderValue = BoolValue("Shadow", false)
     private val shadowStrength = FloatValue("Shadow-Strength", 0F, 0F, 30F, { shadowShaderValue.get() })
-    private val shadowColorMode = ListValue("Shadow-Color", arrayOf("Background", "Text", "Default"), "Background")
+    private val shadowColorMode = ListValue("Shadow-Color", arrayOf("Background", "Text", "Custom"), "Background", { shadowShaderValue.get() })
+    private val shadowColorRedValue = IntegerValue("Shadow-Red", 0, 0, 255, { shadowShaderValue.get() && shadowColorMode.get().equals("custom", true) })
+    private val shadowColorGreenValue = IntegerValue("Shadow-Green", 111, 0, 255, { shadowShaderValue.get() && shadowColorMode.get().equals("custom", true) })
+    private val shadowColorBlueValue = IntegerValue("Shadow-Blue", 255, 0, 255, { shadowShaderValue.get() && shadowColorMode.get().equals("custom", true) })
     val colorRedValue = IntegerValue("Red", 0, 0, 255)
     val colorGreenValue = IntegerValue("Green", 111, 0, 255)
     val colorBlueValue = IntegerValue("Blue", 255, 0, 255)
@@ -216,10 +219,10 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             RenderUtils.newDrawRect(
                                     xPos - if (rectRightValue.get().equals("right", true)) 3 else 2,
                                     module.arrayY,
-                                    if (rectRightValue.get().equals("right", true)) -1F else 0F,
+                                    (if (rectRightValue.get().equals("right", true)) -1F else 0F) - 1F,
                                     module.arrayY + textHeight,
                                     when (shadowColorMode.get().toLowerCase()) {
-                                        "background" -> -1
+                                        "background" -> Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get()).rgb
                                         "text" -> {
                                             val moduleColor = Color.getHSBColor(module.hue, saturation, brightness).rgb
 
@@ -243,7 +246,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                                 else -> customColor
                                             }
                                         }
-                                        else -> Color.black.rgb
+                                        else -> Color(shadowColorRedValue.get(), shadowColorGreenValue.get(), shadowColorBlueValue.get()).rgb
                                     }
                             )
                         }
@@ -262,9 +265,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             )
                         }
                         GL11.glPopMatrix()
-                    }, if (shadowColorMode.get().equals("background", true)) backgroundColorRedValue.get() else 255, 
-                    if (shadowColorMode.get().equals("background", true)) backgroundColorGreenValue.get() else 255, 
-                    if (shadowColorMode.get().equals("background", true)) backgroundColorBlueValue.get() else 255, 255)
+                    })
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }
@@ -405,10 +406,10 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             RenderUtils.newDrawRect(
                                     0F,
                                     module.arrayY,
-                                    xPos + width + if (rectLeftValue.get().equals("right", true)) 3 else 2,
+                                    (xPos + width + if (rectLeftValue.get().equals("right", true)) 3F else 2F) + 1F,
                                     module.arrayY + textHeight,
                                     when (shadowColorMode.get().toLowerCase()) {
-                                        "background" -> -1
+                                        "background" -> Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get()).rgb
                                         "text" -> {
                                             val moduleColor = Color.getHSBColor(module.hue, saturation, brightness).rgb
 
@@ -432,7 +433,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                                 else -> customColor
                                             }
                                         }
-                                        else -> Color.black.rgb
+                                        else -> Color(shadowColorRedValue.get(), shadowColorGreenValue.get(), shadowColorBlueValue.get()).rgb
                                     }
                             )
                         }
@@ -453,9 +454,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                             )
                         }
                         GL11.glPopMatrix()
-                    }, if (shadowColorMode.get().equals("background", true)) backgroundColorRedValue.get() else 255, 
-                    if (shadowColorMode.get().equals("background", true)) backgroundColorGreenValue.get() else 255, 
-                    if (shadowColorMode.get().equals("background", true)) backgroundColorBlueValue.get() else 255, 255)
+                    })
                     GL11.glPopMatrix()
                     GL11.glTranslated(renderX, renderY, 0.0)
                 }

@@ -55,7 +55,7 @@ class Slowly(inst: Target): TargetStyle("Slowly", inst, true) {
         val healthString = "${decimalFormat2.format(entity.health)} ❤"
         val length = 60.coerceAtLeast(font.getStringWidth(entity.name)).coerceAtLeast(font.getStringWidth(healthString)).toFloat() + 10F
 
-        RenderUtils.newDrawRect(0F, 0F, 32F + length, 36F, Color(0, 0, 0, 255).rgb)
+        RenderUtils.newDrawRect(0F, 0F, 32F + length, 36F, shadowOpaque.rgb)
     }
 
     override fun getBorder(entity: EntityPlayer?): Border? {
