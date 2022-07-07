@@ -50,6 +50,7 @@ public class Fonts {
     @FontDetails(fontName = "Tahoma Bold", fontSize = 30)
     public static GameFontRenderer fontTahoma30;
 
+    public static TTFFontRenderer fontTahomaSmall;
     public static TTFFontRenderer fontVerdana;
 
     @FontDetails(fontName = "Bangers", fontSize = 45)
@@ -76,6 +77,7 @@ public class Fonts {
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
         fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 35));
         fontTahoma30 = new GameFontRenderer(getFont("TahomaBold.ttf", 30));
+        fontTahomaSmall = new TTFFontRenderer(getFont("Tahoma.ttf", 10));
         fontVerdana = new TTFFontRenderer(getFont("Verdana.ttf", 10));
         fontBangers = new GameFontRenderer(getFont("Bangers-Regular.ttf", 45));
 
@@ -121,10 +123,11 @@ public class Fonts {
             final File prodSansFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Medium.ttf");
             final File prodBoldFile = new File(LiquidBounce.fileManager.fontsDir, "Roboto-Bold.ttf");
             final File tahomaFile = new File(LiquidBounce.fileManager.fontsDir, "TahomaBold.ttf");
+            final File tahomaReFile = new File(LiquidBounce.fileManager.fontsDir, "Tahoma.ttf");
             final File verdanaFile = new File(LiquidBounce.fileManager.fontsDir, "Verdana.ttf");
             final File bangersFile = new File(LiquidBounce.fileManager.fontsDir, "Bangers-Regular.ttf");
 
-            if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists() || !verdanaFile.exists() || !bangersFile.exists()) {
+            if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists() || !tahomaReFile.exists() || !verdanaFile.exists() || !bangersFile.exists()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
                 HttpUtils.download("https://wysi-foundation.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
