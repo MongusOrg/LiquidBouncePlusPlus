@@ -90,7 +90,7 @@ object BlurUtils : MinecraftInstance() {
         val height = sc.scaledHeight
 
         if (sizeHasChanged(scaleFactor, width, height)) {
-            setupFramebuffers(blurStrength)
+            setupFramebuffers()
             setValues(blurStrength, x, y, x2 - x, y2 - y, width.toFloat(), height.toFloat(), true)
         }
 
