@@ -299,7 +299,7 @@ public final class ESP2D extends Module {
                             if (armorBarMode.get().equalsIgnoreCase("items")) {
                                 final double constHeight = (endPosY - posY) / 4.0;
                                 for (int m = 4; m > 0; m--) {
-                                    ItemStack armorStack = entityLivingBase.getEquipmentInSlot(j);
+                                    ItemStack armorStack = entityLivingBase.getEquipmentInSlot(m);
                                     double theHeight = constHeight + 0.25D;
                                     if (armorStack != null && armorStack.getItem() != null && armorStack.isItemStackDamageable()) {
                                         RenderUtils.newDrawRect(endPosX + 1.5D, endPosY + 0.5D - theHeight * m, endPosX + 3.5D, endPosY + 0.5D - theHeight * (m - 1), background);
@@ -309,12 +309,13 @@ public final class ESP2D extends Module {
                                                                 endPosY + 0.5D - theHeight * (m - 1) - 0.25D - (constHeight - 0.25D) * MathHelper.clamp_double(ItemUtils.getItemDurability(armorStack) / armorStack.getMaxDamage(), 0F, 1F), new Color(120, 120, 250).getRGB());
                                     }
                                 }
+                            } else {
+                                armorValue = (float)entityLivingBase.getTotalArmorValue();
+                                double armorWidth = (endPosY - posY) * (double)armorValue / 20.0D;
+                                RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
+                                if (armorValue > 0.0F)
+                                    RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(120, 120, 250).getRGB());
                             }
-                            armorValue = (float)entityLivingBase.getTotalArmorValue();
-                            double armorWidth = (endPosY - posY) * (double)armorValue / 20.0D;
-                            RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
-                            if (armorValue > 0.0F)
-                                RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(120, 120, 250).getRGB());
                         } else if (entity instanceof EntityItem) {
                             ItemStack itemStack = ((EntityItem)entity).getEntityItem();
                             if (itemStack.isItemStackDamageable()) {
