@@ -48,8 +48,8 @@ object BlurUtils : MinecraftInstance() {
         }
     }
 
-    private fun setValues(strength: Float, x: Float, y: Float, w: Float, h: Float, width: Float, height: Float) {
-        if (strength == lastStrength && lastX == x && lastY == y && lastW == w && lastH == h) return
+    private fun setValues(strength: Float, x: Float, y: Float, w: Float, h: Float, width: Float, height: Float, force: Boolean = false) {
+        if (!force && strength == lastStrength && lastX == x && lastY == y && lastW == w && lastH == h) return
         lastStrength = strength
         lastX = x
         lastY = y
@@ -89,8 +89,10 @@ object BlurUtils : MinecraftInstance() {
         val width = sc.scaledWidth
         val height = sc.scaledHeight
 
-        if (sizeHasChanged(scaleFactor, width, height))
-            setupFramebuffers()
+        if (sizeHasChanged(scaleFactor, width, height)) {
+            setupFramebuffers(blurStrength)
+            setValues(blurStrength, x, y, x2 - x, y2 - y, width.toFloat(), height.toFloat(), true)
+        }
 
         lastFactor = scaleFactor
         lastWidth = width
