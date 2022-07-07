@@ -50,6 +50,7 @@ import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
@@ -64,7 +65,9 @@ public final class ESP2D extends Module {
     public final ListValue boxMode = new ListValue("Mode", new String[]{"Box", "Corners"}, "Box");
     public final BoolValue healthBar = new BoolValue("Health-bar", true);
     public final ListValue hpBarMode = new ListValue("HBar-Mode", new String[]{"Dot", "Line"}, "Dot", () -> healthBar.get());
+    public final BoolValue absorption = new BoolValue("Render-Absorption", true, () -> healthBar.get() && hpBarMode.get().equalsIgnoreCase("line"));
     public final BoolValue armorBar = new BoolValue("Armor-bar", true);
+    public final ListValue armorBarMode = new ListValue("ABar-Mode", new String[] {"Total", "Items"}, "Total", () -> armorBar.get());
     public final BoolValue healthNumber = new BoolValue("HealthNumber", true, () -> healthBar.get());
     public final ListValue hpMode = new ListValue("HP-Mode", new String[]{"Health", "Percent"}, "Health", () -> healthBar.get() && healthNumber.get());
     public final BoolValue armorNumber = new BoolValue("ItemArmorNumber", true, () -> armorBar.get());
@@ -75,7 +78,6 @@ public final class ESP2D extends Module {
     public final BoolValue tagsBGValue = new BoolValue("Tags-Background", true, () -> tagsValue.get());
     public final BoolValue itemTagsValue = new BoolValue("Item-Tags", true);
     public final BoolValue clearNameValue = new BoolValue("Use-Clear-Name", false);
-    public final BoolValue absorption = new BoolValue("Render-Absorption", true);
     public final BoolValue localPlayer = new BoolValue("Local-Player", true);
     public final BoolValue droppedItems = new BoolValue("Dropped-Items", false);
     private final ListValue colorModeValue = new ListValue("Color", new String[] {"Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"}, "Custom");
@@ -281,11 +283,12 @@ public final class ESP2D extends Module {
                                         double hei = (deltaY / 10D - 0.5) * reratio;
                                         RenderUtils.newDrawRect(posX - 3.0D, endPosY - (deltaY + 0.5) / 10D * k, posX - 2.0D, endPosY - (deltaY + 0.5) / 10D * k - hei, healthColor);
                                     }
-                                } else
+                                } else {
                                     RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - textWidth, healthColor);
-                                tagY = entityLivingBase.getAbsorptionAmount();
-                                if (absorption.get() && tagY > 0.0F)
-                                    RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - (endPosY - posY) / 6.0D * (double)tagY / 2.0D, (new Color(Potion.absorption.getLiquidColor())).getRGB());
+                                    tagY = entityLivingBase.getAbsorptionAmount();
+                                    if (absorption.get() && tagY > 0.0F)
+                                        RenderUtils.newDrawRect(posX - 3.0D, endPosY, posX - 2.0D, endPosY - (endPosY - posY) / 6.0D * (double)tagY / 2.0D, (new Color(Potion.absorption.getLiquidColor())).getRGB());
+                                }
                             }
                         }
                     }
@@ -293,11 +296,25 @@ public final class ESP2D extends Module {
                     if (armor) {
                         if (living) {
                             entityLivingBase = (EntityLivingBase)entity;
+                            if (armorBarMode.get().equalsIgnoreCase("items")) {
+                                final double constHeight = (endPosY - posY) / 4.0;
+                                for (int m = 4; m > 0; m--) {
+                                    ItemStack armorStack = entityLivingBase.getEquipmentInSlot(j);
+                                    double theHeight = constHeight + 0.25D;
+                                    if (armorStack != null && armorStack.getItem() != null && armorStack.isItemStackDamageable()) {
+                                        RenderUtils.newDrawRect(endPosX + 1.5D, endPosY + 0.5D - theHeight * m, endPosX + 3.5D, endPosY + 0.5D - theHeight * (m - 1), background);
+                                        RenderUtils.newDrawRect(endPosX + 2.0D, 
+                                                                endPosY + 0.5D - theHeight * (m - 1) - 0.25D, 
+                                                                endPosX + 3.0D, 
+                                                                endPosY + 0.5D - theHeight * (m - 1) - 0.25D - (constHeight - 0.25D) * MathHelper.clamp_double(ItemUtils.getItemDurability(armorStack) / armorStack.getMaxDamage(), 0F, 1F), new Color(120, 120, 250).getRGB());
+                                    }
+                                }
+                            }
                             armorValue = (float)entityLivingBase.getTotalArmorValue();
                             double armorWidth = (endPosY - posY) * (double)armorValue / 20.0D;
                             RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
                             if (armorValue > 0.0F)
-                                RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(70, 70, 250).getRGB());
+                                RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(120, 120, 250).getRGB());
                         } else if (entity instanceof EntityItem) {
                             ItemStack itemStack = ((EntityItem)entity).getEntityItem();
                             if (itemStack.isItemStackDamageable()) {
@@ -307,17 +324,16 @@ public final class ESP2D extends Module {
                                 if (armorNumber.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution))) 
                                     drawScaledString(((int) itemDurability) + "", endPosX + 4.0, (endPosY - durabilityWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                                 RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
-                                RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(70, 70, 250).getRGB());
+                                RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(120, 120, 250).getRGB());
                             }
                         }
                     }
                     
-                    if (isPlayer && armorItems.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution))) {
+                    if (living && armorItems.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution))) {
                         entityLivingBase = (EntityLivingBase) entity;
-                        EntityPlayer player = (EntityPlayer) entityLivingBase;
                         double yDist = (double)(endPosY - posY) / 4.0D;
                         for (int j = 4; j > 0; j--) {
-                            ItemStack armorStack = player.getEquipmentInSlot(j);
+                            ItemStack armorStack = entityLivingBase.getEquipmentInSlot(j);
                             if (armorStack != null && armorStack.getItem() != null) {
                                 renderItemStack(armorStack, endPosX + (armor ? 4.0D : 2.0D), posY + (yDist * (4 - j)) + (yDist / 2.0D) - 5.0D);
                                 if (armorDur.get())
