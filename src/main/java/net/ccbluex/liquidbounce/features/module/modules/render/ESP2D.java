@@ -306,7 +306,7 @@ public final class ESP2D extends Module {
                                         RenderUtils.newDrawRect(endPosX + 2.0D, 
                                                                 endPosY + 0.5D - theHeight * (m - 1) - 0.25D, 
                                                                 endPosX + 3.0D, 
-                                                                endPosY + 0.5D - theHeight * (m - 1) - 0.25D - (constHeight - 0.25D) * MathHelper.clamp_double(ItemUtils.getItemDurability(armorStack) / armorStack.getMaxDamage(), 0F, 1F), new Color(120, 120, 250).getRGB());
+                                                                endPosY + 0.5D - theHeight * (m - 1) - 0.25D - (constHeight - 0.25D) * MathHelper.clamp_double((double)ItemUtils.getItemDurability(armorStack) / (double) armorStack.getMaxDamage(), 0D, 1D), new Color(70, 70, 200).getRGB());
                                     }
                                 }
                             } else {
@@ -314,7 +314,7 @@ public final class ESP2D extends Module {
                                 double armorWidth = (endPosY - posY) * (double)armorValue / 20.0D;
                                 RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
                                 if (armorValue > 0.0F)
-                                    RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(120, 120, 250).getRGB());
+                                    RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - armorWidth, new Color(70, 70, 200).getRGB());
                             }
                         } else if (entity instanceof EntityItem) {
                             ItemStack itemStack = ((EntityItem)entity).getEntityItem();
@@ -325,7 +325,7 @@ public final class ESP2D extends Module {
                                 if (armorNumber.get() && (!hoverValue.get() || entity == mc.thePlayer || isHovering(posX, endPosX, posY, endPosY, scaledResolution))) 
                                     drawScaledString(((int) itemDurability) + "", endPosX + 4.0, (endPosY - durabilityWidth) - mc.fontRendererObj.FONT_HEIGHT / 2F * fontScaleValue.get(), fontScaleValue.get(), -1);
                                 RenderUtils.newDrawRect(endPosX + 1.5D, posY - 0.5D, endPosX + 3.5D, endPosY + 0.5D, background);
-                                RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(120, 120, 250).getRGB());
+                                RenderUtils.newDrawRect(endPosX + 2.0D, endPosY, endPosX + 3.0D, endPosY - durabilityWidth, new Color(70, 70, 200).getRGB());
                             }
                         }
                     }
