@@ -90,11 +90,11 @@ public final class MovementUtils extends MinecraftInstance {
         mc.thePlayer.motionZ = Math.cos(yaw) * speed;
     }
 
-    public static void strafeCustom(final float speed, final float yaw, final float strafe, final float forward) {
+    public static void strafeCustom(final float speed, final float cYaw, final float strafe, final float forward) {
         if(!isMoving())
             return;
 
-        final double yaw = getDirectionRotation(yaw, strafe, forward);
+        final double yaw = getDirectionRotation(cYaw, strafe, forward);
         mc.thePlayer.motionX = -Math.sin(yaw) * speed;
         mc.thePlayer.motionZ = Math.cos(yaw) * speed;
     }
