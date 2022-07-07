@@ -123,12 +123,22 @@ class TargetStrafe : Module() {
         hasModifiedMovement = true
     }
 
+    fun getData(): Array<Float> {
+        if (killAura.target == null) return arrayOf(0F, 0F, 0F)
+
+        val target = killAura.target!!
+        val rotYaw = RotationUtils.getRotationsEntity(target).yaw
+
+        val forward = if (mc.thePlayer.getDistanceToEntity(target) <= radius.get()) 0F else 1F
+        val strafe = direction.toFloat()
+
+        return arrayOf(rotYaw, strafe, forward)
+    }
+
     private fun maximizeSpeed(ent: EntityLivingBase, speed: Double, range: Float): Double {
         mc.thePlayer ?: return 0.0
-        /*val dist = mc.thePlayer.getDistanceToEntity(ent).toDouble()
-        val maxDist = (range * range).coerceAtMost(radius.get() * radius.get() - 0.25f).toDouble() - (dist * dist)*/
 
-        return speed.coerceIn(0.0, /*maxDist*/range.toDouble())
+        return speed.coerceIn(0.0, range.toDouble() / 20.0)
     }
 
     val keyMode: Boolean

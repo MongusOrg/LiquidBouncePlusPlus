@@ -302,11 +302,7 @@ class KillAura : Module() {
      */
     @EventTarget
     fun onMotion(event: MotionEvent) {
-        val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!! as TargetStrafe
         if (event.eventState == EventState.POST) {
-            if (rotationStrafeValue.get().equals("Off", true) || targetStrafe.state)
-                update()
-
             target ?: return
             currentTarget ?: return
 
@@ -317,6 +313,9 @@ class KillAura : Module() {
             if (autoBlockModeValue.get().equals("AfterTick", true) && canBlock)
                 startBlocking(currentTarget!!, hitable)
         }
+
+        if (rotationStrafeValue.get().equals("Off", true))
+            update()
     }
 
 
@@ -326,13 +325,18 @@ class KillAura : Module() {
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
         val targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe::class.java)!! as TargetStrafe
-        if (rotationStrafeValue.get().equals("Off", true) || targetStrafe.state)
+        if (rotationStrafeValue.get().equals("Off", true) && !targetStrafe.state)
             return
 
         update()
 
         if (currentTarget != null && RotationUtils.targetRotation != null) {
-            when (rotationStrafeValue.get().toLowerCase()) {
+            if (targetStrafe.canStrafe) {
+                val strafingData = targetStrafe.getData()
+                MovementUtils.strafeCustom(MovementUtils.getSpeed(), strafingData[0], strafingData[1], strafingData[2])
+                event.cancelEvent()
+            }
+            else when (rotationStrafeValue.get().toLowerCase()) {
                 "strict" -> {
                     val (yaw) = RotationUtils.targetRotation ?: return
                     var strafe = event.strafe
