@@ -76,7 +76,7 @@ public class Fonts {
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
         fontTahoma = new GameFontRenderer(getFont("TahomaBold.ttf", 35));
         fontTahoma30 = new GameFontRenderer(getFont("TahomaBold.ttf", 30));
-        fontTahomaSmall = new TTFFontRenderer(getFont("Tahoma.ttf", 10));
+        fontTahomaSmall = new TTFFontRenderer(getFont("Tahoma.ttf", 11));
         fontBangers = new GameFontRenderer(getFont("Bangers-Regular.ttf", 45));
 
         try {
