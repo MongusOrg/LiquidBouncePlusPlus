@@ -22,8 +22,8 @@ class PostProcessing : Module() {
         get() = blurValue.get()
     val shadow: Boolean
         get() = shadowValue.get()
-    val blurStrength: Boolean
+    val blurStrength: Float
         get() = blurStrengthValue.get()
-    val shadowStrength: Boolean
+    val shadowStrength: Float
         get() = shadowStrengthValue.get()
 }

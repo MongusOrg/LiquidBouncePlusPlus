@@ -209,7 +209,8 @@ class ModuleManager : Listenable {
                 AutoBreak::class.java,
                 CivBreak::class.java,
                 Nuker::class.java,
-                SuperheroFX::class.java
+                SuperheroFX::class.java,
+                PostProcessing::class.java
         )
 
         registerModule(Fucker)
