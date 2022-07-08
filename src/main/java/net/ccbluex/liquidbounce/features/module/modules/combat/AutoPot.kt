@@ -50,6 +50,7 @@ class AutoPot : Module() {
 
     private val spoofInvValue = BoolValue("InvSpoof", false)
     private val spoofDelayValue = IntegerValue("InvDelay", 500, 500, 5000, "ms", { spoofInvValue.get() })
+    private val noCombatValue = BoolValue("NoCombat", true)
 
     private val debugValue = BoolValue("Debug", false)
 
@@ -96,13 +97,15 @@ class AutoPot : Module() {
     fun onMotion(event: MotionEvent) {
         if (event.eventState == EventState.PRE) {
             if (smartValue.get() && !throwQueue.isEmpty()) {
+                var foundPot = false
                 for (k in throwQueue.indices.reversed()) {
                     if (mc.thePlayer.isPotionActive(throwQueue[k])) {
                         throwQueue.removeAt(k)
                         timeoutTimer.reset()
+                        foundPot = true
                     }
                 }
-                if (timeoutTimer.hasTimePassed(smartTimeoutValue.get().toLong())) {
+                if (!foundPot && timeoutTimer.hasTimePassed(smartTimeoutValue.get().toLong())) {
                     debug("reached timeout, clearing queue")
                     throwQueue.clear()
                     timeoutTimer.reset()
@@ -167,7 +170,7 @@ class AutoPot : Module() {
             if (throwing && mc.currentScreen !is GuiContainer
                 && ((mc.thePlayer.onGround && modeValue.get().equals("floor", true)) ||
                         (!mc.thePlayer.onGround && modeValue.get().equals("jump", true)))
-                && (!killAura.state || killAura.target == null) && !scaffold.state) {
+                && (!noCombatValue.get() || !killAura.state || killAura.target == null) && !scaffold.state) {
                 val potionEffects = getPotionFromSlot(potIndex)
                 if (potionEffects != null) {
                     val potionIds = potionEffects!!.map { it.potionID }
@@ -252,6 +255,6 @@ class AutoPot : Module() {
     }
 
     override val tag: String
-        get() = "${modeValue.get()}"
+        get() = "${if (modeValue.get().equals("Jump", true)) "Jump Only" else "Floor"}"
 
 }

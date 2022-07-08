@@ -10,6 +10,7 @@ import net.ccbluex.liquidbounce.event.ClientShutdownEvent
 import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.features.command.CommandManager
 import net.ccbluex.liquidbounce.features.module.ModuleManager
+import net.ccbluex.liquidbounce.features.module.modules.render.PostProcessing
 import net.ccbluex.liquidbounce.features.special.AntiForge
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof
 import net.ccbluex.liquidbounce.features.special.MacroManager
@@ -64,6 +65,8 @@ object LiquidBounce {
     // Discord RPC
     lateinit var clientRichPresence: ClientRichPresence
 
+    lateinit var postProcessor: PostProcessing
+
     var lastTick : Long = 0L
 
     /**
@@ -106,6 +109,8 @@ object LiquidBounce {
         // Setup module manager and register modules
         moduleManager = ModuleManager()
         moduleManager.registerModules()
+
+        postProcessor = moduleManager[PostProcessing::class.java] as PostProcessing
 
         // Remapper
         try {

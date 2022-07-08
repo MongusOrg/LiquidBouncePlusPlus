@@ -5,6 +5,7 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud
 
+import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.elements.*
@@ -62,6 +63,37 @@ open class HUD : MinecraftInstance() {
      * Render all elements
      */
     fun render(designer: Boolean) {
+        /*if (LiquidBounce.postProcessor.shadow) {
+            ShadowUtils.shadow(LiquidBounce.postProcessor.shadowStrength, {
+                elements.forEach { element ->
+                    GL11.glPushMatrix()
+
+                    if (!element.info.disableScale && element.scale != 1F)
+                        GL11.glScalef(element.scale, element.scale, element.scale)
+
+                    GL11.glTranslated(element.renderX, element.renderY, 0.0)
+
+                    element.handleShadowShader(false)
+
+                    GL11.glScalef(1f, 1f, 1f)
+                    GL11.glPopMatrix()
+                }
+            }, {
+                elements.forEach { element ->
+                    GL11.glPushMatrix()
+
+                    if (!element.info.disableScale && element.scale != 1F)
+                        GL11.glScalef(element.scale, element.scale, element.scale)
+
+                    GL11.glTranslated(element.renderX, element.renderY, 0.0)
+
+                    element.handleShadowShader(true)
+
+                    GL11.glScalef(1f, 1f, 1f)
+                    GL11.glPopMatrix()
+                }
+            })
+        }*/
         elements.forEach { element ->
             GL11.glPushMatrix()
 

@@ -137,6 +137,9 @@ abstract class Element(var x: Double = 2.0, var y: Double = 2.0, scale: Float = 
      */
     open fun handleDamage(ent: EntityPlayer) {}
 
+    open fun handleBlurShader() {}
+    open fun handleShadowShader(cut: Boolean) {}
+
 }
 
 /**
