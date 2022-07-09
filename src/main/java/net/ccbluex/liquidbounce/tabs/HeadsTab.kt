@@ -16,7 +16,6 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import java.util.*
 
-@SideOnly(Side.CLIENT)
 class HeadsTab : CreativeTabs("Heads") {
 
     // List of heads
