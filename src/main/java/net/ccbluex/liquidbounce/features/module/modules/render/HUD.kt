@@ -32,6 +32,7 @@ class HUD : Module() {
     val blackHotbarValue = BoolValue("BlackHotbar", true)
     val inventoryParticle = BoolValue("InventoryParticle", false)
     val fontChatValue = BoolValue("FontChat", false)
+    val cmdBorderValue = BoolValue("CommandChatBorder", true)
     val fontType = FontValue("Font", Fonts.font40, { fontChatValue.get() })
     val chatRectValue = BoolValue("ChatRect", true)
     val chatCombineValue = BoolValue("ChatCombine", true)

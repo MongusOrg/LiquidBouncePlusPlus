@@ -11,7 +11,7 @@ import com.google.gson.JsonPrimitive
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.ccbluex.liquidbounce.utils.extensions.alpha
+import net.ccbluex.liquidbounce.utils.extensions.setAlpha
 import net.minecraft.client.gui.FontRenderer
 import java.awt.Color
 import java.util.*
