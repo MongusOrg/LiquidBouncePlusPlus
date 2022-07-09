@@ -243,6 +243,9 @@ public class ClickGui extends GuiScreen {
             break;
         }
 
+        if (Mouse.isButtonDown(0) && mouseX >= 5 && mouseX <= 50 && mouseY <= height - 5 && mouseY >= height - 50)
+            mc.displayGuiScreen(new GuiHudDesigner());
+
         // Enable DisplayList optimization
         AWTFontRenderer.Companion.setAssumeNonVolatile(true);
 
@@ -351,11 +354,8 @@ public class ClickGui extends GuiScreen {
         mouseX /= scale;
         mouseY /= scale;
 
-        boolean handled = false;
-
         for (int i = panels.size() - 1; i >= 0; i--) {
-            if (panels.get(i).mouseClicked(mouseX, mouseY, mouseButton)) {
-                handled = true;
+            if (panels.get(i).mouseClicked(mouseX, mouseY, mouseButton)){
                 break;
             }
         }
@@ -377,12 +377,9 @@ public class ClickGui extends GuiScreen {
             panels.remove(clickedPanel);
             panels.add(clickedPanel);
             clickedPanel = null;
-            return;
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (!handled && mouseX >= 5 && mouseX <= 50 && mouseY <= height - 5 && mouseY >= height - 50)
-            mc.displayGuiScreen(new GuiHudDesigner());
     }
 
     @Override
