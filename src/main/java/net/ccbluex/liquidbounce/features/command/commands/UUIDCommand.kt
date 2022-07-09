@@ -40,8 +40,10 @@ class UUIDCommand : Command("uuid", emptyArray()) {
             return
         } 
 
-        if (args.size == 1)
-            chat("§6Your UUID is §7${mc.session.playerID}.")
+        if (args.size == 1) {
+            chat("§6Session's UUID is §7${mc.session.playerID}.")
+            chat("§6Player's UUID is §7${mc.thePlayer.getUniqueID().toString()}.")
+        }
 
         chatSyntax("uuid <player's name in current world/uuid/reset>")
     }

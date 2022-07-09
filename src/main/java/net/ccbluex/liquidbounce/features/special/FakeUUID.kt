@@ -12,6 +12,6 @@ import net.ccbluex.liquidbounce.utils.MinecraftInstance
 object FakeUUID : MinecraftInstance() {
     var spoofedUUID = ""
 
-    val spoofID: UUID?
-        get() = if (spoofedUUID.length <= 0) null else UUIDTypeAdapter.fromString(spoofedUUID)
+    @JvmStatic
+    fun getSpoofID(): String? = if (spoofedUUID.length <= 0) null else spoofedUUID
 }
