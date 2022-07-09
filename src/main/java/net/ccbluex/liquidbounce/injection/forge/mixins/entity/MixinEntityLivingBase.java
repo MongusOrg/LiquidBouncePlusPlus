@@ -14,6 +14,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.AirJump;
 import net.ccbluex.liquidbounce.features.module.modules.movement.LiquidWalk;
 import net.ccbluex.liquidbounce.features.module.modules.movement.NoJumpDelay;
 import net.ccbluex.liquidbounce.features.module.modules.movement.Sprint;
+import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe;
 import net.ccbluex.liquidbounce.features.module.modules.render.Animations;
 import net.ccbluex.liquidbounce.features.module.modules.render.AntiBlind;
 import net.ccbluex.liquidbounce.utils.MovementUtils;
@@ -112,8 +113,11 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
         if (this.isSprinting()) {
             final KillAura auraMod = (KillAura) LiquidBounce.moduleManager.getModule(KillAura.class);
             final Sprint sprintMod = (Sprint) LiquidBounce.moduleManager.getModule(Sprint.class);
+            final TargetStrafe tsMod = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
             float yaw = this.rotationYaw;
-            if (Patcher.jumpPatch.get())
+            if (tsMod.getCanStrafe()) 
+                yaw = tsMod.getMovingYaw();
+            else if (Patcher.jumpPatch.get())
                 if (auraMod.getState() && auraMod.getRotationStrafeValue().get().equalsIgnoreCase("strict") && auraMod.getTarget() != null)
                     yaw = RotationUtils.targetRotation != null ? RotationUtils.targetRotation.getYaw() : (RotationUtils.serverRotation != null ? RotationUtils.serverRotation.getYaw() : yaw);
                 else if (sprintMod.getState() && sprintMod.getAllDirectionsValue().get() && sprintMod.getMoveDirPatchValue().get())

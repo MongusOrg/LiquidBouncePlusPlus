@@ -135,10 +135,15 @@ class TargetStrafe : Module() {
         return arrayOf(rotYaw, strafe, forward)
     }
 
+    val movingYaw: Float
+        get() = {
+            val dt = getData()
+            MovementUtils.getRawDirectionRotation(dt[0], dt[1], dt[2])
+        }
+
     private fun maximizeSpeed(ent: EntityLivingBase, speed: Double, range: Float): Double {
         mc.thePlayer ?: return 0.0
-
-        return speed.coerceIn(0.0, range.toDouble() / 20.0)
+        return if (mc.thePlayer.getDistanceToEntity(ent) <= radius.get()) speed.coerceIn(0.0, range.toDouble() / 20.0) else speed
     }
 
     val keyMode: Boolean
