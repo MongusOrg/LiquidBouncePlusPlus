@@ -9,7 +9,7 @@ import com.mojang.util.UUIDTypeAdapter
 import java.util.UUID
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 
-object FakeUUID : MinecraftInstance() {
+object UUIDSpoofer : MinecraftInstance() {
     var spoofId: String? = null
 
     @JvmStatic
