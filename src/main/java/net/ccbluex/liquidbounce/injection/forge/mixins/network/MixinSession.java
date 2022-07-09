@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.injection.forge.mixins.network;
 
 import net.ccbluex.liquidbounce.features.special.FakeUUID;
+import net.minecraft.util.Session;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
