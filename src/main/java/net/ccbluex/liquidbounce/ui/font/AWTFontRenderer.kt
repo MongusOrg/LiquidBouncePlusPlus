@@ -8,8 +8,6 @@ package net.ccbluex.liquidbounce.ui.font
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.texture.TextureUtil
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.awt.Font

@@ -8,8 +8,6 @@ package net.ccbluex.liquidbounce.features.command
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.commands.*
 import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
 
 class CommandManager {
     val commands = mutableListOf<Command>()

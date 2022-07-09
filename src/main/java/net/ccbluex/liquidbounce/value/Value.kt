@@ -12,8 +12,6 @@ import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.minecraft.client.gui.FontRenderer
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
 import java.util.*
 
 abstract class Value<T>(val name: String, protected var value: T, var canDisplay: () -> Boolean) {
