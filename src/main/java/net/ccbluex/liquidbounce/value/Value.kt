@@ -11,7 +11,9 @@ import com.google.gson.JsonPrimitive
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
+import net.ccbluex.liquidbounce.utils.extensions.alpha
 import net.minecraft.client.gui.FontRenderer
+import java.awt.Color
 import java.util.*
 
 abstract class Value<T>(val name: String, protected var value: T, var canDisplay: () -> Boolean) {
@@ -120,6 +122,29 @@ open class TextValue(name: String, value: String, displayable: () -> Boolean) : 
         if (element.isJsonPrimitive)
             value = element.asString
     }
+}
+
+open class ColorValue(name: String, value: Color, val transparent: Boolean, displayable: () -> Boolean) : Value<Color>(name, value, displayable) {
+
+    constructor(name: String, value: Color, transparent: Boolean): this(name, value, transparent, { true } )
+
+    fun set(hue: Float, saturation: Float, brightness: Float, alpha: Float) = set(Color(Color.HSBtoRGB(hue, saturation, brightness)).setAlpha(alpha))
+
+    override fun toJson(): JsonElement? {
+        val valueObject = JsonObject()
+        valueObject.addProperty("red", value.red)
+        valueObject.addProperty("green", value.green)
+        valueObject.addProperty("blue", value.blue)
+        valueObject.addProperty("alpha", value.alpha)
+        return valueObject
+    }
+
+    override fun fromJson(element: JsonElement) {
+        if (!element.isJsonObject) return
+        val valueObject = element.asJsonObject
+        value = Color(valueObject["red"].asInt, valueObject["green"].asInt, valueObject["blue"].asInt, valueObject["alpha"].asInt)
+    }
+
 }
 
 /**
