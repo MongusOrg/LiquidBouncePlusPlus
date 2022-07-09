@@ -57,6 +57,7 @@
     "network.MixinNetworkManagerChInit",
     "network.MixinNetworkManager",
     "network.MixinNetworkPlayerInfo",
+    "network.MixinSession",
     "packets.MixinC00Handshake",
     "packets.MixinC17PacketCustomPayload",
     "packets.MixinS3FPacketCustomPayload",
