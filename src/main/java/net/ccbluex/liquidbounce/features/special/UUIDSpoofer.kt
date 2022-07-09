@@ -10,8 +10,8 @@ import java.util.UUID
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 
 object FakeUUID : MinecraftInstance() {
-    var spoofedUUID = ""
+    var spoofId: String? = null
 
     @JvmStatic
-    fun getSpoofID(): String? = if (spoofedUUID.length <= 0) null else spoofedUUID
+    fun getUUID(): String = (if (spoofId == null) mc.session.playerID else spoofId!!).replace("-", "")
 }

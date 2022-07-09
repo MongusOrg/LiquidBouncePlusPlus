@@ -10,7 +10,7 @@ package net.ccbluex.liquidbounce.features.command.commands
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.features.module.modules.misc.AntiBot
-import net.ccbluex.liquidbounce.features.special.FakeUUID
+import net.ccbluex.liquidbounce.features.special.UUIDSpoofer
 
 class UUIDCommand : Command("uuid", emptyArray()) {
 
@@ -22,7 +22,7 @@ class UUIDCommand : Command("uuid", emptyArray()) {
             val theName = args[1]
 
             if (theName.equals("reset", true)) {
-                FakeUUID.spoofedUUID = ""
+                UUIDSpoofer.spoofId = null
                 chat("§aSuccessfully resetted your UUID.")
                 return
             }
@@ -33,16 +33,16 @@ class UUIDCommand : Command("uuid", emptyArray()) {
                     .firstOrNull()
 
             if (targetPlayer == null)
-                FakeUUID.spoofedUUID = theName
+                UUIDSpoofer.spoofId = theName
             else
-                FakeUUID.spoofedUUID = targetPlayer.getUniqueID().toString()
-            chat("§aSuccessfully changed your UUID to §6${FakeUUID.spoofedUUID}.")
+                UUIDSpoofer.spoofId = targetPlayer.gameProfile.id.toString()
+            chat("§aSuccessfully changed your UUID to §6${UUIDSpoofer.spoofId!!}§a. Make sure to turn on BungeeCordSpoof in server selection.")
             return
         } 
 
         if (args.size == 1) {
-            chat("§6Session's UUID is §7${mc.session.playerID}.")
-            chat("§6Player's UUID is §7${mc.thePlayer.getUniqueID().toString()}.")
+            chat("§6Session's UUID is §7${mc.session.playerID}§6.")
+            chat("§6Player's UUID is §7${mc.thePlayer.getUniqueID().toString()}§6.")
         }
 
         chatSyntax("uuid <player's name in current world/uuid/reset>")
