@@ -140,6 +140,11 @@ class TargetStrafe : Module() {
         return MovementUtils.getRawDirectionRotation(dt[0], dt[1], dt[2])
     }
 
+    fun getMovingDir(): Double {
+        val dt = getData()
+        return MovementUtils.getDirectionRotation(dt[0], dt[1], dt[2])
+    }
+
     private fun maximizeSpeed(ent: EntityLivingBase, speed: Double, range: Float): Double {
         mc.thePlayer ?: return 0.0
         return if (mc.thePlayer.getDistanceToEntity(ent) <= radius.get()) speed.coerceIn(0.0, range.toDouble() / 20.0) else speed

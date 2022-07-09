@@ -6,6 +6,7 @@
 package net.ccbluex.liquidbounce.utils;
 
 import net.ccbluex.liquidbounce.LiquidBounce;
+import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe;
 import net.ccbluex.liquidbounce.utils.RotationUtils;
 import net.ccbluex.liquidbounce.event.MoveEvent;
 import net.minecraft.block.*;
@@ -105,7 +106,8 @@ public final class MovementUtils extends MinecraftInstance {
     }
 
     public static double getDirection() {
-        return getDirectionRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
+        final TargetStrafe ts = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
+        return ts.getCanStrafe() ? ts.getMovingDir() : getDirectionRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
     }
 
     public static float getRawDirection() {

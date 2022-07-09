@@ -44,6 +44,8 @@ class CommandManager {
         registerCommand(PathfindingTeleportCommand())
         registerCommand(ThemeCommand())
         registerCommand(LocalThemeCommand())
+        registerCommand(ConnectCommand())
+        registerCommand(UUIDCommand())
     }
 
     /**
