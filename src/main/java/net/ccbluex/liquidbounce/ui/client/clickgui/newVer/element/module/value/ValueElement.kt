@@ -3,6 +3,8 @@ package net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.value.Value
 
+import java.awt.Color
+
 abstract class ValueElement<T>(val value: Value<T>) : MinecraftInstance() {
 
     var valueHeight = 20F
