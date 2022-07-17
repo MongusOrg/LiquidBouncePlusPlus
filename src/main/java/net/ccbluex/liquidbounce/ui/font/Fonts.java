@@ -78,7 +78,7 @@ public class Fonts {
         font72 = new GameFontRenderer(getFont("Roboto-Medium.ttf", 72));
         fontSmall = new GameFontRenderer(getFont("Roboto-Medium.ttf", 30));
         fontTiny = new GameFontRenderer(getFont("Roboto-Medium.ttf", 24));
-        fontLarge = new GameFontRenderer(getFont("Roboto-Medium.ttf", 52));
+        fontLarge = new GameFontRenderer(getFont("Roboto-Medium.ttf", 60));
         fontSFUI35 = new GameFontRenderer(getFont("sfui.ttf", 35));
         fontSFUI40 = new GameFontRenderer(getFont("sfui.ttf", 40));
         fontBold180 = new GameFontRenderer(getFont("Roboto-Bold.ttf", 180));
