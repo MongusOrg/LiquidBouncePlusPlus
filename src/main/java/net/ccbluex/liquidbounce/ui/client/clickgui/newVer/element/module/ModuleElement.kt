@@ -68,7 +68,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         Stencil.write(true)
         RenderUtils.originalRoundedRect(x + 10F, y + 5F, x + width - 10F, y + height + animHeight - 5F, 4F, ColorManager.moduleBackground.rgb)
         Stencil.erase(true)
-        RenderUtils.newDrawRect2(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 4281348144L.toInt())
+        RenderUtils.newDrawRect(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 4281348144L.toInt())
         Fonts.font40.drawString(module.name, x + 20F, y + height / 2F - Fonts.font40.FONT_HEIGHT, -1)
         Fonts.fontSmall.drawString(module.description, x + 20F, y + height / 2F + 4F, 10526880L.toInt())
 
@@ -93,7 +93,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         toggleSwitch.state = module.state
 
         if (module.values.size > 0) {
-            RenderUtils.newDrawRect2(x + width - 40F, y + 5F, x + width - 39.5F, y + height - 5F, 4281348144L.toInt())
+            RenderUtils.newDrawRect(x + width - 40F, y + 5F, x + width - 39.5F, y + height - 5F, 4281348144L.toInt())
             GlStateManager.resetColor()
             glPushMatrix()
             glTranslatef(x + width - 25F, y + height / 2F, 0F)

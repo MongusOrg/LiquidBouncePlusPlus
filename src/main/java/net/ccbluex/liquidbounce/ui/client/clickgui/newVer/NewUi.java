@@ -6,7 +6,7 @@ import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.SearchElement;
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.ModuleElement;
 import net.ccbluex.liquidbounce.ui.font.Fonts;
 import net.ccbluex.liquidbounce.utils.MouseUtils;
-import net.ccbluex.liquidbounce.utils.render.AnimationUtils;
+import net.ccbluex.liquidbounce.utils.AnimationUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.utils.render.Stencil;
 import net.minecraft.client.gui.Gui;
@@ -34,7 +34,7 @@ public class NewUi extends GuiScreen {
 
     private NewUi() {
         for (ModuleCategory c : ModuleCategory.values())
-            categoryElements.add(new CategoryElement(c, c.getDisplayName()));
+            categoryElements.add(new CategoryElement(c));
         categoryElements.get(0).setFocused(true);
     }
 
@@ -48,7 +48,7 @@ public class NewUi extends GuiScreen {
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
         for (CategoryElement ce : categoryElements) {
-            for (ModuleElement me : ce.moduleElements) {
+            for (ModuleElement me : ce.getModuleElements()) {
                 if (me.listeningKeybind())
                     me.resetState();
             }
