@@ -19,10 +19,10 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
     private var expandHeight = 0F
     private var expansion = false
 
-    private val maxSubWidth = (saveValue.values.map { Fonts.font40.getStringWidth(it) }.sorted().firstOrNull() ?: 0F) + 20F
+    private val maxSubWidth = (saveValue.values.map { Fonts.font40.getStringWidth(it) }.sorted().firstOrNull() ?: 0F).toFloat() + 20F
 
-    @JvmStatic
-    private val expanding = ResourceLocation("liquidbounce+/expand.png")
+    companion object {
+        val expanding = ResourceLocation("liquidbounce+/expand.png") }
 
     override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color): Float {
         expandHeight = AnimationUtils.animate(if (expansion) 16F * (saveValue.values.size - 1F) else 0F, expandHeight, 0.25F * RenderUtils.deltaTime * 0.0075F)
@@ -31,14 +31,14 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
         RenderUtils.originalRoundedRect(x + width - 18F - maxSubWidth, y + 2F, x + width - 10F, y + 18F + expandHeight, 4F, ColorManager.button.rgb)
         GlStateManager.resetColor()
         glPushMatrix()
-        glTranslated(x + width - 20, y + 10F, 0F)
+        glTranslatef(x + width - 20F, y + 10F, 0F)
         glPushMatrix()
         glRotatef(180F * percent, 0F, 0F, 1F)
-        glColor4f(1, 1, 1, 1)
-        RenderUtils.drawImg(expanding, -4F, -4F, 8F, 8F)
+        glColor4f(1F, 1F, 1F, 1F)
+        RenderUtils.drawImage(expanding, -4, -4, 8, 8)
         glPopMatrix()
         glPopMatrix()
-        mc.fontRenderer.drawString(value.get(), x + width - 14F - maxSubWidth, y + 7F, -1)
+        Fonts.font40.drawString(value.get(), x + width - 14F - maxSubWidth, y + 7F, -1)
         glPushMatrix()
         GlStateManager.translate(x + width - 14F - maxSubWidth, y + 7F, 0F)
         GlStateManager.scale(percent, percent, percent)
@@ -58,7 +58,7 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
         if (expansion) {
             var vertHeight = 0F
             for (subV in unusedValues) {
-                if (MouseUtils.mouseWithinBounds(mouseX, mouseY, x + width - 14F - maxSubWidth, y + 18F + vH, x + width - 10F, y + 34F + vH)) {
+                if (MouseUtils.mouseWithinBounds(mouseX, mouseY, x + width - 14F - maxSubWidth, y + 18F + vertHeight, x + width - 10F, y + 34F + vertHeight)) {
                     value.set(subV)
                     expansion = false
                     break
@@ -69,5 +69,5 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
     }
 
     val unusedValues: List<String>
-        get() = saveValue.values.filter { s != value.get() }
+        get() = saveValue.values.filter { it != value.get() }
 }

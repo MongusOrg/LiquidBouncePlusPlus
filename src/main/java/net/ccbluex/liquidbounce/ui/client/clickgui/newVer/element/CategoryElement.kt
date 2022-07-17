@@ -34,14 +34,16 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
         Fonts.font40.drawString(name, x + 10F, y + height / 2F - Fonts.font40.FONT_HEIGHT / 2F, -1)
     }
 
-    fun drawPanel(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float, wheel: Int) {
+    fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, width: Float, height: Float, wheel: Int) {
+        var mouseX = mX
+        var mouseY = mY
         lastHeight = 0F
         for (me in moduleElements)
             lastHeight += 40F + me.animHeight
         if (lastHeight >= 10F) lastHeight -= 10F
         handleScrolling(wheel, height)
         drawScroll(x, y + 50F, width, height)
-        Fonts.font72.drawString(ChatFormatting.GRAY + "Modules > " + ChatFormatting.RESET + name, x + 10, y + 10, -1)
+        Fonts.font72.drawString("${ChatFormatting.GRAY}Modules > ${ChatFormatting.RESET}$name", x + 10F, y + 10F, -1)
         if (mouseY < y + 50F || mouseY >= y + height) {
             mouseX = -1
             mouseY = -1
@@ -80,7 +82,9 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
         }
     }
 
-    fun handleMouseClick(mouseX: Int, mouseY: Int, mouseButton: Int, x: Float, y: Float, width: Float, height: Float) {
+    fun handleMouseClick(mX: Int, mY: Int, mouseButton: Int, x: Float, y: Float, width: Float, height: Float) {
+        var mouseX = mX
+        var mouseY = mY
         if (mouseY < y + 50F || mouseY >= y + height) {
             mouseX = -1
             mouseY = -1
@@ -93,7 +97,9 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
             }
     }
 
-    fun handleMouseRelease(mouseX: Int, mouseY: Int, mouseButton: Int, x: Float, y: Float, width: Float, height: Float) {
+    fun handleMouseRelease(mX: Int, mY: Int, mouseButton: Int, x: Float, y: Float, width: Float, height: Float) {
+        var mouseX = mX
+        var mouseY = mY
         if (mouseY < y + 50F || mouseY >= y + height) {
             mouseX = -1
             mouseY = -1

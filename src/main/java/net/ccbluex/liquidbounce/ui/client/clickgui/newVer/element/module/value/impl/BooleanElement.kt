@@ -6,6 +6,8 @@ import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.MouseUtils
 import net.ccbluex.liquidbounce.value.BoolValue
 
+import java.awt.Color
+
 class BooleanElement(value: BoolValue): ValueElement<Boolean>(value) {
     private val checkbox = Checkbox()
 

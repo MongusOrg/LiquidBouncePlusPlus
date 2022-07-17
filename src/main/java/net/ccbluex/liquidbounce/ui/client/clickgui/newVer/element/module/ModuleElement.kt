@@ -1,14 +1,15 @@
 package net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module
 
-import net.ccbluex.liquidbounce.module.Module
+import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.ColorManager
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.components.ToggleSwitch
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.ValueElement
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.BooleanElement
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.ListElement
-import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.NumberElement
+import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.IntElement
+import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.FloatElement
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.utils.ColorUtils
+import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.MouseUtils
 import net.ccbluex.liquidbounce.utils.AnimationUtils
@@ -23,19 +24,19 @@ import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.input.Keyboard
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11.*
 
 import java.awt.*
 
 class ModuleElement(val module: Module): MinecraftInstance() {
 
-    @JvmStatic
-    protected val expandIcon = ResourceLocation("liquidbounce+/expand.png")
+    companion object {
+        protected val expandIcon = ResourceLocation("liquidbounce+/expand.png") }
 
     private val toggleSwitch = ToggleSwitch()
-    private val valueElements = mutableListOf<ValueElement>()
+    private val valueElements = mutableListOf<ValueElement<*>>()
 
-    private var animHeight = 0F
+    var animHeight = 0F
     private var fadeKeybind = 0F
     private var animPercent = 0F
 
@@ -55,7 +56,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         }
     }
 
-    fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float) {
+    fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float): Float {
         animPercent = AnimationUtils.animate(if (expanded) 100F else 0F, animPercent, 0.25F * RenderUtils.deltaTime * 0.0075F)
         var expectedHeight = 0F
         for (ve in valueElements)
@@ -67,9 +68,9 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         Stencil.write(true)
         RenderUtils.originalRoundedRect(x + 10F, y + 5F, x + width - 10F, y + height + animHeight - 5F, 4F, ColorManager.moduleBackground.rgb)
         Stencil.erase(true)
-        RenderUtils.newDrawRect(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 0xFF303030)
+        RenderUtils.newDrawRect(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 4281348144)
         Fonts.font40.drawString(module.name, x + 20F, y + height / 2F - Fonts.font40.FONT_HEIGHT, -1)
-        Fonts.fontSmall.drawString(module.getDescription(), x + 20F, y + height / 2F + 4F, 0xA0A0A0)
+        Fonts.fontSmall.drawString(module.description, x + 20F, y + height / 2F + 4F, 10526880)
 
         val keyName = if (listeningToKey) "Listening" else Keyboard.getKeyName(module.keyBind)
 
@@ -84,14 +85,14 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         RenderUtils.originalRoundedRect(
                 x + 25F + Fonts.font40.getStringWidth(module.name),
                 y + height / 2F - Fonts.font40.FONT_HEIGHT - 2F,
-                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.font40Small.getStringWidth(keyName),
-                y + height / 2F, 2F, BlendUtils.blend(Color(0xFF454545), Color(0xFF353535), fadeKeybind).rgb)
+                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontSmall.getStringWidth(keyName),
+                y + height / 2F, 2F, BlendUtils.blend(Color(4282729797), Color(4281677109), fadeKeybind).rgb)
         Fonts.fontSmall.drawString(keyName, x + 30F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 1.5F, -1)
 
         toggleSwitch.state = module.state
 
         if (module.values.size > 0) {
-            RenderUtils.newDrawRect(x + width - 40F, y + 5F, x + width - 39.5F, y + height - 5F, 0xFF303030)
+            RenderUtils.newDrawRect(x + width - 40F, y + 5F, x + width - 39.5F, y + height - 5F, 4281348144)
             GlStateManager.resetColor()
             glPushMatrix()
             glTranslatef(x + width - 25F, y + height / 2F, 0F)
@@ -101,15 +102,15 @@ class ModuleElement(val module: Module): MinecraftInstance() {
             RenderUtils.drawImage(expandIcon, -4, -4, 8, 8)
             glPopMatrix()
             glPopMatrix()
-            toggleSwitch.onDraw(x + width - 70F, y + height / 2F - 5F, 20F, 10F, 0xFF252525)
+            toggleSwitch.onDraw(x + width - 70F, y + height / 2F - 5F, 20F, 10F, 4280624421)
         } else
-            toggleSwitch.onDraw(x + width - 40F, y + height / 2F - 5F, 20F, 10F, 0xFF252525)
+            toggleSwitch.onDraw(x + width - 40F, y + height / 2F - 5F, 20F, 10F, 4280624421)
 
         if (expanded || animHeight > 0F) {
             var startYPos = y + height
             for (ve in valueElements)
                 if (ve.isDisplayable())
-                    startYPos += ve.drawElement(mouseX, mouseY, x + 10F, startYPos, width - 20F, 0xFF252525)
+                    startYPos += ve.drawElement(mouseX, mouseY, x + 10F, startYPos, width - 20F, 4280624421)
         }
         Stencil.dispose()
 
