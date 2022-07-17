@@ -13,7 +13,7 @@ import java.awt.Color
 import java.util.List
 import kotlin.math.abs
 
-class SearchElement(val accentColor: Color = Color(0, 140, 255), xPos: Float, yPos: Float, width: Float, height: Float) {
+class SearchElement(val accentColor: Color = Color(0, 140, 255), val xPos: Float, val yPos: Float, val width: Float, val height: Float) {
 
     private var scrollHeight = 0F
     private var animScrollHeight = 0F
@@ -40,7 +40,7 @@ class SearchElement(val accentColor: Color = Color(0, 140, 255), xPos: Float, yP
         return searchBox.text.length > 0
     }
 
-    fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, w: Float, h: Float, ces: List<CategoryElement>) {
+    fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, w: Float, h: Float, wheel: Int, ces: List<CategoryElement>) {
         var mouseX = mX
         var mouseY = mY
         lastHeight = 0F
@@ -125,7 +125,7 @@ class SearchElement(val accentColor: Color = Color(0, 140, 255), xPos: Float, yP
                 }
     }
 
-    fun handleTyping(typedChar: Char, keyCode: Int, x: Float, y: Float, w: Float, h: Float, ces: List<CategoryElement): Boolean {
+    fun handleTyping(typedChar: Char, keyCode: Int, x: Float, y: Float, w: Float, h: Float, ces: List<CategoryElement>): Boolean {
         searchBox.textboxKeyTyped(typedChar, keyCode)
         if (searchBox.text.length <= 0) return false
         for (ce in ces)
