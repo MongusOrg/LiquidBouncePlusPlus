@@ -69,7 +69,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         RenderUtils.originalRoundedRect(x + 10F, y + 5F, x + width - 10F, y + height + animHeight - 5F, 4F, ColorManager.moduleBackground.rgb)
         Stencil.erase(true)
         RenderUtils.newDrawRect(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 4281348144L.toInt())
-        Fonts.font40.drawString(module.name, x + 20F, y + height / 2F - Fonts.font40.FONT_HEIGHT, -1)
+        Fonts.font40.drawString(module.name, x + 20F, y + height / 2F - Fonts.font40.FONT_HEIGHT + 3F, -1)
         Fonts.fontTiny.drawString(module.description, x + 20F, y + height / 2F + 4F, 10526880L.toInt())
 
         val keyName = if (listeningToKey) "Listening" else Keyboard.getKeyName(module.keyBind)
@@ -88,7 +88,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
                 y + height / 2F - Fonts.font40.FONT_HEIGHT,
                 x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontTiny.getStringWidth(keyName),
                 y + height / 2F, 2F, BlendUtils.blend(Color(4282729797L.toInt()), Color(4281677109L.toInt()), fadeKeybind.toDouble()).rgb)
-        Fonts.fontTiny.drawString(keyName, x + 30F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 1.5F, -1)
+        Fonts.fontTiny.drawString(keyName, x + 30F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 4F, -1)
 
         toggleSwitch.state = module.state
 

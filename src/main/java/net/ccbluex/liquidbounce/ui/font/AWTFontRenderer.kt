@@ -81,7 +81,7 @@ class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
 
         GlStateManager.pushMatrix()
         GlStateManager.scale(scale, scale, scale)
-        GL11.glTranslated(x * 2.0, y * 2.0, 0.0)
+        GL11.glTranslated(x * 2.0, y * 2.0 - 2.0, 0.0)
         GlStateManager.bindTexture(textureID)
 
         val red: Float = (color shr 16 and 0xff) / 255F
@@ -251,7 +251,7 @@ class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
         graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
         graphics.font = font
         graphics.color = Color.WHITE
-        graphics.drawString(ch.toString(), 3, fontMetrics.ascent)
+        graphics.drawString(ch.toString(), 3, 1 + fontMetrics.ascent)
 
         return fontImage
     }

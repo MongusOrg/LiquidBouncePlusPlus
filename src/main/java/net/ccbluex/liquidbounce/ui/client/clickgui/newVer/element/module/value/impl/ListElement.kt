@@ -27,7 +27,7 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
     override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color): Float {
         expandHeight = AnimationUtils.animate(if (expansion) 16F * (saveValue.values.size - 1F) else 0F, expandHeight, 0.5F * RenderUtils.deltaTime * 0.025F)
         val percent = expandHeight / (16F * (saveValue.values.size - 1F))
-        Fonts.font40.drawString(value.name, x + 10F, y + 10F - Fonts.font40.FONT_HEIGHT / 2F, -1)
+        Fonts.font40.drawString(value.name, x + 10F, y + 10F - Fonts.font40.FONT_HEIGHT / 2F + 2F, -1)
         RenderUtils.originalRoundedRect(x + width - 18F - maxSubWidth, y + 2F, x + width - 10F, y + 18F + expandHeight, 4F, ColorManager.button.rgb)
         GlStateManager.resetColor()
         glPushMatrix()
@@ -38,13 +38,13 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
         RenderUtils.drawImage(expanding, -4, -4, 8, 8)
         glPopMatrix()
         glPopMatrix()
-        Fonts.font40.drawString(value.get(), x + width - 14F - maxSubWidth, y + 7F, -1)
+        Fonts.font40.drawString(value.get(), x + width - 14F - maxSubWidth, y + 6F, -1)
         glPushMatrix()
         GlStateManager.translate(x + width - 14F - maxSubWidth, y + 7F, 0F)
         GlStateManager.scale(percent, percent, percent)
         var vertHeight = 0F
         if (percent > 0F) for (subV in unusedValues) {
-            Fonts.font40.drawString(subV, 0F, (16F + vertHeight) * percent, Color(.5F, .5F, .5F, percent.coerceIn(0F, 1F)).rgb)
+            Fonts.font40.drawString(subV, 0F, (16F + vertHeight) * percent - 1F, Color(.5F, .5F, .5F, percent.coerceIn(0F, 1F)).rgb)
             vertHeight += 16F
         }
         glPopMatrix()
