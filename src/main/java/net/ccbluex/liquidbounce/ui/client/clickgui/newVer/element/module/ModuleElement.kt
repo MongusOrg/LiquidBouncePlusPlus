@@ -70,14 +70,14 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         Stencil.erase(true)
         RenderUtils.newDrawRect(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 4281348144L.toInt())
         Fonts.font40.drawString(module.name, x + 20F, y + height / 2F - Fonts.font40.FONT_HEIGHT, -1)
-        Fonts.fontSmall.drawString(module.description, x + 20F, y + height / 2F + 4F, 10526880L.toInt())
+        Fonts.fontTiny.drawString(module.description, x + 20F, y + height / 2F + 4F, 10526880L.toInt())
 
         val keyName = if (listeningToKey) "Listening" else Keyboard.getKeyName(module.keyBind)
 
         if (MouseUtils.mouseWithinBounds(mouseX, mouseY, 
                 x + 25F + Fonts.font40.getStringWidth(module.name),
                 y + height / 2F - Fonts.font40.FONT_HEIGHT - 2F,
-                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontSmall.getStringWidth(keyName),
+                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontTiny.getStringWidth(keyName),
                 y + height / 2F))
             fadeKeybind = (fadeKeybind + 0.1F * RenderUtils.deltaTime * 0.025F).coerceIn(0F, 1F)
         else
@@ -86,9 +86,9 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         RenderUtils.originalRoundedRect(
                 x + 25F + Fonts.font40.getStringWidth(module.name),
                 y + height / 2F - Fonts.font40.FONT_HEIGHT - 2F,
-                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontSmall.getStringWidth(keyName),
+                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontTiny.getStringWidth(keyName),
                 y + height / 2F, 2F, BlendUtils.blend(Color(4282729797L.toInt()), Color(4281677109L.toInt()), fadeKeybind.toDouble()).rgb)
-        Fonts.fontSmall.drawString(keyName, x + 30F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 1.5F, -1)
+        Fonts.fontTiny.drawString(keyName, x + 30F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 1.5F, -1)
 
         toggleSwitch.state = module.state
 
@@ -127,7 +127,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         if (MouseUtils.mouseWithinBounds(mouseX, mouseY, 
                 x + 25F + Fonts.font40.getStringWidth(module.name),
                 y + height / 2F - Fonts.font40.FONT_HEIGHT - 2F,
-                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontSmall.getStringWidth(keyName),
+                x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontTiny.getStringWidth(keyName),
                 y + height / 2F)) {
             listeningToKey = true
             return

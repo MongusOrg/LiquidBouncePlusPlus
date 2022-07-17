@@ -47,7 +47,7 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
         if (lastHeight >= 10F) lastHeight -= 10F
         handleScrolling(wheel, height)
         drawScroll(x, y + 50F, width, height)
-        Fonts.font72.drawString("${ChatFormatting.GRAY}Modules > ${ChatFormatting.RESET}$name", x + 10F, y + 10F, -1)
+        Fonts.fontLarge.drawString("${ChatFormatting.GRAY}Modules > ${ChatFormatting.RESET}$name", x + 10F, y + 10F, -1)
         if (mouseY < y + 50F || mouseY >= y + height) {
             mouseX = -1
             mouseY = -1

@@ -11,7 +11,7 @@ class ToggleSwitch(var accentColor: Color = Color(0, 140, 255)) {
     var state = false
     
     fun onDraw(x: Float, y: Float, width: Float, height: Float, bgColor: Color) {
-        smooth = (smooth + (if (state) 0.2F else - 0.2F) * RenderUtils.deltaTime * 0.025F).coerceIn(0F, 1F)
+        smooth = (smooth + (if (state) 0.2F else - 0.2F) * RenderUtils.deltaTime * 0.045F).coerceIn(0F, 1F)
         val borderColor = BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf(Color(160, 160, 160), accentColor), smooth)
         val mainColor = BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf(bgColor, accentColor), smooth)
         val switchColor = BlendUtils.blendColors(floatArrayOf(0F, 1F), arrayOf(Color(160, 160, 160), bgColor), smooth)

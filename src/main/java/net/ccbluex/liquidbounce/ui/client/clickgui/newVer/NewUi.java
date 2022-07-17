@@ -94,10 +94,10 @@ public class NewUi extends GuiScreen {
         }
         Stencil.dispose();*/
 
-        /*if (Fonts.font72.getStringWidth(mc.thePlayer.getGameProfile().getName()) > 70)
-            Fonts.font72.drawString(Fonts.font72.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 70) + "...", 100, 78 - Fonts.font40.FONT_HEIGHT, -1);
+        /*if (Fonts.fontLarge.getStringWidth(mc.thePlayer.getGameProfile().getName()) > 70)
+            Fonts.fontLarge.drawString(Fonts.fontLarge.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 70) + "...", 100, 78 - Fonts.font40.FONT_HEIGHT, -1);
         else
-            Fonts.font72.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.font40.FONT_HEIGHT, -1);
+            Fonts.fontLarge.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.font40.FONT_HEIGHT, -1);
         Fonts.font40.drawString("hi", 100, 85, -1);*/
 
         if (searchElement.drawBox(mouseX, mouseY)) {

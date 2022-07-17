@@ -55,7 +55,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
         if (lastHeight >= 10F) lastHeight -= 10F
         handleScrolling(wheel, h)
         drawScroll(x, y + 50F, w, h)
-        Fonts.font72.drawString("Search", x + 10F, y + 10F, -1)
+        Fonts.fontLarge.drawString("Search", x + 10F, y + 10F, -1)
         var startY = y + 50F
         if (mouseY < y + 50F || mouseY >= y + h)
             mouseY = -1
