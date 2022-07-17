@@ -406,13 +406,24 @@ public final class RenderUtils extends MinecraftInstance {
         glBegin(GL_POLYGON);
     
         double degree = Math.PI / 180;
-        for (double i = 0; i <= 90; i += 1)
+        if (rBR <= 0)
+            glVertex2d(xBR, yBR);
+        else for (double i = 0; i <= 90; i += 1)
             glVertex2d(xBR + Math.sin(i * degree) * rBR, yBR + Math.cos(i * degree) * rBR);
-        for (double i = 90; i <= 180; i += 1)
+
+        if (rTR <= 0)
+            glVertex2d(xTR, yTR);
+        else for (double i = 90; i <= 180; i += 1)
             glVertex2d(xTR + Math.sin(i * degree) * rTR, yTR + Math.cos(i * degree) * rTR);
-        for (double i = 180; i <= 270; i += 1)
+
+        if (rTL <= 0)
+            glVertex2d(xTL, yTL);
+        else for (double i = 180; i <= 270; i += 1)
             glVertex2d(xTL + Math.sin(i * degree) * rTL, yTL + Math.cos(i * degree) * rTL);
-        for (double i = 270; i <= 360; i += 1)
+
+        if (rBL <= 0)
+            glVertex2d(xBL, yBL);
+        else for (double i = 270; i <= 360; i += 1)
             glVertex2d(xBL + Math.sin(i * degree) * rBL, yBL + Math.cos(i * degree) * rBL);
         glEnd();
 
