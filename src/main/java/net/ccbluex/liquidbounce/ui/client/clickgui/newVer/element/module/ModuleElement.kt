@@ -68,9 +68,9 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         Stencil.write(true)
         RenderUtils.originalRoundedRect(x + 10F, y + 5F, x + width - 10F, y + height + animHeight - 5F, 4F, ColorManager.moduleBackground.rgb)
         Stencil.erase(true)
-        RenderUtils.newDrawRect2(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 4281348144)
+        RenderUtils.newDrawRect2(x + 10F, y + height - 5F, x + width - 10F, y + height - 4.5F, 4281348144L.toInt())
         Fonts.font40.drawString(module.name, x + 20F, y + height / 2F - Fonts.font40.FONT_HEIGHT, -1)
-        Fonts.fontSmall.drawString(module.description, x + 20F, y + height / 2F + 4F, 10526880)
+        Fonts.fontSmall.drawString(module.description, x + 20F, y + height / 2F + 4F, 10526880L.toInt())
 
         val keyName = if (listeningToKey) "Listening" else Keyboard.getKeyName(module.keyBind)
 
@@ -87,13 +87,13 @@ class ModuleElement(val module: Module): MinecraftInstance() {
                 x + 25F + Fonts.font40.getStringWidth(module.name),
                 y + height / 2F - Fonts.font40.FONT_HEIGHT - 2F,
                 x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontSmall.getStringWidth(keyName),
-                y + height / 2F, 2F, BlendUtils.blend(Color(4282729797), Color(4281677109), fadeKeybind).rgb)
+                y + height / 2F, 2F, BlendUtils.blend(Color(4282729797L.toInt()), Color(4281677109L.toInt()), fadeKeybind.toDouble()).rgb)
         Fonts.fontSmall.drawString(keyName, x + 30F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 1.5F, -1)
 
         toggleSwitch.state = module.state
 
         if (module.values.size > 0) {
-            RenderUtils.newDrawRect2(x + width - 40F, y + 5F, x + width - 39.5F, y + height - 5F, 4281348144)
+            RenderUtils.newDrawRect2(x + width - 40F, y + 5F, x + width - 39.5F, y + height - 5F, 4281348144L.toInt())
             GlStateManager.resetColor()
             glPushMatrix()
             glTranslatef(x + width - 25F, y + height / 2F, 0F)
@@ -103,15 +103,15 @@ class ModuleElement(val module: Module): MinecraftInstance() {
             RenderUtils.drawImage(expandIcon, -4, -4, 8, 8)
             glPopMatrix()
             glPopMatrix()
-            toggleSwitch.onDraw(x + width - 70F, y + height / 2F - 5F, 20F, 10F, 4280624421)
+            toggleSwitch.onDraw(x + width - 70F, y + height / 2F - 5F, 20F, 10F, Color(4280624421L.toInt()))
         } else
-            toggleSwitch.onDraw(x + width - 40F, y + height / 2F - 5F, 20F, 10F, 4280624421)
+            toggleSwitch.onDraw(x + width - 40F, y + height / 2F - 5F, 20F, 10F, Color(4280624421L.toInt()))
 
         if (expanded || animHeight > 0F) {
             var startYPos = y + height
             for (ve in valueElements)
                 if (ve.isDisplayable())
-                    startYPos += ve.drawElement(mouseX, mouseY, x + 10F, startYPos, width - 20F, 4280624421)
+                    startYPos += ve.drawElement(mouseX, mouseY, x + 10F, startYPos, width - 20F, Color(4280624421L.toInt()))
         }
         Stencil.dispose()
 
