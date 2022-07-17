@@ -26,12 +26,16 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
 
     val moduleElements = mutableListOf<ModuleElement>()
 
+    init {
+        LiquidBounce.moduleManager.modules.filter { it.category == category }.forEach { moduleElements.add(ModuleElement(it)) }
+    }
+
     fun drawLabel(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float) {
         if (focused)
             RenderUtils.originalRoundedRect(x + 3F, y + 3F, x + width - 3F, y + height - 3F, 3F, ColorManager.dropDown.rgb)
         else if (MouseUtils.mouseWithinBounds(mouseX, mouseY, x, y, x + width, y + height))
             RenderUtils.originalRoundedRect(x + 3F, y + 3F, x + width - 3F, y + height - 3F, 3F, ColorManager.border.rgb)
-        Fonts.font40.drawString(name, x + 10F, y + height / 2F - Fonts.font40.FONT_HEIGHT / 2F, -1)
+        Fonts.font40.drawString(name, x + 10F, y + height / 2F - Fonts.font40.FONT_HEIGHT / 2F + 1F, -1)
     }
 
     fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, width: Float, height: Float, wheel: Int) {

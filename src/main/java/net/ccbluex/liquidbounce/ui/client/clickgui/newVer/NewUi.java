@@ -72,7 +72,7 @@ public class NewUi extends GuiScreen {
 
     private void drawFullSized(int mouseX, int mouseY, float partialTicks) {
         RenderUtils.originalRoundedRect(30F, 30F, this.width - 30F, this.height - 30F, 8F, 0xFF101010);
-        Stencil.write(true);
+        /*Stencil.write(true);
         RenderUtils.drawFilledCircle(65F, 80F, 25F, new Color(45, 45, 45));
         Stencil.erase(true);
         if (mc.getNetHandler().getPlayerInfo(mc.thePlayer.getUniqueID()) != null) {
@@ -92,13 +92,13 @@ public class NewUi extends GuiScreen {
             glEnable(GL_DEPTH_TEST);
             glPopMatrix();
         }
-        Stencil.dispose();
+        Stencil.dispose();*/
 
-        if (Fonts.font72.getStringWidth(mc.thePlayer.getGameProfile().getName()) > 70)
+        /*if (Fonts.font72.getStringWidth(mc.thePlayer.getGameProfile().getName()) > 70)
             Fonts.font72.drawString(Fonts.font72.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 70) + "...", 100, 78 - Fonts.font40.FONT_HEIGHT, -1);
         else
             Fonts.font72.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.font40.FONT_HEIGHT, -1);
-        Fonts.font40.drawString("hi", 100, 85, -1);
+        Fonts.font40.drawString("hi", 100, 85, -1);*/
 
         if (searchElement.drawBox(mouseX, mouseY)) {
             searchElement.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel(), categoryElements);
