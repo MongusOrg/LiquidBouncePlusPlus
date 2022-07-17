@@ -23,7 +23,7 @@ class FloatElement(val savedValue: FloatValue): ValueElement<Float>(savedValue) 
         val sliderWidth = width - 50F - nameLength - maxLength - minLength - valueDisplay
         val startPoint = x + width - 20F - sliderWidth - maxLength - valueDisplay
         if (dragged)
-            savedValue.set(round(savedValue.minimum + (savedValue.maximum - savedValue.minimum) / sliderWidth * (mouseX - startPoint)))
+            savedValue.set(round(savedValue.minimum + (savedValue.maximum - savedValue.minimum) / sliderWidth * (mouseX - startPoint)).coerceIn(savedValue.minimum, savedValue.maximum))
         val currLength = Fonts.font40.getStringWidth("${savedValue.get()}${savedValue.suffix}")
         Fonts.font40.drawString(value.name, x + 10F, y + 10F - Fonts.font40.FONT_HEIGHT / 2F, -1)
         Fonts.font40.drawString("${savedValue.maximum}${savedValue.suffix}", 
@@ -32,7 +32,7 @@ class FloatElement(val savedValue: FloatValue): ValueElement<Float>(savedValue) 
         Fonts.font40.drawString("${savedValue.minimum}${savedValue.suffix}", 
                                 x + width - 30F - sliderWidth - maxLength - minLength - valueDisplay, 
                                 y + 10F - Fonts.font40.FONT_HEIGHT / 2F, -1)
-        slider.setValue(savedValue.get(), savedValue.minimum, savedValue.maximum)
+        slider.setValue(savedValue.get().coerceIn(savedValue.minimum, savedValue.maximum), savedValue.minimum, savedValue.maximum)
         slider.onDraw(x + width - 20F - sliderWidth - maxLength - valueDisplay, y + 10F, sliderWidth)
         RenderUtils.originalRoundedRect(x + width - 5F - valueDisplay, y + 2F, x + width - 10F, y + 18F, 4F, ColorManager.button.rgb)
         RenderUtils.customRounded(x + width - 18F, y + 2F, x + width - 10F, y + 18F, 0F, 4F, 4F, 0F, ColorManager.buttonOutline.rgb)
@@ -45,7 +45,7 @@ class FloatElement(val savedValue: FloatValue): ValueElement<Float>(savedValue) 
     }
 
     override fun onClick(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float) {
-        val valueDisplay = 30F + Fonts.font40.getStringWidth((savedValue.maximum.toInt().toFloat() + 0.01F).toString())
+        val valueDisplay = 30F + Fonts.font40.getStringWidth("${savedValue.maximum.toInt().toFloat() + 0.01F}${savedValue.suffix}")
         val maxLength = Fonts.font40.getStringWidth("${savedValue.maximum}${savedValue.suffix}")
         val minLength = Fonts.font40.getStringWidth("${savedValue.minimum}${savedValue.suffix}")
         val nameLength = Fonts.font40.getStringWidth(value.name)
@@ -56,9 +56,9 @@ class FloatElement(val savedValue: FloatValue): ValueElement<Float>(savedValue) 
         if (MouseUtils.mouseWithinBounds(mouseX, mouseY, startPoint, y + 5F, endPoint, y + 15F))
             dragged = true
         if (MouseUtils.mouseWithinBounds(mouseX, mouseY, x + width - 5F - valueDisplay, y + 2F, x + width + 3F - valueDisplay, y + 18F))
-            savedValue.set(savedValue.get() - 0.01F)
+            savedValue.set(round(savedValue.get() - 0.01F).coerceIn(savedValue.minimum, savedValue.maximum))
         if (MouseUtils.mouseWithinBounds(mouseX, mouseY, x + width - 18F, y + 2F, x + width - 10F, y + 18F))
-            savedValue.set(savedValue.get() + 0.01F)
+            savedValue.set(round(savedValue.get() + 0.01F).coerceIn(savedValue.minimum, savedValue.maximum))
     }
 
     override fun onRelease(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float) {

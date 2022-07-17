@@ -75,7 +75,7 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
             scrollHeight = scrollHeight.coerceIn(-lastHeight + height - 60F, 0F)
         else
             scrollHeight = 0F
-        animScrollHeight = AnimationUtils.animate(scrollHeight, animScrollHeight, 0.25F * RenderUtils.deltaTime * 0.0075F)
+        animScrollHeight = AnimationUtils.animate(scrollHeight, animScrollHeight, 0.5F * RenderUtils.deltaTime * 0.025F)
     }
 
     private fun drawScroll(x: Float, y: Float, width: Float, height: Float) {

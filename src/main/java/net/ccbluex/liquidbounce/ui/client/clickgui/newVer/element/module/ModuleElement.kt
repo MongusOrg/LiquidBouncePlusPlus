@@ -57,7 +57,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
     }
 
     fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float): Float {
-        animPercent = AnimationUtils.animate(if (expanded) 100F else 0F, animPercent, 0.25F * RenderUtils.deltaTime * 0.0075F)
+        animPercent = AnimationUtils.animate(if (expanded) 100F else 0F, animPercent, 0.5F * RenderUtils.deltaTime * 0.025F)
         var expectedHeight = 0F
         for (ve in valueElements)
             if (ve.isDisplayable())
@@ -79,9 +79,9 @@ class ModuleElement(val module: Module): MinecraftInstance() {
                 y + height / 2F - Fonts.font40.FONT_HEIGHT - 2F,
                 x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontSmall.getStringWidth(keyName),
                 y + height / 2F))
-            fadeKeybind = (fadeKeybind + 0.1F * RenderUtils.deltaTime * 0.0095F).coerceIn(0F, 1F)
+            fadeKeybind = (fadeKeybind + 0.1F * RenderUtils.deltaTime * 0.025F).coerceIn(0F, 1F)
         else
-            fadeKeybind = (fadeKeybind - 0.1F * RenderUtils.deltaTime * 0.0095F).coerceIn(0F, 1F)
+            fadeKeybind = (fadeKeybind - 0.1F * RenderUtils.deltaTime * 0.025F).coerceIn(0F, 1F)
 
         RenderUtils.originalRoundedRect(
                 x + 25F + Fonts.font40.getStringWidth(module.name),

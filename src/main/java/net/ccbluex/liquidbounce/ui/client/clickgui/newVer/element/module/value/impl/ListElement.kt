@@ -19,13 +19,13 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
     private var expandHeight = 0F
     private var expansion = false
 
-    private val maxSubWidth = (saveValue.values.map { Fonts.font40.getStringWidth(it) }.sorted().firstOrNull() ?: 0F).toFloat() + 20F
+    private val maxSubWidth = -(saveValue.values.map { -Fonts.font40.getStringWidth(it) }.sorted().firstOrNull() ?: 0F).toFloat() + 20F
 
     companion object {
         val expanding = ResourceLocation("liquidbounce+/expand.png") }
 
     override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color): Float {
-        expandHeight = AnimationUtils.animate(if (expansion) 16F * (saveValue.values.size - 1F) else 0F, expandHeight, 0.25F * RenderUtils.deltaTime * 0.0075F)
+        expandHeight = AnimationUtils.animate(if (expansion) 16F * (saveValue.values.size - 1F) else 0F, expandHeight, 0.5F * RenderUtils.deltaTime * 0.025F)
         val percent = expandHeight / (16F * (saveValue.values.size - 1F))
         Fonts.font40.drawString(value.name, x + 10F, y + 10F - Fonts.font40.FONT_HEIGHT / 2F, -1)
         RenderUtils.originalRoundedRect(x + width - 18F - maxSubWidth, y + 2F, x + width - 10F, y + 18F + expandHeight, 4F, ColorManager.button.rgb)

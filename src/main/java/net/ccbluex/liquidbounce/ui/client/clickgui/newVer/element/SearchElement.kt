@@ -85,7 +85,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
             scrollHeight = scrollHeight.coerceIn(-lastHeight + height - 60, 0F)
         else
             scrollHeight = 0F
-        animScrollHeight = AnimationUtils.animate(scrollHeight, animScrollHeight, 0.25F * RenderUtils.deltaTime * 0.0075F)
+        animScrollHeight = AnimationUtils.animate(scrollHeight, animScrollHeight, 0.5F * RenderUtils.deltaTime * 0.025F)
     }
 
     private fun drawScroll(x: Float, y: Float, width: Float, height: Float) {

@@ -251,7 +251,7 @@ class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
         graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
         graphics.font = font
         graphics.color = Color.WHITE
-        graphics.drawString(ch.toString(), 3, 1 + fontMetrics.ascent)
+        graphics.drawString(ch.toString(), 3, fontMetrics.ascent)
 
         return fontImage
     }
