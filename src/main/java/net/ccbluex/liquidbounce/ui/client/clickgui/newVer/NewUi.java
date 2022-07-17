@@ -100,7 +100,7 @@ public class NewUi extends GuiScreen {
             Fonts.font72.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.font40.FONT_HEIGHT, -1);
         Fonts.font40.drawString("hi", 100, 85, -1);
 
-        if (searchElement.drawBox(mouseX, mouseY, partialTicks)) {
+        if (searchElement.drawBox(mouseX, mouseY)) {
             searchElement.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel(), categoryElements);
             return;
         }

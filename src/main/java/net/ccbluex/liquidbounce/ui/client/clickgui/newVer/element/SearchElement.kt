@@ -13,7 +13,9 @@ import java.awt.Color
 import java.util.List
 import kotlin.math.abs
 
-class SearchElement(val accentColor: Color = Color(0, 140, 255), val xPos: Float, val yPos: Float, val width: Float, val height: Float) {
+class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, val width: Float, val height: Float) {
+
+    constructor(x: Float, y: Float, wid: Float, hei: Float): this(Color(0, 140, 255), x, y, wid, hei)
 
     private var scrollHeight = 0F
     private var animScrollHeight = 0F
