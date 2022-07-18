@@ -40,7 +40,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
             searchBox.drawTextBox()
 
         Stencil.dispose()
-        RenderUtils.drawImage(IconManager.search, xPos + width - 15F, yPos + 5F, 10, 10)
+        RenderUtils.drawImage2(IconManager.search, xPos + width - 15F, yPos + 5F, 10, 10)
         return searchBox.text.length > 0
     }
 
@@ -59,7 +59,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
         drawScroll(x, y + 50F, w, h)
         Fonts.fontLarge.drawString("Search", x + 10F, y + 10F, -1)
         Fonts.fontSmall.drawString("Search", x - 170F, y - 43F, -1)
-        RenderUtils.drawImage(IconManager.back, x - 190F, y - 45F, 10, 10)
+        RenderUtils.drawImage2(IconManager.back, x - 190F, y - 45F, 10, 10)
         var startY = y + 50F
         if (mouseY < y + 50F || mouseY >= y + h)
             mouseY = -1
