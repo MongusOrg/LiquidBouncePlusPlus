@@ -13,6 +13,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -80,8 +81,8 @@ public class NewUi extends GuiScreen {
         else
             fading -= 0.2F * RenderUtils.deltaTime * 0.045F;
         fading = MathHelper.clamp_float(fading, 0F, 1F);
-        RenderUtils.customRounded(this.width - 54F, 30F, this.width - 30F, 50F, 0F, 8F, 0F, 8F, new Color(1F, 0F, 0F, fading));
-        RenderUtils.drawImage(IconManager.remove, this.width - 47, 35, 10, 10);
+        RenderUtils.customRounded(this.width - 54F, 30F, this.width - 30F, 50F, 0F, 8F, 0F, 8F, new Color(1F, 0F, 0F, fading).getRGB());
+        RenderUtils.drawImage(IconManager.getRemove(), this.width - 47, 35, 10, 10);
         Stencil.write(true);
         RenderUtils.drawFilledCircle(65F, 80F, 25F, new Color(45, 45, 45));
         Stencil.erase(true);
