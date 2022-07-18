@@ -88,7 +88,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
                 y + height / 2F - Fonts.font40.FONT_HEIGHT,
                 x + 35F + Fonts.font40.getStringWidth(module.name) + Fonts.fontTiny.getStringWidth(keyName),
                 y + height / 2F, 2F, BlendUtils.blend(Color(4282729797L.toInt()), Color(4281677109L.toInt()), fadeKeybind.toDouble()).rgb)
-        Fonts.fontTiny.drawString(keyName, x + 30F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 4F, -1)
+        Fonts.fontTiny.drawString(keyName, x + 30.5F + Fonts.font40.getStringWidth(module.name), y + height / 2F - Fonts.font40.FONT_HEIGHT + 4.5F, -1)
 
         toggleSwitch.state = module.state
 

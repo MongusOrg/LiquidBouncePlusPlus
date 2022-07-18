@@ -45,6 +45,8 @@ public class NewUi extends GuiScreen {
 
     private SearchElement searchElement;
 
+    private float fading = 0F;
+
     public void initGui() {
         Keyboard.enableRepeatEvents(true);
         for (CategoryElement ce : categoryElements) {
@@ -72,6 +74,14 @@ public class NewUi extends GuiScreen {
 
     private void drawFullSized(int mouseX, int mouseY, float partialTicks) {
         RenderUtils.originalRoundedRect(30F, 30F, this.width - 30F, this.height - 30F, 8F, 0xFF101010);
+        // something to make it look more like windoze
+        if (MouseUtils.mouseWithinBounds(mouseX, mouseY, this.width - 54F, 30F, this.width - 30F, 50F))
+            fading += 0.2F * RenderUtils.deltaTime * 0.045F;
+        else
+            fading -= 0.2F * RenderUtils.deltaTime * 0.045F;
+        fading = MathHelper.clamp_float(fading, 0F, 1F);
+        RenderUtils.customRounded(this.width - 54F, 30F, this.width - 30F, 50F, 0F, 8F, 0F, 8F, new Color(1F, 0F, 0F, fading));
+        RenderUtils.drawImage(IconManager.remove, this.width - 47F, 35F, 10, 10);
         Stencil.write(true);
         RenderUtils.drawFilledCircle(65F, 80F, 25F, new Color(45, 45, 45));
         Stencil.erase(true);
@@ -95,9 +105,9 @@ public class NewUi extends GuiScreen {
         Stencil.dispose();
 
         if (Fonts.fontLarge.getStringWidth(mc.thePlayer.getGameProfile().getName()) > 70)
-            Fonts.fontLarge.drawString(Fonts.fontLarge.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 70) + "...", 100, 78 - Fonts.fontLarge.FONT_HEIGHT, -1);
+            Fonts.fontLarge.drawString(Fonts.fontLarge.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 70) + "...", 100, 78 - Fonts.fontLarge.FONT_HEIGHT + 15, -1);
         else
-            Fonts.fontLarge.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.fontLarge.FONT_HEIGHT, -1);
+            Fonts.fontLarge.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.fontLarge.FONT_HEIGHT + 15, -1);
         Fonts.font40.drawString("hi", 100, 85, -1);
 
         if (searchElement.drawBox(mouseX, mouseY)) {
