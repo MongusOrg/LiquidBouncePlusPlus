@@ -154,7 +154,6 @@ public class LongJump extends Module {
                 if (!flagged && !matrixSilentValue.get()) {
                     MovementUtils.strafe(matrixBoostValue.get());
                     mc.thePlayer.motionY = matrixHeightValue.get();
-                    }
                 }
             } else if (!matrixSilentValue.get()) {
                 if (matrixBypassModeValue.get().equalsIgnoreCase("motion")) {
