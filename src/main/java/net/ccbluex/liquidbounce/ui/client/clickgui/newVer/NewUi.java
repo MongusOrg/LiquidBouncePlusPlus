@@ -109,7 +109,7 @@ public class NewUi extends GuiScreen {
             Fonts.fontLarge.drawString(Fonts.fontLarge.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 70) + "...", 100, 78 - Fonts.fontLarge.FONT_HEIGHT + 15, -1);
         else
             Fonts.fontLarge.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.fontLarge.FONT_HEIGHT + 15, -1);
-        Fonts.font40.drawString("hi", 100, 85, -1);
+        //Fonts.font40.drawString("hi", 100, 85, -1);
 
         if (searchElement.drawBox(mouseX, mouseY)) {
             searchElement.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel(), categoryElements);
@@ -133,6 +133,10 @@ public class NewUi extends GuiScreen {
     }
 
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (MouseUtils.mouseWithinBounds(mouseX, mouseY, this.width - 54F, 30F, this.width - 30F, 50F)) {
+            mc.displayGuiScreen(null);
+            return;
+        }
         final float elementHeight = 24;
         float startY = 140F;
         searchElement.handleMouseClick(mouseX, mouseY, mouseButton, 230, 50, width - 260, height - 80, categoryElements);

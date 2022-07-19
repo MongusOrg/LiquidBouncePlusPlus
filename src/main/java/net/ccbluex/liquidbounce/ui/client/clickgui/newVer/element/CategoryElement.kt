@@ -48,11 +48,9 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
         handleScrolling(wheel, height)
         drawScroll(x, y + 50F, width, height)
         Fonts.fontLarge.drawString("${ChatFormatting.GRAY}Modules > ${ChatFormatting.RESET}$name", x + 10F, y + 10F, -1)
-        Fonts.fontSmall.drawString("$name", x - 170F, y - 44F, -1)
-        if (mouseY < y + 50F || mouseY >= y + height) {
-            mouseX = -1
+        Fonts.fontSmall.drawString("$name", x - 170F, y - 14F, -1)
+        if (mouseY < y + 50F || mouseY >= y + height)
             mouseY = -1
-        }
         RenderUtils.makeScissorBox(x, y + 50F, x + width, y + height)
         GL11.glEnable(3089)
         var startY = y + 50F
@@ -90,10 +88,8 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
     fun handleMouseClick(mX: Int, mY: Int, mouseButton: Int, x: Float, y: Float, width: Float, height: Float) {
         var mouseX = mX
         var mouseY = mY
-        if (mouseY < y + 50F || mouseY >= y + height) {
-            mouseX = -1
+        if (mouseY < y + 50F || mouseY >= y + height)
             mouseY = -1
-        }
         var startY = y + 50F
         if (mouseButton == 0)
             for (moduleElement in moduleElements) {
@@ -105,10 +101,8 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
     fun handleMouseRelease(mX: Int, mY: Int, mouseButton: Int, x: Float, y: Float, width: Float, height: Float) {
         var mouseX = mX
         var mouseY = mY
-        if (mouseY < y + 50F || mouseY >= y + height) {
-            mouseX = -1
+        if (mouseY < y + 50F || mouseY >= y + height)
             mouseY = -1
-        }
         var startY = y + 50F
         if (mouseButton == 0)
             for (moduleElement in moduleElements) {

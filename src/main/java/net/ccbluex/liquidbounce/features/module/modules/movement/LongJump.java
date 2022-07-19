@@ -148,12 +148,14 @@ public class LongJump extends Module {
             if (mc.thePlayer.onGround) {
                 if (matrixBypassModeValue.get().equalsIgnoreCase("clip")) {
                     mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.08, z, false));
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, false));
                     hasFell = true;
                     debug("clipped");
                 }
                 if (matrixBypassModeValue.get().equalsIgnoreCase("motion"))
                     mc.thePlayer.jump();
-            }
+            } else if (mc.thePlayer.fallDistance > 0F)
+                hasFell = true;
         }
     }
 
@@ -413,8 +415,21 @@ public class LongJump extends Module {
                     if (!flagged) {
                         switch (matrixState) {
                             case 0:
-                                debug("modifying packet: onGround false");
+                                debug("modifying packet: onGround false, y += 0.08");
                                 packetPlayer.onGround = false;
+                                packetPlayer.setMoving(true);
+                                packetPlayer.x = mc.thePlayer.posX;
+                                packetPlayer.y = mc.thePlayer.posY + 0.08;
+                                packetPlayer.z = mc.thePlayer.posZ;
+                                matrixState++;
+                                break;
+                            case 1:
+                                debug("modifying packet: onGround false, keep y");
+                                packetPlayer.onGround = false;
+                                packetPlayer.setMoving(true);
+                                packetPlayer.x = mc.thePlayer.posX;
+                                packetPlayer.y = mc.thePlayer.posY;
+                                packetPlayer.z = mc.thePlayer.posZ;
                                 MovementUtils.strafe(matrixBoostValue.get());
                                 mc.thePlayer.motionY = matrixHeightValue.get();
                                 lastMotX = mc.thePlayer.motionX;
@@ -426,8 +441,7 @@ public class LongJump extends Module {
                                 hasFell = true;
                                 matrixState++;
                                 break;
-                            case 1:
-                            case 2:
+                            default:
                                 debug("modifying packet: rotate false, onGround false, moving enabled, x, y, z set to expected speed");
                                 packetPlayer.rotating = false;
                                 packetPlayer.onGround = false;
@@ -435,11 +449,7 @@ public class LongJump extends Module {
                                 packetPlayer.x = mc.thePlayer.posX + lastMotX;
                                 packetPlayer.y = mc.thePlayer.posY + lastMotY;
                                 packetPlayer.z = mc.thePlayer.posZ + lastMotZ;
-                                matrixState++;
                                 break;
-                            default:
-                                debug("cancelled further packets");
-                                event.cancelEvent();
                         }
                     }
                 }

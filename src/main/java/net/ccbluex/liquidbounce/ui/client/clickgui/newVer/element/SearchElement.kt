@@ -58,8 +58,8 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
         handleScrolling(wheel, h)
         drawScroll(x, y + 50F, w, h)
         Fonts.fontLarge.drawString("Search", x + 10F, y + 10F, -1)
-        Fonts.fontSmall.drawString("Search", x - 170F, y - 43F, -1)
-        RenderUtils.drawImage2(IconManager.back, x - 190F, y - 45F, 10, 10)
+        Fonts.fontSmall.drawString("Search", x - 170F, y - 14F, -1)
+        RenderUtils.drawImage2(IconManager.back, x - 190F, y - 15F, 10, 10)
         var startY = y + 50F
         if (mouseY < y + 50F || mouseY >= y + h)
             mouseY = -1
