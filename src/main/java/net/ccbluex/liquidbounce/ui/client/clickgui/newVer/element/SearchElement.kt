@@ -8,6 +8,7 @@ import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.Stencil
+import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
 
 import java.awt.Color
@@ -40,7 +41,9 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
             searchBox.drawTextBox()
 
         Stencil.dispose()
+        GlStateManager.disableAlpha()
         RenderUtils.drawImage2(IconManager.search, xPos + width - 15F, yPos + 5F, 10, 10)
+        GlStateManager.enableAlpha()
         return searchBox.text.length > 0
     }
 

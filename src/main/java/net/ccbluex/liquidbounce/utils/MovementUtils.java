@@ -118,6 +118,14 @@ public final class MovementUtils extends MinecraftInstance {
         return getRawDirectionRotation(yaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
     }
 
+    public static double[] getXZDist(float speed, float cYaw) {
+        double[] arr = new double[2];
+        final double yaw = getDirectionRotation(cYaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
+        arr[0] = -Math.sin(yaw) * speed;
+        arr[1] = Math.cos(yaw) * speed;
+        return arr;
+    }
+
     public static float getPredictionYaw(double x, double z) {
         if (mc.thePlayer == null) {
             lastX = -999999.0;
