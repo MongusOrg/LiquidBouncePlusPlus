@@ -391,53 +391,53 @@ public class LongJump extends Module {
             if (mode.equalsIgnoreCase("verusdmg") && verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5) {
                 packetPlayer.onGround = false;
             }
+            if (mode.equalsIgnoreCase("matrixflag")) {
+                if (event.getPacket() instanceof C03PacketPlayer.C06PacketPlayerPosLook && posLookInstance.equalFlag((C03PacketPlayer.C06PacketPlayerPosLook) event.getPacket())) {
+                    posLookInstance.reset();
+                    mc.thePlayer.motionX = lastMotX;
+                    mc.thePlayer.motionY = lastMotY;
+                    mc.thePlayer.motionZ = lastMotZ;
+                } else if (matrixSilentValue.get()) {
+                    if (!flagged) {
+                        switch (matrixState) {
+                            case 0:
+                                packetPlayer.onGround = false;
+                                if (matrixSilentValue.get()) {
+                                    MovementUtils.strafe(matrixBoostValue.get());
+                                    mc.thePlayer.motionY = matrixHeightValue.get();
+                                    lastMotX = mc.thePlayer.motionX;
+                                    lastMotX = mc.thePlayer.motionY;
+                                    lastMotX = mc.thePlayer.motionZ;
+                                    mc.thePlayer.motionX = 0;
+                                    mc.thePlayer.motionY = 0;
+                                    mc.thePlayer.motionZ = 0;
+                                }
+                                hasFell = true;
+                                matrixState++;
+                                break;
+                            case 1:
+                                packetPlayer.rotating = false;
+                                packetPlayer.onGround = false;
+                                packetPlayer.setMoving(true);
+                                packetPlayer.x = mc.thePlayer.posX + lastMotX;
+                                packetPlayer.y = mc.thePlayer.posY + lastMotY;
+                                packetPlayer.z = mc.thePlayer.posZ + lastMotZ;
+                                matrixState++;
+                                break;
+                            default:
+                                event.cancelEvent();
+                        }
+                    }
+                }
+            }
         }
-        if (event.getPacket() instanceof S08PacketPlayerPosLook) {
+        if (event.getPacket() instanceof S08PacketPlayerPosLook && mode.equalsIgnoreCase("matrixflag")) {
             flagged = true;
             posLookInstance.set((S08PacketPlayerPosLook) event.getPacket());
             if (!matrixSilentValue.get()) {
                 lastMotX = mc.thePlayer.motionX;
                 lastMotY = mc.thePlayer.motionY;
                 lastMotZ = mc.thePlayer.motionZ;
-            }
-        }
-        if (event.getPacket() instanceof C03PacketPlayer) {
-            if (event.getPacket() instanceof C03PacketPlayer.C06PacketPlayerPosLook && posLookInstance.equalFlag((C03PacketPlayer.C06PacketPlayerPosLook) event.getPacket())) {
-                posLookInstance.reset();
-                mc.thePlayer.motionX = lastMotX;
-                mc.thePlayer.motionY = lastMotY;
-                mc.thePlayer.motionZ = lastMotZ;
-            } else if (matrixSilentValue.get()) {
-                if (!flagged) {
-                    switch (matrixState) {
-                        case 0:
-                            packet.onGround = false;
-                            if (matrixSilentValue.get()) {
-                                MovementUtils.strafe(matrixBoostValue.get());
-                                mc.thePlayer.motionY = matrixHeightValue.get();
-                                lastMotX = mc.thePlayer.motionX;
-                                lastMotX = mc.thePlayer.motionY;
-                                lastMotX = mc.thePlayer.motionZ;
-                                mc.thePlayer.motionX = 0;
-                                mc.thePlayer.motionY = 0;
-                                mc.thePlayer.motionZ = 0;
-                            }
-                            hasFell = true;
-                            matrixState++;
-                            break;
-                        case 1:
-                            packet.rotating = false;
-                            packet.onGround = false;
-                            packet.setMoving(true);
-                            packet.x = mc.thePlayer.posX + lastMotX;
-                            packet.y = mc.thePlayer.posY + lastMotY;
-                            packet.z = mc.thePlayer.posZ + lastMotZ;
-                            matrixState++;
-                            break;
-                        default:
-                            event.cancelEvent();
-                    }
-                }
             }
         }
     }
