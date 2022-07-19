@@ -43,6 +43,7 @@ public class LongJump extends Module {
     private final FloatValue matrixHeightValue = new FloatValue("MatrixFlag-Height", 5F, 0F, 10F, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final BoolValue matrixSilentValue = new BoolValue("MatrixFlag-Silent", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
     private final ListValue matrixBypassModeValue = new ListValue("MatrixFlag-BypassMode", new String[] {"Motion", "Clip", "None"}, "EqualMotion", () -> modeValue.get().equalsIgnoreCase("matrixflag") && !matrixSilentValue.get());
+    private final BoolValue matrixDebugValue = new BoolValue("MatrixFlag-Debug", true, () -> modeValue.get().equalsIgnoreCase("matrixflag"));
 
     private final BoolValue redeskyTimerBoostValue = new BoolValue("Redesky-TimerBoost", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
     private final BoolValue redeskyGlideAfterTicksValue = new BoolValue("Redesky-GlideAfterTicks", false, () -> modeValue.get().equalsIgnoreCase("redesky"));
@@ -87,6 +88,11 @@ public class LongJump extends Module {
     private PosLookInstance posLookInstance = new PosLookInstance();
 
     private int matrixState = 0;
+
+    private void debug(String message) {
+        if (matrixDebugValue.get())
+            ClientUtils.displayChatMessage(message);
+    }
 
     public void onEnable() {
         if (mc.thePlayer == null) return;
@@ -135,12 +141,16 @@ public class LongJump extends Module {
 
         if (modeValue.get().equalsIgnoreCase("matrixflag") && !matrixSilentValue.get()) {
             if (matrixBypassModeValue.get().equalsIgnoreCase("none")) {
+                debug("no less flag enabled.");
                 hasFell = true;
                 return;
             }
             if (mc.thePlayer.onGround) {
-                if (matrixBypassModeValue.get().equalsIgnoreCase("clip"))
-                    mc.thePlayer.setPosition(x, y + 0.08, z);
+                if (matrixBypassModeValue.get().equalsIgnoreCase("clip")) {
+                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.08, z, false));
+                    hasFell = true;
+                    debug("clipped");
+                }
                 if (matrixBypassModeValue.get().equalsIgnoreCase("motion"))
                     mc.thePlayer.jump();
             }
@@ -154,16 +164,17 @@ public class LongJump extends Module {
                 if (!flagged && !matrixSilentValue.get()) {
                     MovementUtils.strafe(matrixBoostValue.get());
                     mc.thePlayer.motionY = matrixHeightValue.get();
+                    debug("triggering");
                 }
             } else if (!matrixSilentValue.get()) {
                 if (matrixBypassModeValue.get().equalsIgnoreCase("motion")) {
                     mc.thePlayer.motionX *= 0.2;
                     mc.thePlayer.motionZ *= 0.2;
-                    if (mc.thePlayer.fallDistance > 0)
+                    if (mc.thePlayer.fallDistance > 0) {
                         hasFell = true;
+                        debug("activated");
+                    }
                 }
-                if (matrixBypassModeValue.get().equalsIgnoreCase("clip") && mc.thePlayer.motionY < 0F)
-                    hasFell = true;
             }
             return;
         }
@@ -397,25 +408,27 @@ public class LongJump extends Module {
                     mc.thePlayer.motionX = lastMotX;
                     mc.thePlayer.motionY = lastMotY;
                     mc.thePlayer.motionZ = lastMotZ;
+                    debug("should be launched by now");
                 } else if (matrixSilentValue.get()) {
                     if (!flagged) {
                         switch (matrixState) {
                             case 0:
+                                debug("modifying packet: onGround false");
                                 packetPlayer.onGround = false;
-                                if (matrixSilentValue.get()) {
-                                    MovementUtils.strafe(matrixBoostValue.get());
-                                    mc.thePlayer.motionY = matrixHeightValue.get();
-                                    lastMotX = mc.thePlayer.motionX;
-                                    lastMotX = mc.thePlayer.motionY;
-                                    lastMotX = mc.thePlayer.motionZ;
-                                    mc.thePlayer.motionX = 0;
-                                    mc.thePlayer.motionY = 0;
-                                    mc.thePlayer.motionZ = 0;
-                                }
+                                MovementUtils.strafe(matrixBoostValue.get());
+                                mc.thePlayer.motionY = matrixHeightValue.get();
+                                lastMotX = mc.thePlayer.motionX;
+                                lastMotX = mc.thePlayer.motionY;
+                                lastMotX = mc.thePlayer.motionZ;
+                                mc.thePlayer.motionX = 0;
+                                mc.thePlayer.motionY = 0;
+                                mc.thePlayer.motionZ = 0;
                                 hasFell = true;
                                 matrixState++;
                                 break;
                             case 1:
+                            case 2:
+                                debug("modifying packet: rotate false, onGround false, moving enabled, x, y, z set to expected speed");
                                 packetPlayer.rotating = false;
                                 packetPlayer.onGround = false;
                                 packetPlayer.setMoving(true);
@@ -425,6 +438,7 @@ public class LongJump extends Module {
                                 matrixState++;
                                 break;
                             default:
+                                debug("cancelled further packets");
                                 event.cancelEvent();
                         }
                     }
@@ -432,9 +446,11 @@ public class LongJump extends Module {
             }
         }
         if (event.getPacket() instanceof S08PacketPlayerPosLook && mode.equalsIgnoreCase("matrixflag")) {
+            debug("flag check started");
             flagged = true;
             posLookInstance.set((S08PacketPlayerPosLook) event.getPacket());
             if (!matrixSilentValue.get()) {
+                debug("data saved");
                 lastMotX = mc.thePlayer.motionX;
                 lastMotY = mc.thePlayer.motionY;
                 lastMotZ = mc.thePlayer.motionZ;
