@@ -51,7 +51,7 @@ class Rotations : Module() {
         }
     }
 
-    private fun getState(module: Class<*>) = LiquidBounce.moduleManager[module]!!.state
+    private fun getState(module: Class<out Module>) = LiquidBounce.moduleManager[module]!!.state
 
     fun shouldRotate(): Boolean {
         val killAura = LiquidBounce.moduleManager.getModule(KillAura::class.java) as KillAura

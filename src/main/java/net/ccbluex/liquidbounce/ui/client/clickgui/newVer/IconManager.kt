@@ -3,7 +3,6 @@ package net.ccbluex.liquidbounce.ui.client.clickgui.newVer
 import net.minecraft.util.ResourceLocation
 
 object IconManager {
-    @JvmStatic
     @JvmField
     val removeIcon = ResourceLocation("liquidbounce+/notification/new/error.png")
     val add = ResourceLocation("liquidbounce+/clickgui/import.png")
