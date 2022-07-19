@@ -71,7 +71,7 @@ public class Crosshair extends Module {
         GlStateManager.resetColor();
         //glColor4f(0F, 0F, 0F, 0F)
 
-        EntityLivingBase target = ((KillAura)LiquidBounce.moduleManager.getModule(KillAura.class)).getTarget();
+        EntityLivingBase target = LiquidBounce.moduleManager.getModule(KillAura.class).getTarget();
 
         if (hitMarkerVal.get() && target != null && target.hurtTime > 0) {
             glPushMatrix();

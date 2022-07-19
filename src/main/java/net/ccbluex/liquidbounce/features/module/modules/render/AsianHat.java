@@ -103,7 +103,7 @@ public class AsianHat extends Module {
         pre3D();
         
         if (hatRotation.get()) {
-            final Rotations rotMod = (Rotations) LiquidBounce.moduleManager.getModule(Rotations.class);
+            final Rotations rotMod = LiquidBounce.moduleManager.getModule(Rotations.class);
 
             float yaw = RenderUtils.interpolate(entity.rotationYaw, entity.prevRotationYaw, partialTicks);
             float pitch = RenderUtils.interpolate(entity.rotationPitch, entity.prevRotationPitch, partialTicks);

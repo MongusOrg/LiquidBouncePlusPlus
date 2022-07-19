@@ -32,7 +32,7 @@ public abstract class MixinBlockLadder extends MixinBlock {
         final IBlockState iblockstate = worldIn.getBlockState(pos);
 
         if(iblockstate.getBlock() instanceof BlockLadder) {
-            final FastClimb fastClimb = (FastClimb) LiquidBounce.moduleManager.getModule(FastClimb.class);
+            final FastClimb fastClimb = LiquidBounce.moduleManager.getModule(FastClimb.class);
             final float f = fastClimb.getState() && fastClimb.getModeValue().get().equalsIgnoreCase("AAC3.0.0") ? 0.99f : 0.125f;
 
             switch(iblockstate.getValue(FACING)) {

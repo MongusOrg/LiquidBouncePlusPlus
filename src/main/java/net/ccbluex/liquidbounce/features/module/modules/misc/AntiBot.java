@@ -193,7 +193,7 @@ public class AntiBot extends Module {
         if (!(entity instanceof EntityPlayer) || entity == mc.thePlayer)
             return false;
 
-        final AntiBot antiBot = (AntiBot) LiquidBounce.moduleManager.getModule(AntiBot.class);
+        final AntiBot antiBot = LiquidBounce.moduleManager.getModule(AntiBot.class);
 
         if (antiBot == null || !antiBot.getState())
             return false;

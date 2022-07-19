@@ -33,7 +33,7 @@ public abstract class MixinRenderEntityItem extends Render<EntityItem> {
     
     @Inject(method = "doRender", at = @At("HEAD"))
     private void injectChamsPre(CallbackInfo callbackInfo) {
-        final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
+        final Chams chams = LiquidBounce.moduleManager.getModule(Chams.class);
 
         if (chams.getState() && chams.getItemsValue().get()) {
             GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
@@ -43,7 +43,7 @@ public abstract class MixinRenderEntityItem extends Render<EntityItem> {
 
     @Inject(method = "doRender", at = @At("RETURN"))
     private void injectChamsPost(CallbackInfo callbackInfo) {
-        final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
+        final Chams chams = LiquidBounce.moduleManager.getModule(Chams.class);
 
         if (chams.getState() && chams.getItemsValue().get()) {
             GL11.glPolygonOffset(1.0F, 1000000F);
@@ -54,7 +54,7 @@ public abstract class MixinRenderEntityItem extends Render<EntityItem> {
     @Overwrite
     private int func_177077_a(EntityItem itemIn, double p_177077_2_, double p_177077_4_, double p_177077_6_, float p_177077_8_, IBakedModel p_177077_9_)
     {
-        final ItemPhysics itemPhysics = (ItemPhysics) LiquidBounce.moduleManager.getModule(ItemPhysics.class);
+        final ItemPhysics itemPhysics = LiquidBounce.moduleManager.getModule(ItemPhysics.class);
         ItemStack itemstack = itemIn.getEntityItem();
         Item item = itemstack.getItem();
 

@@ -23,7 +23,7 @@ public class Legit extends SpeedMode {
 
     @Override
     public void onMotion() {
-        final InvMove invMove = (InvMove) LiquidBounce.moduleManager.getModule(InvMove.class);
+        final InvMove invMove = LiquidBounce.moduleManager.getModule(InvMove.class);
         mc.gameSettings.keyBindJump.pressed = ((MovementUtils.isMoving() || GameSettings.isKeyDown(mc.gameSettings.keyBindJump)) && (mc.inGameHasFocus || (invMove.getState() && !(mc.currentScreen instanceof GuiChat || mc.currentScreen instanceof GuiIngameMenu) && (!invMove.getNoDetectableValue().get() || !(mc.currentScreen instanceof GuiContainer)))));
     }
 

@@ -111,7 +111,7 @@ public class Blink extends Module {
 
     @EventTarget
     public void onRender3D(Render3DEvent event) {
-        final Breadcrumbs breadcrumbs = (Breadcrumbs) LiquidBounce.moduleManager.getModule(Breadcrumbs.class);
+        final Breadcrumbs breadcrumbs = LiquidBounce.moduleManager.getModule(Breadcrumbs.class);
         final Color color = breadcrumbs.colorRainbow.get() ? ColorUtils.rainbow() : new Color(breadcrumbs.colorRedValue.get(), breadcrumbs.colorGreenValue.get(), breadcrumbs.colorBlueValue.get());
 
         synchronized(positions) {

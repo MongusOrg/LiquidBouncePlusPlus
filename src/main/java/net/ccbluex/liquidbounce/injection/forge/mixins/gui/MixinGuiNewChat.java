@@ -93,7 +93,7 @@ public abstract class MixinGuiNewChat {
 
     private void checkHud() {
         if (hud == null)
-            hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+            hud = LiquidBounce.moduleManager.getModule(HUD.class);
     }
 
     @Redirect(method = "deleteChatLine", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ChatLine;getChatLineID()I"))

@@ -225,10 +225,10 @@ public class ClickGui extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (progress < 1) progress = (float)(System.currentTimeMillis() - lastMS) / (500F / ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).animSpeedValue.get()); // fully fps async
+        if (progress < 1) progress = (float)(System.currentTimeMillis() - lastMS) / (500F / Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).animSpeedValue.get()); // fully fps async
         else progress = 1;
 
-        switch (((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).animationValue.get().toLowerCase()) {
+        switch (Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).animationValue.get().toLowerCase()) {
             case "slidebounce":
             case "zoombounce":
             slide = EaseUtils.easeOutBack(progress);
@@ -249,7 +249,7 @@ public class ClickGui extends GuiScreen {
         // Enable DisplayList optimization
         AWTFontRenderer.Companion.setAssumeNonVolatile(true);
 
-        final double scale = ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).scaleValue.get();
+        final double scale = Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).scaleValue.get();
 
         mouseX /= scale;
         mouseY /= scale;
@@ -257,14 +257,14 @@ public class ClickGui extends GuiScreen {
         this.mouseX = mouseX;
         this.mouseY = mouseY;
 
-        switch (((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).backgroundValue.get()) {
+        switch (Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).backgroundValue.get()) {
         case "Default":
             drawDefaultBackground();
             break;
         case "Gradient":
             drawGradientRect(0, 0, width, height, 
-                ColorUtils.reAlpha(ClickGUI.generateColor(), ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).gradEndValue.get()).getRGB(), 
-                ColorUtils.reAlpha(ClickGUI.generateColor(), ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).gradStartValue.get()).getRGB());
+                ColorUtils.reAlpha(ClickGUI.generateColor(), Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).gradEndValue.get()).getRGB(), 
+                ColorUtils.reAlpha(ClickGUI.generateColor(), Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).gradStartValue.get()).getRGB());
             break;
         default:
             break;
@@ -274,7 +274,7 @@ public class ClickGui extends GuiScreen {
         RenderUtils.drawImage(hudIcon, 9, height - 41, 32, 32);
         GlStateManager.enableAlpha();
 
-        switch (((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).animationValue.get().toLowerCase()) {
+        switch (Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).animationValue.get().toLowerCase()) {
             case "azura":
             GlStateManager.translate(0, (1.0 - slide) * height * 2.0, 0);
             GlStateManager.scale(scale, scale + (1.0 - slide) * 2.0, scale);
@@ -316,7 +316,7 @@ public class ClickGui extends GuiScreen {
         GlStateManager.disableLighting();
         RenderHelper.disableStandardItemLighting();
 
-        switch (((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).animationValue.get().toLowerCase()) {
+        switch (Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).animationValue.get().toLowerCase()) {
             case "azura":
             GlStateManager.translate(0, (1.0 - slide) * height * -2.0, 0);
             break;
@@ -349,7 +349,7 @@ public class ClickGui extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        final double scale = ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).scaleValue.get();
+        final double scale = Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).scaleValue.get();
 
         mouseX /= scale;
         mouseY /= scale;
@@ -384,7 +384,7 @@ public class ClickGui extends GuiScreen {
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
-        final double scale = ((ClickGUI) Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class))).scaleValue.get();
+        final double scale = Objects.requireNonNull(LiquidBounce.moduleManager.getModule(ClickGUI.class)).scaleValue.get();
 
         mouseX /= scale;
         mouseY /= scale;

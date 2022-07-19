@@ -106,7 +106,7 @@ public final class MovementUtils extends MinecraftInstance {
     }
 
     public static double getDirection() {
-        final TargetStrafe ts = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
+        final TargetStrafe ts = LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         return ts.getCanStrafe() ? ts.getMovingDir() : getDirectionRotation(mc.thePlayer.rotationYaw, mc.thePlayer.moveStrafing, mc.thePlayer.moveForward);
     }
 

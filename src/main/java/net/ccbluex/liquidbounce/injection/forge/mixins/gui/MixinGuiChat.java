@@ -115,7 +115,7 @@ public abstract class MixinGuiChat extends MixinGuiScreen {
      */
     @Overwrite
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
         if (hud.getCmdBorderValue().get() && !inputField.getText().isEmpty() && inputField.getText().startsWith(String.valueOf(LiquidBounce.commandManager.getPrefix()))) {
             Stencil.write(true);
             RenderUtils.drawRect(2F, this.height - fade, this.width - 2, this.height - fade + 12, Integer.MIN_VALUE);

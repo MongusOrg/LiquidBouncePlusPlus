@@ -78,7 +78,7 @@ public class ColorMixer extends Module {
     public final ColorElement col10BlueValue = new ColorElement(10, ColorElement.Material.BLUE, blendAmount);
 
     public static Color getMixedColor(int index, int seconds) {
-        final ColorMixer colMixer = (ColorMixer) LiquidBounce.moduleManager.getModule(ColorMixer.class);
+        final ColorMixer colMixer = LiquidBounce.moduleManager.getModule(ColorMixer.class);
         if (colMixer == null) return Color.white;
 
         if (lastColors.length <= 0 || lastFraction.length <= 0) regenerateColors(true); // just to make sure it won't go white
@@ -87,7 +87,7 @@ public class ColorMixer extends Module {
     }
 
     public static void regenerateColors(boolean forceValue) {
-        final ColorMixer colMixer = (ColorMixer) LiquidBounce.moduleManager.getModule(ColorMixer.class);
+        final ColorMixer colMixer = LiquidBounce.moduleManager.getModule(ColorMixer.class);
 
         if (colMixer == null) return;
             

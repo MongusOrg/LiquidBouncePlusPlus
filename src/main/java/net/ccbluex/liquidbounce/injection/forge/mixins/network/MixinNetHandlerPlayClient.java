@@ -126,7 +126,7 @@ public abstract class MixinNetHandlerPlayClient {
         final String url = p_handleResourcePack_1_.getURL();
         final String hash = p_handleResourcePack_1_.getHash();
 
-        final AntiExploit antiExploit = (AntiExploit) LiquidBounce.moduleManager.getModule(AntiExploit.class);
+        final AntiExploit antiExploit = LiquidBounce.moduleManager.getModule(AntiExploit.class);
 
         try {
             final String scheme = new URI(url).getScheme();

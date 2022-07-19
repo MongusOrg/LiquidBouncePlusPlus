@@ -27,7 +27,7 @@ public class VerusHard extends SpeedMode {
 
     @Override
     public void onMotion() {
-        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
+        final Speed speed = LiquidBounce.moduleManager.getModule(Speed.class);
         if(speed == null)
             return;
 

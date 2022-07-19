@@ -49,7 +49,7 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Inject(method = "showCrosshair", at = @At("HEAD"), cancellable = true) 
     private void injectCrosshair(CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        final Crosshair crossHair = (Crosshair) LiquidBounce.moduleManager.getModule(Crosshair.class);
+        final Crosshair crossHair = LiquidBounce.moduleManager.getModule(Crosshair.class);
         if (crossHair.getState() && crossHair.noVanillaCH.get())
             callbackInfoReturnable.setReturnValue(false);
     }
@@ -58,7 +58,7 @@ public abstract class MixinGuiInGame extends MixinGui {
     private void renderScoreboard(ScoreObjective scoreObjective, ScaledResolution scaledResolution, CallbackInfo callbackInfo) {
         if (scoreObjective != null) AutoHypixel.gameMode = ColorUtils.stripColor(scoreObjective.getDisplayName());
 
-        final AntiBlind antiBlind = (AntiBlind) LiquidBounce.moduleManager.getModule(AntiBlind.class);
+        final AntiBlind antiBlind = LiquidBounce.moduleManager.getModule(AntiBlind.class);
         if ((antiBlind.getState() && antiBlind.getScoreBoard().get()) || LiquidBounce.moduleManager.getModule(HUD.class).getState())
             callbackInfo.cancel();
     }
@@ -70,14 +70,14 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Inject(method = "renderBossHealth", at = @At("HEAD"), cancellable = true)
     private void renderBossHealth(CallbackInfo callbackInfo) {
-        final AntiBlind antiBlind = (AntiBlind) LiquidBounce.moduleManager.getModule(AntiBlind.class);
+        final AntiBlind antiBlind = LiquidBounce.moduleManager.getModule(AntiBlind.class);
         if (antiBlind.getState() && antiBlind.getBossHealth().get())
             callbackInfo.cancel();
     }
 
     @Inject(method = "renderTooltip", at = @At("HEAD"), cancellable = true)
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
-        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
 
         if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
             final Minecraft mc = Minecraft.getMinecraft();
@@ -136,7 +136,7 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)
     private void renderPumpkinOverlay(final CallbackInfo callbackInfo) {
-        final AntiBlind antiBlind = (AntiBlind) LiquidBounce.moduleManager.getModule(AntiBlind.class);
+        final AntiBlind antiBlind = LiquidBounce.moduleManager.getModule(AntiBlind.class);
 
         if(antiBlind.getState() && antiBlind.getPumpkinEffect().get())
             callbackInfo.cancel();

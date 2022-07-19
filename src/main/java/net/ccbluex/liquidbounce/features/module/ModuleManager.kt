@@ -281,9 +281,9 @@ class ModuleManager : Listenable {
     /**
      * Get module by [moduleClass]
      */
-    fun getModule(moduleClass: Class<*>) = moduleClassMap[moduleClass]
+    fun <T : Module> getModule(moduleClass: Class<T>): T? = moduleClassMap[moduleClass] as T?
 
-    operator fun get(clazz: Class<*>) = getModule(clazz)
+    operator fun <T : Module> get(clazz: Class<T>) = getModule(clazz)
 
     /**
      * Get module by [moduleName]

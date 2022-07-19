@@ -23,7 +23,7 @@ public class CustomSpeed extends SpeedMode {
 
     @Override
     public void onMotion(MotionEvent eventMotion) {
-        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
+        final Speed speed = LiquidBounce.moduleManager.getModule(Speed.class);
 
         if(speed == null || eventMotion.getEventState() != EventState.PRE)
             return;
@@ -74,7 +74,7 @@ public class CustomSpeed extends SpeedMode {
 
     @Override
     public void onEnable() {
-        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
+        final Speed speed = LiquidBounce.moduleManager.getModule(Speed.class);
 
         if(speed == null)
             return;

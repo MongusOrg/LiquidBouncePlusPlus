@@ -26,7 +26,7 @@ public class AACGround2 extends SpeedMode {
         if(!MovementUtils.isMoving())
             return;
 
-        mc.timer.timerSpeed = ((Speed) LiquidBounce.moduleManager.getModule(Speed.class)).aacGroundTimerValue.get();
+        mc.timer.timerSpeed = LiquidBounce.moduleManager.getModule(Speed.class).aacGroundTimerValue.get();
         MovementUtils.strafe(0.02F);
     }
 

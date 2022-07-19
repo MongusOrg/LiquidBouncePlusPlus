@@ -83,7 +83,7 @@ public abstract class MixinGuiButton extends Gui {
          final int delta = RenderUtils.deltaTime;
          final float speedDelta = 0.01F * delta;
 
-         final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+         final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
 
          if (hud == null) return;
 

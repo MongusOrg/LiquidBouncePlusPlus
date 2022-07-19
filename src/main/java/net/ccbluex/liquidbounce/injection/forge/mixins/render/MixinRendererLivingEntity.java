@@ -44,8 +44,8 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
 
     @Inject(method = "doRender(Lnet/minecraft/entity/EntityLivingBase;DDDFF)V", at = @At("HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void injectChamsPre(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
-        final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
-        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
+        final Chams chams = LiquidBounce.moduleManager.getModule(Chams.class);
+        final NoRender noRender = LiquidBounce.moduleManager.getModule(NoRender.class);
 
         if (noRender.getState() && noRender.shouldStopRender(entity)) {
             callbackInfo.cancel();
@@ -60,8 +60,8 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
 
     @Inject(method = "doRender(Lnet/minecraft/entity/EntityLivingBase;DDDFF)V", at = @At("RETURN"))
     private <T extends EntityLivingBase> void injectChamsPost(T entity, double x, double y, double z, float entityYaw, float partialTicks, CallbackInfo callbackInfo) {
-        final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
-        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
+        final Chams chams = LiquidBounce.moduleManager.getModule(Chams.class);
+        final NoRender noRender = LiquidBounce.moduleManager.getModule(NoRender.class);
         
         if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && EntityUtils.isSelected(entity, false)
             && !(noRender.getState() && noRender.shouldStopRender(entity))) {
@@ -72,7 +72,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
 
     @Inject(method = "canRenderName(Lnet/minecraft/entity/EntityLivingBase;)Z", at = @At("HEAD"), cancellable = true)
     private <T extends EntityLivingBase> void canRenderName(T entity, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        final NoRender noRender = (NoRender) LiquidBounce.moduleManager.getModule(NoRender.class);
+        final NoRender noRender = LiquidBounce.moduleManager.getModule(NoRender.class);
 
         if (!ESP.renderNameTags 
             || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && EntityUtils.isSelected(entity, false)) 
@@ -87,8 +87,8 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     protected <T extends EntityLivingBase> void renderModel(T p_renderModel_1_, float p_renderModel_2_, float p_renderModel_3_, float p_renderModel_4_, float p_renderModel_5_, float p_renderModel_6_, float p_renderModel_7_, CallbackInfo ci) {
         boolean visible = !p_renderModel_1_.isInvisible();
-        final TrueSight trueSight = (TrueSight) LiquidBounce.moduleManager.getModule(TrueSight.class);
-        final Chams chams = (Chams) LiquidBounce.moduleManager.getModule(Chams.class);
+        final TrueSight trueSight = LiquidBounce.moduleManager.getModule(TrueSight.class);
+        final Chams chams = LiquidBounce.moduleManager.getModule(Chams.class);
         boolean chamsFlag = (chams.getState() && chams.getTargetsValue().get() && !chams.getLegacyMode().get() && EntityUtils.isSelected(p_renderModel_1_, false));
         boolean semiVisible = !visible && (!p_renderModel_1_.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) || (trueSight.getState() && trueSight.getEntitiesValue().get()));
 
@@ -105,7 +105,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
                 GlStateManager.alphaFunc(516, 0.003921569F);
             }
 
-            final ESP esp = (ESP) LiquidBounce.moduleManager.getModule(ESP.class);
+            final ESP esp = LiquidBounce.moduleManager.getModule(ESP.class);
             if(esp.getState() && EntityUtils.isSelected(p_renderModel_1_, false)) {
                 Minecraft mc = Minecraft.getMinecraft();
                 boolean fancyGraphics = mc.gameSettings.fancyGraphics;

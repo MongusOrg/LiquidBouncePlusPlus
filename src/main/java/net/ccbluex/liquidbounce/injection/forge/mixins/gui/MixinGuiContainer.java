@@ -55,7 +55,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
     @Inject(method = "initGui", at = @At("HEAD"), cancellable = true)
     public void injectInitGui(CallbackInfo callbackInfo){
         GuiScreen guiScreen = Minecraft.getMinecraft().currentScreen;
-        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
 
         int firstY = 0;
 
@@ -100,7 +100,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
     @Override
     protected void injectedActionPerformed(GuiButton button) {
-        ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
+        ChestStealer chestStealer = LiquidBounce.moduleManager.getModule(ChestStealer.class);
 
         if (button.id == 1024576)
             LiquidBounce.moduleManager.getModule(KillAura.class).setState(false);
@@ -117,9 +117,9 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
     @Inject(method = "drawScreen", at = @At("HEAD"), cancellable = true)
     private void drawScreenHead(CallbackInfo callbackInfo){
-        final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
-        ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
-        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        final Animations animMod = LiquidBounce.moduleManager.getModule(Animations.class);
+        ChestStealer chestStealer = LiquidBounce.moduleManager.getModule(ChestStealer.class);
+        final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
         final Minecraft mc = Minecraft.getMinecraft();
 
         if (progress >= 1F) progress = 1F;
@@ -206,8 +206,8 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
 
     @Inject(method = "drawScreen", at = @At("RETURN")) 
     public void drawScreenReturn(CallbackInfo callbackInfo) {
-        final Animations animMod = (Animations) LiquidBounce.moduleManager.getModule(Animations.class);
-        ChestStealer chestStealer = (ChestStealer) LiquidBounce.moduleManager.getModule(ChestStealer.class);
+        final Animations animMod = LiquidBounce.moduleManager.getModule(Animations.class);
+        ChestStealer chestStealer = LiquidBounce.moduleManager.getModule(ChestStealer.class);
         final Minecraft mc = Minecraft.getMinecraft();
         boolean checkFullSilence = chestStealer.getState() && chestStealer.getSilenceValue().get() && !chestStealer.getStillDisplayValue().get();
 

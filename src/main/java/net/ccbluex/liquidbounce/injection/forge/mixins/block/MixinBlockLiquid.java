@@ -26,7 +26,7 @@ public class MixinBlockLiquid {
 
     @Inject(method = "modifyAcceleration", at = @At("HEAD"), cancellable = true)
     private void onModifyAcceleration(CallbackInfoReturnable<Vec3> callbackInfoReturnable) {
-        final NoSlow noSlow = (NoSlow) LiquidBounce.moduleManager.getModule(NoSlow.class);
+        final NoSlow noSlow = LiquidBounce.moduleManager.getModule(NoSlow.class);
 
         if (noSlow.getState() && noSlow.getLiquidPushValue().get()) {
             callbackInfoReturnable.setReturnValue(new Vec3(0.0D, 0.0D, 0.0D));

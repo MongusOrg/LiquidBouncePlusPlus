@@ -156,7 +156,7 @@ public final class ESP2D extends Module {
 	}
 
     public static boolean shouldCancelNameTag(EntityLivingBase entity) {
-        return LiquidBounce.moduleManager.getModule(ESP2D.class) != null && LiquidBounce.moduleManager.getModule(ESP2D.class).getState() && ((ESP2D)LiquidBounce.moduleManager.getModule(ESP2D.class)).tagsValue.get() && collectedEntities.contains(entity);
+        return LiquidBounce.moduleManager.getModule(ESP2D.class) != null && LiquidBounce.moduleManager.getModule(ESP2D.class).getState() && LiquidBounce.moduleManager.getModule(ESP2D.class).tagsValue.get() && collectedEntities.contains(entity);
     }
 
     @Override

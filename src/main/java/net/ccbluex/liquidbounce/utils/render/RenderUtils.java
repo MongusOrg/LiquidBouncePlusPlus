@@ -740,7 +740,7 @@ public final class RenderUtils extends MinecraftInstance {
         final RenderManager renderManager = mc.getRenderManager();
         final Timer timer = mc.timer;
 
-        TargetMark targetMark = (TargetMark) LiquidBounce.moduleManager.getModule(TargetMark.class);
+        TargetMark targetMark = LiquidBounce.moduleManager.getModule(TargetMark.class);
         if (targetMark == null)
             return;
 

@@ -31,10 +31,10 @@ public class HypixelStable extends SpeedMode {
     @Override
     public void onMove(MoveEvent event) {
         mc.timer.timerSpeed = 1F;
-        final Speed speed = (Speed) LiquidBounce.moduleManager.getModule(Speed.class);
+        final Speed speed = LiquidBounce.moduleManager.getModule(Speed.class);
         if(speed == null) return;
 
-        final TargetStrafe targetStrafe = (TargetStrafe) LiquidBounce.moduleManager.getModule(TargetStrafe.class);
+        final TargetStrafe targetStrafe = LiquidBounce.moduleManager.getModule(TargetStrafe.class);
         if (targetStrafe == null) return;
 
         if(MovementUtils.isMoving() && !(mc.thePlayer.isInWater() || mc.thePlayer.isInLava()) && !mc.gameSettings.keyBindJump.isKeyDown()) {

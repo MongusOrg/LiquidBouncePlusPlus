@@ -22,7 +22,7 @@ public abstract class MixinInventoryEffectRenderer extends MixinGuiContainer {
     @Overwrite
     public void updateActivePotionEffects()
     {
-        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
         if (!hud.getInvEffectOffset().get()) 
         {
             this.guiLeft = (this.width - this.xSize) / 2;

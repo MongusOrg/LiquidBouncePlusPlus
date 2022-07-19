@@ -60,7 +60,7 @@ public class MineplexGround extends SpeedMode {
         final Vec3 vec = new Vec3(blockPos).addVector(0.4F, 0.4F, 0.4F).add(new Vec3(EnumFacing.UP.getDirectionVec()));
         mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, null, blockPos, EnumFacing.UP, new Vec3(vec.xCoord * 0.4F, vec.yCoord * 0.4F, vec.zCoord * 0.4F));
 
-        final float targetSpeed = ((Speed) LiquidBounce.moduleManager.getModule(Speed.class)).mineplexGroundSpeedValue.get();
+        final float targetSpeed = LiquidBounce.moduleManager.getModule(Speed.class).mineplexGroundSpeedValue.get();
 
         if(targetSpeed > speed) speed += targetSpeed / 8;
         if(speed >= targetSpeed) speed = targetSpeed;

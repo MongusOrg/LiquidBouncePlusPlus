@@ -42,7 +42,7 @@ public class LiquidBounceStyle extends Style {
 
         if(panel.getScrollbar() && panel.getFade() > 0) {
             RenderUtils.drawRect(panel.getX() - 1.5F, panel.getY() + 21, panel.getX() - 0.5F, panel.getY() + 16 + panel.getFade(), Integer.MAX_VALUE);
-            RenderUtils.drawRect(panel.getX() - 2, panel.getY() + 30 + (panel.getFade() - 24F) / (panel.getElements().size() - ((ClickGUI) LiquidBounce.moduleManager.getModule(ClickGUI.class)).maxElementsValue.get()) * panel.getDragged() - 10.0f, panel.getX(), panel.getY() + 40 + (panel.getFade() - 24.0f) / (panel.getElements().size() - ((ClickGUI) LiquidBounce.moduleManager.getModule(ClickGUI.class)).maxElementsValue.get()) * panel.getDragged(), Integer.MIN_VALUE);
+            RenderUtils.drawRect(panel.getX() - 2, panel.getY() + 30 + (panel.getFade() - 24F) / (panel.getElements().size() - LiquidBounce.moduleManager.getModule(ClickGUI.class).maxElementsValue.get()) * panel.getDragged() - 10.0f, panel.getX(), panel.getY() + 40 + (panel.getFade() - 24.0f) / (panel.getElements().size() - LiquidBounce.moduleManager.getModule(ClickGUI.class).maxElementsValue.get()) * panel.getDragged(), Integer.MIN_VALUE);
         }
     }
 

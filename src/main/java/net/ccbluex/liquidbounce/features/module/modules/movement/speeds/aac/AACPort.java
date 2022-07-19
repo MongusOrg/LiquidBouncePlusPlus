@@ -32,7 +32,7 @@ public class AACPort extends SpeedMode {
             return;
 
         final float f = mc.thePlayer.rotationYaw * 0.017453292F;
-        for (double d = 0.2; d <= ((Speed) LiquidBounce.moduleManager.getModule(Speed.class)).portMax.get(); d += 0.2) {
+        for (double d = 0.2; d <= LiquidBounce.moduleManager.getModule(Speed.class).portMax.get(); d += 0.2) {
             final double x = mc.thePlayer.posX - MathHelper.sin(f) * d;
             final double z = mc.thePlayer.posZ + MathHelper.cos(f) * d;
 

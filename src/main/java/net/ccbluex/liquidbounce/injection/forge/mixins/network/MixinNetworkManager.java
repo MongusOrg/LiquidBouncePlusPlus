@@ -46,7 +46,7 @@ public class MixinNetworkManager {
      */
     @Inject(method = "getIsencrypted", at = @At("HEAD"), cancellable = true)
     private void injectEncryption(CallbackInfoReturnable<Boolean> cir) {
-        final HUD hud = (HUD) LiquidBounce.moduleManager.getModule(HUD.class);
+        final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
         if(hud != null && hud.getTabHead().get()) {
             cir.setReturnValue(true);
         }

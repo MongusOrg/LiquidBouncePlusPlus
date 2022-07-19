@@ -42,7 +42,7 @@ public abstract class MixinRenderItem {
 
     @Inject(method = "renderEffect", at = @At("HEAD"), cancellable = true)
     private void renderEffect(IBakedModel model, CallbackInfo callbackInfo) {
-        final EnchantEffect enchantEffect = (EnchantEffect) LiquidBounce.moduleManager.getModule(EnchantEffect.class);
+        final EnchantEffect enchantEffect = LiquidBounce.moduleManager.getModule(EnchantEffect.class);
         if (enchantEffect.getState()) {
             int rainbowColour = RenderUtils.getRainbowOpaque(enchantEffect.rainbowSpeedValue.get(), enchantEffect.rainbowSatValue.get(), enchantEffect.rainbowBrgValue.get(), ((int) Minecraft.getSystemTime() % 2) * (enchantEffect.rainbowDelayValue.get() * 10));
             int skyColor = RenderUtils.SkyRainbow(0, enchantEffect.rainbowSatValue.get(), enchantEffect.rainbowBrgValue.get());
