@@ -52,6 +52,9 @@ class AutoPot : Module() {
     private val spoofDelayValue = IntegerValue("InvDelay", 500, 500, 5000, "ms", { spoofInvValue.get() })
     private val noCombatValue = BoolValue("NoCombat", true)
 
+    private val customPitchValue = BoolValue("Custom-Pitch", false)
+    private val customPitchAngle = FloatValue("Angle", 90F, -90F, 90F, "°", { customPitchValue.get() })
+
     private val debugValue = BoolValue("Debug", false)
 
     private var throwing = false
@@ -158,7 +161,7 @@ class AutoPot : Module() {
                 }
 
                 RotationUtils.reset() // reset all rotations
-                event.pitch = 90F
+                event.pitch = if (customPitchValue.get()) customPitchAngle.get() else 90F
                 debug("silent rotation")
             }
         }

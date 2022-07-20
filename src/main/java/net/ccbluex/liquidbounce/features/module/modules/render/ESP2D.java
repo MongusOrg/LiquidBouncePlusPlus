@@ -373,6 +373,7 @@ public final class ESP2D extends Module {
 
         GL11.glPopMatrix();
         GlStateManager.enableBlend();
+        GlStateManager.resetColor();
         entityRenderer.setupOverlayRendering();
     }
 

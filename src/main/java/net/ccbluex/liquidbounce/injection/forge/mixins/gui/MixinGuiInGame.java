@@ -79,7 +79,7 @@ public abstract class MixinGuiInGame extends MixinGui {
     private void renderTooltip(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
         final HUD hud = LiquidBounce.moduleManager.getModule(HUD.class);
 
-        if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState()) {
+        if(Minecraft.getMinecraft().getRenderViewEntity() instanceof EntityPlayer && hud.getState() && (hud.getBlackHotbarValue().get() || hud.getAnimHotbarValue().get())) {
             final Minecraft mc = Minecraft.getMinecraft();
             EntityPlayer entityPlayer = (EntityPlayer) mc.getRenderViewEntity();
 
@@ -128,10 +128,8 @@ public abstract class MixinGuiInGame extends MixinGui {
 
     @Inject(method = "renderTooltip", at = @At("TAIL"))
     private void renderTooltipPost(ScaledResolution sr, float partialTicks, CallbackInfo callbackInfo) {
-        if (!ClassUtils.hasClass("net.labymod.api.LabyModAPI")) {
-            LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
-            AWTFontRenderer.Companion.garbageCollectionTick();
-        }
+        LiquidBounce.eventManager.callEvent(new Render2DEvent(partialTicks));
+        AWTFontRenderer.Companion.garbageCollectionTick();
     }
 
     @Inject(method = "renderPumpkinOverlay", at = @At("HEAD"), cancellable = true)

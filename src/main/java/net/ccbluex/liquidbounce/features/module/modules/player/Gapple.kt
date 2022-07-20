@@ -63,25 +63,23 @@ class Gapple : Module() {
         }
     }
 
-    private fun doEat(warn: Boolean){
-        if(noAbsorption.get()&&!warn){
-            val abAmount:Float=mc.thePlayer.absorptionAmount
-            if(abAmount>0){
+    private fun doEat(warn: Boolean) {
+        if (noAbsorption.get() && !warn) {
+            val abAmount = mc.thePlayer.absorptionAmount
+            if (abAmount > 0)
                 return
-            }
         }
 
         val gappleInHotbar = InventoryUtils.findItem(36, 45, Items.golden_apple)
-        if(gappleInHotbar != -1){
+        if (gappleInHotbar != -1) {
             mc.netHandler.addToSendQueue(C09PacketHeldItemChange(gappleInHotbar - 36))
             mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(mc.thePlayer.heldItem))
-            repeat(35) {
+            repeat (35) {
                 mc.netHandler.addToSendQueue(C03PacketPlayer(mc.thePlayer.onGround))
             }
             mc.netHandler.addToSendQueue(C09PacketHeldItemChange(mc.thePlayer.inventory.currentItem))
-        }else if(warn){
-            LiquidBounce.hud.addNotification(Notification("No Gapple were found in hotbar", Notification.Type.ERROR))
-        }
+        }else if (warn)
+            LiquidBounce.hud.addNotification(Notification("No Gapple were found in hotbar.", Notification.Type.ERROR))
     }
 
     override val tag: String

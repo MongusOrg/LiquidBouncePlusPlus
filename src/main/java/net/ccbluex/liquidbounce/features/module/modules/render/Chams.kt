@@ -15,6 +15,7 @@ class Chams : Module() {
     val targetsValue = BoolValue("Targets", true)
     val chestsValue = BoolValue("Chests", true)
     val itemsValue = BoolValue("Items", true)
+    val localValue = BoolValue("LocalPlayer", true)
     val legacyMode = BoolValue("Legacy-Mode", false)
     val texturedValue = BoolValue("Textured", true, { !legacyMode.get() })
     val colorModeValue = ListValue("Color", arrayOf("Custom", "Rainbow", "Sky", "LiquidSlowly", "Fade", "Mixer"), "Custom", { !legacyMode.get() })

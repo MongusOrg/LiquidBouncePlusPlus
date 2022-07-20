@@ -182,4 +182,9 @@ public class NewUi extends GuiScreen {
         super.mouseReleased(mouseX, mouseY, state);
     }
 
+    @Override
+    public boolean doesGuiPauseGame() {
+        return false;
+    }
+
 }

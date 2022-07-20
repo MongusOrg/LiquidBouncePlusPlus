@@ -41,6 +41,9 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
         assumeNonVolatile = true
 
         for (effect in mc.thePlayer.activePotionEffects) {
+            if (side.vertical == Side.Vertical.DOWN)
+                y -= fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
+
             val potion = Potion.potionTypes[effect.potionID]
 
             val number = when {
@@ -76,11 +79,9 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
                 Side.Horizontal.RIGHT -> fontRenderer.drawString(name, -stringWidth, y + if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else 0F, potion.liquidColor, shadow.get())
                 Side.Horizontal.LEFT, Side.Horizontal.MIDDLE -> fontRenderer.drawString(name, 0F, y + if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else 0F, potion.liquidColor, shadow.get())
             }
-            
-            when (side.vertical) {
-                Side.Vertical.UP -> y += fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
-                Side.Vertical.DOWN -> y -= fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
-            }
+
+            if (side.vertical == Side.Vertical.UP)
+                y += fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
         }
 
         assumeNonVolatile = false

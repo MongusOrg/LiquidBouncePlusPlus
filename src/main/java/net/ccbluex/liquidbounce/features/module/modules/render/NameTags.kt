@@ -44,6 +44,7 @@ class NameTags : Module() {
     private val fontValue = FontValue("Font", Fonts.font40)
     private val fontShadowValue = BoolValue("Shadow", true)
     private val borderValue = BoolValue("Border", true)
+    private val localValue = BoolValue("LocalPlayer", true)
     private val backgroundColorRedValue = IntegerValue("Background-R", 0, 0, 255)
     private val backgroundColorGreenValue = IntegerValue("Background-G", 0, 0, 255)
     private val backgroundColorBlueValue = IntegerValue("Background-B", 0, 0, 255)
@@ -72,7 +73,7 @@ class NameTags : Module() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         for (entity in mc.theWorld.loadedEntityList) {
-            if (!EntityUtils.isSelected(entity, false))
+            if (!EntityUtils.isSelected(entity, false) && (!localValue.get() || entity != mc.thePlayer))
                 continue
 
             renderNameTag(entity as EntityLivingBase,
