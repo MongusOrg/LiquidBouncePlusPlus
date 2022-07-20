@@ -105,7 +105,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
     }
 
     fun handleMouseClick(mX: Int, mY: Int, mouseButton: Int, x: Float, y: Float, w: Float, h: Float, ces: List<CategoryElement>) {
-        if (MouseUtils.mouseWithinBounds(mX, mY, x - 190F, y - 15F, x - 180F, y - 5F)) {
+        if (MouseUtils.mouseWithinBounds(mX, mY, x - 200F, y - 20F, x - 170F, y)) {
             searchBox.text = ""
             return
         }

@@ -48,7 +48,7 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
         handleScrolling(wheel, height)
         drawScroll(x, y + 50F, width, height)
         Fonts.fontLarge.drawString("${ChatFormatting.GRAY}Modules > ${ChatFormatting.RESET}$name", x + 10F, y + 10F, -1)
-        Fonts.fontSmall.drawString("$name", x - 170F, y - 12F, -1)
+        Fonts.fontSmall.drawString("$name", x - 190F, y - 12F, -1)
         if (mouseY < y + 50F || mouseY >= y + height)
             mouseY = -1
         RenderUtils.makeScissorBox(x, y + 50F, x + width, y + height)
