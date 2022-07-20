@@ -6,6 +6,7 @@ import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.ModuleE
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.extensions.animSmooth
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
+import net.ccbluex.liquidbounce.utils.MouseUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.minecraft.client.renderer.GlStateManager
