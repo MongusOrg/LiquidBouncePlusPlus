@@ -75,7 +75,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         final NoRender noRender = LiquidBounce.moduleManager.getModule(NoRender.class);
 
         if (!ESP.renderNameTags 
-            || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && ((chams.getLocalPlayerValue().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))) 
+            || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && ((LiquidBounce.moduleManager.getModule(NameTags.class).getLocalValue().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))) 
             || ESP2D.shouldCancelNameTag(entity)
             || (noRender.getState() && noRender.getNameTagsValue().get()))
             callbackInfoReturnable.setReturnValue(false);
