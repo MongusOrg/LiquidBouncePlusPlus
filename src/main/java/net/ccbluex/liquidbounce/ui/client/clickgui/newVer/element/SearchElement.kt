@@ -3,9 +3,9 @@ package net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.ColorManager
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.IconManager
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.ModuleElement
+import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.extensions.animSmooth
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
-import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.minecraft.client.renderer.GlStateManager
@@ -61,7 +61,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
         handleScrolling(wheel, h)
         drawScroll(x, y + 50F, w, h)
         Fonts.fontLarge.drawString("Search", x + 10F, y + 10F, -1)
-        Fonts.fontSmall.drawString("Search", x - 170F, y - 14F, -1)
+        Fonts.fontSmall.drawString("Search", x - 170F, y - 12F, -1)
         RenderUtils.drawImage2(IconManager.back, x - 190F, y - 15F, 10, 10)
         var startY = y + 50F
         if (mouseY < y + 50F || mouseY >= y + h)
@@ -92,7 +92,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
             scrollHeight = scrollHeight.coerceIn(-lastHeight + height - 60, 0F)
         else
             scrollHeight = 0F
-        animScrollHeight = AnimationUtils.animate(scrollHeight, animScrollHeight, 0.5F * RenderUtils.deltaTime * 0.025F)
+        animScrollHeight = animScrollHeight.animSmooth(scrollHeight, 0.5F)
     }
 
     private fun drawScroll(x: Float, y: Float, width: Float, height: Float) {
@@ -104,6 +104,10 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
     }
 
     fun handleMouseClick(mX: Int, mY: Int, mouseButton: Int, x: Float, y: Float, w: Float, h: Float, ces: List<CategoryElement>) {
+        if (MouseUtils.mouseWithinBounds(mX, mY, x - 190F, y - 15F, x - 180F, y - 5F)) {
+            searchBox.text = ""
+            return
+        }
         var mouseX = mX
         var mouseY = mY
         searchBox.mouseClicked(mouseX, mouseY, mouseButton)

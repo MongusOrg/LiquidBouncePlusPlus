@@ -144,7 +144,7 @@ public class LongJump extends Module {
             }
             if (mc.thePlayer.onGround) {
                 if (matrixBypassModeValue.get().equalsIgnoreCase("clip")) {
-                    mc.thePlayer.setPosition(x, y + 0.12, z);
+                    mc.thePlayer.setPosition(x, y + 0.01, z);
                     debug("clipped");
                 }
                 if (matrixBypassModeValue.get().equalsIgnoreCase("motion"))
@@ -413,27 +413,22 @@ public class LongJump extends Module {
                     debug("should be launched by now");
                 } else if (matrixSilentValue.get()) {
                     if (hasFell && !flagged) {
-                        debug("modifying packet: rotate false, onGround false, moving enabled, x, y, z set to expected speed");
-                        packetPlayer.onGround = false;
-                        double[] data = MovementUtils.getXZDist(matrixBoostValue.get(), packetPlayer.rotating ? packetPlayer.yaw : mc.thePlayer.rotationYaw);
-                        lastMotX = data[0];
-                        lastMotZ = data[1];
-                        lastMotY = matrixHeightValue.get();
                         if (packetPlayer.isMoving()) {
+                            debug("modifying packet: rotate false, onGround false, moving enabled, x, y, z set to expected speed");
+                            packetPlayer.onGround = false;
+                            double[] data = MovementUtils.getXZDist(matrixBoostValue.get(), packetPlayer.rotating ? packetPlayer.yaw : mc.thePlayer.rotationYaw);
+                            lastMotX = data[0];
+                            lastMotZ = data[1];
+                            lastMotY = matrixHeightValue.get();
                             packetPlayer.x += lastMotX;
                             packetPlayer.y += lastMotY;
                             packetPlayer.z += lastMotZ;
-                        } else {
-                            packetPlayer.setMoving(true);
-                            packetPlayer.x = mc.thePlayer.posX + lastMotX;
-                            packetPlayer.y = mc.thePlayer.posY + lastMotY;
-                            packetPlayer.z = mc.thePlayer.posZ + lastMotZ;    
                         }
                     }
                 }
             }
         }
-        if (event.getPacket() instanceof S08PacketPlayerPosLook && mode.equalsIgnoreCase("matrixflag")) {
+        if (event.getPacket() instanceof S08PacketPlayerPosLook && mode.equalsIgnoreCase("matrixflag") && hasFell) {
             debug("flag check started");
             flagged = true;
             posLookInstance.set((S08PacketPlayerPosLook) event.getPacket());

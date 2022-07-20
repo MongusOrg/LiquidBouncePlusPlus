@@ -5,10 +5,10 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.ColorManager
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.ModuleElement
+import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.extensions.animSmooth
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.MouseUtils
-import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import com.mojang.realmsclient.gui.ChatFormatting
 import net.ccbluex.liquidbounce.utils.render.Stencil
@@ -48,7 +48,7 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
         handleScrolling(wheel, height)
         drawScroll(x, y + 50F, width, height)
         Fonts.fontLarge.drawString("${ChatFormatting.GRAY}Modules > ${ChatFormatting.RESET}$name", x + 10F, y + 10F, -1)
-        Fonts.fontSmall.drawString("$name", x - 170F, y - 14F, -1)
+        Fonts.fontSmall.drawString("$name", x - 170F, y - 12F, -1)
         if (mouseY < y + 50F || mouseY >= y + height)
             mouseY = -1
         RenderUtils.makeScissorBox(x, y + 50F, x + width, y + height)
@@ -74,7 +74,7 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
             scrollHeight = scrollHeight.coerceIn(-lastHeight + height - 60F, 0F)
         else
             scrollHeight = 0F
-        animScrollHeight = AnimationUtils.animate(scrollHeight, animScrollHeight, 0.5F * RenderUtils.deltaTime * 0.025F)
+        animScrollHeight = animScrollHeight.animSmooth(scrollHeight, 0.5F)
     }
 
     private fun drawScroll(x: Float, y: Float, width: Float, height: Float) {

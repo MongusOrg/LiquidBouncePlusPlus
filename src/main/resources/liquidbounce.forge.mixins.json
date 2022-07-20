@@ -15,7 +15,6 @@
     "block.MixinBlockSoulSand",
     "client.MixinGameSettings",
     "client.MixinMinecraft",
-    "client.MixinProfiler",
     "client.MixinResourcePackRepository",
     "crash.MixinCrashReport",
     "entity.MixinAbstractClientPlayer",

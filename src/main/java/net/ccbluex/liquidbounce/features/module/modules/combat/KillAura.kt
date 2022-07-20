@@ -547,8 +547,6 @@ class KillAura : Module() {
         updateHitable()
     }
 
-
-
     /**
      * Attack enemy
      */
@@ -719,10 +717,9 @@ class KillAura : Module() {
      */
     private fun attackEntity(entity: EntityLivingBase) {
         // Stop blocking
-        if (mc.thePlayer.isBlocking || blockingStatus) {
+        if (mc.thePlayer.isBlocking || blockingStatus)
             stopBlocking()
-        }
-
+            
         // Call attack event
         LiquidBounce.eventManager.callEvent(AttackEvent(entity))
 

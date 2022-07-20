@@ -8,11 +8,11 @@ import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.i
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.ListElement
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.IntElement
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.impl.FloatElement
+import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.extensions.animSmooth
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
 import net.ccbluex.liquidbounce.utils.MinecraftInstance
 import net.ccbluex.liquidbounce.utils.MouseUtils
-import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.ccbluex.liquidbounce.value.Value
@@ -57,7 +57,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
     }
 
     fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float): Float {
-        animPercent = AnimationUtils.animate(if (expanded) 100F else 0F, animPercent, 0.5F * RenderUtils.deltaTime * 0.025F)
+        animPercent = animPercent.animSmooth(if (expanded) 100F else 0F, 0.5F)
         var expectedHeight = 0F
         for (ve in valueElements)
             if (ve.isDisplayable())

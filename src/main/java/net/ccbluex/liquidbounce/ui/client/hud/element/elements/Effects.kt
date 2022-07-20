@@ -35,7 +35,7 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
     override fun drawElement(): Border {
         val fontRenderer = fontValue.get()
 
-        var y =  0F
+        var y = 0F
         var width = 0F
 
         assumeNonVolatile = true
@@ -78,8 +78,8 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
             }
             
             when (side.vertical) {
-                Side.Vertical.UP -> y -= fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
-                Side.Vertical.DOWN -> y += fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
+                Side.Vertical.UP -> y += fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
+                Side.Vertical.DOWN -> y -= fontRenderer.FONT_HEIGHT + if (anotherStyle.get()) 1F else 0F
             }
         }
 
@@ -89,7 +89,7 @@ class Effects(x: Double = 2.0, y: Double = 10.0, scale: Float = 1F,
             width = if (side.horizontal == Side.Horizontal.RIGHT) -40F else 40F
 
         if (y == 0F) // alr checked above
-            y = if (side.vertical == Side.Vertical.UP) -fontRenderer.FONT_HEIGHT.toFloat() else fontRenderer.FONT_HEIGHT.toFloat()
+            y = if (side.vertical == Side.Vertical.UP) fontRenderer.FONT_HEIGHT.toFloat() else -fontRenderer.FONT_HEIGHT.toFloat()
 
         return Border(0F, 0F, width, y)
     }

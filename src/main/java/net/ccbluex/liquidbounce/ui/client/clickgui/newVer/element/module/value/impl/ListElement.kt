@@ -2,9 +2,9 @@ package net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.
 
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.ColorManager
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.value.ValueElement
+import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.extensions.animSmooth
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.MouseUtils
-import net.ccbluex.liquidbounce.utils.AnimationUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import net.ccbluex.liquidbounce.value.ListValue
@@ -25,7 +25,7 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
         val expanding = ResourceLocation("liquidbounce+/expand.png") }
 
     override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color): Float {
-        expandHeight = AnimationUtils.animate(if (expansion) 16F * (saveValue.values.size - 1F) else 0F, expandHeight, 0.5F * RenderUtils.deltaTime * 0.025F)
+        expandHeight = expandHeight.animSmooth(if (expansion) 16F * (saveValue.values.size - 1F) else 0F, 0.5F)
         val percent = expandHeight / (16F * (saveValue.values.size - 1F))
         Fonts.font40.drawString(value.name, x + 10F, y + 10F - Fonts.font40.FONT_HEIGHT / 2F + 2F, -1)
         RenderUtils.originalRoundedRect(x + width - 18F - maxSubWidth, y + 2F, x + width - 10F, y + 18F + expandHeight, 4F, ColorManager.button.rgb)

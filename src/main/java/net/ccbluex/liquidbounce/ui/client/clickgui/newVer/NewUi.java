@@ -1,6 +1,7 @@
 package net.ccbluex.liquidbounce.ui.client.clickgui.newVer;
 
 import net.ccbluex.liquidbounce.features.module.ModuleCategory;
+import net.ccbluex.liquidbounce.features.module.modules.render.NewGUI;
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.CategoryElement;
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.SearchElement;
 import net.ccbluex.liquidbounce.ui.client.clickgui.newVer.element.module.ModuleElement;
@@ -32,6 +33,10 @@ public class NewUi extends GuiScreen {
     private static NewUi instance;
     public static final NewUi getInstance() {
         return instance == null ? instance = new NewUi() : instance;
+    }
+
+    public static void resetInstance() {
+        instance = new NewUi();
     }
 
     private NewUi() {
@@ -124,8 +129,8 @@ public class NewUi extends GuiScreen {
         for (CategoryElement ce : categoryElements) {
             ce.drawLabel(mouseX, mouseY, 30F, startY, 200F, elementHeight);
             if (ce.getFocused()) {
-                startYAnim = AnimationUtils.animate(startY + 6F, startYAnim, (startYAnim - (startY + 5F) > 0 ? 0.65F : 0.55F) * RenderUtils.deltaTime * 0.0075F);
-                endYAnim = AnimationUtils.animate(startY + elementHeight - 6F, endYAnim, (endYAnim - (startY + elementHeight - 5F) < 0 ? 0.65F : 0.55F) * RenderUtils.deltaTime * 0.0075F);
+                startYAnim = NewGUI.fastRenderValue.get() ? startY + 6F : AnimationUtils.animate(startY + 6F, startYAnim, (startYAnim - (startY + 5F) > 0 ? 0.65F : 0.55F) * RenderUtils.deltaTime * 0.025F);
+                endYAnim = NewGUI.fastRenderValue.get() ? startY + elementHeight - 6F : AnimationUtils.animate(startY + elementHeight - 6F, endYAnim, (endYAnim - (startY + elementHeight - 5F) < 0 ? 0.65F : 0.55F) * RenderUtils.deltaTime * 0.025F);
 
                 ce.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel());
             }
