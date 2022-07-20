@@ -52,7 +52,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
             return;
         }
 
-        if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && ((chams.getLocalPlayer().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))) {
+        if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && ((chams.getLocalPlayerValue().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))) {
             GL11.glEnable(GL11.GL_POLYGON_OFFSET_FILL);
             GL11.glPolygonOffset(1.0F, -1000000F);
         }
@@ -63,7 +63,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         final Chams chams = LiquidBounce.moduleManager.getModule(Chams.class);
         final NoRender noRender = LiquidBounce.moduleManager.getModule(NoRender.class);
         
-        if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && ((chams.getLocalPlayer().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))
+        if (chams.getState() && chams.getTargetsValue().get() && chams.getLegacyMode().get() && ((chams.getLocalPlayerValue().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))
             && !(noRender.getState() && noRender.shouldStopRender(entity))) {
             GL11.glPolygonOffset(1.0F, 1000000F);
             GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
@@ -75,7 +75,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         final NoRender noRender = LiquidBounce.moduleManager.getModule(NoRender.class);
 
         if (!ESP.renderNameTags 
-            || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && ((chams.getLocalPlayer().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))) 
+            || (LiquidBounce.moduleManager.getModule(NameTags.class).getState() && ((chams.getLocalPlayerValue().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(entity, false))) 
             || ESP2D.shouldCancelNameTag(entity)
             || (noRender.getState() && noRender.getNameTagsValue().get()))
             callbackInfoReturnable.setReturnValue(false);
@@ -89,7 +89,7 @@ public abstract class MixinRendererLivingEntity extends MixinRender {
         boolean visible = !p_renderModel_1_.isInvisible();
         final TrueSight trueSight = LiquidBounce.moduleManager.getModule(TrueSight.class);
         final Chams chams = LiquidBounce.moduleManager.getModule(Chams.class);
-        boolean chamsFlag = (chams.getState() && chams.getTargetsValue().get() && !chams.getLegacyMode().get() && ((chams.getLocalPlayer().get() && entity == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(p_renderModel_1_, false)));
+        boolean chamsFlag = (chams.getState() && chams.getTargetsValue().get() && !chams.getLegacyMode().get() && ((chams.getLocalPlayerValue().get() && p_renderModel_1_ == Minecraft.getMinecraft().thePlayer) || EntityUtils.isSelected(p_renderModel_1_, false)));
         boolean semiVisible = !visible && (!p_renderModel_1_.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer) || (trueSight.getState() && trueSight.getEntitiesValue().get()));
 
         if(visible || semiVisible) {
