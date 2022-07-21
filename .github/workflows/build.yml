@@ -1,29 +1,36 @@
-name: build
+name: Build
 
 on:
   push:
-    branches: [ base-rework ]
+    branches: [ legacy ]
+  pull_request:
+    branches: [ legacy ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository and submodules
         uses: actions/checkout@v2
-      - name: Java setup
+        with:
+          submodules: recursive
+      - name: Setup java
         uses: actions/setup-java@v2
         with:
-          distribution: 'adopt'
+          distribution: "adopt"
           java-version: 8
-          check-latest: true
-      - uses: burrunan/gradle-cache-action@v1
-        name: Build
-        with:
-          job-id: jdk8
-          arguments: build --no-build-cache
-          gradle-version: wrapper
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: liquidbounceplus
-          path: build/libs/LiquidBounce-plus.jar
+          cache: "gradle"
+      - name: Build
+        run: ./gradlew setupCiWorkspace && ./gradlew build
+      - name: Upload artifact
+        run: |
+          cd build/libs
+          export JAR=$(find . -regex '.*liquidbounce-b[0-9|.]*\.jar')
+          export LB_VERSION=$(echo $JAR | sed -r 's/.\/liquidbounce-([a-zA-Z][0-9]+)\.jar/\1/')
+          export MINECRAFT_VERSION='1.8.9'
+          echo Version: $LB_VERSION, Minecraft: $MINECRAFT_VERSION
+          cp $JAR zip/liquidbounce.jar
+          cd zip
+          zip -r liquidbounce.zip *
+          md5sum liquidbounce.zip
+          curl --connect-timeout 30 -m 300 -X POST -F "artifact=@liquidbounce.zip" -H "Authorization: ${{ secrets.NIGHTLY_PASS }}" -F "gh_id=${{ github.event.head_commit.id }}" -F "gh_ref=${{ github.ref }}" -F "gh_message=${{ github.event.head_commit.message }}" -F "gh_timestamp=${{ github.event.head_commit.timestamp }}" -F "lb_version=$LB_VERSION" -F "mc_version=$MINECRAFT_VERSION" https://api.liquidbounce.net/api/v1/version/new
