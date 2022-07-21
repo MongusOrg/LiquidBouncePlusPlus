@@ -10,6 +10,7 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url = "https://maven.minecraftforge.net/" }
     maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
     maven { url = "https://jitpack.io/" }
 }
@@ -32,7 +33,7 @@ minecraft {
     runDir = "run"
     mappings = "stable_22"
     makeObfSourceJar = false
-    clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.MixinLoader", "-Xmx1024m -Xms1024m", "-Ddev-mode"]
+    clientJvmArgs += ["-Dfml.coreMods.load=net.ccbluex.liquidbounce.injection.forge.TransformerLoader", "-Xmx1024m -Xms1024m", "-Ddev-mode"]
 }
 
 configurations {
@@ -51,6 +52,14 @@ dependencies {
         exclude module: "slf4j-api"
     }
 
+    include "org.yaml:snakeyaml:1.29"
+
+    include('com.github.half-cambodian-hacker-man:Koffee:d8cee73') {
+        exclude module: 'asm-commons'
+        exclude module: 'asm-tree'
+        exclude module: 'asm'
+    }
+
     annotationProcessor("org.spongepowered:mixin:0.7.11-SNAPSHOT")
 
     include "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -60,8 +69,11 @@ dependencies {
         exclude module: "kotlin-stdlib"
         exclude module: "authlib"
     }
+
     include 'com.github.TheAltening:TheAltening4j:d0771f42d3'
-    include 'com.github.TheAltening:API-Java-AuthLib:-SNAPSHOT'
+    include 'com.github.TheAltening:TheAlteningAuth4j:-SNAPSHOT'
+
+    include 'com.github.ben-manes.caffeine:caffeine:2.9.0'
 
     include fileTree(include: ["*.jar"], dir: "libs")
 }
@@ -103,8 +115,8 @@ classes.dependsOn(moveResources)
 
 jar {
     manifest.attributes(
-            "FMLCorePlugin": "net.ccbluex.liquidbounce.injection.forge.MixinLoader",
-            "FMLCorePluginContainsFMLMod": true,
+            "FMLCorePlugin": "net.ccbluex.liquidbounce.injection.forge.TransformerLoader",
+            "FMLCorePluginContainsFMLMod": "net.ccbluex.liquidbounce.injection.forge.MixinLoader",
             "ForceLoadAsMod": true,
             "MixinConfigs": "liquidbounce.forge.mixins.json",
             "ModSide": "CLIENT",
@@ -127,5 +139,12 @@ reobf {
         mappingType = "SEARGE"
     }
 }
+
+configurations {
+    external
+    compile.extendsFrom(external)
+}
+
+tasks.reobfShadowJar.mustRunAfter shadowJar
 
 tasks.reobfJar.dependsOn(shadowJar)
