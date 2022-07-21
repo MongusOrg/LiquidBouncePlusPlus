@@ -3,12 +3,14 @@ A free mixin-based injection hacked-client for Minecraft 1.8.9 using Minecraft F
 
 ### Thank you.
 to Minecraft for creating the game, \
-to Forge for starting a new era of modding development, \
+to Forge for making modding possible, \
 to CCBlueX for creating LiquidBounce, which LiquidBounce+ is based on, \
-to all contributors on all platforms (Forum, Discord, Github...) for making huge contributions to such a small fork of a well-known Forge mod, \
-to every person using LiquidBounce as well as this fork for creating the best Forge-based free client ever.
+to all contributors on all platforms (Forum, Discord, Github...) for making huge contributions, \
+to every person using LiquidBounce and its forks for creating a big community of the best free Forge-based client.
 
 Last year was wonderful for me. To be able to meet and be friend with so many new people is something I've never thought to be possible when I first made this fork public. If I still have a chance, I will definitely work on this fork whenever I'm free. But everything has to come to an end, I have much less time to focus on coding from time to time. So I have made the final decision and decided to officially stop developing this fork indefinitely. Thank you again and hope to see you one day.
+
+\- inf -
 
 *If you still wish to contact me often, inf#0425 is my Discord tag. However I may not reply to messages early. Also I may randomly check LiquidBounce's forum under the same name as on Github.*
 
