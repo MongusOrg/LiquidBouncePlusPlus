@@ -8,9 +8,6 @@ package net.ccbluex.liquidbounce.injection.forge;
 import net.ccbluex.liquidbounce.injection.transformers.*;
 import net.ccbluex.liquidbounce.script.remapper.injection.transformers.AbstractJavaLinkerTransformer;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-/*import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.Mixins;*/
 
 import java.util.Map;
 
