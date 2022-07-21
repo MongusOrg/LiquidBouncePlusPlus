@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches: [ thank-you ]
-  pull-request:
+  pull_request:
     branches: [ thank-you ]
 
 jobs:
