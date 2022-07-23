@@ -33,7 +33,7 @@ public final class IconUtils {
         final ByteBuffer byteBuffer = ByteBuffer.allocate(4 * rgb.length);
         for(int i : rgb)
             byteBuffer.putInt(i << 8 | i >> 24 & 255);
-        byteBuffer.flip();
+        ((java.nio.Buffer)byteBuffer).flip();
         return byteBuffer;
     }
 }

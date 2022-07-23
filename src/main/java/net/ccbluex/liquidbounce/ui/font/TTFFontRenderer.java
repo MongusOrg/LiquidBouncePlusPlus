@@ -196,7 +196,7 @@ public class TTFFontRenderer {
         }
 
         // Flips the byte buffer, not sure why this is needed.
-        buffer.flip();
+        ((java.nio.Buffer)buffer).flip();
 
         // Binds the opengl texture by the texture id.
         GlStateManager.bindTexture(textureId);
