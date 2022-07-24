@@ -23,11 +23,11 @@ class Cape : Module() {
         if (capeCache[value.toUpperCase()] == null) {
             try {
                 capeCache[value.toUpperCase()] = CapeStyle.valueOf(value.toUpperCase())
-            } catch (e: IllegalArgumentException) {
+            } catch (e: Exception) {
                 capeCache[value.toUpperCase()] = CapeStyle.DARK
             }
         }
-        return capeCache[value.toUpperCase()]
+        return capeCache[value.toUpperCase()]!!.location
     }
 
     enum class CapeStyle(val location: ResourceLocation) {
