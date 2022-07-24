@@ -163,14 +163,24 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         var shouldAnimate = false
         var displayString: String? = null
         var moveX = 0F
-        for (icon in if (extendedModMode) ExtendedImageButton.values() else ImageButton.values()) {
-            if (isMouseHover(staticX + 40F * index, staticY, staticX + 40F * (index + 1), staticY + 20F, mouseX, mouseY)) {
-                shouldAnimate = true
-                displayString = if (icon == ExtendedImageButton.DiscordRPC) "${icon.buttonName}: ${if (LiquidBounce.clientRichPresence.showRichPresenceValue) "§aON" else "§cOFF"}" else icon.buttonName
-                moveX = staticX + 40F * index
+        if (extendedModMode) 
+            for (icon in ExtendedImageButton.values()) {
+                if (isMouseHover(staticX + 40F * index, staticY, staticX + 40F * (index + 1), staticY + 20F, mouseX, mouseY)) {
+                    shouldAnimate = true
+                    displayString = if (icon == ExtendedImageButton.DiscordRPC) "${icon.buttonName}: ${if (LiquidBounce.clientRichPresence.showRichPresenceValue) "§aON" else "§cOFF"}" else icon.buttonName
+                    moveX = staticX + 40F * index
+                }
+                index++
             }
-            index++
-        }
+        else
+            for (icon in ImageButton.values()) {
+                if (isMouseHover(staticX + 40F * index, staticY, staticX + 40F * (index + 1), staticY + 20F, mouseX, mouseY)) {
+                    shouldAnimate = true
+                    displayString = icon.buttonName
+                    moveX = staticX + 40F * index
+                }
+                index++
+            }
 
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
@@ -199,13 +209,22 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
         index = 0
         GlStateManager.disableAlpha()
-        for (i in if (extendedModMode) ExtendedImageButton.values() else ImageButton.values()) {
-            if (LiquidBounce.darkMode)
-                RenderUtils.drawImage2(i.texture, staticX + 40F * index + 11F, staticY + 1F, 18, 18)
-            else
-                RenderUtils.drawImage3(i.texture, staticX + 40F * index + 11F, staticY + 1F, 18, 18, 0F, 0F, 0F, 1F)
-            index++
-        }
+        if (extendedModMode)
+            for (i in ExtendedImageButton.values()) {
+                if (LiquidBounce.darkMode)
+                    RenderUtils.drawImage2(i.texture, staticX + 40F * index + 11F, staticY + 1F, 18, 18)
+                else
+                    RenderUtils.drawImage3(i.texture, staticX + 40F * index + 11F, staticY + 1F, 18, 18, 0F, 0F, 0F, 1F)
+                index++
+            }
+        else
+            for (i in ImageButton.values()) {
+                if (LiquidBounce.darkMode)
+                    RenderUtils.drawImage2(i.texture, staticX + 40F * index + 11F, staticY + 1F, 18, 18)
+                else
+                    RenderUtils.drawImage3(i.texture, staticX + 40F * index + 11F, staticY + 1F, 18, 18, 0F, 0F, 0F, 1F)
+                index++
+            }
         GlStateManager.enableAlpha()
     }
 
