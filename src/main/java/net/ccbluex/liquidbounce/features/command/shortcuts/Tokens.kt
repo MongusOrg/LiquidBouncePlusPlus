@@ -3,13 +3,10 @@
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
  */
-package net.ccbluex.liquidbounce.ui.client
+package net.ccbluex.liquidbounce.features.command.shortcuts
 
-class GuiBackground {
+open class Token
 
-    companion object {
-        var enabled = true
-        var particles = false
-    }
+class Literal(val literal: String): Token()
 
-}
+class StatementEnd: Token()

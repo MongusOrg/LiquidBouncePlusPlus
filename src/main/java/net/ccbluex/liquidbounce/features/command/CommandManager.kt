@@ -7,6 +7,9 @@ package net.ccbluex.liquidbounce.features.command
 
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.commands.*
+import net.ccbluex.liquidbounce.features.command.shortcuts.Shortcut
+import net.ccbluex.liquidbounce.features.command.shortcuts.ShortcutParser
+import net.ccbluex.liquidbounce.features.command.special.*
 import net.ccbluex.liquidbounce.utils.ClientUtils
 
 class CommandManager {
@@ -25,6 +28,7 @@ class CommandManager {
         registerCommand(HelpCommand())
         registerCommand(SayCommand())
         registerCommand(MacroCommand())
+        registerCommand(ShortcutCommand())
         registerCommand(FriendCommand())
         registerCommand(AutoSettingsCommand())
         registerCommand(LocalAutoSettingsCommand())
@@ -46,6 +50,14 @@ class CommandManager {
         registerCommand(LocalThemeCommand())
         registerCommand(ConnectCommand())
         registerCommand(UUIDCommand())
+        registerCommand(EnchantCommand())
+        registerCommand(GiveCommand())
+        registerCommand(HoloStandCommand())
+        registerCommand(HurtCommand())
+        registerCommand(RemoteViewCommand())
+        registerCommand(RenameCommand())
+        registerCommand(UsernameCommand())
+        registerCommand(XrayCommand())
     }
 
     /**
@@ -134,6 +146,30 @@ class CommandManager {
      * Register [command] by just adding it to the commands registry
      */
     fun registerCommand(command: Command) = commands.add(command)
+
+    fun registerShortcut(name: String, script: String) {
+        if (getCommand(name) == null) {
+            registerCommand(Shortcut(name, ShortcutParser.parse(script).map {
+                val command = getCommand(it[0]) ?: throw IllegalArgumentException("Command ${it[0]} not found!")
+
+                Pair(command, it.toTypedArray())
+            }))
+
+            LiquidBounce.fileManager.saveConfig(LiquidBounce.fileManager.shortcutsConfig)
+        } else {
+            throw IllegalArgumentException("Command already exists!")
+        }
+    }
+
+    fun unregisterShortcut(name: String): Boolean {
+        val removed = commands.removeIf {
+            it is Shortcut && it.command.equals(name, ignoreCase = true)
+        }
+
+        LiquidBounce.fileManager.saveConfig(LiquidBounce.fileManager.shortcutsConfig)
+
+        return removed
+    }
 
     /**
      * Unregister [command] by just removing it from the commands registry

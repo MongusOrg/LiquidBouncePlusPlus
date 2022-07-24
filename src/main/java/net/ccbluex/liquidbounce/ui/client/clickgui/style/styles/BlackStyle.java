@@ -69,7 +69,7 @@ public class BlackStyle extends Style {
         Gui.drawRect(moduleElement.getX() - 1, moduleElement.getY() - 1, moduleElement.getX() + moduleElement.getWidth() + 1, moduleElement.getY() + moduleElement.getHeight() + 1, hoverColor(new Color(40,40,40), moduleElement.hoverTime).getRGB());
         Gui.drawRect(moduleElement.getX() - 1, moduleElement.getY() - 1, moduleElement.getX() + moduleElement.getWidth() + 1, moduleElement.getY() + moduleElement.getHeight() + 1, hoverColor(new Color(20,20,20, moduleElement.slowlyFade), moduleElement.hoverTime).getRGB());
         GlStateManager.resetColor();
-        Fonts.font35.drawString(moduleElement.getDisplayName(), moduleElement.getX() + 5, moduleElement.getY() + 5, Color.WHITE.getRGB());
+        Fonts.font35.drawString(moduleElement.getDisplayName(), moduleElement.getX() + 5, moduleElement.getY() + 7, Color.WHITE.getRGB());
 
         // Draw settings
         final List<Value<?>> moduleValues = moduleElement.getModule().getValues();

@@ -60,14 +60,14 @@ public class NullStyle extends Style {
     @Override
     public void drawButtonElement(int mouseX, int mouseY, ButtonElement buttonElement) {
         GlStateManager.resetColor();
-        Fonts.font35.drawString(buttonElement.getDisplayName(), (int) (buttonElement.getX() + 5), buttonElement.getY() + 6, buttonElement.getColor());
+        Fonts.font35.drawString(buttonElement.getDisplayName(), (int) (buttonElement.getX() + 5), buttonElement.getY() + 7, buttonElement.getColor());
     }
 
     @Override
     public void drawModuleElement(int mouseX, int mouseY, ModuleElement moduleElement) {
         final int guiColor = ClickGUI.generateColor().getRGB();
         GlStateManager.resetColor();
-        Fonts.font35.drawString(moduleElement.getDisplayName(), (int) (moduleElement.getX() + 5), moduleElement.getY() + 6, moduleElement.getModule().getState() ? guiColor : Integer.MAX_VALUE);
+        Fonts.font35.drawString(moduleElement.getDisplayName(), (int) (moduleElement.getX() + 5), moduleElement.getY() + 7, moduleElement.getModule().getState() ? guiColor : Integer.MAX_VALUE);
 
         final List<Value<?>> moduleValues = moduleElement.getModule().getValues();
 

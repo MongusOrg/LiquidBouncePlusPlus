@@ -90,25 +90,15 @@ public class SlowlyStyle extends Style {
 
         GlStateManager.resetColor();
 
-        Fonts.font35.drawString(buttonElement.getDisplayName(), buttonElement.getX() + 5, buttonElement.getY() + 5, Color.WHITE.getRGB());
+        Fonts.font35.drawString(buttonElement.getDisplayName(), buttonElement.getX() + 5, buttonElement.getY() + 7, Color.WHITE.getRGB());
     }
-
-    /*public static boolean drawCheckbox(final boolean value, final int x, final int y, final int mouseX, final int mouseY, final Color color) {
-        RenderUtils.drawRect(x, y, x + 20, y + 10, value ? Color.GREEN : Color.RED);
-        RenderUtils.drawFilledCircle(x + (value ? 15 : 5),y + 5, 5, Color.WHITE);
-
-        if(mouseX >= x && mouseX <= x + 20 && mouseY >= y && mouseY <= y + 10 && Mouse.isButtonDown(0))
-            return !value;
-
-        return value;
-    }*/
-
+    
     @Override
     public void drawModuleElement(int mouseX, int mouseY, ModuleElement moduleElement) {
         Gui.drawRect(moduleElement.getX() - 1, moduleElement.getY() - 1, moduleElement.getX() + moduleElement.getWidth() + 1, moduleElement.getY() + moduleElement.getHeight() + 1, hoverColor(new Color(40, 40, 40), moduleElement.hoverTime).getRGB());
         Gui.drawRect(moduleElement.getX() - 1, moduleElement.getY() - 1, moduleElement.getX() + moduleElement.getWidth() + 1, moduleElement.getY() + moduleElement.getHeight() + 1, hoverColor(new Color(0, 0, 0, moduleElement.slowlyFade), moduleElement.hoverTime).getRGB());
         GlStateManager.resetColor();
-        Fonts.font35.drawString(moduleElement.getDisplayName(), moduleElement.getX() + 5, moduleElement.getY() + 5, Color.WHITE.getRGB());
+        Fonts.font35.drawString(moduleElement.getDisplayName(), moduleElement.getX() + 5, moduleElement.getY() + 7, Color.WHITE.getRGB());
 
         // Draw settings
         final List<Value<?>> moduleValues = moduleElement.getModule().getValues();

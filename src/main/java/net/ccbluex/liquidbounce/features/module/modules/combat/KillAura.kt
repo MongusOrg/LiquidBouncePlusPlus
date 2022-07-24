@@ -224,10 +224,11 @@ class KillAura : Module() {
     private val circleValue = BoolValue("Circle", true)
     private val accuracyValue = IntegerValue("Accuracy", 59, 0, 59, { circleValue.get() })
     private val fakeSharpValue = BoolValue("FakeSharp", true)
-    private val red = IntegerValue("Red", 0, 0, 255, { circleValue.get() })
-    private val green = IntegerValue("Green", 0, 0, 255, { circleValue.get() })
-    private val blue = IntegerValue("Blue", 0, 0, 255, { circleValue.get() })
-    private val alpha = IntegerValue("Alpha", 0, 0, 255, { circleValue.get() })
+    private val fakeSharpSword = BoolValue("FakeSharp-SwordOnly", true, { fakeSharpValue.get() })
+    private val red = IntegerValue("Red", 255, 0, 255, { circleValue.get() })
+    private val green = IntegerValue("Green", 255, 0, 255, { circleValue.get() })
+    private val blue = IntegerValue("Blue", 255, 0, 255, { circleValue.get() })
+    private val alpha = IntegerValue("Alpha", 255, 0, 255, { circleValue.get() })
 
 
     /**
@@ -767,7 +768,7 @@ class KillAura : Module() {
                 mc.thePlayer.onCriticalHit(target)
 
             // Enchant Effect
-            if (EnchantmentHelper.getModifierForCreature(mc.thePlayer.heldItem, target!!.creatureAttribute) > 0.0f || fakeSharpValue.get())
+            if (EnchantmentHelper.getModifierForCreature(mc.thePlayer.heldItem, target!!.creatureAttribute) > 0.0f || (fakeSharpValue.get() && (!fakeSharpSword.get() || canBlock)))
                 mc.thePlayer.onEnchantmentCritical(target)
         }
 
