@@ -78,7 +78,7 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         buttonList.add(GuiButton(88, 5, startPositionY + 24 * 6, 90, 20, "Change Name"))
 
         if (activeGenerators.getOrDefault("thealtening", true))
-            buttonList.add(GuiButton(9, 5, startPositionY + 24 * 7 + 5, 90, 20, "TheAltening"))
+            buttonList.add(GuiButton(9, 5, startPositionY + 24 * 7, 90, 20, "TheAltening"))
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {

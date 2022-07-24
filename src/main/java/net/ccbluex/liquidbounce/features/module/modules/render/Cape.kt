@@ -15,18 +15,24 @@ import net.minecraft.util.ResourceLocation
 @ModuleInfo(name = "Cape", description = "LiquidBounce+ capes.", category = ModuleCategory.RENDER)
 class Cape : Module() {
 
-    val styleValue = ListValue("Style", arrayOf("Dark", "Light", "Special1", "Special2"), "Dark")
+    val styleValue = ListValue("Style", arrayOf("Dark", "Darker", "Light", "Special1", "Special2"), "Dark")
+
+    private val capeCache = hashMapOf<String, CapeStyle>()
 
     fun getCapeLocation(value: String): ResourceLocation {
-        return try {
-            CapeStyle.valueOf(value.toUpperCase()).location
-        } catch (e: IllegalArgumentException) {
-            CapeStyle.DARK.location
+        if (capeCache[value.toUpperCase()] == null) {
+            try {
+                capeCache[value.toUpperCase()] = CapeStyle.valueOf(value.toUpperCase())
+            } catch (e: IllegalArgumentException) {
+                capeCache[value.toUpperCase()] = CapeStyle.DARK
+            }
         }
+        return capeCache[value.toUpperCase()]
     }
 
     enum class CapeStyle(val location: ResourceLocation) {
         DARK(ResourceLocation("liquidbounce+/cape/dark.png")),
+        DARKER(ResourceLocation("liquidbounce+/cape/darker.png")),
         LIGHT(ResourceLocation("liquidbounce+/cape/light.png")),
         SPECIAL1(ResourceLocation("liquidbounce+/cape/special1.png")),
         SPECIAL2(ResourceLocation("liquidbounce+/cape/special2.png"))

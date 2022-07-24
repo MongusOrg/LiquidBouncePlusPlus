@@ -103,7 +103,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         for (icon in if (extendedModMode) ExtendedImageButton.values() else ImageButton.values()) {
             if (isMouseHover(staticX + 40F * index, staticY, staticX + 40F * (index + 1), staticY + 20F, mouseX, mouseY))
                 when (index) {
-                    0 -> if (extendedBackgroundMode) extendedBackgroundMode = false if (extendedModMode) extendedModMode = false else mc.displayGuiScreen(GuiSelectWorld(this))
+                    0 -> if (extendedBackgroundMode) extendedBackgroundMode = false else if (extendedModMode) extendedModMode = false else mc.displayGuiScreen(GuiSelectWorld(this))
                     1 -> if (extendedBackgroundMode) GuiBackground.enabled = !GuiBackground.enabled else if (extendedModMode) mc.displayGuiScreen(GuiModList(this)) else mc.displayGuiScreen(GuiMultiplayer(this))
                     2 -> if (extendedBackgroundMode) GuiBackground.particles = !GuiBackground.particles else if (extendedModMode) mc.displayGuiScreen(GuiScripts(this)) else mc.displayGuiScreen(GuiAltManager(this))
                     3 -> if (extendedBackgroundMode) {

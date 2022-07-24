@@ -10,7 +10,7 @@ import net.ccbluex.liquidbounce.features.command.Command
 import net.ccbluex.liquidbounce.features.module.modules.render.XRay
 import net.minecraft.block.Block
 
-class XrayCommand : Command("xray") {
+class XrayCommand : Command("xray", emptyArray()) {
 
     val xRay = LiquidBounce.moduleManager.getModule(XRay::class.java) as XRay
 

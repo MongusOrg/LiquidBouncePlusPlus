@@ -210,7 +210,6 @@ class ModuleManager : Listenable {
                 CivBreak::class.java,
                 Nuker::class.java,
                 SuperheroFX::class.java,
-                PostProcessing::class.java,
                 NewGUI::class.java,
                 ResetVL::class.java
         )

@@ -10,7 +10,6 @@ import net.ccbluex.liquidbounce.event.ClientShutdownEvent
 import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.features.command.CommandManager
 import net.ccbluex.liquidbounce.features.module.ModuleManager
-import net.ccbluex.liquidbounce.features.module.modules.render.PostProcessing
 import net.ccbluex.liquidbounce.features.special.AntiForge
 import net.ccbluex.liquidbounce.features.special.BungeeCordSpoof
 import net.ccbluex.liquidbounce.features.special.MacroManager
@@ -38,7 +37,7 @@ object LiquidBounce {
 
     // Client information
     const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "240722"
+    const val CLIENT_VERSION = "250722"
     const val CLIENT_CREATOR = "CCBlueX, exit-scammed"
     const val CLIENT_CLOUD = "https://wysi-foundation.github.io/LiquidCloud/LiquidBounce"
 
@@ -67,8 +66,6 @@ object LiquidBounce {
 
     // Discord RPC
     lateinit var clientRichPresence: ClientRichPresence
-
-    lateinit var postProcessor: PostProcessing
 
     var lastTick : Long = 0L
 
@@ -112,8 +109,6 @@ object LiquidBounce {
         // Setup module manager and register modules
         moduleManager = ModuleManager()
         moduleManager.registerModules()
-
-        postProcessor = moduleManager[PostProcessing::class.java] as PostProcessing
 
         // Remapper
         try {
