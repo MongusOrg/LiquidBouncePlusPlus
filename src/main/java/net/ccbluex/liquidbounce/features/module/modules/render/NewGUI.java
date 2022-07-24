@@ -14,6 +14,8 @@ import net.ccbluex.liquidbounce.utils.render.ColorUtils;
 import net.ccbluex.liquidbounce.utils.render.RenderUtils;
 import net.ccbluex.liquidbounce.value.*;
 
+import java.awt.Color;
+
 @ModuleInfo(name = "NewGUI", description = "next generation clickgui.", category = ModuleCategory.RENDER, forceNoSound = true, onlyEnable = true)
 public class NewGUI extends Module {
     public static final BoolValue fastRenderValue = new BoolValue("FastRender", false);
