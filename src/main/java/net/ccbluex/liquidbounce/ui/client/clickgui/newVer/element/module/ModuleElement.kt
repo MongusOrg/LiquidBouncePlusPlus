@@ -56,7 +56,7 @@ class ModuleElement(val module: Module): MinecraftInstance() {
         }
     }
 
-    fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float): Float {
+    fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, height: Float, accentColor: Color): Float {
         animPercent = animPercent.animSmooth(if (expanded) 100F else 0F, 0.5F)
         var expectedHeight = 0F
         for (ve in valueElements)
@@ -103,15 +103,15 @@ class ModuleElement(val module: Module): MinecraftInstance() {
             RenderUtils.drawImage(expandIcon, -4, -4, 8, 8)
             glPopMatrix()
             glPopMatrix()
-            toggleSwitch.onDraw(x + width - 70F, y + height / 2F - 5F, 20F, 10F, Color(4280624421L.toInt()))
+            toggleSwitch.onDraw(x + width - 70F, y + height / 2F - 5F, 20F, 10F, Color(4280624421L.toInt()), accentColor)
         } else
-            toggleSwitch.onDraw(x + width - 40F, y + height / 2F - 5F, 20F, 10F, Color(4280624421L.toInt()))
+            toggleSwitch.onDraw(x + width - 40F, y + height / 2F - 5F, 20F, 10F, Color(4280624421L.toInt()), accentColor)
 
         if (expanded || animHeight > 0F) {
             var startYPos = y + height
             for (ve in valueElements)
                 if (ve.isDisplayable())
-                    startYPos += ve.drawElement(mouseX, mouseY, x + 10F, startYPos, width - 20F, Color(4280624421L.toInt()))
+                    startYPos += ve.drawElement(mouseX, mouseY, x + 10F, startYPos, width - 20F, Color(4280624421L.toInt()), accentColor)
         }
         Stencil.dispose()
 

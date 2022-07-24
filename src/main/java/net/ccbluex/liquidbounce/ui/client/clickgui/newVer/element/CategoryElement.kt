@@ -14,6 +14,7 @@ import com.mojang.realmsclient.gui.ChatFormatting
 import net.ccbluex.liquidbounce.utils.render.Stencil
 import org.lwjgl.opengl.GL11
 
+import java.awt.Color
 import kotlin.math.abs
 
 class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
@@ -38,7 +39,7 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
         Fonts.font40.drawString(name, x + 10F, y + height / 2F - Fonts.font40.FONT_HEIGHT / 2F + 2F, -1)
     }
 
-    fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, width: Float, height: Float, wheel: Int) {
+    fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, width: Float, height: Float, wheel: Int, accentColor: Color) {
         var mouseX = mX
         var mouseY = mY
         lastHeight = 0F
@@ -58,7 +59,7 @@ class CategoryElement(val category: ModuleCategory): MinecraftInstance() {
             if (startY + animScrollHeight > y + height || startY + animScrollHeight + 40F + moduleElement.animHeight < y + 50F)
                 startY += 40F + moduleElement.animHeight
             else
-                startY += moduleElement.drawElement(mouseX, mouseY, x, startY + animScrollHeight, width, 40F)
+                startY += moduleElement.drawElement(mouseX, mouseY, x, startY + animScrollHeight, width, 40F, accentColor)
         }
         GL11.glDisable(3089)
     }

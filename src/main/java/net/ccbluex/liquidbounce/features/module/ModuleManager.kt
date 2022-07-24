@@ -211,7 +211,8 @@ class ModuleManager : Listenable {
                 Nuker::class.java,
                 SuperheroFX::class.java,
                 PostProcessing::class.java,
-                NewGUI::class.java
+                NewGUI::class.java,
+                ResetVL::class.java
         )
 
         registerModule(Fucker)

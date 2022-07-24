@@ -123,7 +123,7 @@ open class TextValue(name: String, value: String, displayable: () -> Boolean) : 
             value = element.asString
     }
 }
-
+/*
 open class ColorValue(name: String, value: Color, val transparent: Boolean, displayable: () -> Boolean) : Value<Color>(name, value, displayable) {
 
     constructor(name: String, value: Color, transparent: Boolean): this(name, value, transparent, { true } )
@@ -146,7 +146,7 @@ open class ColorValue(name: String, value: Color, val transparent: Boolean, disp
     }
 
 }
-
+*/
 /**
  * Font value represents a value with a font
  */

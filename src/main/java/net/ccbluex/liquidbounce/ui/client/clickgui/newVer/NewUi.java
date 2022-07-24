@@ -76,10 +76,10 @@ public class NewUi extends GuiScreen {
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         // will draw reduced ver once it gets under 1140x780.
-        drawFullSized(mouseX, mouseY, partialTicks);
+        drawFullSized(mouseX, mouseY, partialTicks, NewGUI.getAccentColor());
     }
 
-    private void drawFullSized(int mouseX, int mouseY, float partialTicks) {
+    private void drawFullSized(int mouseX, int mouseY, float partialTicks, Color accentColor) {
         RenderUtils.originalRoundedRect(30F, 30F, this.width - 30F, this.height - 30F, 8F, 0xFF101010);
         // something to make it look more like windoze
         if (MouseUtils.mouseWithinBounds(mouseX, mouseY, this.width - 54F, 30F, this.width - 30F, 50F))
@@ -114,13 +114,12 @@ public class NewUi extends GuiScreen {
         Stencil.dispose();
 
         if (Fonts.fontLarge.getStringWidth(mc.thePlayer.getGameProfile().getName()) > 70)
-            Fonts.fontLarge.drawString(Fonts.fontLarge.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 70) + "...", 100, 78 - Fonts.fontLarge.FONT_HEIGHT + 15, -1);
+            Fonts.fontLarge.drawString(Fonts.fontLarge.trimStringToWidth(mc.thePlayer.getGameProfile().getName(), 50) + "...", 100, 78 - Fonts.fontLarge.FONT_HEIGHT + 15, -1);
         else
             Fonts.fontLarge.drawString(mc.thePlayer.getGameProfile().getName(), 100, 78 - Fonts.fontLarge.FONT_HEIGHT + 15, -1);
-        //Fonts.font40.drawString("hi", 100, 85, -1);
 
-        if (searchElement.drawBox(mouseX, mouseY)) {
-            searchElement.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel(), categoryElements);
+        if (searchElement.drawBox(mouseX, mouseY, accentColor)) {
+            searchElement.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel(), categoryElements, accentColor);
             return;
         }
 
@@ -132,11 +131,11 @@ public class NewUi extends GuiScreen {
                 startYAnim = NewGUI.fastRenderValue.get() ? startY + 6F : AnimationUtils.animate(startY + 6F, startYAnim, (startYAnim - (startY + 5F) > 0 ? 0.65F : 0.55F) * RenderUtils.deltaTime * 0.025F);
                 endYAnim = NewGUI.fastRenderValue.get() ? startY + elementHeight - 6F : AnimationUtils.animate(startY + elementHeight - 6F, endYAnim, (endYAnim - (startY + elementHeight - 5F) < 0 ? 0.65F : 0.55F) * RenderUtils.deltaTime * 0.025F);
 
-                ce.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel());
+                ce.drawPanel(mouseX, mouseY, 230, 50, width - 260, height - 80, Mouse.getDWheel(), accentColor);
             }
             startY += elementHeight;
         }
-        RenderUtils.originalRoundedRect(32F, startYAnim, 34F, endYAnim, 1F, new Color(0, 140, 255).getRGB());
+        RenderUtils.originalRoundedRect(32F, startYAnim, 34F, endYAnim, 1F, accentColor);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

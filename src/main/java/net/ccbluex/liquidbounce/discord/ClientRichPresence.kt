@@ -98,12 +98,12 @@ class ClientRichPresence : MinecraftInstance() {
 
         // Set display infos
         builder.setDetails(if (Display.isActive()) (if (mc.isIntegratedServerRunning || serverData != null) "Playing" else "Idle...") else "AFK")
-        builder.setState("IGN: ${mc.session.username}")
+        builder.setState("Name: ${mc.session.username}")
 
         if (mc.isIntegratedServerRunning || serverData != null) 
-            builder.setSmallImage(assets["astolfo"], "in ${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP} - ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size} enabled.")
+            builder.setSmallImage(assets["astolfo"], "${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP} - Enabled ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size}.")
         else
-            builder.setSmallImage(assets["astolfo"], "${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size} enabled.")
+            builder.setSmallImage(assets["astolfo"], "Enabled ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size}.")
 
         // Check ipc client is connected and send rpc
         if (ipcClient?.status == PipeStatus.CONNECTED)

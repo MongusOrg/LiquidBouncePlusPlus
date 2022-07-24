@@ -15,7 +15,7 @@ class IntElement(val savedValue: IntegerValue): ValueElement<Int>(savedValue) {
     private val slider = Slider()
     private var dragged = false
 
-    override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color): Float {
+    override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color, accentColor: Color): Float {
         val valueDisplay = 30F + Fonts.font40.getStringWidth("${savedValue.maximum}${savedValue.suffix}")
         val maxLength = Fonts.font40.getStringWidth("${savedValue.maximum}${savedValue.suffix}")
         val minLength = Fonts.font40.getStringWidth("${savedValue.minimum}${savedValue.suffix}")
@@ -33,7 +33,7 @@ class IntElement(val savedValue: IntegerValue): ValueElement<Int>(savedValue) {
                                 x + width - 30F - sliderWidth - maxLength - minLength - valueDisplay, 
                                 y + 10F - Fonts.font40.FONT_HEIGHT / 2F + 2F, -1)
         slider.setValue(savedValue.get().coerceIn(savedValue.minimum, savedValue.maximum).toFloat(), savedValue.minimum.toFloat(), savedValue.maximum.toFloat())
-        slider.onDraw(x + width - 20F - sliderWidth - maxLength - valueDisplay, y + 10F, sliderWidth)
+        slider.onDraw(x + width - 20F - sliderWidth - maxLength - valueDisplay, y + 10F, sliderWidth, accentColor)
         RenderUtils.originalRoundedRect(x + width - 5F - valueDisplay, y + 2F, x + width - 10F, y + 18F, 4F, ColorManager.button.rgb)
         RenderUtils.customRounded(x + width - 18F, y + 2F, x + width - 10F, y + 18F, 0F, 4F, 4F, 0F, ColorManager.buttonOutline.rgb)
         RenderUtils.customRounded(x + width - 5F - valueDisplay, y + 2F, x + width + 3F - valueDisplay, y + 18, 4F, 0F, 0F, 4F, ColorManager.buttonOutline.rgb)

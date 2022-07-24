@@ -16,9 +16,7 @@ import java.awt.Color
 import java.util.List
 import kotlin.math.abs
 
-class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, val width: Float, val height: Float) {
-
-    constructor(x: Float, y: Float, wid: Float, hei: Float): this(Color(0, 140, 255), x, y, wid, hei)
+class SearchElement(val xPos: Float, val yPos: Float, val width: Float, val height: Float) {
 
     private var scrollHeight = 0F
     private var animScrollHeight = 0F
@@ -26,7 +24,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
 
     private val searchBox = SearchBox(0, xPos.toInt() + 2, yPos.toInt() + 2, width.toInt() - 4, height.toInt() - 2)
 
-    fun drawBox(mouseX: Int, mouseY: Int): Boolean {
+    fun drawBox(mouseX: Int, mouseY: Int, accentColor: Color): Boolean {
         RenderUtils.originalRoundedRect(xPos - 0.5F, yPos - 0.5F, xPos + width + 0.5F, yPos + height + 0.5F, 4F, ColorManager.buttonOutline.rgb)
         Stencil.write(true)
         RenderUtils.originalRoundedRect(xPos, yPos, xPos + width, yPos + height, 4F, ColorManager.textBox.rgb)
@@ -48,7 +46,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
         return searchBox.text.length > 0
     }
 
-    fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, w: Float, h: Float, wheel: Int, ces: List<CategoryElement>) {
+    fun drawPanel(mX: Int, mY: Int, x: Float, y: Float, w: Float, h: Float, wheel: Int, ces: List<CategoryElement>, accentColor: Color) {
         var mouseX = mX
         var mouseY = mY
         lastHeight = 0F
@@ -75,7 +73,7 @@ class SearchElement(val accentColor: Color, val xPos: Float, val yPos: Float, va
                     if (startY + animScrollHeight > y + h || startY + animScrollHeight + 40F + me.animHeight < y + 50F)
                         startY += 40F + me.animHeight
                     else
-                        startY += me.drawElement(mouseX, mouseY, x, startY + animScrollHeight, w, 40F)
+                        startY += me.drawElement(mouseX, mouseY, x, startY + animScrollHeight, w, 40F, accentColor)
                 }
             }
         }

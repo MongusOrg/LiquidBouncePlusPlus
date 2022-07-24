@@ -24,7 +24,7 @@ class ListElement(val saveValue: ListValue): ValueElement<String>(saveValue) {
     companion object {
         val expanding = ResourceLocation("liquidbounce+/expand.png") }
 
-    override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color): Float {
+    override fun drawElement(mouseX: Int, mouseY: Int, x: Float, y: Float, width: Float, bgColor: Color, accentColor: Color): Float {
         expandHeight = expandHeight.animSmooth(if (expansion) 16F * (saveValue.values.size - 1F) else 0F, 0.5F)
         val percent = expandHeight / (16F * (saveValue.values.size - 1F))
         Fonts.font40.drawString(value.name, x + 10F, y + 10F - Fonts.font40.FONT_HEIGHT / 2F + 2F, -1)
