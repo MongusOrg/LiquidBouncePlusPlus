@@ -135,7 +135,7 @@ public class NewUi extends GuiScreen {
             }
             startY += elementHeight;
         }
-        RenderUtils.originalRoundedRect(32F, startYAnim, 34F, endYAnim, 1F, accentColor);
+        RenderUtils.originalRoundedRect(32F, startYAnim, 34F, endYAnim, 1F, accentColor.getRGB());
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
