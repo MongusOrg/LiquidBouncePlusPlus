@@ -22,7 +22,8 @@ import java.lang.reflect.Field;
 
 public class FileManager extends MinecraftInstance {
 
-    public final File dir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME + "-1.8");
+    public final File dir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME);
+    public final File oldDir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME + "-1.8");
     public final File fontsDir = new File(dir, "fonts");
     public final File settingsDir = new File(dir, "settings");
     public final File soundsDir = new File(dir, "sounds");
@@ -55,7 +56,11 @@ public class FileManager extends MinecraftInstance {
      */
     public void setupFolder() {
         if(!dir.exists()) {
-            dir.mkdir();
+            if (oldDir.exists()) {
+                if (!oldDir.renameTo(dir))
+                    dir = oldDir; // if renaming failed, continue to use the old folder.
+            } else
+                dir.mkdir();
         }
 
         if(!fontsDir.exists())
