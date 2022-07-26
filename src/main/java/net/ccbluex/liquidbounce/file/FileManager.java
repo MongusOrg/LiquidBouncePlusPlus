@@ -22,7 +22,7 @@ import java.lang.reflect.Field;
 
 public class FileManager extends MinecraftInstance {
 
-    public final File dir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME);
+    public File dir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME);
     public final File oldDir = new File(mc.mcDataDir, LiquidBounce.CLIENT_NAME + "-1.8");
     public final File fontsDir = new File(dir, "fonts");
     public final File settingsDir = new File(dir, "settings");
