@@ -53,8 +53,6 @@ class XRay : Module() {
             Blocks.lit_furnace
     )
 
-    val caveFinderValue = BoolValue("Cavefinder", false)
-
     override fun onToggle(state: Boolean) {
         mc.renderGlobal.loadRenderers()
     }

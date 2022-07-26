@@ -73,7 +73,7 @@ public abstract class MixinBlock {
         final XRay xray = LiquidBounce.moduleManager.getModule(XRay.class);
 
         if(xray.getState())
-            callbackInfoReturnable.setReturnValue(xray.getCaveFinderValue().get() ? Objects.equals((Block) (Object) this, Blocks.air) : xray.getXrayBlocks().contains(this));
+            callbackInfoReturnable.setReturnValue(xray.getXrayBlocks().contains(this));
     }
 
     @Inject(method = "isCollidable", at = @At("HEAD"), cancellable = true)

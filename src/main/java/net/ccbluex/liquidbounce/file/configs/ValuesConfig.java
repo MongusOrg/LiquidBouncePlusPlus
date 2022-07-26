@@ -82,6 +82,8 @@ public class ValuesConfig extends FileConfig {
             } else if (entry.getKey().equalsIgnoreCase("features")) {
                 JsonObject jsonValue = (JsonObject) entry.getValue();
 
+                if (jsonValue.has("DarkMode"))
+                    LiquidBounce.INSTANCE.setDarkMode(jsonValue.get("DarkMode").getAsBoolean());
                 if (jsonValue.has("AntiForge"))
                     AntiForge.enabled = jsonValue.get("AntiForge").getAsBoolean();
                 if (jsonValue.has("AntiForgeFML"))
@@ -155,6 +157,7 @@ public class ValuesConfig extends FileConfig {
         jsonObject.add("macros", jsonMacros);
 
         final JsonObject jsonFeatures = new JsonObject();
+        jsonFeatures.addProperty("DarkMode", LiquidBounce.INSTANCE.getDarkMode())
         jsonFeatures.addProperty("AntiForge", AntiForge.enabled);
         jsonFeatures.addProperty("AntiForgeFML", AntiForge.blockFML);
         jsonFeatures.addProperty("AntiForgeProxy", AntiForge.blockProxyPacket);
