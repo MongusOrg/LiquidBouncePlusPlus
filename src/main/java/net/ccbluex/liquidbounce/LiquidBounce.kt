@@ -37,14 +37,13 @@ object LiquidBounce {
 
     // Client information
     const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "250722"
+    const val CLIENT_VERSION = "260722"
     const val CLIENT_CREATOR = "CCBlueX, exit-scammed"
     const val CLIENT_CLOUD = "https://wysi-foundation.github.io/LiquidCloud/LiquidBounce"
 
     var isStarting = false
     var mainMenuPrep = false
 
-    @JvmField
     var darkMode = false
 
     // Managers
