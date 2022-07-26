@@ -13,6 +13,7 @@ import net.ccbluex.liquidbounce.features.module.ModuleInfo
 import net.ccbluex.liquidbounce.utils.EntityUtils
 import net.ccbluex.liquidbounce.utils.render.ColorUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
+import net.ccbluex.liquidbounce.value.BoolValue
 import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
@@ -33,6 +34,10 @@ class Tracers : Module() {
     private val colorGreenValue = IntegerValue("G", 160, 0, 255)
     private val colorBlueValue = IntegerValue("B", 255, 0, 255)
 
+    private val directLineValue = BoolValue("Directline", false)
+    private val fovModeValue = ListValue("FOV-Mode", arrayOf("All", "Back", "Front"), "All")
+    private val fovValue = FloatValue("FOV", 180F, 0F, 180F, { !fovModeValue.get().equals("all", true) })
+
     @EventTarget
     fun onRender3D(event: Render3DEvent) {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
@@ -45,7 +50,7 @@ class Tracers : Module() {
 
         GL11.glBegin(GL11.GL_LINES)
 
-        for (entity in mc.theWorld.loadedEntityList) {
+        for (entity in if (fovModeValue.get().equals("all", true)) mc.theWorld.loadedEntityList else mc.theWorld.loadedEntityList.filter { if (fovModeValue.get().equals("back", true)) RotationUtils.getRotationBackDifference(it) <= fovValue.get() else RotationUtils.getRotationDifference(it) <= fovValue.get() }) {
             if (entity != null && entity != mc.thePlayer && EntityUtils.isSelected(entity, false)) {
                 var dist = (mc.thePlayer.getDistanceToEntity(entity) * 2).toInt()
 
@@ -60,7 +65,7 @@ class Tracers : Module() {
                     else -> Color(255, 255, 255, 150)
                 }
 
-                drawTraces(entity, color, true)
+                drawTraces(entity, color, !directLineValue.get())
             }
         }
 

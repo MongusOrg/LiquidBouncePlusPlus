@@ -265,6 +265,18 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
     }
 
     /**
+     * Calculate difference between the client rotation and your entity's back
+     *
+     * @param entity your entity
+     * @return difference between rotation
+     */
+    public static double getRotationBackDifference(final Entity entity) {
+        final Rotation rotation = toRotation(getCenter(entity.getEntityBoundingBox()), true);
+
+        return getRotationDifference(rotation, new Rotation(mc.thePlayer.rotationYaw - 180, mc.thePlayer.rotationPitch));
+    }
+
+    /**
      * Calculate difference between the server rotation and your rotation
      *
      * @param rotation your rotation
