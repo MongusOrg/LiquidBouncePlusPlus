@@ -129,6 +129,9 @@ class KillAura : Module() {
         }
     }
 
+    private val roundTurnAngle = BoolValue("RoundAngle", false, { !rotations.get().equals("none", true) })
+    private val roundAngleDirs = IntegerValue("RoundAngle-Directions", 4, 2, 45, { !rotations.get().equals("none", true) && roundTurnAngle.get() })
+
     private val noSendRot = BoolValue("NoSendRotation", true, { rotations.get().equals("spin", true) })
     private val noHitCheck = BoolValue("NoHitCheck", false, { !rotations.get().equals("none", true) })
 
@@ -789,6 +792,9 @@ class KillAura : Module() {
         if (modify) return true // just ignore then
 
         var defRotation = getTargetRotation(entity) ?: return false
+
+        if (defRotation != RotationUtils.serverRotation && roundTurnAngle.get())
+            defRotation.yaw = RotationUtils.roundRotation(defRotation.yaw, roundAngleDirs.get())
 
         if (silentRotationValue.get()) {
             RotationUtils.setTargetRotation(defRotation, if (aacValue.get() && !rotations.get().equals("Spin", ignoreCase = true)) 15 else 0)

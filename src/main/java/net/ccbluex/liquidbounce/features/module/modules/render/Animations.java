@@ -18,7 +18,7 @@ public class Animations extends Module {
 
     // some ListValue
     public static final ListValue Sword = new ListValue("Style", new String[]{
-            "Normal", "SlideDown1", "SlideDown2" , "Slide", "Minecraft", "Remix", "Exhi",
+            "Normal", "SlideDown1", "SlideDown2" , "Slide", "Minecraft", "Remix", "Exhibition",
             "Avatar", "Tap1", "Tap2", "Poke", "Push1", "Push2" , "Up" , "Shield", "Akrien", "VisionFX", "Swong",
             "SigmaOld", "ETB", "Rotate360", "SmoothFloat", "Strange" , "Reverse", "Zoom", "Move", "Stab", "Jello"
         }, "Minecraft");

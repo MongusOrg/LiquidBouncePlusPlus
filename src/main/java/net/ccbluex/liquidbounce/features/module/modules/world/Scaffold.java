@@ -60,7 +60,7 @@ public class Scaffold extends Module {
     // Global settings
     private final BoolValue towerEnabled = new BoolValue("EnableTower", false);
     private final ListValue towerModeValue = new ListValue("TowerMode", new String[] {
-            "Jump", "Motion", "ConstantMotion", "MotionTP", "Packet", "Teleport", "AAC3.3.9", "AAC3.6.4", "Verus"
+            "Jump", "Motion", "StableMotion", "ConstantMotion", "MotionTP", "Packet", "Teleport", "AAC3.3.9", "AAC3.6.4", "Verus"
     }, "Motion", () -> towerEnabled.get());
     private final ListValue towerPlaceModeValue = new ListValue("Tower-PlaceTiming", new String[]{"Pre", "Post"}, "Post");
     private final BoolValue stopWhenBlockAbove = new BoolValue("StopWhenBlockAbove", false, () -> towerEnabled.get());
@@ -72,6 +72,12 @@ public class Scaffold extends Module {
     // Jump mode
     private final FloatValue jumpMotionValue = new FloatValue("JumpMotion", 0.42F, 0.3681289F, 0.79F, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Jump"));
     private final IntegerValue jumpDelayValue = new IntegerValue("JumpDelay", 0, 0, 20, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("Jump"));
+
+    // StableMotion
+    private final FloatValue stableMotionValue = new FloatValue("StableMotion", 0.41982F, 0.1F, 1F, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("StableMotion"));
+    private final BoolValue stableFakeJumpValue = new BoolValue("StableFakeJump", false, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("StableMotion"));
+    private final BoolValue stableStopValue = new BoolValue("StableStop", false, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("StableMotion"));
+    private final IntegerValue stableStopDelayValue = new IntegerValue("StableStopDelay", 1500, 0, 5000, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("StableMotion") && stableStopValue.get());
 
     // ConstantMotion
     private final FloatValue constantMotionValue = new FloatValue("ConstantMotion", 0.42F, 0.1F, 1F, () -> towerEnabled.get() && towerModeValue.get().equalsIgnoreCase("ConstantMotion"));
@@ -236,6 +242,7 @@ public class Scaffold extends Module {
 
     // Delay
     private final MSTimer delayTimer = new MSTimer();
+    private final MSTimer towerDelayTimer = new MSTimer();
     private final MSTimer zitterTimer = new MSTimer();
     private long delay;
 
@@ -337,6 +344,15 @@ public class Scaffold extends Module {
                     fakeJump();
                     mc.thePlayer.setPositionAndUpdate(mc.thePlayer.posX, mc.thePlayer.posY + teleportHeightValue.get(), mc.thePlayer.posZ);
                     timer.reset();
+                }
+                break;
+            case "stablemotion":
+                if (stableFakeJumpValue.get())
+                    fakeJump();
+                mc.thePlayer.motionY = stableMotionValue.get();
+                if (stableStopValue.get() && towerDelayTimer.hasTimePassed(stableStopDelayValue.get())) {
+                    mc.thePlayer.motionY = -0.28D;
+                    towerDelayTimer.reset();
                 }
                 break;
             case "constantmotion":

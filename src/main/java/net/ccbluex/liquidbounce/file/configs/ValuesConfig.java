@@ -157,7 +157,7 @@ public class ValuesConfig extends FileConfig {
         jsonObject.add("macros", jsonMacros);
 
         final JsonObject jsonFeatures = new JsonObject();
-        jsonFeatures.addProperty("DarkMode", LiquidBounce.INSTANCE.getDarkMode())
+        jsonFeatures.addProperty("DarkMode", LiquidBounce.INSTANCE.getDarkMode());
         jsonFeatures.addProperty("AntiForge", AntiForge.enabled);
         jsonFeatures.addProperty("AntiForgeFML", AntiForge.blockFML);
         jsonFeatures.addProperty("AntiForgeProxy", AntiForge.blockProxyPacket);
@@ -169,11 +169,6 @@ public class ValuesConfig extends FileConfig {
         final JsonObject theAlteningObject = new JsonObject();
         theAlteningObject.addProperty("API-Key", GuiTheAltening.Companion.getApiKey());
         jsonObject.add("thealtening", theAlteningObject);
-
-        /*final JsonObject capeObject = new JsonObject();
-        capeObject.addProperty("TransferCode", GuiDonatorCape.Companion.getTransferCode());
-        capeObject.addProperty("CapeEnabled", GuiDonatorCape.Companion.getCapeEnabled());*/
-        //jsonObject.add("DonatorCape", capeObject);
 
         jsonObject.addProperty("MainMenuParallax", GuiMainMenu.Companion.getUseParallax());
 
