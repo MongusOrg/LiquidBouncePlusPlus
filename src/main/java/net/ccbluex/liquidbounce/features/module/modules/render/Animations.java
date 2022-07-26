@@ -61,7 +61,7 @@ public class Animations extends Module {
     // gui animations
     public static final ListValue guiAnimations = new ListValue("Container-Animation", new String[]{"None", "Zoom", "Slide", "Smooth"}, "None");
     public static final ListValue vSlideValue = new ListValue("Slide-Vertical", new String[]{"None", "Upward", "Downward"}, "Downward", () -> guiAnimations.get().equalsIgnoreCase("slide"));
-    public static final ListValue hSlideValue = new ListValue("Slide-Horizontal", new String[]{"None", "Right", "Left"}, "Right", () -> guiAnimations.get().equalsIgnoreCase("slide")));
+    public static final ListValue hSlideValue = new ListValue("Slide-Horizontal", new String[]{"None", "Right", "Left"}, "Right", () -> guiAnimations.get().equalsIgnoreCase("slide"));
     public static final IntegerValue animTimeValue = new IntegerValue("Container-AnimTime", 750, 0, 3000, () -> !guiAnimations.get().equalsIgnoreCase("none"));
     public static final ListValue tabAnimations = new ListValue("Tab-Animation", new String[]{"None", "Zoom", "Slide"}, "Zoom");
 
