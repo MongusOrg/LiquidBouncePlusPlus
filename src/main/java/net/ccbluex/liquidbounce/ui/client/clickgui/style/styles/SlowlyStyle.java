@@ -44,7 +44,7 @@ public class SlowlyStyle extends Style {
 
         if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + 3) {
             int dWheel = Mouse.getDWheel();
-            if (dWheel != 0) {
+            if (Mouse.hasWheel() && dWheel != 0) {
                 if (dWheel > 0)
                     return Math.min(value + (inte ? 1F : 0.01F), max);
                 if (dWheel < 0)

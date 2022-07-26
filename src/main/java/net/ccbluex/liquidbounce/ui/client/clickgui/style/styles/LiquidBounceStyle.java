@@ -164,7 +164,7 @@ public class LiquidBounceStyle extends Style {
 
                         if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() - 4 && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
                             int dWheel = Mouse.getDWheel();
-                            if (dWheel != 0) {
+                            if (Mouse.hasWheel() && dWheel != 0) {
                                 if (dWheel > 0)
                                     floatValue.set(Math.min(floatValue.get() + 0.01F, floatValue.getMaximum()));
                                 if (dWheel < 0)
@@ -195,7 +195,7 @@ public class LiquidBounceStyle extends Style {
 
                         if(mouseX >= moduleElement.getX() + moduleElement.getWidth() + 4 && mouseX <= moduleElement.getX() + moduleElement.getWidth() + moduleElement.getSettingsWidth() && mouseY >= yPos + 15 && mouseY <= yPos + 21) {
                             int dWheel = Mouse.getDWheel();
-                            if (dWheel != 0) {
+                            if (Mouse.hasWheel() && dWheel != 0) {
                                 if (dWheel > 0)
                                     integerValue.set(Math.min(integerValue.get() + 1, integerValue.getMaximum()));
                                 if (dWheel < 0)

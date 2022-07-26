@@ -60,6 +60,7 @@ class ChestStealer : Module() {
     private val takeRandomizedValue = BoolValue("TakeRandomized", false)
     private val onlyItemsValue = BoolValue("OnlyItems", false)
     private val noCompassValue = BoolValue("NoCompass", false)
+    private val noDuplicateValue = BoolValue("NoDuplicateNonStackable", false)
     private val autoCloseValue = BoolValue("AutoClose", true)
     public val silenceValue = BoolValue("SilentMode", true)
     public val showStringValue = BoolValue("Silent-ShowString", false, { silenceValue.get() })
@@ -162,7 +163,7 @@ class ChestStealer : Module() {
                     for (slotIndex in 0 until screen.inventoryRows * 9) {
                         val slot = screen.inventorySlots.inventorySlots[slotIndex]
 
-                        if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1)))
+                        if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!noDuplicateValue.get() || slot.stack.maxStackSize > 1 || !mc.thePlayer.inventory.mainInventory.filter { it != null && it.item != null }.map { it.item!! }.contains(slot.stack.item)) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1)))
                             items.add(slot)
                     }
 
@@ -181,7 +182,7 @@ class ChestStealer : Module() {
                 val slot = screen.inventorySlots.inventorySlots[slotIndex]
 
                 if (delayTimer.hasTimePassed(nextDelay) && slot.stack != null &&
-                        (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1))) {
+                        (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!noDuplicateValue.get() || slot.stack.maxStackSize > 1 || !mc.thePlayer.inventory.mainInventory.filter { it != null && it.item != null }.map { it.item!! }.contains(slot.stack.item)) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1))) {
                     move(screen, slot)
                 }
             }
@@ -219,7 +220,7 @@ class ChestStealer : Module() {
         for (i in 0 until chest.inventoryRows * 9) {
             val slot = chest.inventorySlots.inventorySlots[i]
 
-            if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1)))
+            if (slot.stack != null && (!onlyItemsValue.get() || slot.stack.item !is ItemBlock) && (!noDuplicateValue.get() || slot.stack.maxStackSize > 1 || !mc.thePlayer.inventory.mainInventory.filter { it != null && it.item != null }.map { it.item!! }.contains(slot.stack.item)) && (!inventoryCleaner.state || inventoryCleaner.isUseful(slot.stack, -1)))
                 return false
         }
 

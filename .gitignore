@@ -4,3 +4,6 @@
 /.settings/
 /bin/
 /.gradle/
+/.iml/
+/.ipr/
+/.iws/

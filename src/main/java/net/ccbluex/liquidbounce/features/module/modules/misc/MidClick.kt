@@ -18,8 +18,8 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.input.Mouse
 
-@ModuleInfo(name = "MCF", description = "Allows you to add a player as a friend by middle clicking them.", category = ModuleCategory.MISC)
-class MCF : Module() {
+@ModuleInfo(name = "MidClick", spacedName = "Mid Click", description = "Allows you to add a player as a friend by middle clicking them.", category = ModuleCategory.MISC)
+class MidClick : Module() {
     private var wasDown = false
 
     @EventTarget

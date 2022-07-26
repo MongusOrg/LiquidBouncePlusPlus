@@ -48,6 +48,9 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
     private lateinit var randomCracked: GuiButton
     private lateinit var altsList: GuiList
     private lateinit var searchField: GuiTextField
+    private lateinit var revertOriginalAccount: GuiButton
+
+    private var lastSessionToken: String? = null
 
     override fun initGui() {
         val textFieldWidth = (width / 8).coerceAtLeast(70)
@@ -69,6 +72,7 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         buttonList.add(GuiButton(7, width - 80, startPositionY + 24 * 3, 70, 20, "Import"))
         buttonList.add(GuiButton(12, width - 80, startPositionY + 24 * 4, 70, 20, "Export"))
         buttonList.add(GuiButton(8, width - 80, startPositionY + 24 * 5, 70, 20, "Copy"))
+        buttonList.add(GuiButton(727, width - 80, startPositionY + 24 * 6, 70, 20, "Revert").also { revertOriginalAccount = it })
         buttonList.add(GuiButton(0, width - 80, height - 65, 70, 20, "Back"))
         buttonList.add(GuiButton(3, 5, startPositionY + 24, 90, 20, "Login").also { loginButton = it })
         buttonList.add(GuiButton(4, 5, startPositionY + 24 * 2, 90, 20, "Random").also { randomButton = it })
@@ -82,6 +86,7 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        revertOriginalAccount.enabled = (lastSessionToken != null)
         drawBackground(0)
         altsList.drawScreen(mouseX, mouseY, partialTicks)
         Fonts.font40.drawCenteredString("AltManager", width / 2.0f, 6f, 0xffffff)
@@ -266,6 +271,41 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
             10 -> { // Session Login Button
                 mc.displayGuiScreen(GuiSessionLogin(this))
             }
+            727 -> {
+                loginButton.enabled = false
+                randomButton.enabled = false
+                randomCracked.enabled = false
+                status = "§aLogging in..."
+
+                thread {
+                    val loginResult = LoginUtils.loginSessionId(lastSessionToken!!)
+
+                    status = when (loginResult) {
+                        LoginUtils.LoginResult.LOGGED -> {
+                            if (GuiAltManager.altService.currentService != AltService.EnumAltService.MOJANG) {
+                                try {
+                                    GuiAltManager.altService.switchService(AltService.EnumAltService.MOJANG)
+                                } catch (e: NoSuchFieldException) {
+                                    ClientUtils.getLogger().error("Something went wrong while trying to switch alt service.", e)
+                                } catch (e: IllegalAccessException) {
+                                    ClientUtils.getLogger().error("Something went wrong while trying to switch alt service.", e)
+                                }
+                            }
+
+                            "§cYour name is now §f§l${mc.session.username}§c"
+                        }
+                        LoginUtils.LoginResult.FAILED_PARSE_TOKEN -> "§cFailed to parse Session ID!"
+                        LoginUtils.LoginResult.INVALID_ACCOUNT_DATA -> "§cInvalid Session ID!"
+                        else -> ""
+                    }
+
+                    loginButton.enabled = true
+                    randomButton.enabled = true
+                    randomCracked.enabled = true
+
+                    lastSessionToken = null
+                }
+            }
         }
     }
 
@@ -415,6 +455,9 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         }
 
         fun login(minecraftAccount: MinecraftAccount, success: () -> Unit, error: (Exception) -> Unit, done: () -> Unit) = thread(name = "LoginTask") {
+            if (lastSessionToken == null)
+                lastSessionToken = mc.session.token
+
             if (altService.currentService != AltService.EnumAltService.MOJANG) {
                 try {
                     altService.switchService(AltService.EnumAltService.MOJANG)

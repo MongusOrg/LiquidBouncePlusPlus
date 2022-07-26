@@ -18,7 +18,7 @@ public class Animations extends Module {
 
     // some ListValue
     public static final ListValue Sword = new ListValue("Style", new String[]{
-            "Normal", "SlideDown1", "SlideDown2" , "Slide", "Minecraft", "Remix",
+            "Normal", "SlideDown1", "SlideDown2" , "Slide", "Minecraft", "Remix", "Exhi",
             "Avatar", "Tap1", "Tap2", "Poke", "Push1", "Push2" , "Up" , "Shield", "Akrien", "VisionFX", "Swong",
             "SigmaOld", "ETB", "Rotate360", "SmoothFloat", "Strange" , "Reverse", "Zoom", "Move", "Stab", "Jello"
         }, "Minecraft");
@@ -59,7 +59,10 @@ public class Animations extends Module {
     public static final BoolValue blockEverything = new BoolValue("Block-Everything", false);
 
     // gui animations
-    public static final ListValue guiAnimations = new ListValue("Container-Animation", new String[]{"None", "Zoom", "VSlide", "HSlide", "HVSlide", "Smooth"}, "None");
+    public static final ListValue guiAnimations = new ListValue("Container-Animation", new String[]{"None", "Zoom", "Slide", "Smooth"}, "None");
+    public static final ListValue vSlideValue = new ListValue("Slide-Vertical", new String[]{"None", "Upward", "Downward"}, "Downward", () -> guiAnimations.get().equalsIgnoreCase("slide"));
+    public static final ListValue hSlideValue = new ListValue("Slide-Horizontal", new String[]{"None", "Right", "Left"}, "Right", () -> guiAnimations.get().equalsIgnoreCase("slide")));
+    public static final IntegerValue animTimeValue = new IntegerValue("Container-AnimTime", 750, 0, 3000, () -> !guiAnimations.get().equalsIgnoreCase("none"));
     public static final ListValue tabAnimations = new ListValue("Tab-Animation", new String[]{"None", "Zoom", "Slide"}, "Zoom");
 
     // block crack

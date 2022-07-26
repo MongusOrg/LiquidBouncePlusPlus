@@ -123,7 +123,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         final Minecraft mc = Minecraft.getMinecraft();
 
         if (progress >= 1F) progress = 1F;
-        else progress = (float)(System.currentTimeMillis() - lastMS) / 750F;
+        else progress = (float)(System.currentTimeMillis() - lastMS) / (float) animMod.animTimeValue.get();
 
         double trueAnim = EaseUtils.easeOutQuart(progress);
 
@@ -131,7 +131,7 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
         && (!(mc.currentScreen instanceof GuiChest) 
             || !chestStealer.getState() 
             || !chestStealer.getSilenceValue().get() 
-            || !chestStealer.getStillDisplayValue().get())) 
+            || chestStealer.getStillDisplayValue().get())) 
             RenderUtils.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
 
         boolean checkFullSilence = chestStealer.getState() && chestStealer.getSilenceValue().get() && !chestStealer.getStillDisplayValue().get();
@@ -143,14 +143,23 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                     GL11.glTranslated((1 - trueAnim) * (width / 2D), (1 - trueAnim) * (height / 2D), 0D);
                     GL11.glScaled(trueAnim, trueAnim, trueAnim);
                     break;
-                case "HSlide":
-                    GL11.glTranslated((1 - trueAnim) * -width, 0D, 0D);
-                    break;
-                case "VSlide":
-                    GL11.glTranslated(0D, (1 - trueAnim) * -height, 0D);
-                    break;
-                case "HVSlide":
-                    GL11.glTranslated((1 - trueAnim) * -width, (1 - trueAnim) * -height, 0D);
+                case "Slide":
+                    switch (animMod.hSlideValue.get()) {
+                        case "Right":
+                            GL11.glTranslated((1 - trueAnim) * -width, 0D, 0D);
+                            break;
+                        case "Left":
+                            GL11.glTranslated((1 - trueAnim) * width, 0D, 0D);
+                            break;
+                    }
+                    switch (animMod.vSlideValue.get()) {
+                        case "Upward":
+                            GL11.glTranslated(0D, (1 - trueAnim) * height, 0D);
+                            break;
+                        case "Downward":
+                            GL11.glTranslated(0D, (1 - trueAnim) * -height, 0D);
+                            break;
+                    }
                     break;
                 case "Smooth":
                     GL11.glTranslated((1 - trueAnim) * -width, (1 - trueAnim) * -height / 4F, 0D);
@@ -175,20 +184,20 @@ public abstract class MixinGuiContainer extends MixinGuiScreen {
                     String tipString = "Stealing... Press Esc to stop.";
                     
                     mc.fontRendererObj.drawString(tipString,
-                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2)-1,
-                        (height/2)+30,0,false);
+                        (width / 2F) - (mc.fontRendererObj.getStringWidth(tipString) / 2F) - 0.5F,
+                        (height / 2F) + 30, 0, false);
                     mc.fontRendererObj.drawString(tipString,
-                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2)+1,
-                        (height/2)+30,0,false);
+                        (width / 2F) - (mc.fontRendererObj.getStringWidth(tipString) / 2F) + 0.5F,
+                        (height / 2F) + 30, 0, false);
                     mc.fontRendererObj.drawString(tipString,
-                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30-1,0,false);
+                        (width / 2F) - (mc.fontRendererObj.getStringWidth(tipString) / 2F),
+                        (height / 2F) + 29.5F, 0, false);
                     mc.fontRendererObj.drawString(tipString,
-                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30+1,0,false);
+                        (width / 2F) - (mc.fontRendererObj.getStringWidth(tipString) / 2F),
+                        (height / 2F) + 30.5F, 0, false);
                     mc.fontRendererObj.drawString(tipString,
-                        (width/2)-(mc.fontRendererObj.getStringWidth(tipString)/2),
-                        (height/2)+30,0xffffffff,false);
+                        (width / 2F) - (mc.fontRendererObj.getStringWidth(tipString) / 2F),
+                        (height / 2F) + 30, 0xffffffff, false);
                 }
                 
                 if (!chestStealer.getOnce() && !chestStealer.getStillDisplayValue().get()) 
