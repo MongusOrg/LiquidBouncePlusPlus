@@ -20,6 +20,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -33,6 +34,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.Objects;
 
 @Mixin(Block.class)
 public abstract class MixinBlock {
@@ -71,7 +73,7 @@ public abstract class MixinBlock {
         final XRay xray = LiquidBounce.moduleManager.getModule(XRay.class);
 
         if(xray.getState())
-            callbackInfoReturnable.setReturnValue(xray.getXrayBlocks().contains(this));
+            callbackInfoReturnable.setReturnValue(xray.getCaveFinderValue().get() ? Objects.equals((Block) (Object) this, Blocks.air) : xray.getXrayBlocks().contains(this));
     }
 
     @Inject(method = "isCollidable", at = @At("HEAD"), cancellable = true)

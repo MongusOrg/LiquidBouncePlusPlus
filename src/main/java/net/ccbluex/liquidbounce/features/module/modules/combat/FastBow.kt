@@ -7,6 +7,7 @@ package net.ccbluex.liquidbounce.features.module.modules.combat
 
 import net.ccbluex.liquidbounce.event.EventTarget
 import net.ccbluex.liquidbounce.event.UpdateEvent
+import net.ccbluex.liquidbounce.event.PacketEvent
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleCategory
 import net.ccbluex.liquidbounce.features.module.ModuleInfo
@@ -53,7 +54,7 @@ class FastBow : Module() {
             else
                 mc.thePlayer.rotationPitch
 
-            if (delay == 0) {
+            if (delay.get() == 0) {
                 repeat (packetsValue.get()) {
                     mc.netHandler.addToSendQueue(C05PacketPlayerLook(yaw, pitch, true))
                 }

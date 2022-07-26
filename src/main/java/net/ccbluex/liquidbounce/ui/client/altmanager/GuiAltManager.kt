@@ -19,6 +19,7 @@ import net.ccbluex.liquidbounce.ui.client.altmanager.menus.*
 import net.ccbluex.liquidbounce.ui.client.altmanager.menus.altgenerator.GuiTheAltening
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.ClientUtils
+import net.ccbluex.liquidbounce.utils.login.LoginUtils
 import net.ccbluex.liquidbounce.utils.login.UserUtils.isValidTokenOffline
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils.get
 import net.ccbluex.liquidbounce.utils.misc.MiscUtils
@@ -50,7 +51,7 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
     private lateinit var searchField: GuiTextField
     private lateinit var revertOriginalAccount: GuiButton
 
-    private var lastSessionToken: String? = null
+    var lastSessionToken: String? = null
 
     override fun initGui() {
         val textFieldWidth = (width / 8).coerceAtLeast(70)
@@ -133,6 +134,9 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
             }
 
             3 -> {
+                if (lastSessionToken == null)
+                    lastSessionToken = mc.session.token
+
                 status = altsList.selectedAccount?.let {
                     loginButton.enabled = false
                     randomButton.enabled = false
@@ -153,6 +157,9 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
             }
 
             4 -> {
+                if (lastSessionToken == null)
+                    lastSessionToken = mc.session.token
+
                 status = altsList.accounts.randomOrNull()?.let {
                     loginButton.enabled = false
                     randomButton.enabled = false
@@ -173,6 +180,9 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
             }
 
             99 -> {
+                if (lastSessionToken == null)
+                    lastSessionToken = mc.session.token
+
                 loginButton.enabled = false
                 randomButton.enabled = false
                 randomCracked.enabled = false
@@ -455,9 +465,6 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
         }
 
         fun login(minecraftAccount: MinecraftAccount, success: () -> Unit, error: (Exception) -> Unit, done: () -> Unit) = thread(name = "LoginTask") {
-            if (lastSessionToken == null)
-                lastSessionToken = mc.session.token
-
             if (altService.currentService != AltService.EnumAltService.MOJANG) {
                 try {
                     altService.switchService(AltService.EnumAltService.MOJANG)
