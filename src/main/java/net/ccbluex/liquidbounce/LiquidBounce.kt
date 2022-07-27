@@ -36,9 +36,9 @@ import kotlin.concurrent.thread
 object LiquidBounce {
 
     // Client information
-    const val CLIENT_NAME = "LiquidBounce+"
-    const val CLIENT_VERSION = "260722"
-    const val CLIENT_CREATOR = "CCBlueX, exit-scammed"
+    const val CLIENT_NAME = "LiquidBounce++"
+    const val CLIENT_VERSION = "270722"
+    const val CLIENT_CREATOR = "CCBlueX, exit-scammed & TheMosKau"
     const val CLIENT_CLOUD = "https://wysi-foundation.github.io/LiquidCloud/LiquidBounce"
 
     var isStarting = false
@@ -74,7 +74,7 @@ object LiquidBounce {
     fun startClient() {
         isStarting = true
 
-        ClientUtils.getLogger().info("Starting $CLIENT_NAME build $CLIENT_VERSION")
+        ClientUtils.getLogger().info("Starting $CLIENT_NAME")
         lastTick = System.currentTimeMillis()
 
         // Create file manager
@@ -132,7 +132,7 @@ object LiquidBounce {
         clickGui = ClickGui()
         fileManager.loadConfig(fileManager.clickGuiConfig)
 
-        // Tabs (Only for Forge!)
+        // Tabs
         if (hasForge()) {
             BlocksTab()
             ExploitsTab()
@@ -157,7 +157,7 @@ object LiquidBounce {
             }
         }
 
-        ClientUtils.getLogger().info("Finished loading LiquidBounce+ in ${System.currentTimeMillis() - lastTick}ms.")
+        ClientUtils.getLogger().info("Finished loading $CLIENT_NAME in ${System.currentTimeMillis() - lastTick}ms.")
 
         // Set is starting status
         isStarting = false
