@@ -40,7 +40,7 @@ class AutoSettingsCommand : Command("onlineconfig", arrayOf("setting", "autosett
                 val url = if (args[2].startsWith("http"))
                     args[2]
                 else
-                    "${LiquidBounce.CLIENT_WEBSITE}/config/${args[2].toLowerCase()}"
+                    "${LiquidBounce.CLIENT_CLOUD}/config/${args[2].toLowerCase()}"
 
                 chat("Loading configs...")
 
