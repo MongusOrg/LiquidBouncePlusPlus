@@ -1,15 +1,13 @@
-# LiquidBounce+ (Officially Discontinued.)
+# LiquidBounce++
 A free mixin-based injection hacked-client for Minecraft 1.8.9 using Minecraft Forge.
+Based on LiquidBounce+
 
-### Thank you.
-No long shit, I just want to say thank you to everyone.
+### Good night LiquidBounce+
+LiquidBounce+ is discontinued, we hope inf will return.
 
-### LiquidBounce's contact info
-Website: https://liquidbounce.net \
-Forum: https://forums.ccbluex.net \
-Guilded: https://www.guilded.gg/CCBlueX \
-YouTube: https://youtube.com/CCBlueX \
-Twitter: https://twitter.com/CCBlueX 
+### Info
+Website: https://lbplusplus.ga /
+YouTube: none
 
 ## License
 This project is subject to the [GNU General Public License v3.0](LICENSE). This does only apply for source code located directly in this clean repository. During the development and compilation process, additional source code may be used to which we have obtained no rights. Such code is not covered by the GPL license.
@@ -30,7 +28,7 @@ Do the above and share your source code with everyone; just like we do.
 
 ## Setting up a Workspace
 LiquidBounce+ is using Gradle, so make sure that it is installed properly. Instructions can be found on [Gradle's website](https://gradle.org/install/).
-1. Clone the repository using `git clone https://github.com/WYSI-Foundation/LiquidBouncePlus/`. 
+1. Clone the repository using `git clone https://github.com/AmoClub/LiquidBouncePlusPlus`. 
 2. CD into the local repository folder.
 4. Depending on which IDE you are using execute either of the following commands:
     - For IntelliJ: `gradlew setupDevWorkspace idea genIntellijRuns build`
@@ -42,4 +40,4 @@ LiquidBounce+ is using Gradle, so make sure that it is installed properly. Instr
 
 ## Additional libraries
 ### Mixins
-Mixins can be used to modify classes at runtime before they are loaded. LiquidBounce+ is using it to inject its code into the Minecraft client. This way, we do not have to ship Mojang's copyrighted code. If you want to learn more about it, check out its [Documentation](https://docs.spongepowered.org/5.1.0/en/plugin/internals/mixins.html).
+Mixins can be used to modify classes at runtime before they are loaded. LiquidBounce++ is using it to inject its code into the Minecraft client. This way, we do not have to ship Mojang's copyrighted code. If you want to learn more about it, check out its [Documentation](https://docs.spongepowered.org/5.1.0/en/plugin/internals/mixins.html).
