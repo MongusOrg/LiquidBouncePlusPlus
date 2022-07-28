@@ -30,7 +30,7 @@ import net.ccbluex.liquidbounce.features.module.modules.misc.BanChecker
 import java.text.DecimalFormat
 
 @ElementInfo(name = "Statistics")
-class SessionInfo(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F) : Element(x, y, scale) {
+class Statistics(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F) : Element(x, y, scale) {
     private val blurValue = BoolValue("Blur", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 50F, { blurValue.get() })
     private val redValue = IntegerValue("Background-Red", 0, 0, 255)
