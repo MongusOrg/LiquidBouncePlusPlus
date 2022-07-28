@@ -60,8 +60,8 @@ class SessionInfo(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F) : Eleme
         RenderUtils.whatRoundedRect(0F, 0F, 155F, 5F, RenderUtils.getRainbowOpaque(2, 0.9f, 1.0f, 0), 3.5F)
 
         font.drawString("Username: " + mc.session.username, 3, 10, -1)
-        font.drawString("Killed: " + if (StatisticsUtils.getKills == 0) "None" else StatisticsUtils.getKills.toString(), 3, 20, -1)
-        font.drawString("Wons: " + if (StatisticsUtils.getWins == 0) "None" else StatisticsUtils.getWins.toString(), 3, 30, -1)
+        font.drawString("Killed: " + if (StatisticsUtils.getKills == 0) "None" else StatisticsUtils.getKills().toString(), 3, 20, -1)
+        font.drawString("Wons: " + if (StatisticsUtils.getWons == 0) "None" else StatisticsUtils.getWons().toString(), 3, 30, -1)
         font.drawString("Session Time: " + SessionUtils.getFormatSessionTime(), 3, 50, -1)
         
      return Border(0F, 0F, 155F, 57F)
