@@ -23,6 +23,7 @@ import org.lwjgl.opengl.GL11
 import net.minecraft.client.renderer.GlStateManager
 import java.awt.Color
 import net.ccbluex.liquidbounce.utils.*
+import net.ccbluex.liquidbounce.utils.StatisticsUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.features.module.modules.misc.BanChecker
@@ -60,9 +61,9 @@ class SessionInfo(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F) : Eleme
 
         font.drawString("Username: " + mc.session.username, 3, 10, -1)
         font.drawString("Killed: " + if (StatisticsUtils.getKills == 0) "None" else StatisticsUtils.getKills.toString(), 3, 20, -1)
-        font.drawString("Game wons: " + if (StatisticsUtils.getWins == 0) "None" else StatisticsUtils.getWins.toString(), 3, 30, -1)
+        font.drawString("Wons: " + if (StatisticsUtils.getWins == 0) "None" else StatisticsUtils.getWins.toString(), 3, 30, -1)
         font.drawString("Session Time: " + SessionUtils.getFormatSessionTime(), 3, 50, -1)
         
-     return Border(0F, 0F, 155F, 63F)
+     return Border(0F, 0F, 155F, 57F)
     }
 }
