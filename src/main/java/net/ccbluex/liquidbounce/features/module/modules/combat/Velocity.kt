@@ -44,7 +44,7 @@ class Velocity : Module() {
     private val horizontalExplosionValue = FloatValue("HorizontalExplosion", 0F, 0F, 1F, "x")
     private val verticalExplosionValue = FloatValue("VerticalExplosion", 0F, 0F, 1F, "x")
     private val modeValue = ListValue("Mode", arrayOf("Cancel", "Simple", "AACv4", "AAC4Reduce", "AAC5Reduce", "AAC5.2.0", "AAC", "AACPush", "AACZero",
-            "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit",  "AEMine"), "Cancel") // later
+            "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit",  "AEMine", "HycraftWeird"), "Cancel") // later
 
     private val aac5KillAuraValue = BoolValue("AAC5.2.0-Attack-Only", true, { modeValue.get().equals("aac5.2.0", true) })
 
@@ -304,6 +304,13 @@ class Velocity : Module() {
                     event.cancelEvent()
                 }
 
+                "hycraftweird" -> {
+                    if(mc.thePlayer.onGround) {
+                       mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY - 3.5,mc.thePlayer.posZ,false))
+                       mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ,true))
+                       event.cancelEvent()
+                    }
+                }
                 "phase" -> mc.thePlayer.setPositionAndUpdate(mc.thePlayer.posX, mc.thePlayer.posY + phaseOffsetValue.get().toDouble(), mc.thePlayer.posZ)
 
                 "legit" -> {
