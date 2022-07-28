@@ -5,6 +5,8 @@
  */
 package net.ccbluex.liquidbounce.features.command.commands
 
+import net.ccbluex.liquidbounce.ui.client.hud.element.elements.Notification
+import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.command.Command
 
 class VClipCommand : Command("vclip", emptyArray()) {
