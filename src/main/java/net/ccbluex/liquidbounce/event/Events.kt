@@ -24,6 +24,13 @@ import net.minecraft.util.EnumFacing
 class AttackEvent(val targetEntity: Entity?) : Event()
 
 /**
+ * Called when player killed other entity
+ *
+ * @param targetEntity Attacked entity
+ */
+class EntityKilledEvent(val targetEntity: EntityLivingBase) : Event()
+
+/**
  * Called when minecraft get bounding box of block
  *
  * @param blockPos block position of block
