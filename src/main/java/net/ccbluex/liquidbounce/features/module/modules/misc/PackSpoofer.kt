@@ -44,8 +44,9 @@ class PackSpoofer : Module() {
 
                     if (!file2.isFile() || url.contains("liquidbounce", true)) {
                         if (antiExploit.state && antiExploit.notifyValue.get()) {
-                            ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §6Resourcepack exploit detected.")
-                            ClientUtils.displayChatMessage("§8[§9§lLiquidBounce+§8] §7Exploit target directory: §r$url")
+                            ClientUtils.displayChatMessage("§8[§9§lLiquidBounce++§8] §6Resourcepack directory exploit detected.")
+                            ClientUtils.displayChatMessage("§8[§9§lLiquidBounce++§8] §7Exploit target directory: §r$url")
+                            ClientUtils.displayChatMessage("§8[§9§lLiquidBounce++§8] §9LiquidBounce++ §7Blocked the exploit.")
 
                             throw URISyntaxException(url, "Invalid levelstorage resourcepack path")
                         } else {
