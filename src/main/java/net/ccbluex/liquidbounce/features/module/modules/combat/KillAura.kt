@@ -596,6 +596,10 @@ class KillAura : Module() {
 
             prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
 
+            if(currentTarget!!.isDead) {
+               LiquidBounce.eventManager.callEvent(EntityKilledEvent(if (aacValue.get()) target!! else currentTarget!!))
+            }
+
             if (target == currentTarget)
                 target = null
         }
