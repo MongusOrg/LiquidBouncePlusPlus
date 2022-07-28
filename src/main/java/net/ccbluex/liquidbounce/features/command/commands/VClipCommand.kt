@@ -18,7 +18,8 @@ class VClipCommand : Command("vclip", emptyArray()) {
                 val entity = if(mc.thePlayer.isRiding) mc.thePlayer.ridingEntity else mc.thePlayer
 
                 entity.setPosition(entity.posX, entity.posY + y, entity.posZ)
-                chat("You were teleported.")
+                chat("Teleported ${args[1].toDouble()} blocks.")
+                LiquidBounce.hud.addNotification(Notification("Teleported ${args[1].toDouble()} blocks.", Notification.Type.SUCCESS))
             } catch (ex: NumberFormatException) {
                 chatSyntaxError()
             }
