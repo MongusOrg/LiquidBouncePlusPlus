@@ -596,10 +596,6 @@ class KillAura : Module() {
 
             prevTargetEntities.add(if (aacValue.get()) target!!.entityId else currentTarget!!.entityId)
 
-            if(currentTarget!!.isDead) {
-               LiquidBounce.eventManager.callEvent(EntityKilledEvent(if (aacValue.get()) target!! else currentTarget!!))
-            }
-
             if (target == currentTarget)
                 target = null
         }
@@ -748,6 +744,8 @@ class KillAura : Module() {
             mc.thePlayer.swingItem()
 
         mc.netHandler.addToSendQueue(C02PacketUseEntity(entity, C02PacketUseEntity.Action.ATTACK))
+
+        if(currentTarget!!.isDead() || target!!.isDead()) LiquidBounce.eventManager.callEvent(EntityKilledEvent(if (aacValue.get()) target!! else currentTarget!!))
 
         if (swingValue.get() && swingOrderValue.get() && ViaForge.getInstance().getVersion() > 47)
             mc.thePlayer.swingItem()
