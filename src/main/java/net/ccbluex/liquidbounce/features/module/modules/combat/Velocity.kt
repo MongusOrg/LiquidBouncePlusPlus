@@ -64,6 +64,9 @@ class Velocity : Module() {
     private val legitStrafeValue = BoolValue("LegitStrafe", false, { modeValue.get().equals("legit", true) })
     private val legitFaceValue = BoolValue("LegitFace", true, { modeValue.get().equals("legit", true) })
 
+    // Hycraft
+    private val hycraftY0 = BoolValue("Hycraft-ZeroY", true, { modeValue.get().equals("hycraft", true) })
+
     //add strafe in aac
     private val aacStrafeValue = BoolValue("AACStrafeValue", false, { modeValue.get().equals("aac", true) })
 
@@ -306,9 +309,10 @@ class Velocity : Module() {
 
                 "hycraftweird" -> {
                     if(mc.thePlayer.onGround) {
-                       mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY - 3.5,mc.thePlayer.posZ,false))
-                       mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ,true))
-                       event.cancelEvent()
+                       mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY - 1,mc.thePlayer.posZ,true))
+                       packet.motionX = (packet.getMotionX() * 0F).toInt()
+                       packet.motionY = (if(hycraftY0.get()) packet.getMotionY() * 0F else packet.getMotionY()).toInt()
+                       packet.motionZ = (packet.getMotionZ() * 0F).toInt()
                     } else {
                        event.cancelEvent()
                     }
