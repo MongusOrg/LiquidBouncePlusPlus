@@ -19,6 +19,8 @@ class JelloReborn(inst: Target): TargetStyle("JelloReborn", inst, false) {
     override fun drawTarget(entity: EntityPlayer) {
         updateAnim(entity.health)
 
+        val healthString = "${decimalFormat2.format(entity.health)} Health"
+
         // background
         RenderUtils.newDrawRect(1F, 1F, 145F, 48F, getColor(Color(82, 82, 82)).rgb)
 
@@ -33,7 +35,7 @@ class JelloReborn(inst: Target): TargetStyle("JelloReborn", inst, false) {
             // actual head
             drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 5, 5, 32, 32, 1F - targetInstance.getFadeProgress())
 
-            Fonts.font35.drawString(entity.health + " Health", 41F, 19F, getColor(-1).rgb)
+            Fonts.font35.drawString(healthString, 41F, 19F, getColor(-1).rgb)
         }
     }
 
