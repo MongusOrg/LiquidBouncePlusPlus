@@ -33,11 +33,11 @@ class JelloReborn(inst: Target): TargetStyle("JelloReborn", inst, false) {
             // actual head
             drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 5, 5, 32, 32, 1F - targetInstance.getFadeProgress())
 
-            Fonts.font35.drawString(entity.health.toInt() + " Health", 41F, 19F, getColor(-1).rgb)
+            Fonts.font35.drawString(entity.health + " Health", 41F, 19F, getColor(-1).rgb)
         }
 
     override fun getBorder(entity: EntityPlayer?): Border? {
         return Border(0F, 0F, 146F, 49F)
     }
-
+  }
 }
