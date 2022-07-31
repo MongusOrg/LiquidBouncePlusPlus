@@ -28,14 +28,14 @@ class JelloReborn(inst: Target): TargetStyle("JelloReborn", inst, false) {
         RenderUtils.newDrawRect(4F, 40F, 3.5F + (easingHealth / entity.maxHealth).coerceIn(0F, 1F) * 138F, 43F, targetInstance.barColor.rgb)
 
         // name
-        Fonts.font35.drawString(entity.name, 41F, 12F, getColor(-1).rgb)
+        Fonts.fontSFUI40.drawString(entity.name, 41F, 14F, getColor(-1).rgb)
 
         // Info
         if (mc.netHandler.getPlayerInfo(entity.uniqueID) != null) {
             // actual head
             drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 5, 5, 32, 32, 1F - targetInstance.getFadeProgress())
 
-            Fonts.font35.drawString(healthString, 41F, 19F, getColor(-1).rgb)
+            Fonts.fontSFUI40.drawString(healthString, 41F, 26F, getColor(-1).rgb)
         }
     }
 
