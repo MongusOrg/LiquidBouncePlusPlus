@@ -17,8 +17,8 @@ import net.ccbluex.liquidbounce.value.*
 
 class Mossware(inst: Target): TargetStyle("Mossware", inst, false) {
 
-    val alpha = FloatValue("Background-Alpha", 100F, 0F, 255F, { targetInstance.styleValue.get().equals("mossware", true) })
-    val borderalpha = FloatValue("Border-Alpha", 100F, 0F, 255F, { targetInstance.styleValue.get().equals("mossware", true) })
+    val alpha = IntegerValue("Background-Alpha", 100, 0, 255, { targetInstance.styleValue.get().equals("mossware", true) })
+    val borderalpha = IntegerValue("Border-Alpha", 100, 0, 255, { targetInstance.styleValue.get().equals("mossware", true) })
 
     override fun drawTarget(entity: EntityPlayer) {
         updateAnim(entity.health)
@@ -38,11 +38,11 @@ class Mossware(inst: Target): TargetStyle("Mossware", inst, false) {
         
         // Win lose system
             if ((easingHealth - entity.health) > 0)
-                 font.drawStringWithShadow("Winning", 42, 40, Color(135, 255, 45).rgb)
+                 font.drawStringWithShadow("Winning", 42F, 40F, Color(135, 255, 45).rgb)
             if ((easingHealth - entity.health) < 0)
-                font.drawStringWithShadow("Losing", 42, 40, Color(200, 20, 20).rgb)
+                font.drawStringWithShadow("Losing", 42F, 40F, Color(200, 20, 20).rgb)
             if ((easingHealth - entity.health) == 0.toFloat()) {
-                font.drawStringWithShadow("None", 42, 40, Color(255, 213, 20).rgb)
+                font.drawStringWithShadow("None", 42F, 40F, Color(255, 213, 20).rgb)
             }
 
         // name
