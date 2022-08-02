@@ -17,8 +17,8 @@ import net.ccbluex.liquidbounce.value.*
 
 class Mossware(inst: Target): TargetStyle("Mossware", inst, false) {
 
-    val alpha = IntegerValue("Background-Alpha", 100, 0, 255, { targetInstance.styleValue.get().equals("mossware", true) })
-    val borderalpha = IntegerValue("Border-Alpha", 100, 0, 255, { targetInstance.styleValue.get().equals("mossware", true) })
+    val alpha = FloatValue("Background-Alpha", 100F, 0F, 255F, { targetInstance.styleValue.get().equals("mossware", true) })
+    val borderalpha = FloatValue("Border-Alpha", 100F, 0F, 255F, { targetInstance.styleValue.get().equals("mossware", true) })
 
     override fun drawTarget(entity: EntityPlayer) {
         updateAnim(entity.health)
