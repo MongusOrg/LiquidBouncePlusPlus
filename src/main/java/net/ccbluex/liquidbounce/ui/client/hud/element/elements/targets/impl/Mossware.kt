@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
+import net.ccbluex.liquidbounce.value.*
 
 class Mossware(inst: Target): TargetStyle("Mossware", inst, false) {
 
