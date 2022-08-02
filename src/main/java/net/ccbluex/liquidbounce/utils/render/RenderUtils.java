@@ -188,6 +188,12 @@ public final class RenderUtils extends MinecraftInstance {
         drawRect(x, y, x2, y2, new Color(18F / 255F, 18 / 255F, 18F / 255F, alpha).getRGB());
     }
 
+    public static void drawMosswareRect(final float x, final float y, final float x2, final float y2, final float width,
+                                        final int color1, final int color2) {
+        drawRect(x, y, x2, y2, color2);
+        drawBorder(x, y, x2, y2, width, color1);
+    }
+
     public static void drawRoundedRect(float paramXStart, float paramYStart, float paramXEnd, float paramYEnd, float radius, int color) {
         drawRoundedRect(paramXStart, paramYStart, paramXEnd, paramYEnd, radius, color, true);
     }
