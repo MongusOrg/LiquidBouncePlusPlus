@@ -86,6 +86,7 @@ class Target : Element() {
             Exhibition(this),
             Remix(this),
             Slowly(this),
+            Mossware(this),
             JelloReborn(this)
         ).toTypedArray(), "LiquidBounce")
     }
