@@ -8,12 +8,10 @@ uniform vec2 iResolution;
 #define Y -uv.y*32.
 
 void main( void ) {
-	vec2 uv = ( gl_FragCoord.xy-.5* iResolution.xy )/iResolution.y-.5 ;
-	float t = iTime * 0.1;
+	vec2 uv = (gl_FragCoord.xy+10.1* iResolution.xy )/iResolution.y-10.1 ;
+	float t = iTime * 0.2;
 	
-	float c = S(X/10.+Y/15.)*C(X/20.+t+cos(.05*t+Y/5.));
-	vec3 a_color = vec3(.8, .8, .8) + c;
-	vec3 b_color = vec3(.8, .8, .8);
-	vec3 color = mix(a_color, b_color, 0.7);
-	gl_FragColor = vec4((floor(color * 4.0) / 30.0), 1.0 );
+	float c = S(X/10.+Y/15.)*C(X/20.+t+cos(.10*t+Y/5.0));
+	vec3 col = 0.8 + 0.4*cos(iTime+uv.xyx+vec3(0,2,4));
+	gl_FragColor = vec4(col,1.0);
 }
