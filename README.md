@@ -15,7 +15,7 @@ YouTube: none
 3. Run forge 1.8.9 in your minecraft launcher
 (when minecraft started, you can close it)
 4. Go to your minecraft folder's mods
-   - Windows: %APPDATA%\.minecraft\\mods
+   - Windows: %APPDATA%\\.minecraft\\mods
    - Mac OS: ~/Library/Application Support/minecraft/mods
    - Linux: ~/.minecraft/mods
 5. Put LiquidBounce++ jar in the mods folder
