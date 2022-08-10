@@ -9,6 +9,18 @@ LiquidBounce+ is discontinued, we hope inf will return.
 Website: https://lbplusplus.ga /
 YouTube: none
 
+## How to install
+1. Download [Forge 1.8.9](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html)
+2. Run forge installer jar.
+3. Run forge 1.8.9 in your minecraft launcher
+(when minecraft started, you can close it)
+4. Go to your minecraft folder's mods
+   - Windows: %APPDATA%\.minecraft\\mods
+   - Mac OS: ~/Library/Application Support/minecraft/mods
+   - Linux: ~/.minecraft/mods
+5. Put LiquidBounce++ jar in the mods folder
+6. Run forge 1.8.9 in your minecraft launcher again
+
 ## License
 This project is subject to the [GNU General Public License v3.0](LICENSE). This does only apply for source code located directly in this clean repository. During the development and compilation process, additional source code may be used to which we have obtained no rights. Such code is not covered by the GPL license.
 
@@ -30,13 +42,13 @@ Do the above and share your source code with everyone; just like we do.
 LiquidBounce++ is using Gradle, so make sure that it is installed properly. Instructions can be found on [Gradle's website](https://gradle.org/install/).
 1. Clone the repository using `git clone https://github.com/PlusPlusMC/LiquidBouncePlusPlus`. 
 2. CD into the local repository folder.
-4. Depending on which IDE you are using execute either of the following commands:
+3. Depending on which IDE you are using execute either of the following commands:
     - For IntelliJ: `gradlew setupDevWorkspace idea genIntellijRuns build`
     - For Eclipse: `gradlew setupDevWorkspace eclipse build`
 
     (you can add `-debug` right after `gradlew` if you want to enable debug logging.)
-5. Open the folder as a Gradle project in your IDE.
-6. Select the default run configuration.
+4. Open the folder as a Gradle project in your IDE.
+5. Select the default run configuration.
 
 ## Additional libraries
 ### Mixins
