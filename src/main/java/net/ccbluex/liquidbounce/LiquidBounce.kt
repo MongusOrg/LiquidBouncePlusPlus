@@ -37,7 +37,7 @@ object LiquidBounce {
 
     // Client information
     const val CLIENT_NAME = "LiquidBounce++"
-    const val CLIENT_VERSION = "280722"
+    const val CLIENT_VERSION = "110822"
     const val CLIENT_CREATOR = "CCBlueX, exit-scammed & TheMosKau"
     const val CLIENT_CLOUD = "https://amoclub.github.io/PlusPlusCloud/LiquidBounce"
 
