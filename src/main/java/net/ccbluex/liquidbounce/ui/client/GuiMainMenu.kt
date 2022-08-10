@@ -70,7 +70,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         GL11.glPushMatrix()
         renderSwitchButton()
         renderDarkModeButton()
-        Fonts.font40.drawStringWithShadow("${LiquidBounce.CLIENT_NAME} build ${LiquidBounce.CLIENT_VERSION} | lbpro.ml", 2F, height - 12F, -1)
+        Fonts.font40.drawStringWithShadow("LiquidBounce++ b${LiquidBounce.CLIENT_VERSION} | lbplusplus.ga", 2F, height - 12F, -1)
         Fonts.font40.drawStringWithShadow(creditInfo, width - 3F - Fonts.font40.getStringWidth(creditInfo), height - 12F, -1)
         if (useParallax) moveMouseEffect(mouseX, mouseY, 10F)
         GlStateManager.disableAlpha()
@@ -229,7 +229,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
         else
-            Fonts.font35.drawCenteredString("LiquidBounce++ returned", width / 2F, staticY + 30F, -1)
+            Fonts.font35.drawCenteredString("Hello!, ${mc.session.username}", width / 2F, staticY + 30F, -1)
 
         if (shouldAnimate) {
             if (fade == 0F)
