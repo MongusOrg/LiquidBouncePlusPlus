@@ -96,7 +96,7 @@ public abstract class MixinGuiScreen {
 
         if(GuiBackground.Companion.getEnabled()) {
             if (LiquidBounce.INSTANCE.getBackground() == null) {
-                if(!LiquidBounce.INSTANCE.getDarkmode()) {
+                if(!LiquidBounce.INSTANCE.darkMode) {
                    BackgroundShader.BACKGROUND_SHADER.startShader();
 
                    final Tessellator instance = Tessellator.getInstance();
