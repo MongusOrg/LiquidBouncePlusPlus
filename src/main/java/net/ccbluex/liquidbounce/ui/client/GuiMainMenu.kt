@@ -186,7 +186,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         val staticX = width / 2F - 120F
         val staticY = height / 2F + 20F
 
-        RenderUtils.drawRect(staticX, staticY, staticX + 240F, staticY + 20F, 10F, (if (LiquidBounce.darkMode) Color(0, 0, 0, 100) else Color(255, 255, 255, 100)).rgb)
+        RenderUtils.drawRect(staticX, staticY, staticX + 240F, staticY + 20F, (if (LiquidBounce.darkMode) Color(0, 0, 0, 100) else Color(255, 255, 255, 100)).rgb)
         
         var index: Int = 0
         var shouldAnimate = false
@@ -249,7 +249,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         }
 
         if (fade != 0F)
-            RenderUtils.drawRect(slideX, staticY, slideX + 40F, staticY + 20F, 10F, (if (LiquidBounce.darkMode) Color(0F, 0F, 0F, fade / 100F * 0.6F) else Color(1F, 1F, 1F, fade / 100F * 0.6F)).rgb)
+            RenderUtils.drawRect(slideX, staticY, slideX + 40F, staticY + 20F, (if (LiquidBounce.darkMode) Color(0F, 0F, 0F, fade / 100F * 0.6F) else Color(1F, 1F, 1F, fade / 100F * 0.6F)).rgb)
 
         index = 0
         GlStateManager.disableAlpha()
