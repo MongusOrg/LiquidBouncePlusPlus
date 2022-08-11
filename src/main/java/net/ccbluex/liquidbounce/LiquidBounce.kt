@@ -44,7 +44,7 @@ object LiquidBounce {
     var isStarting = false
     var mainMenuPrep = false
 
-    var darkMode = false
+    public var darkMode = false
 
     // Managers
     lateinit var moduleManager: ModuleManager
