@@ -87,45 +87,7 @@ public abstract class MixinGuiScreen {
     }
 
     /**
-     * @author CCBlueX
-     */
-    @Inject(method = "drawBackground", at = @At("HEAD"), cancellable = true)
-    private void drawDarkBackground(final CallbackInfo callbackInfo) {
-        GlStateManager.disableLighting();
-        GlStateManager.disableFog();
-
-        if(GuiBackground.Companion.getEnabled()) {
-            if (LiquidBounce.INSTANCE.getBackground() == null) {
-                BackgroundDarkShader.BACKGROUNDDARK_SHADER.startShader();
-
-                final Tessellator instance = Tessellator.getInstance();
-                final WorldRenderer worldRenderer = instance.getWorldRenderer();
-                worldRenderer.begin(7, DefaultVertexFormats.POSITION);
-                worldRenderer.pos(0, height, 0.0D).endVertex();
-                worldRenderer.pos(width, height, 0.0D).endVertex();
-                worldRenderer.pos(width, 0, 0.0D).endVertex();
-                worldRenderer.pos(0, 0, 0.0D).endVertex();
-                instance.draw();
-
-                BackgroundDarkShader.BACKGROUNDDARK_SHADER.stopShader();
-            }else{
-                final ScaledResolution scaledResolution = new ScaledResolution(mc);
-                final int width = scaledResolution.getScaledWidth();
-                final int height = scaledResolution.getScaledHeight();
-
-                mc.getTextureManager().bindTexture(LiquidBounce.INSTANCE.getBackground());
-                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                Gui.drawScaledCustomSizeModalRect(0, 0, 0.0F, 0.0F, width, height, width, height, width, height);
-            }
-
-            if (GuiBackground.Companion.getParticles())
-                ParticleUtils.drawParticles(Mouse.getX() * width / mc.displayWidth, height - Mouse.getY() * height / mc.displayHeight - 1);
-            callbackInfo.cancel();
-        }
-    }
-
-    /**
-     * @author CCBlueX
+     * @author CCBlueX & TheMosKau
      */
     @Inject(method = "drawBackground", at = @At("HEAD"), cancellable = true)
     private void drawClientBackground(final CallbackInfo callbackInfo) {
@@ -133,19 +95,34 @@ public abstract class MixinGuiScreen {
         GlStateManager.disableFog();
 
         if(GuiBackground.Companion.getEnabled()) {
-            if (LiquidBounce.INSTANCE.getBackground() == null) {
-                BackgroundShader.BACKGROUND_SHADER.startShader();
+            if (LiquidBounce.INSTANCE.getBackground() == null &&) {
+                if(!LiquidBounce.darkMode) {
+                   BackgroundShader.BACKGROUND_SHADER.startShader();
 
-                final Tessellator instance = Tessellator.getInstance();
-                final WorldRenderer worldRenderer = instance.getWorldRenderer();
-                worldRenderer.begin(7, DefaultVertexFormats.POSITION);
-                worldRenderer.pos(0, height, 0.0D).endVertex();
-                worldRenderer.pos(width, height, 0.0D).endVertex();
-                worldRenderer.pos(width, 0, 0.0D).endVertex();
-                worldRenderer.pos(0, 0, 0.0D).endVertex();
-                instance.draw();
+                   final Tessellator instance = Tessellator.getInstance();
+                   final WorldRenderer worldRenderer = instance.getWorldRenderer();
+                   worldRenderer.begin(7, DefaultVertexFormats.POSITION);
+                   worldRenderer.pos(0, height, 0.0D).endVertex();
+                   worldRenderer.pos(width, height, 0.0D).endVertex();
+                   worldRenderer.pos(width, 0, 0.0D).endVertex();
+                   worldRenderer.pos(0, 0, 0.0D).endVertex();
+                   instance.draw();
 
-                BackgroundShader.BACKGROUND_SHADER.stopShader();
+                   BackgroundShader.BACKGROUND_SHADER.stopShader();
+                } else {
+                   BackgroundDarkShader.BACKGROUNDDARK_SHADER.startShader();
+
+                   final Tessellator instance = Tessellator.getInstance();
+                   final WorldRenderer worldRenderer = instance.getWorldRenderer();
+                   worldRenderer.begin(7, DefaultVertexFormats.POSITION);
+                   worldRenderer.pos(0, height, 0.0D).endVertex();
+                   worldRenderer.pos(width, height, 0.0D).endVertex();
+                   worldRenderer.pos(width, 0, 0.0D).endVertex();
+                   worldRenderer.pos(0, 0, 0.0D).endVertex();
+                   instance.draw();
+
+                   BackgroundDarkShader.BACKGROUNDDARK_SHADER.stopShader();
+                  }
             }else{
                 final ScaledResolution scaledResolution = new ScaledResolution(mc);
                 final int width = scaledResolution.getScaledWidth();
