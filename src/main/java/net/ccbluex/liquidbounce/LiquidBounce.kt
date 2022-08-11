@@ -68,7 +68,7 @@ object LiquidBounce {
 
     var lastTick : Long = 0L
 
-    fun getdarkMode() {
+    fun getdarkMode(): Unit {
         return darkMode
     }
 
