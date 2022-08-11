@@ -44,7 +44,7 @@ object LiquidBounce {
     var isStarting = false
     var mainMenuPrep = false
 
-    public var darkMode = false
+    var darkMode: Boolean = false
 
     // Managers
     lateinit var moduleManager: ModuleManager
@@ -68,7 +68,7 @@ object LiquidBounce {
 
     var lastTick : Long = 0L
 
-    fun getdarkMode(): Unit {
+    fun getdarkMode(): Boolean {
         return darkMode
     }
 
