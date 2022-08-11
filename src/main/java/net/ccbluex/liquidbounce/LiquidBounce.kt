@@ -68,6 +68,10 @@ object LiquidBounce {
 
     var lastTick : Long = 0L
 
+    fun getdarkMode() {
+        return darkMode
+    }
+
     /**
      * Execute if client will be started
      */
