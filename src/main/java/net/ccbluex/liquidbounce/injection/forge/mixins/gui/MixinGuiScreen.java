@@ -95,7 +95,7 @@ public abstract class MixinGuiScreen {
         GlStateManager.disableFog();
 
         if(GuiBackground.Companion.getEnabled()) {
-            if (LiquidBounce.INSTANCE.getBackground() == null &&) {
+            if (LiquidBounce.INSTANCE.getBackground() == null) {
                 if(!LiquidBounce.darkMode) {
                    BackgroundShader.BACKGROUND_SHADER.startShader();
 
