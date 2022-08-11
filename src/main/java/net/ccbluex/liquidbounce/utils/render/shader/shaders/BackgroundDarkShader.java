@@ -17,7 +17,7 @@ public final class BackgroundDarkShader extends Shader {
 
     private float time;
 
-    public BackgroundShader() {
+    public BackgroundDarkShader() {
         super("backgrounddark.frag");
     }
 
