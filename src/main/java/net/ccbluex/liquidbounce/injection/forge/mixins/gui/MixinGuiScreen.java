@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.features.module.modules.render.HUD;
 import net.ccbluex.liquidbounce.ui.client.GuiBackground;
 import net.ccbluex.liquidbounce.utils.render.ParticleUtils;
 import net.ccbluex.liquidbounce.utils.render.shader.shaders.BackgroundShader;
+import net.ccbluex.liquidbounce.utils.render.shader.shaders.BackgroundDarkShader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -95,7 +96,7 @@ public abstract class MixinGuiScreen {
 
         if(GuiBackground.Companion.getEnabled()) {
             if (LiquidBounce.INSTANCE.getBackground() == null) {
-                BackgroundShader.BACKGROUNDDARK_SHADER.startShader();
+                BackgroundDarkShader.BACKGROUNDDARK_SHADER.startShader();
 
                 final Tessellator instance = Tessellator.getInstance();
                 final WorldRenderer worldRenderer = instance.getWorldRenderer();
@@ -106,7 +107,7 @@ public abstract class MixinGuiScreen {
                 worldRenderer.pos(0, 0, 0.0D).endVertex();
                 instance.draw();
 
-                BackgroundShader.BACKGROUNDDARK_SHADER.stopShader();
+                BackgroundDarkShader.BACKGROUNDDARK_SHADER.stopShader();
             }else{
                 final ScaledResolution scaledResolution = new ScaledResolution(mc);
                 final int width = scaledResolution.getScaledWidth();
