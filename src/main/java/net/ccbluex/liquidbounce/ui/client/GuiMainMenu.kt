@@ -66,11 +66,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
             alrUpdate = true
         }
         val creditInfo = "Copyright Mojang AB. Do not distribute!"
-        if(LiquidBounce.darkMode && LiquidBounce.background = null) {
-          drawDarkBackground(0)
-        } else {
-          drawBackground(0)
-        }
+        drawBackground(0)
         GL11.glPushMatrix()
         renderSwitchButton()
         renderDarkModeButton()
