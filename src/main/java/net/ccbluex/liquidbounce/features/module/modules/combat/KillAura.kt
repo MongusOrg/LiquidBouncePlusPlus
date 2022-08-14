@@ -852,7 +852,7 @@ class KillAura : Module() {
             if (rotTest.get())
                 boundingBox = boundingBox.offset(
                         (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
-                        90,
+                        90.toDouble(),
                         (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
                 )
 
