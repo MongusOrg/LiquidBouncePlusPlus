@@ -95,7 +95,7 @@ class KillAura : Module() {
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f, "m")
 
     // Modes
-    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin", "None"), "BackTrack")
+    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin", "Down", "None"), "BackTrack")
 
     private val spinHurtTimeValue = IntegerValue("Spin-HitHurtTime", 10, 0, 10, { rotations.get().equals("spin", true) })
 
@@ -742,7 +742,7 @@ class KillAura : Module() {
         // Attack target
         if (swingValue.get() && (!swingOrderValue.get() || ViaForge.getInstance().getVersion() <= 47)) // version fix
             mc.thePlayer.swingItem()
-
+    
         mc.netHandler.addToSendQueue(C02PacketUseEntity(entity, C02PacketUseEntity.Action.ATTACK))
 
         if(currentTarget!!.isDead) LiquidBounce.eventManager.callEvent(EntityKilledEvent(currentTarget!!))
@@ -751,6 +751,7 @@ class KillAura : Module() {
             mc.thePlayer.swingItem()
 
         if (keepSprintValue.get()) {
+            // mc.netHandler.addToSendQueue(C02PacketUseEntity(entity, C02PacketUseEntity.Action.ATTACK))
             // Critical Effect
             if (mc.thePlayer.fallDistance > 0F && !mc.thePlayer.onGround && !mc.thePlayer.isOnLadder &&
                     !mc.thePlayer.isInWater && !mc.thePlayer.isPotionActive(Potion.blindness) && !mc.thePlayer.isRiding)
@@ -821,6 +822,40 @@ class KillAura : Module() {
                 )
 
             val (_, rotation) = RotationUtils.searchCenter(
+                    boundingBox,
+                    outborderValue.get() && !attackTimer.hasTimePassed(attackDelay / 2),
+                    randomCenterValue.get(),
+                    predictValue.get(),
+                    mc.thePlayer!!.getDistanceToEntityBox(entity) < throughWallsRangeValue.get(),
+                    maxRange,
+                    RandomUtils.nextFloat(minRand.get(), maxRand.get()),
+                    randomCenterNewValue.get()
+            ) ?: return null
+
+            val limitedRotation = RotationUtils.limitAngleChange(RotationUtils.serverRotation, rotation,
+                    (Math.random() * (maxTurnSpeed.get() - minTurnSpeed.get()) + minTurnSpeed.get()).toFloat())
+
+            return limitedRotation
+        }
+        if (rotations.get().equals("Down", ignoreCase = true)){
+            if (maxTurnSpeed.get() <= 0F)
+                return RotationUtils.serverRotation
+
+            if (predictValue.get())
+                boundingBox = boundingBox.offset(
+                        (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posY - entity.prevPosY) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
+                )
+
+            if (rotTest.get())
+                boundingBox = boundingBox.offset(
+                        (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
+                        90f,
+                        (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
+                )
+
+            val (_, rotation) = RotationUtils.downRot(
                     boundingBox,
                     outborderValue.get() && !attackTimer.hasTimePassed(attackDelay / 2),
                     randomCenterValue.get(),
