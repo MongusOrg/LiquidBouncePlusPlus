@@ -136,6 +136,7 @@ class KillAura : Module() {
     private val noHitCheck = BoolValue("NoHitCheck", false, { !rotations.get().equals("none", true) })
 
     private val blinkCheck = BoolValue("BlinkCheck", true)
+    private val rotTest = BoolValue("rotTest", true)
 
     private val priorityValue = ListValue("Priority", arrayOf("Health", "Distance", "Direction", "LivingTime", "Armor", "HurtResistance", "HurtTime", "HealthAbsorption", "RegenAmplifier"), "Distance")
     val targetModeValue = ListValue("TargetMode", arrayOf("Single", "Switch", "Multi"), "Switch")
@@ -851,7 +852,7 @@ class KillAura : Module() {
             if (rotTest.get())
                 boundingBox = boundingBox.offset(
                         (entity.posX - entity.prevPosX) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get()),
-                        90f,
+                        90,
                         (entity.posZ - entity.prevPosZ) * RandomUtils.nextFloat(minPredictSize.get(), maxPredictSize.get())
                 )
 
