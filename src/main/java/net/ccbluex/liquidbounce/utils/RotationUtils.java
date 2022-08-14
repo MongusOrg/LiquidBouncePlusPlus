@@ -1,4 +1,4 @@
-/*
+ll/*
  * LiquidBounce+ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
  * https://github.com/WYSI-Foundation/LiquidBouncePlus/
@@ -185,6 +185,22 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
         ));
     }
 
+    public static Rotation toDownRotation(final Vec3 vec, final boolean predict) {
+        final Vec3 eyesPos = new Vec3(mc.thePlayer.posX, 90, mc.thePlayer.posZ);
+
+        if(predict) eyesPos.addVector(mc.thePlayer.motionX, mc.thePlayer.motionY, mc.thePlayer.motionZ);
+
+        final double diffX = vec.xCoord - eyesPos.xCoord;
+        final double diffY = vec.yCoord - eyesPos.yCoord;
+        final double diffZ = vec.zCoord - eyesPos.zCoord;
+
+        return new Rotation(MathHelper.wrapAngleTo180_float(
+                (float) Math.toDegrees(Math.atan2(diffZ, diffX)) - 90F
+        ), MathHelper.wrapAngleTo180_float(
+                (float) (-Math.toDegrees(Math.atan2(diffY, Math.sqrt(diffX * diffX + diffZ * diffZ))))
+        ));
+    }
+
     /**
      * Get the center of a box
      *
@@ -234,6 +250,44 @@ public final class RotationUtils extends MinecraftInstance implements Listenable
                     final Vec3 vec3 = new Vec3(bb.minX + (bb.maxX - bb.minX) * xSearch,
                             bb.minY + (bb.maxY - bb.minY) * ySearch, bb.minZ + (bb.maxZ - bb.minZ) * zSearch);
                     final Rotation rotation = toRotation(vec3, predict);
+                    final double vecDist = eyes.distanceTo(vec3);
+
+                    if (vecDist > distance)
+                        continue;
+
+                    if(throughWalls || isVisible(vec3)) {
+                        final VecRotation currentVec = new VecRotation(vec3, rotation);
+
+                        if (vecRotation == null || (random ? getRotationDifference(currentVec.getRotation(), randomRotation) < getRotationDifference(vecRotation.getRotation(), randomRotation) : getRotationDifference(currentVec.getRotation()) < getRotationDifference(vecRotation.getRotation())))
+                            vecRotation = currentVec;
+                    }
+                }
+            }
+        }
+
+        return vecRotation;
+    }
+
+    public static VecRotation downRot(final AxisAlignedBB bb, final boolean outborder, final boolean random,
+                                           final boolean predict, final boolean throughWalls, final float distance, final float randomMultiply, final boolean newRandom) {
+        if(outborder) {
+            final Vec3 vec3 = new Vec3(bb.minX + (bb.maxX - bb.minX) * (x * 0.3 + 1.0), bb.minY + (bb.maxY - bb.minY) * (y * 0.3 + 1.0), bb.minZ + (bb.maxZ - bb.minZ) * (z * 0.3 + 1.0));
+            return new VecRotation(vec3, toRotation(vec3, predict));
+        }
+
+        final Vec3 randomVec = new Vec3(bb.minX + (bb.maxX - bb.minX) * x * randomMultiply * (newRandom ? Math.random() : 1), bb.minY + (bb.maxY - bb.minY) * y * randomMultiply * (newRandom ? Math.random() : 1), bb.minZ + (bb.maxZ - bb.minZ) * z * randomMultiply * (newRandom ? Math.random() : 1));
+        final Rotation randomRotation = toRotation(randomVec, predict);
+
+        final Vec3 eyes = mc.thePlayer.getPositionEyes(1F);
+
+        VecRotation vecRotation = null;
+
+        for(double xSearch = 0.15D; xSearch < 0.85D; xSearch += 0.1D) {
+            for (double ySearch = 0.15D; ySearch < 1D; ySearch += 0.1D) {
+                for (double zSearch = 0.15D; zSearch < 0.85D; zSearch += 0.1D) {
+                    final Vec3 vec3 = new Vec3(bb.minX + (bb.maxX - bb.minX) * xSearch,
+                            bb.minY + (bb.maxY - bb.minY) * ySearch, bb.minZ + (bb.maxZ - bb.minZ) * zSearch);
+                    final Rotation rotation = toDownRotation(vec3, predict);
                     final double vecDist = eyes.distanceTo(vec3);
 
                     if (vecDist > distance)
