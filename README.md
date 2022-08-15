@@ -7,7 +7,7 @@ LiquidBounce+ is discontinued, we hope inf will return.
 
 ### Info
 Website: https://lbplusplus.ga /
-YouTube: none
+YouTube: none / Discord: https://discord.gg/EyqcPDEBd8
 
 ## How to install
 1. Download [Forge 1.8.9](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html)
