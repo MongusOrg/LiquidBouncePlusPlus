@@ -24,6 +24,7 @@ import net.ccbluex.liquidbounce.value.FloatValue
 import net.ccbluex.liquidbounce.value.IntegerValue
 import net.ccbluex.liquidbounce.value.ListValue
 import net.minecraft.network.play.client.C03PacketPlayer
+import net.minecraft.network.play.client.C06PacketPlayerPosLook
 import net.minecraft.network.play.server.S12PacketEntityVelocity
 import net.minecraft.network.play.server.S27PacketExplosion
 import net.minecraft.util.MathHelper
@@ -44,7 +45,7 @@ class Velocity : Module() {
     private val horizontalExplosionValue = FloatValue("HorizontalExplosion", 0F, 0F, 1F, "x")
     private val verticalExplosionValue = FloatValue("VerticalExplosion", 0F, 0F, 1F, "x")
     private val modeValue = ListValue("Mode", arrayOf("Cancel", "Simple", "AACv4", "AAC4Reduce", "AAC5Reduce", "AAC5.2.0", "AAC", "AACPush", "AACZero",
-            "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit",  "AEMine", "HycraftWeird"), "Cancel") // later
+            "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit",  "AEMine", "Hycraft"), "Cancel") // later
 
     private val aac5KillAuraValue = BoolValue("AAC5.2.0-Attack-Only", true, { modeValue.get().equals("aac5.2.0", true) })
 
@@ -326,8 +327,8 @@ class Velocity : Module() {
             }
         }
         if (packet is S08PacketPlayerPosLook) {
-            if(modeValue.get().equals("hycraft", true) && hycraftSilentFlag.get() && mc.thePlayer.onGround()) {
-               mc.netHandler.addToSendQueue(C06PacketPlayerPosLook(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch(), true))
+            if(modeValue.get().equals("hycraft", true) && hycraftSilentFlag.get() && mc.thePlayer.onGround) {
+               mc.netHandler.addToSendQueue(C03PacketPlayer.C06PacketPlayerPosLook(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch(), true))
             }
         }
         if (packet is S27PacketExplosion) {
