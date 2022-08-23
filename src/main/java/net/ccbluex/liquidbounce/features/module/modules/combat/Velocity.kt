@@ -66,6 +66,7 @@ class Velocity : Module() {
 
     // Hycraft
     private val hycraftY0 = BoolValue("Hycraft-ZeroY", true, { modeValue.get().equals("hycraft", true) })
+    private val hycraftSilentFlag = BoolValue("Hycraft-SilentFlag", true, { modeValue.get().equals("hycraft", true) })
 
     //add strafe in aac
     private val aacStrafeValue = BoolValue("AACStrafeValue", false, { modeValue.get().equals("aac", true) })
@@ -307,7 +308,7 @@ class Velocity : Module() {
                     event.cancelEvent()
                 }
 
-                "hycraftweird" -> {
+                "hycraft" -> {
                     if(mc.thePlayer.onGround) {
                        mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY - 1,mc.thePlayer.posZ,true))
                        packet.motionX = (packet.getMotionX() * 0F).toInt()
@@ -324,7 +325,11 @@ class Velocity : Module() {
                 }
             }
         }
-
+        if (packet is S08PacketPlayerPosLook) {
+            if(modeValue.get().equals("hycraft", true) && hycraftSilentFlag.get() && mc.thePlayer.onGround()) {
+               mc.netHandler.addToSendQueue(C06PacketPlayerPosLook(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch(), true))
+            }
+        }
         if (packet is S27PacketExplosion) {
             mc.thePlayer.motionX = mc.thePlayer.motionX + packet.func_149149_c() * (horizontalExplosionValue.get())
             mc.thePlayer.motionY = mc.thePlayer.motionY + packet.func_149144_d() * (verticalExplosionValue.get())
