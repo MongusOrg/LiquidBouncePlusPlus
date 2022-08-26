@@ -327,7 +327,7 @@ class Velocity : Module() {
         }
         if (packet is S08PacketPlayerPosLook) {
             if(modeValue.get().equals("hycraft", true) && hycraftSilentFlag.get() && mc.thePlayer.onGround) {
-               PacketUtils.sendPacketNoEvent(C06PacketPlayerPosLook(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch(), true))
+               mc.netHandler.addToSendQueue(C03PacketPlayer.C06PacketPlayerPosLook(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch(), true))
             }
         }
         if (packet is S27PacketExplosion) {
