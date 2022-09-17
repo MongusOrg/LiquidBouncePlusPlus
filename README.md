@@ -19,7 +19,7 @@ YouTube: none / Discord: https://discord.gg/EyqcPDEBd8
 1. Download [Forge 1.8.9](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html)
 2. Run forge installer jar.
 3. Run forge 1.8.9 in your minecraft launcher
-(when minecraft started, you can close it)
+(After minecraft started, you can close it)
 4. Go to your minecraft folder's mods
    - Windows: %APPDATA%\\.minecraft\\mods
    - Mac OS: ~/Library/Application Support/minecraft/mods
