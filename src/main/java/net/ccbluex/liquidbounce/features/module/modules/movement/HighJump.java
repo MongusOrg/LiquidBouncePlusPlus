@@ -25,10 +25,17 @@ import net.minecraft.util.BlockPos;
 public class HighJump extends Module {
 
     private final FloatValue heightValue = new FloatValue("Height", 2F, 1.1F, 10F, "m");
-    private final ListValue modeValue = new ListValue("Mode", new String[] {"Vanilla", "Damage", "AACv3", "DAC" ,"Mineplex", "MatrixWater"}, "Vanilla");
+    private final ListValue modeValue = new ListValue("Mode", new String[] {"Vanilla", "Damage", "AACv3", "DAC" ,"Mineplex", "MatrixWater", "Hycraft"}, "Vanilla");
     private final BoolValue glassValue = new BoolValue("OnlyGlassPane", false);
+    private final BoolValue setPos = new BoolValue("Hycraft-UseSetPosition", true);
 
     public int tick;
+
+    public void onEnable() {
+        if("hycraft".equals(modeValue.get().toLowerCase())) {
+           mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + 5, mc.thePlayer.posZ);
+        }
+    }
 
     @EventTarget
     public void onUpdate(final UpdateEvent event) {
@@ -36,6 +43,15 @@ public class HighJump extends Module {
             return;
 
         switch(modeValue.get().toLowerCase()) {
+            case "hycraft":
+                // $$$ Me and the bois damage highjump $$$
+                if(mc.thePlayer.hurtTime > 1 && mc.thePlayer.hurtTime < 6)
+                   if(setPos.get()) {
+                      mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + heightValue.get(), mc.thePlayer.posZ);
+                   } else {
+                      mc.thePlayer.motionY = heightValue.get();
+                   }
+                break;
             case "damage":
                 if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround)
                     mc.thePlayer.motionY += 0.42F * heightValue.get();
