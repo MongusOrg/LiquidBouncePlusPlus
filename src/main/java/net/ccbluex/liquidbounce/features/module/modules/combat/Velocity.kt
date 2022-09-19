@@ -45,7 +45,7 @@ class Velocity : Module() {
     private val verticalExplosionValue = FloatValue("VerticalExplosion", 0F, 0F, 1F, "x")
     private val modeValue = ListValue("Mode", arrayOf("Cancel", "Simple", "AACv4", "AAC4Reduce", "AAC5Reduce", "AAC5.2.0", "AAC", "AACPush", "AACZero",
             "Reverse", "SmoothReverse", "Jump", "Glitch", "Phase", "Matrix", "Legit",  "AEMine", "Hycraft"), "Cancel") // later
-
+    
     private val aac5KillAuraValue = BoolValue("AAC5.2.0-Attack-Only", true, { modeValue.get().equals("aac5.2.0", true) })
 
     // Affect chance
@@ -65,9 +65,8 @@ class Velocity : Module() {
     private val legitFaceValue = BoolValue("LegitFace", true, { modeValue.get().equals("legit", true) })
 
     // Hycraft
-    private val hycraftY0 = BoolValue("Hycraft-ZeroY", true, { modeValue.get().equals("hycraft", true) })
-    private val hycraftSilentFlag = BoolValue("Hycraft-SilentFlag", true, { modeValue.get().equals("hycraft", true) })
-
+    private val hycraftPacketY = ListValue("Hycraft-YPacketMode", arrayOf("Up", "Down", "None"), "Down") // i was testing
+    
     //add strafe in aac
     private val aacStrafeValue = BoolValue("AACStrafeValue", false, { modeValue.get().equals("aac", true) })
 
@@ -309,25 +308,19 @@ class Velocity : Module() {
                 }
 
                 "hycraft" -> {
-                    if(mc.thePlayer.onGround) {
-                       mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY - 1,mc.thePlayer.posZ,true))
-                       packet.motionX = (packet.getMotionX() * 0F).toInt()
-                       packet.motionY = (if(hycraftY0.get()) packet.getMotionY() * 0F else packet.getMotionY()).toInt()
-                       packet.motionZ = (packet.getMotionZ() * 0F).toInt()
-                    } else {
-                       event.cancelEvent()
+                    when (hycraftPacketY.get().toLowerCase()) {
+                      "up" -> mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY + 1,mc.thePlayer.posZ,true))
+                      "down" -> mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY - 1,mc.thePlayer.posZ,true))
+                      "none" -> mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ,true))
                     }
+                    packet.motionX = (packet.getMotionX() * 0F).toInt()
+                    packet.motionZ = (packet.getMotionZ() * 0F).toInt()
                 }
                 "phase" -> mc.thePlayer.setPositionAndUpdate(mc.thePlayer.posX, mc.thePlayer.posY + phaseOffsetValue.get().toDouble(), mc.thePlayer.posZ)
 
                 "legit" -> {
                     pos = BlockPos(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ)
                 }
-            }
-        }
-        if (packet is S08PacketPlayerPosLook) {
-            if(modeValue.get().equals("hycraft", true) && hycraftSilentFlag.get() && mc.thePlayer.onGround) {
-               mc.netHandler.addToSendQueue(C03PacketPlayer.C06PacketPlayerPosLook(packet.getX(), packet.getY(), packet.getZ(), packet.getYaw(), packet.getPitch(), true))
             }
         }
         if (packet is S27PacketExplosion) {
