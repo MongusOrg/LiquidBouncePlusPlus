@@ -33,9 +33,9 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
     val riseParticle = BoolValue("Rise-Particle", true, { targetInstance.styleValue.get().equals("Rise", true) })
     val riseParticleSpin = BoolValue("Rise-ParticleSpin", true, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     val riseGenerateAmountValue = IntegerValue("Rise-GenerateAmount", 10, 1, 40, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
-    val riseParticleCircle = ListValue("Circle-Particles", arrayOf("Outline", "Solid", "None"), "Solid", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
-    val riseParticleRect = ListValue("Rect-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
-    val riceParticleTriangle = ListValue("Triangle-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
+    val riseParticleCircle = ListValue("Rise-Circle-Particles", arrayOf("Outline", "Solid", "None"), "Solid", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
+    val riseParticleRect = ListValue("Rise-Rect-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
+    val riceParticleTriangle = ListValue("Rise-Triangle-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     
     val riseParticleSpeed = FloatValue("Rise-ParticleSpeed", 0.05F, 0.01F, 0.2F, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     val riseParticleFade = BoolValue("Rise-ParticleFade", true, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
@@ -50,7 +50,7 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
     }
     val riseMaxParticleSize: FloatValue = object : FloatValue("Rise-MaxParticleSize", 2.5f, 0f, 5f, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
-            val v = minParticleSize.get()
+            val v = riseMinParticleSize.get()
             if (v > newValue) set(v)
         }
     }
@@ -76,7 +76,7 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
         if (riseParticle.get()) {
             // adding system
             if (gotDamaged) {
-                for (j in 0..(generateAmountValue.get())) {
+                for (j in 0..(riseGenerateAmountValue.get())) {
                     var parSize = RandomUtils.nextFloat(riseMinParticleSize.get(), riseMaxParticleSize.get())
                     var parDistX = RandomUtils.nextFloat(-riseParticleRange.get(), riseParticleRange.get())
                     var parDistY = RandomUtils.nextFloat(-riseParticleRange.get(), riseParticleRange.get())
@@ -133,7 +133,7 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
         GL11.glEnable(GL11.GL_BLEND)
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
 
-        if (gradientRoundedBarValue.get()) {
+        if (riseGradientRoundedBarValue.get()) {
             if (barWidth > 0F)
                 RenderUtils.fastRoundedRect(5F, 42F, 5F + barWidth, 48F, 3F)
         } else
@@ -143,9 +143,9 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
         Stencil.erase(true)
         when (targetInstance.colorModeValue.get().toLowerCase()) {
             "custom", "health" -> RenderUtils.drawRect(5F, 42F, length - maxHealthLength, 48F, targetInstance.barColor.rgb)
-            else -> for (i in 0..(gradientLoopValue.get() - 1)) {
-                val barStart = i.toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
-                val barEnd = (i + 1).toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
+            else -> for (i in 0..(riseGradientLoopValue.get() - 1)) {
+                val barStart = i.toDouble() / riseGradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
+                val barEnd = (i + 1).toDouble() / riseGradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
                 RenderUtils.drawGradientSideways(5.0 + barStart, 42.0, 5.0 + barEnd, 48.0, getColorAtIndex(i), getColorAtIndex(i + 1))
             }
         }
@@ -157,11 +157,11 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
 
     private fun getColorAtIndex(i: Int): Int {
         return getColor(when (targetInstance.colorModeValue.get()) {
-            "Rainbow" -> RenderUtils.getRainbowOpaque(targetInstance.waveSecondValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get(), i * gradientDistanceValue.get())
-            "Sky" -> RenderUtils.SkyRainbow(i * gradientDistanceValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get())
-            "Slowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), i * gradientDistanceValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get())!!.rgb
-            "Mixer" -> ColorMixer.getMixedColor(i * gradientDistanceValue.get(), targetInstance.waveSecondValue.get()).rgb
-            "Fade" -> ColorUtils.fade(Color(targetInstance.redValue.get(), targetInstance.greenValue.get(), targetInstance.blueValue.get()), i * gradientDistanceValue.get(), 100).rgb
+            "Rainbow" -> RenderUtils.getRainbowOpaque(targetInstance.waveSecondValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get(), i * riseGradientDistanceValue.get())
+            "Sky" -> RenderUtils.SkyRainbow(i * riseGradientDistanceValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get())
+            "Slowly" -> ColorUtils.LiquidSlowly(System.nanoTime(), i * riseGradientDistanceValue.get(), targetInstance.saturationValue.get(), targetInstance.brightnessValue.get())!!.rgb
+            "Mixer" -> ColorMixer.getMixedColor(i * riseGradientDistanceValue.get(), targetInstance.waveSecondValue.get()).rgb
+            "Fade" -> ColorUtils.fade(Color(targetInstance.redValue.get(), targetInstance.greenValue.get(), targetInstance.blueValue.get()), i * riseGradientDistanceValue.get(), 100).rgb
             else -> -1
         }).rgb
     }
@@ -179,7 +179,7 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
         GlStateManager.enableBlend()
         GlStateManager.disableTexture2D()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
-        RenderUtils.fastRect(0F, 0F, 10F + length, 55F, 8F)
+        RenderUtils.fastRoundedRect(0F, 0F, 10F + length, 55F, 8F)
         GlStateManager.enableTexture2D()
         GlStateManager.disableBlend()
     }
