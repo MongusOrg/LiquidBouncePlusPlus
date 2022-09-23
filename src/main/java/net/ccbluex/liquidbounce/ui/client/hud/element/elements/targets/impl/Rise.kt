@@ -35,7 +35,7 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
     val riseGenerateAmountValue = IntegerValue("Rise-GenerateAmount", 10, 1, 40, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     val riseParticleCircle = ListValue("Rise-Circle-Particles", arrayOf("Outline", "Solid", "None"), "Solid", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     val riseParticleRect = ListValue("Rise-Rect-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
-    val riceParticleTriangle = ListValue("Rise-Triangle-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
+    val riseParticleTriangle = ListValue("Rise-Triangle-Particles", arrayOf("Outline", "Solid", "None"), "Outline", { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     
     val riseParticleSpeed = FloatValue("Rise-ParticleSpeed", 0.05F, 0.01F, 0.2F, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     val riseParticleFade = BoolValue("Rise-ParticleFade", true, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
