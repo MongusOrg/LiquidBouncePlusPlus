@@ -86,6 +86,8 @@ class Target : Element() {
             Exhibition(this),
             Remix(this),
             Slowly(this),
+            Moon(this),
+            MoonLatest(this),
             Astolfo(this),
             Mossware(this),
             JelloReborn(this)
