@@ -83,6 +83,7 @@ class Target : Element() {
             LiquidBounce(this),
             Chill(this),
             Rice(this),
+            Rise(this),
             Exhibition(this),
             Remix(this),
             Slowly(this),
