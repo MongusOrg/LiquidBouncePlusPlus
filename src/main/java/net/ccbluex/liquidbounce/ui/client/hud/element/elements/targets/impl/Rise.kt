@@ -44,7 +44,7 @@ class Rise(inst: Target): TargetStyle("Rise", inst, true) {
     val riseParticleRange = FloatValue("Rise-ParticleRange", 50f, 0f, 50f, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() })
     val riseMinParticleSize: FloatValue = object : FloatValue("Rise-MinParticleSize", 0.5f, 0f, 5f, { targetInstance.styleValue.get().equals("Rise", true) && riseParticle.get() }) {
         override fun onChanged(oldValue: Float, newValue: Float) {
-            val v = maxParticleSize.get()
+            val v = riseMaxParticleSize.get()
             if (v < newValue) set(v)
         }
     }
