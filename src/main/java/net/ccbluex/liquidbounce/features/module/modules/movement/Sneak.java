@@ -21,7 +21,7 @@ import net.minecraft.network.play.client.C0BPacketEntityAction;
 @ModuleInfo(name = "Sneak", description = "Automatically sneaks all the time.", category = ModuleCategory.MOVEMENT)
 public class Sneak extends Module {
 
-    public final ListValue modeValue = new ListValue("Mode", new String[] {"Legit", "Vanilla", "Switch", "MineSecure", "AAC3.6.4"}, "MineSecure");
+    public final ListValue modeValue = new ListValue("Mode", new String[] {"Legit", "Packet", "Switch", "MineSecure", "AAC3.6.4"}, "MineSecure");
     public final BoolValue stopMoveValue = new BoolValue("StopMove", false);
 
     private boolean sneaked;
@@ -31,7 +31,7 @@ public class Sneak extends Module {
         if(mc.thePlayer == null)
             return;
 
-        if("vanilla".equalsIgnoreCase(modeValue.get())) {
+        if("packet".equalsIgnoreCase(modeValue.get())) {
             mc.getNetHandler().addToSendQueue(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));
         }
     }
@@ -92,7 +92,7 @@ public class Sneak extends Module {
 
         switch(modeValue.get().toLowerCase()) {
             case "legit":
-            case "vanilla":
+            case "packet":
             case "switch":
             case "aac3.6.4":
                 if(!GameSettings.isKeyDown(mc.gameSettings.keyBindSneak))

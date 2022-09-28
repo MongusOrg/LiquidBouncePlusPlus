@@ -91,19 +91,19 @@ class ClientRichPresence : MinecraftInstance() {
         builder.setStartTimestamp(timestamp)
 
         // Check assets contains logo and set logo
-        if (assets.containsKey("new"))
-            builder.setLargeImage(assets["new"], "build ${LiquidBounce.CLIENT_VERSION}")
+        if (assets.containsKey("text"))
+            builder.setLargeImage(assets["text"], "In game name: " + mc.session.username)
 
         val serverData = mc.currentServerData
 
         // Set display infos
         builder.setDetails(if (Display.isActive()) (if (mc.isIntegratedServerRunning || serverData != null) "Playing" else "Idle...") else "AFK")
-        builder.setState("Name: ${mc.session.username}")
+        builder.setState("Using version: " + LiquidBounce.CLIENT_VERSION)
 
         if (mc.isIntegratedServerRunning || serverData != null) 
-            builder.setSmallImage(assets["astolfo"], "${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP} - Enabled ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size}.")
+            builder.setSmallImage(assets["sus"], "${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP}")
         else
-            builder.setSmallImage(assets["astolfo"], "Enabled ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size}.")
+            builder.setSmallImage(assets["sus"], "Enabled ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size}.")
 
         // Check ipc client is connected and send rpc
         if (ipcClient?.status == PipeStatus.CONNECTED)
@@ -126,8 +126,8 @@ class ClientRichPresence : MinecraftInstance() {
     }
 
     private fun loadConfiguration() {
-        appID = 874149528486445106L
-        assets["new"] = "new"
-        assets["astolfo"] = "astolfo"
+        appID = 738753870628651018L
+        assets["text"] = "text"
+        assets["sus"] = "sus"
     }
 }
