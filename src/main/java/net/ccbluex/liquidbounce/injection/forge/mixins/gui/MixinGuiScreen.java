@@ -110,7 +110,7 @@ public abstract class MixinGuiScreen {
 
                    BackgroundShader.BACKGROUND_SHADER.stopShader();
                 } else {
-                   BackgroundDarkShader.BACKGROUNDDARK_SHADER.startShader();
+                   BackgroundShader.BACKGROUND_SHADER.startShader();
 
                    final Tessellator instance = Tessellator.getInstance();
                    final WorldRenderer worldRenderer = instance.getWorldRenderer();
@@ -121,7 +121,7 @@ public abstract class MixinGuiScreen {
                    worldRenderer.pos(0, 0, 0.0D).endVertex();
                    instance.draw();
 
-                   BackgroundDarkShader.BACKGROUNDDARK_SHADER.stopShader();
+                   BackgroundShader.BACKGROUND_SHADER.stopShader();
                   }
             }else{
                 final ScaledResolution scaledResolution = new ScaledResolution(mc);
