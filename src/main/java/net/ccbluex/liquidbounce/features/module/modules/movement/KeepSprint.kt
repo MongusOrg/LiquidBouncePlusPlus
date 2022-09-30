@@ -19,7 +19,7 @@ class KeepSprint: Module() {
 	var motZ = 0.0
 	
 	@EventTarget
-    fun onUpdate(event: EventUpdate) {
+    fun onUpdate(event: UpdateEvent) {
     	if(attac) {
     	    mc.thePlayer.motionX = motX
             mc.thePlayer.motionZ = motZ
