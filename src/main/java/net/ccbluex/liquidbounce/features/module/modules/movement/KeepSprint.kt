@@ -15,11 +15,11 @@ import net.minecraft.network.play.client.C0BPacketEntityAction
 @ModuleInfo(name = "KeepSprint", spacedName = "Keep Sprint", description = "Keep you sprint. Hypixel auto ban.", category = ModuleCategory.MOVEMENT)
 class KeepSprint: Module() {
 	var attac = false
-	val motX = 0.0
-	val motZ = 0.0
+	var motX = 0.0
+	var motZ = 0.0
 	
 	@EventTarget
-    fun onUpdate(event EventUpdate) {
+    fun onUpdate(event: EventUpdate) {
     	if(attac) {
     	    mc.thePlayer.motionX = motX
             mc.thePlayer.motionZ = motZ
