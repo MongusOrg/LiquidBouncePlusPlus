@@ -14,7 +14,7 @@ import net.minecraft.entity.Entity;
 public final class ServerUtils extends MinecraftInstance {
 
     public static ServerData serverData;
-    public string server = "none";
+    public String server = "none";
 
     public static void connectToLastServer() {
         if(serverData == null)
