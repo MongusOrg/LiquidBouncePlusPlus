@@ -24,13 +24,8 @@ jobs:
           job-id: jdk8
           arguments: build --no-build-cache
           gradle-version: wrapper
-      - name: Set artifacts output
-        id: vars
-        run: echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-      - name: Rename build artifacts
-        run: mv build/libs/liquidbounceplus-final.jar build/libs/liquidbounceplusplus-${{ steps.vars.outputs.sha_short }}.jar
-      - name: Upload build artifacts
+      - name: Upload LiquidBounce++ Jar
         uses: actions/upload-artifact@v2
         with:
-          name: lbplusplus-${{ steps.vars.outputs.sha_short }}
-          path: build/libs/liquidbounceplusplus-${{ steps.vars.outputs.sha_short }}.jar
+          name: lbplusplus-0.3
+          path: build/libs/liquidbounceplusplus-0.3.jar
