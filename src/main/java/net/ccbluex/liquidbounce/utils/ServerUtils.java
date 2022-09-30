@@ -14,22 +14,12 @@ import net.minecraft.entity.Entity;
 public final class ServerUtils extends MinecraftInstance {
 
     public static ServerData serverData;
-    public String server = "none";
 
     public static void connectToLastServer() {
         if(serverData == null)
             return;
 
         mc.displayGuiScreen(new GuiConnecting(new GuiMultiplayer(new GuiMainMenu()), mc, serverData));
-    }
-    
-    public static void getServer() {
-         if (mc.theWorld.isRemote) {
-             final ServerData serverData = mc.getCurrentServerData();
-             if(serverData != null)
-                 server = serverData.serverIP;
-         }
-         return server;
     }
 
     public static String getRemoteIp() {
