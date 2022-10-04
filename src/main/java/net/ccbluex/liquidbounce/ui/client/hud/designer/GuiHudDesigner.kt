@@ -18,6 +18,8 @@ class GuiHudDesigner : GuiScreen() {
 
     var selectedElement: Element? = null
     private var buttonAction = false
+    var keyUp = false
+    var keyDown = false
 
     override fun initGui() {
         Keyboard.enableRepeatEvents(true)
@@ -36,15 +38,16 @@ class GuiHudDesigner : GuiScreen() {
 
         editorPanel.drawPanel(mouseX, mouseY, wheel)
 
-        if (wheel != 0) {
-            for (element in LiquidBounce.hud.elements) {
-                if (element.isInBorder(mouseX / element.scale - element.renderX,
-                                mouseY / element.scale - element.renderY)) {
-                    element.scale = element.scale + if (wheel > 0) 0.05f else -0.05f
-                    break
-                }
+         for (element in LiquidBounce.hud.elements) {
+            if (element.isInBorder(mouseX / element.scale - element.renderX,
+                             mouseY / element.scale - element.renderY)) {
+                 if (wheel != 0) element.scale = element.scale + if (wheel > 0) 0.05f else -0.05f
+                 
+                 if (keyUp) element.scale = element.scale + 0.05f
+                 if (keyDown) element.scale = element.scale - 0.05f
+                 break
             }
-        }
+         }
         super.drawScreen(mouseX, mouseY, partialTicks)
     }
 
@@ -89,6 +92,18 @@ class GuiHudDesigner : GuiScreen() {
 
     override fun keyTyped(typedChar: Char, keyCode: Int) {
         when (keyCode) {
+        	Keyboard.KEY_UP -> {
+        	    keyUp = true
+            } else {
+            	keyUp = false
+           }
+            
+            Keyboard.KEY_DOWN -> {
+            	keyDown = true
+            } else {
+                keyDown = false
+            }
+           
             Keyboard.KEY_DELETE -> if (Keyboard.KEY_DELETE == keyCode && selectedElement != null)
                 LiquidBounce.hud.removeElement(selectedElement!!)
 
