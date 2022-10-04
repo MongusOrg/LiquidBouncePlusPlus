@@ -93,16 +93,20 @@ class GuiHudDesigner : GuiScreen() {
     override fun keyTyped(typedChar: Char, keyCode: Int) {
         when (keyCode) {
         	Keyboard.KEY_UP -> {
-        	    keyUp = true
-            } else {
-            	keyUp = false
-           }
+        	    if (Keyboard.KEY_UP == keyCode) {
+        	         keyUp = true
+                } else {
+                	keyUp = false
+                }
+            }
             
             Keyboard.KEY_DOWN -> {
-            	keyDown = true
-            } else {
-                keyDown = false
-            }
+            	if (Keyboard.KEY_DOWN == keyCode) {
+        	         keyDown = true
+                } else {
+                	keyDown = false
+                }
+           }
            
             Keyboard.KEY_DELETE -> if (Keyboard.KEY_DELETE == keyCode && selectedElement != null)
                 LiquidBounce.hud.removeElement(selectedElement!!)
