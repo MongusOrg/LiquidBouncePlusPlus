@@ -18,9 +18,8 @@ class GuiHudDesigner : GuiScreen() {
 
     var selectedElement: Element? = null
     private var buttonAction = false
-    var keyUp = false
-    var keyDown = false
-
+    val wheel = 0
+    
     override fun initGui() {
         Keyboard.enableRepeatEvents(true)
         editorPanel = EditorPanel(this, width / 2, height / 2)
@@ -34,20 +33,25 @@ class GuiHudDesigner : GuiScreen() {
         if (!LiquidBounce.hud.elements.contains(selectedElement))
             selectedElement = null
 
-        val wheel = Mouse.getDWheel()
+        wheel = Mouse.getDWheel()
 
         editorPanel.drawPanel(mouseX, mouseY, wheel)
-
+        
+    if (wheel != 0) {
          for (element in LiquidBounce.hud.elements) {
             if (element.isInBorder(mouseX / element.scale - element.renderX,
                              mouseY / element.scale - element.renderY)) {
-                 if (wheel != 0) element.scale = element.scale + if (wheel > 0) 0.05f else -0.05f
+                 element.scale = element.scale + if (wheel > 0) 0.05f else -0.05f
                  
-                 if (keyUp) element.scale = element.scale + 0.05f
-                 if (keyDown) element.scale = element.scale - 0.05f
+                 if (Keyboard.isKeyDown(200)) {
+                      wheel = 1
+                 } else if (Keyboard.isKeyDown(208)) {
+                      wheel = -1
+                 } 
                  break
             }
          }
+    }
         super.drawScreen(mouseX, mouseY, partialTicks)
     }
 
@@ -92,22 +96,10 @@ class GuiHudDesigner : GuiScreen() {
 
     override fun keyTyped(typedChar: Char, keyCode: Int) {
         when (keyCode) {
-        	Keyboard.KEY_UP -> {
-        	    if (Keyboard.KEY_UP == keyCode) {
-        	         keyUp = true
-                } else {
-                	keyUp = false
-                }
-            }
+        	Keyboard.KEY_UP -> wheel = 1
             
-            Keyboard.KEY_DOWN -> {
-            	if (Keyboard.KEY_DOWN == keyCode) {
-        	         keyDown = true
-                } else {
-                	keyDown = false
-                }
-           }
-           
+            Keyboard.KEY_DOWN -> wheel = -1
+            
             Keyboard.KEY_DELETE -> if (Keyboard.KEY_DELETE == keyCode && selectedElement != null)
                 LiquidBounce.hud.removeElement(selectedElement!!)
 
