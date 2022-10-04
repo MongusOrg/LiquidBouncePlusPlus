@@ -18,7 +18,7 @@ class GuiHudDesigner : GuiScreen() {
 
     var selectedElement: Element? = null
     private var buttonAction = false
-    val wheel = 0
+    var wheel = 0
     
     override fun initGui() {
         Keyboard.enableRepeatEvents(true)
