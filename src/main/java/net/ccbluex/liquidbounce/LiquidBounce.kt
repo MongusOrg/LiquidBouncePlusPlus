@@ -1,7 +1,7 @@
 /*
- * LiquidBounce+ Hacked Client
+ * LiquidBounce++ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * https://github.com/PlusPlusMC/LiquidBouncePlusPlus/
  */
 package net.ccbluex.liquidbounce
 
@@ -38,7 +38,7 @@ object LiquidBounce {
     // Client information
     const val CLIENT_NAME = "LiquidBounce++"
     const val CLIENT_VERSION = "0.3"
-    const val CLIENT_CREATOR = "CCBlueX, exit-scammed & TheMosKau"
+    const val CLIENT_CREATOR = "CCBlueX, exit-scammed, and PlusPlusMC"
     const val CLIENT_CLOUD = "https://amoclub.github.io/PlusPlusCloud/LiquidBounce"
 
     var isStarting = false
