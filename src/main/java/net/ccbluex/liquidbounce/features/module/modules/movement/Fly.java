@@ -171,6 +171,7 @@ public class Fly extends Module {
 
     // General
     private final BoolValue resetMotionValue = new BoolValue("ResetMotion", true);
+    private final BoolValue sendPlacement = new BoolValue("SendPlacement", false);
 
     // Visuals
     private final BoolValue fakeDmgValue = new BoolValue("FakeDamage", true);
@@ -272,6 +273,7 @@ public class Fly extends Module {
     
     @Override
     public void onEnable() {
+  
         if(mc.thePlayer == null)
             return;
 
@@ -294,6 +296,10 @@ public class Fly extends Module {
         lastPitch = mc.thePlayer.rotationPitch;
 
         final String mode = modeValue.get();
+        
+        if(sendPlacement.get()) {
+        	mc.netHandler.addToSendQueue(new C08PacketPlayerBlockPlacement(BlockPos(mc.thePlayer), -1, null, 0, 0, 0));
+        }
 
         boostTicks = 0;
         dmgCooldown = 0;
@@ -307,7 +313,7 @@ public class Fly extends Module {
         wdTick = 0;
 
         switch (mode.toLowerCase()) {
-            case "ncp":
+               case "ncp":
                 mc.thePlayer.motionY = -ncpMotionValue.get();
 
                 if(mc.gameSettings.keyBindSneak.isKeyDown())
