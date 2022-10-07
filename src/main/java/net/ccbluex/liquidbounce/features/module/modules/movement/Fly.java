@@ -1,7 +1,7 @@
 /*
- * LiquidBounce+ Hacked Client
+ * LiquidBounce++ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * https://github.com/PlusPlusMC/LiquidBouncePlusPlus/
  */
 package net.ccbluex.liquidbounce.features.module.modules.movement;
 
@@ -298,7 +298,7 @@ public class Fly extends Module {
         final String mode = modeValue.get();
         
         if(sendPlacement.get()) {
-        	mc.netHandler.addToSendQueue(new C08PacketPlayerBlockPlacement(BlockPos(mc.thePlayer), -1, null, 0, 0, 0));
+        	PacketUtils.sendPacketNoEvent(new C08PacketPlayerBlockPlacement(BlockPos(mc.thePlayer), -1, null, 0, 0, 0));
         }
 
         boostTicks = 0;
