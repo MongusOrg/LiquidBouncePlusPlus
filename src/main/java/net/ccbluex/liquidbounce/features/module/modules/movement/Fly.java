@@ -298,7 +298,7 @@ public class Fly extends Module {
         final String mode = modeValue.get();
         
         if(sendPlacement.get()) {
-        	PacketUtils.sendPacketNoEvent(new C08PacketPlayerBlockPlacement(BlockPos(mc.thePlayer), -1, null, 0, 0, 0));
+        	// PacketUtils.sendPacketNoEvent(new C08PacketPlayerBlockPlacement(BlockPos(mc.thePlayer), -1, null, 0, 0, 0));
         }
 
         boostTicks = 0;
