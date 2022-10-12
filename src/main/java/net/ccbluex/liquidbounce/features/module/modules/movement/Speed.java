@@ -96,14 +96,20 @@ public class Speed extends Module {
             new HiveHop(),
             new MineplexGround(),
             new TeleportCubeCraft(),
-        
+
             // Verus
             new VerusHop(),
             new VerusLowHop(),
             new VerusHard()
+
+            // Matrix
+            new MatrixSemiStrafe(),
+            new MatrixTimerBalance(),
+            new MatrixMultiply(),
+            new MatrixDynamic()
     };
 
-    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Spectre", "Hypixel", "Verus", "Custom", "Other"}, "NCP") {
+    public final ListValue typeValue = new ListValue("Type", new String[]{"NCP", "AAC", "Spartan", "Spectre", "Hypixel", "Verus", "Matrix", "Custom", "Other"}, "NCP") {
 
         @Override
         protected void onChange(final String oldValue, final String newValue) {
@@ -227,6 +233,21 @@ public class Speed extends Module {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
             if(getState())
+                onEnable();
+        }
+    };
+
+    public final ListValue matrixModeValue = new ListValue("Matrix-Mode", new String[]{"MatrixSemiStrafe", "MatrixTimerBalance", "MatrixMultiply", "MatrixDynamic"}, "MatrixSemiStrafe", () -> typeValue.get().equalsIgnoreCase("matrix")) {
+
+        @Override
+        protected void onChange(final String oldValue, final String newValue) {
+            if (getState())
+                onDisable();
+        }
+
+        @Override
+        protected void onChanged(final String oldValue, final String newValue) {
+            if (getState())
                 onEnable();
         }
     };
@@ -397,6 +418,9 @@ public class Speed extends Module {
             case "Verus":
             mode = verusModeValue.get();
             break;
+            case "Matrix":
+            mode = matrixModeValue.get();
+            break;
         }
         return mode;
     }
@@ -429,6 +453,9 @@ public class Speed extends Module {
             break;
             case "Other":
             mode = otherModeValue.get();
+            break;
+            case "Matrix":
+            mode = matrixModeValue.get();
             break;
         }
         return mode;
