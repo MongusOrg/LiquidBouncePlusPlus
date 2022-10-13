@@ -1,7 +1,7 @@
 /*
- * LiquidBounce+ Hacked Client
+ * LiquidBounce++ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * https://github.com/PlusPlusMC/LiquidBouncePlusPlus/
  */
 package net.ccbluex.liquidbounce.features.module.modules.render;
 
@@ -18,9 +18,9 @@ public class Animations extends Module {
 
     // some ListValue
     public static final ListValue Sword = new ListValue("Style", new String[]{
-            "Normal", "SlideDown1", "SlideDown2" , "Slide", "Minecraft", "Remix", "Exhibition",
-            "Avatar", "Tap1", "Tap2", "Poke", "Push1", "Push2" , "Up" , "Shield", "Akrien", "VisionFX", "Swong",
-            "SigmaOld", "ETB", "Rotate360", "SmoothFloat", "Strange" , "Reverse", "Zoom", "Move", "Stab", "Jello"
+            "Normal", "Slidedown", "Slidedown2", "Slide", "Minecraft", "Remix", "Exhibition", "Exhibition2",
+            "Avatar", "Swang", "Tap", "Tap2", "Poke", "Push", "Push2", "Up", "Shield", "Akrien", "VisionFX", "Swong", "Swank",
+            "SigmaOld", "ETB", "Rotate360", "SmoothFloat", "Strange", "Reverse", "Zoom", "Move", "Stab", "Jello", "1.7", "Flux", "Stella", "Tifality", "OldExhibition"
         }, "Minecraft");
 
     // item general scale
