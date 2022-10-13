@@ -480,7 +480,7 @@ public abstract class MixinItemRenderer {
                                     this.func_178103_d();
                                     break;
                                 }
-                                case "Exhibition1": {
+                                case "Exhibition": {
                                     float var9 = MathHelper.sin(MathHelper.sqrt_float(this.mc.thePlayer.getSwingProgress(partialTicks)) * 3.1415927F);
                                     GL11.glTranslated(-0.03D, 0.23D, 0.0D);
                                     this.transformFirstPersonItem(f / 2.5F, 0.0f);
@@ -823,9 +823,7 @@ public abstract class MixinItemRenderer {
                             rotateItemAnim();
                 }
             } else {
-                if (Animations.swing.get()) {
-                    this.doItemUsedTransformations(f1);
-                }
+                this.doItemUsedTransformations(f1);
                 this.transformFirstPersonItem(f, f1);
                 if (LiquidBounce.moduleManager.getModule(Animations.class).getState() && Animations.RotateItems.get())
                     rotateItemAnim();
