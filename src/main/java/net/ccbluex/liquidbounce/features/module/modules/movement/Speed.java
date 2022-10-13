@@ -100,7 +100,7 @@ public class Speed extends Module {
             // Verus
             new VerusHop(),
             new VerusLowHop(),
-            new VerusHard()
+            new VerusHard(),
 
             // Matrix
             new MatrixSemiStrafe(),
