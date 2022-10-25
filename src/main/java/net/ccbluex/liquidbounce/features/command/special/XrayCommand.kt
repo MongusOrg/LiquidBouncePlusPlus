@@ -106,21 +106,21 @@ class XrayCommand : Command("xray", emptyArray()) {
         return when (args.size) {
             1 -> {
                 arrayOf("add", "remove", "list")
-                    .map { it.toLowerCase() }
+                    .map { it.lowercase() }
                     .filter { it.startsWith(args[0], true) }
             }
             2 -> {
-                when (args[0].toLowerCase()) {
+                when (args[0].lowercase()) {
                     "add" -> {
                         return Block.blockRegistry.keys
-                            .map { it.resourcePath.toLowerCase() }
-                            .filter { Block.getBlockFromName(it.toLowerCase()) != null }
+                            .map { it.resourcePath.lowercase() }
+                            .filter { Block.getBlockFromName(it.lowercase()) != null }
                             .filter { !xRay.xrayBlocks.contains(Block.getBlockFromName(it.toLowerCase())) }
                             .filter { it.startsWith(args[1], true) }
                     }
                     "remove" -> {
                         return Block.blockRegistry.keys
-                            .map { it.resourcePath.toLowerCase() }
+                            .map { it.resourcePath.lowercase() }
                             .filter { xRay.xrayBlocks.contains(Block.getBlockFromName(it)) }
                             .filter { it.startsWith(args[1], true) }
                     }
