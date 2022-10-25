@@ -14,7 +14,7 @@ import net.ccbluex.liquidbounce.utils.SettingsUtils
 import net.ccbluex.liquidbounce.utils.misc.HttpUtils
 import kotlin.concurrent.thread
 
-class AutoSettingsCommand : Command("onlineconfig", arrayOf("setting", "autosetting", "autosettings", "settings", "autosetting")) {
+class AutoSettingsCommand : Command("onlineconfig", arrayOf("autosetting", "autosettings", "onlineconfigs")) {
     private val loadingLock = Object()
     private var autoSettingFiles: MutableList<String>? = null
 
