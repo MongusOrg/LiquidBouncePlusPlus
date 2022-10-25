@@ -20,7 +20,7 @@ import java.io.IOException
 import kotlin.concurrent.thread
 import org.apache.commons.io.FileUtils
 
-class ThemeCommand : Command("theme", arrayOf("thememanager", "tm", "themes")) {
+class AutoThemeCommand : Command("autotheme", arrayOf("autothememanager", "atm", "autothemes")) {
 
     private val loadingLock = Object()
     private var onlineThemes: MutableList<String>? = null
