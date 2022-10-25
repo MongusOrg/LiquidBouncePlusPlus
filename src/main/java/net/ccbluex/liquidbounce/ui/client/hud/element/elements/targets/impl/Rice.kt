@@ -141,7 +141,7 @@ class Rice(inst: Target): TargetStyle("Rice", inst, true) {
 
         GL11.glDisable(GL11.GL_BLEND)
         Stencil.erase(true)
-        when (targetInstance.colorModeValue.get().toLowerCase()) {
+        when (targetInstance.colorModeValue.get().lowercase()) {
             "custom", "health" -> RenderUtils.drawRect(5F, 42F, length - maxHealthLength, 48F, targetInstance.barColor.rgb)
             else -> for (i in 0..(gradientLoopValue.get() - 1)) {
                 val barStart = i.toDouble() / gradientLoopValue.get().toDouble() * (length - 5F - maxHealthLength).toDouble()
