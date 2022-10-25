@@ -1,7 +1,7 @@
 /*
- * LiquidBounce+ Hacked Client
+ * LiquidBounce++ Hacked Client
  * A free open source mixin-based injection hacked client for Minecraft using Minecraft Forge.
- * https://github.com/WYSI-Foundation/LiquidBouncePlus/
+ * https://github.com/PlusPlusMC/LiquidBouncePlusPlus/
  */
 package net.ccbluex.liquidbounce.features.module.modules.render;
 
@@ -29,7 +29,7 @@ import java.awt.*;
 
 @ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT, forceNoSound = true, onlyEnable = true)
 public class ClickGUI extends Module {
-    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White"}, "Null") {
+    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White", "Astolfo", "Test", "Novoline", "Flux"}, "Null") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
             updateStyle();
@@ -82,12 +82,22 @@ public class ClickGUI extends Module {
 
     @Override
     public void onEnable() {
-        updateStyle();
-
-        LiquidBounce.clickGui.progress = 0;
-        LiquidBounce.clickGui.slide = 0;
-        LiquidBounce.clickGui.lastMS = System.currentTimeMillis();
-        mc.displayGuiScreen(LiquidBounce.clickGui);
+        if (styleValue.get().contains("Novoline")) {
+            mc.displayGuiScreen(new ClickyUI());
+            this.setState(false);
+        } else {
+            if (styleValue.get().contains("Flux")) {
+                mc.displayGuiScreen(new FluxClassic());
+                this.setState(false);
+            } else {
+                updateStyle();
+                mc.displayGuiScreen(LiquidBounce.clickGui);
+                LiquidBounce.clickGui.progress = 0;
+                LiquidBounce.clickGui.slide = 0;
+                LiquidBounce.clickGui.lastMS = System.currentTimeMillis();
+                mc.displayGuiScreen(LiquidBounce.clickGui);
+            }
+        }
     }
 
     private void updateStyle() {
@@ -106,6 +116,12 @@ public class ClickGUI extends Module {
                 break;
             case "white":
                 LiquidBounce.clickGui.style = new WhiteStyle();
+                break;
+            case "astolfo":
+                LiquidBounce.clickGui.style = new AstolfoStyle();
+                break;
+            case "test":
+                LiquidBounce.clickGui.style = new TestStyle();
                 break;
         }
     }
