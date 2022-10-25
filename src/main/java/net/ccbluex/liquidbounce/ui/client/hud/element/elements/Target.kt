@@ -90,7 +90,8 @@ class Target : Element() {
             MoonLatest(this),
             Astolfo(this),
             Mossware(this),
-            JelloReborn(this)
+            JelloReborn(this),
+            NightX(this)
         ).toTypedArray(), "LiquidBounce")
     }
 
