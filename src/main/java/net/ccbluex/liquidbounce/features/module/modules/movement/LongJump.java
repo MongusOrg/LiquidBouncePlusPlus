@@ -269,7 +269,7 @@ public class LongJump extends Module {
                 return;
             }
 
-            switch (mode.lowercase()) {
+            switch (mode.toLowerCase()) {
                 case "ncp":
                     MovementUtils.strafe(MovementUtils.getSpeed() * (canBoost ? ncpBoostValue.get() : 1F));
                     canBoost = false;
