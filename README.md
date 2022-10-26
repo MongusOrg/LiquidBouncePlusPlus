@@ -1,10 +1,7 @@
-<br />
-<div align="center">
-  <a href="https://github.com/PlusPlusMC/LiquidBouncePlusPlus">
-    <img src="src/main/resources/assets/minecraft/liquidbounce%2B/big.png" alt="Logo" width="100" height="100">
-</a>
+<img width="120" height="120" align="left" style="float: left; margin: 0 10px 0 0;" alt="lb++" src="src/main/resources/assets/minecraft/liquidbounce%2B/big.png">
 
-# LiquidBounce++
+# LiquidBounce++                                    
+     
 A free mixin-based injection hacked-client for Minecraft 1.8.9 using Minecraft Forge.
 Based on LiquidBounce+
 
