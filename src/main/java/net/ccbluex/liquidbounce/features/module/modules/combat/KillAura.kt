@@ -342,7 +342,7 @@ class KillAura : Module() {
                 MovementUtils.strafeCustom(MovementUtils.getSpeed(), strafingData[0], strafingData[1], strafingData[2])
                 event.cancelEvent()
             }
-            else when (rotationStrafeValue.get().toLowerCase()) {
+            else when (rotationStrafeValue.get().lowercase()) {
                 "strict" -> {
                     val (yaw) = RotationUtils.targetRotation ?: return
                     var strafe = event.strafe
