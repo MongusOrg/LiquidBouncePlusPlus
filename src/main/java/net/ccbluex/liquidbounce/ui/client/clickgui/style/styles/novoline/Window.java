@@ -33,7 +33,7 @@ public class Window {
     public int scroll;
     public int scrollTo;
     int allX;
-    final Translate translate = new Translate(0F, 0F);
+    public final Translate translate = new Translate(0F, 0F);
 
     public Window(ModuleCategory category, int x, int y) {
         this.category = category;
