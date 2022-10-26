@@ -312,7 +312,7 @@ public class Fly extends Module {
         wdState = 0;
         wdTick = 0;
 
-        switch (mode.lowercase()) {
+        switch (mode.toLowerCase()) {
                case "ncp":
                 mc.thePlayer.motionY = -ncpMotionValue.get();
 
@@ -434,7 +434,7 @@ public class Fly extends Module {
         }
 
         if (!mode.equalsIgnoreCase("watchdog")
-            && !mode.equalsIgnoreCase("bugspartan") && !mode.equalsIgnoreCase("verus") && !mode.equalsIgnoreCase("damage") && !mode.lowercase().contains("hypixel")
+            && !mode.equalsIgnoreCase("bugspartan") && !mode.equalsIgnoreCase("verus") && !mode.equalsIgnoreCase("damage") && !mode.toLowerCase().contains("hypixel")
             && fakeDmgValue.get()) {
             mc.thePlayer.handleStatusUpdate((byte) 2);
         }
@@ -453,7 +453,7 @@ public class Fly extends Module {
 
         final String mode = modeValue.get();
 
-        if (resetMotionValue.get() && (!mode.uppercase().startsWith("AAC") && !mode.equalsIgnoreCase("Hypixel") &&
+        if (resetMotionValue.get() && (!mode.toUpperCase().startsWith("AAC") && !mode.equalsIgnoreCase("Hypixel") &&
                 !mode.equalsIgnoreCase("CubeCraft") && !mode.equalsIgnoreCase("Collide") && !mode.equalsIgnoreCase("Verus") && !mode.equalsIgnoreCase("Jump") && !mode.equalsIgnoreCase("creative")) || (mode.equalsIgnoreCase("pearl") && pearlState != -1)) {
             mc.thePlayer.motionX = 0;
             mc.thePlayer.motionY = 0;
@@ -484,7 +484,7 @@ public class Fly extends Module {
         if (modeValue.get().equalsIgnoreCase("aac5-vanilla") && aac5NoClipValue.get())
             mc.thePlayer.noClip = true;
 
-        switch (modeValue.get().lowercase()) {
+        switch (modeValue.get().toLowerCase()) {
             case "motion":
                 mc.thePlayer.capabilities.isFlying = false;
                 mc.thePlayer.motionY = vanillaMotionYValue.get();
