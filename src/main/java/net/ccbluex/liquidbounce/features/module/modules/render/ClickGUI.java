@@ -107,7 +107,7 @@ public class ClickGUI extends Module {
     }
 
     private void updateStyle() {
-        switch(styleValue.get().lowercase()) {
+        switch(styleValue.get().toLowerCase()) {
             case "liquidbounce":
                 LiquidBounce.clickGui.style = new LiquidBounceStyle();
                 break;
