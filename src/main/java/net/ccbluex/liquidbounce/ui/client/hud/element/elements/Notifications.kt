@@ -66,7 +66,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
                 if (indexz == 0 && styleValue.get().equals("material", true) && side.vertical != Side.Vertical.DOWN) animationY -= i.notifHeight - (if (barValue.get()) 2F else 0F)
                 i.drawNotification(animationY, this)
                 if (indexz < notifications.size - 1) indexz++
-                animationY += (when (styleValue.get().toLowerCase()) {
+                animationY += (when (styleValue.get().lowercase()) {
                                     "compact" -> 20F
                                     "full" -> 30F
                                     else -> (if (side.vertical == Side.Vertical.DOWN) i.notifHeight else notifications[indexz].notifHeight) + 5F + (if (barValue.get()) 2F else 0F)
@@ -89,7 +89,7 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
         return null
     }
 
-    private fun getNotifBorder() = when (styleValue.get().toLowerCase()) {
+    private fun getNotifBorder() = when (styleValue.get().lowercase()) {
         "full" -> Border(-130F, -58F, 0F, -30F)
         "compact" -> Border(-102F, -48F, 0F, -30F)
         else -> if (side.vertical == Side.Vertical.DOWN) Border(-160F, -50F, 0F, -30F) else Border(-160F, -20F, 0F, 0F)
@@ -184,7 +184,7 @@ class Notification(message : String, type : Type, displayLength: Long) {
 
         var y = firstY
 
-        when (style.toLowerCase()) {
+        when (style.lowercase()) {
             "compact" -> {
                 GlStateManager.resetColor()
 

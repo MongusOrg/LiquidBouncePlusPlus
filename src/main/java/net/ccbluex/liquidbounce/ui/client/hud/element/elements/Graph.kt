@@ -96,7 +96,7 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
         lastValue = graphValue.get()
 
         if (timer.hasTimePassed(updateDelay.get().toLong())) {
-            when (graphValue.get().toLowerCase()) {
+            when (graphValue.get().lowercase()) {
                 "speed" -> valueStore.add(MovementUtils.getSpeed() * 10F)
                 "bps" -> valueStore.add(speedVal)
                 "packet-in" -> valueStore.add(PacketUtils.avgInBound.toFloat())
@@ -118,12 +118,12 @@ class Graph(x: Double = 75.0, y: Double = 110.0, scale: Float = 1F,
 		val average = if (graphValue.get().startsWith("packet", true)) averageNumber.toInt().toString() else String.format("%.2f", averageNumber)
 
         if (displayGraphName.get()) {
-            var displayString = if (nameValue.get()) when (graphValue.get().toLowerCase()) {
+            var displayString = if (nameValue.get()) when (graphValue.get().lowercase()) {
                 "speed" -> "Player speed ($working blocks/tick)"
                 "bps" -> "Player speed ($working blocks/s)"
                 "packet-in" -> "Inbound packets ($working packets/s)"
                 else -> "Outbound packets ($working packets/s)"
-            } else when (graphValue.get().toLowerCase()) {
+            } else when (graphValue.get().lowercase()) {
                 "speed" -> "Player speed"
                 "bps" -> "Player blocks/s"
                 "packet-in" -> "Inbound packets"

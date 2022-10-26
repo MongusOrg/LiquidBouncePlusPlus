@@ -67,7 +67,7 @@ class EnchantCommand : Command("enchant", emptyArray()) {
         return when (args.size) {
             1 -> {
                 return Enchantment.func_181077_c()
-                    .map { it.resourcePath.toLowerCase() }
+                    .map { it.resourcePath.lowercase() }
                     .filter { it.startsWith(args[0], true) }
             }
             else -> emptyList()

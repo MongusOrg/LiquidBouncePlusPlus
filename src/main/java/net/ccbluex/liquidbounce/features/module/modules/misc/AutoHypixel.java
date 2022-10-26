@@ -82,7 +82,7 @@ public class AutoHypixel extends Module {
 
     @EventTarget
     public void onRender2D(Render2DEvent event) {
-        if (checkValue.get() && !gameMode.lowercase().contains("skywars"))
+        if (checkValue.get() && !gameMode.toLowerCase().contains("skywars"))
             return;
 
         ScaledResolution sc = new ScaledResolution(mc);
@@ -109,7 +109,7 @@ public class AutoHypixel extends Module {
     @EventTarget
     public void onMotion(MotionEvent event) {
         if ((!checkValue.get() || gameMode.toLowerCase().contains("skywars")) && shouldChangeGame && timer.hasTimePassed(delayValue.get())) {
-            mc.thePlayer.sendChatMessage("/play "+modeValue.get().lowercase()+(modeValue.get().equalsIgnoreCase("ranked")?"_normal":modeValue.get().equalsIgnoreCase("mega")?"_"+megaValue.get().toLowerCase():"_"+soloTeamsValue.get().toLowerCase()));
+            mc.thePlayer.sendChatMessage("/play "+modeValue.get().toLowerCase()+(modeValue.get().equalsIgnoreCase("ranked")?"_normal":modeValue.get().equalsIgnoreCase("mega")?"_"+megaValue.get().toLowerCase():"_"+soloTeamsValue.get().toLowerCase()));
             shouldChangeGame = false;
         }
         if (!shouldChangeGame) timer.reset();

@@ -56,7 +56,7 @@ class Ambience : Module() {
     }
 
     override val tag: String?
-        get() = when (tagValue.get().toLowerCase()) {
+        get() = when (tagValue.get().lowercase()) {
             "timeonly" -> if (timeModeValue.get().equals("static", true)) staticTimeValue.get().toString() else timeCycle.toString()
             "simplified" -> "${if (timeModeValue.get().equals("static", true)) staticTimeValue.get().toString() else timeCycle.toString()}, ${weatherModeValue.get()}"
             "detailed" -> "Time: ${if (timeModeValue.get().equals("static", true)) staticTimeValue.get().toString() else "Cycle, ${timeCycle.toString()}"}, Weather: ${weatherModeValue.get()}"

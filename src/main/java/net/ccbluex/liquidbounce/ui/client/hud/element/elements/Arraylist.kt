@@ -222,7 +222,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                     module.arrayY,
                                     if (rectRightValue.get().equals("right", true)) -1F else 0F,
                                     module.arrayY + textHeight,
-                                    when (shadowColorMode.get().toLowerCase()) {
+                                    when (shadowColorMode.get().lowercase()) {
                                         "background" -> Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get()).rgb
                                         "text" -> {
                                             val moduleColor = Color.getHSBColor(module.hue, saturation, brightness).rgb
@@ -411,7 +411,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
                                     module.arrayY,
                                     xPos + width + if (rectLeftValue.get().equals("right", true)) 3F else 2F,
                                     module.arrayY + textHeight,
-                                    when (shadowColorMode.get().toLowerCase()) {
+                                    when (shadowColorMode.get().lowercase()) {
                                         "background" -> Color(backgroundColorRedValue.get(), backgroundColorGreenValue.get(), backgroundColorBlueValue.get()).rgb
                                         "text" -> {
                                             val moduleColor = Color.getHSBColor(module.hue, saturation, brightness).rgb
@@ -625,8 +625,8 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
     fun getModName(mod: Module): String {
         var displayName : String = (if (nameBreak.get()) mod.spacedName else mod.name) + getModTag(mod)
 
-        when (caseValue.get().toLowerCase()) {
-            "lower" -> displayName = displayName.toLowerCase()
+        when (caseValue.get().lowercase()) {
+            "lower" -> displayName = displayName.lowercase()
             "upper" -> displayName = displayName.toUpperCase()
         }
         

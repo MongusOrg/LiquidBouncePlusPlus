@@ -50,7 +50,7 @@ class AutoPlay : Module() {
     fun onPacket(event: PacketEvent) {
         val packet = event.packet
 
-        when (modeValue.get().toLowerCase()) {
+        when (modeValue.get().lowercase()) {
             "redesky" -> {
                 if (clicking && (packet is C0EPacketClickWindow || packet is C07PacketPlayerDigging)) {
                     event.cancelEvent()
@@ -74,7 +74,7 @@ class AutoPlay : Module() {
             val itemName = item.unlocalizedName
             val displayName = item.displayName
 
-            when (modeValue.get().toLowerCase()) {
+            when (modeValue.get().lowercase()) {
                 "redesky" -> {
                     if (clickState == 0 && windowId == 0 && slot == 42 && itemName.contains("paper", ignoreCase = true) && displayName.contains("Jogar novamente", ignoreCase = true)) {
                         clickState = 1
@@ -111,7 +111,7 @@ class AutoPlay : Module() {
             }
         } else if (packet is S02PacketChat) {
             val text = packet.chatComponent.unformattedText
-            when (modeValue.get().toLowerCase()) {
+            when (modeValue.get().lowercase()) {
                 "minemora" -> {
                     if (text.contains("Has click en alguna de las siguientes opciones", true)) {
                         queueAutoPlay {

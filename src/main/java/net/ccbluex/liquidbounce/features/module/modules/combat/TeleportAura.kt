@@ -118,7 +118,7 @@ class TeleportAura : Module() {
         }
 
         // Sort targets by priority
-        when (priorityValue.get().toLowerCase()) {
+        when (priorityValue.get().lowercase()) {
             "distance" -> targets.sortBy { mc.thePlayer.getDistanceToEntity(it) } // Sort by distance
             "health" -> targets.sortBy { it.health } // Sort by health
             "livingtime" -> targets.sortBy { -it.ticksExisted } // Sort by existence
@@ -138,7 +138,7 @@ class TeleportAura : Module() {
 
             lastTarget = it
 
-            when (swingValue.get().toLowerCase()) {
+            when (swingValue.get().lowercase()) {
                 "normal" -> mc.thePlayer.swingItem()
                 "packet" -> mc.netHandler.addToSendQueue(C0APacketAnimation())
             }
@@ -198,7 +198,7 @@ class TeleportAura : Module() {
                     val width = 0.3
                     val height = mc.thePlayer.getEyeHeight().toDouble()
 
-                    when (renderValue.get().toLowerCase()) {
+                    when (renderValue.get().lowercase()) {
                         "box" -> {
                             GL11.glBegin(GL11.GL_LINE_STRIP)
                             GL11.glVertex3d(x - width, y, z - width)

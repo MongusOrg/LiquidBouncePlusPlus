@@ -27,7 +27,7 @@ class KeepAlive : Module() {
     @EventTarget
     fun onMotion(event: MotionEvent) {
         if (mc.thePlayer!!.health <= maxHealthValue.get()) {
-            when (modeValue.get().toLowerCase()) {
+            when (modeValue.get().lowercase()) {
                 "/heal" -> mc.thePlayer.sendChatMessage("/heal")
                 "soup" -> {
                     val soupInHotbar = InventoryUtils.findItem(36, 45, Items.mushroom_stew)

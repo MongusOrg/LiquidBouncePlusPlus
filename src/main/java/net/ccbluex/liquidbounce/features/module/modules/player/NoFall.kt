@@ -209,7 +209,7 @@ class NoFall : Module() {
                     needSpoof = true
                 }
             }
-            "matrix" -> when (matrixMode.get().toLowerCase()) {
+            "matrix" -> when (matrixMode.get().lowercase()) {
                 "old" -> {
                     if (mc.thePlayer.fallDistance > 3)
                         isDmgFalling = true
@@ -251,7 +251,7 @@ class NoFall : Module() {
                     }
                 }
             }
-            "aac" -> when (aacMode.get().toLowerCase()) {
+            "aac" -> when (aacMode.get().lowercase()) {
                 "default" -> {
                     if (mc.thePlayer.fallDistance > 2f) {
                         mc.netHandler.addToSendQueue(C03PacketPlayer(true))

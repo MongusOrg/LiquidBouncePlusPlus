@@ -46,7 +46,7 @@ class AutoThemeCommand : Command("autotheme", arrayOf("autothememanager", "atm",
                 val url = if (args[2].startsWith("http"))
                     args[2]
                 else
-                    "${LiquidBounce.CLIENT_CLOUD}/themes/${args[2].toLowerCase()}"
+                    "${LiquidBounce.CLIENT_CLOUD}/themes/${args[2].lowercase()}"
 
                 chat("Loading theme...")
 

@@ -138,7 +138,7 @@ class AuthBypass : Module() {
                     windowName.contains("bloco", ignoreCase = true) -> "skull"
                     else -> {
                         val splited = windowName.split(" ")
-                        var str = splited[splited.size - 1].replace(".", "").toLowerCase()
+                        var str = splited[splited.size - 1].replace(".", "").lowercase()
                         if (str.endsWith("s")) {
                             str = str.substring(0, str.length - 1)
                         }

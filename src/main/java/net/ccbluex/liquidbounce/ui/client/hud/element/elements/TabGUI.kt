@@ -156,7 +156,7 @@ class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
         var y = 1F
         tabs.forEachIndexed { index, tab ->
             val tabName = if (lowerCaseValue.get())
-                tab.tabName.toLowerCase()
+                tab.tabName.lowercase()
             else
                 tab.tabName
 
@@ -340,8 +340,8 @@ class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
             var maxWidth = 0
 
             for (module in modules)
-                if (fontRenderer.getStringWidth(if (lowerCase) module.name.toLowerCase() else module.name) + 4 > maxWidth)
-                    maxWidth = (fontRenderer.getStringWidth(if (lowerCase) module.name.toLowerCase() else module.name) + 7F).toInt()
+                if (fontRenderer.getStringWidth(if (lowerCase) module.name.lowercase() else module.name) + 4 > maxWidth)
+                    maxWidth = (fontRenderer.getStringWidth(if (lowerCase) module.name.lowercase() else module.name) + 7F).toInt()
 
             menuWidth = maxWidth
 
@@ -376,7 +376,7 @@ class TabGUI(x: Double = 5.0, y: Double = 25.0) : Element(x = x, y = y) {
             modules.forEachIndexed { index, module ->
                 val moduleColor = if (module.state) 0xffffff else Color(205, 205, 205).rgb
 
-                fontRenderer.drawString(if (lowerCase) module.name.toLowerCase() else module.name, x + 2F,
+                fontRenderer.drawString(if (lowerCase) module.name.lowercase() else module.name, x + 2F,
                         y + tabHeight.get() * index + textPositionY.get(), moduleColor, textShadow.get())
             }
         }

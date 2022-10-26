@@ -63,7 +63,7 @@ class LocalAutoSettingsCommand : Command("config", arrayOf("localsetting", "loca
                                     return
                                 }
 
-                            val option = if (args.size > 3) StringUtils.toCompleteString(args, 3).toLowerCase() else "values states"
+                            val option = if (args.size > 3) StringUtils.toCompleteString(args, 3).lowercase() else "values states"
                             val values = option.contains("all") || option.contains("values")
                             val binds = option.contains("all") || option.contains("binds")
                             val states = option.contains("all") || option.contains("states")
@@ -126,7 +126,7 @@ class LocalAutoSettingsCommand : Command("config", arrayOf("localsetting", "loca
         return when (args.size) {
             1 -> listOf("delete", "list", "load", "save").filter { it.startsWith(args[0], true) }
             2 -> {
-                when (args[0].toLowerCase()) {
+                when (args[0].lowercase()) {
                     "delete", "load" -> {
                         val settings = this.getLocalSettings() ?: return emptyList()
 

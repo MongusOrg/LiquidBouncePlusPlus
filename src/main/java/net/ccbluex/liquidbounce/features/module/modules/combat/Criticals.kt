@@ -62,7 +62,7 @@ class Criticals : Module() {
             val y = mc.thePlayer.posY
             val z = mc.thePlayer.posZ
 
-            when (modeValue.get().toLowerCase()) {
+            when (modeValue.get().lowercase()) {
                 "newpacket" -> {
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.05250000001304, z, true))
                     mc.netHandler.addToSendQueue(C04PacketPlayerPosition(x, y + 0.00150000001304, z, false))
@@ -170,7 +170,7 @@ class Criticals : Module() {
         
         val packet = event.packet
 
-        when (modeValue.get().toLowerCase()) {
+        when (modeValue.get().lowercase()) {
             "redesky" -> {
                 if (packet is C03PacketPlayer) {
                     val packetPlayer: C03PacketPlayer = packet as C03PacketPlayer

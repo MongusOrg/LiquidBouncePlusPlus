@@ -24,7 +24,7 @@ class MacroCommand : Command("macro", emptyArray()) {
                 chatSyntax("macro <list/clear/add/remove>")
                 return
             }
-            when (args[1].toLowerCase()) {
+            when (args[1].lowercase()) {
                 "add" -> {
                     if (args.size < 4) {
                         chatSyntax("macro add <key name> <message>")

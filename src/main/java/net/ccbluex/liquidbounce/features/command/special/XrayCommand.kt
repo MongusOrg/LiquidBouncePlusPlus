@@ -115,7 +115,7 @@ class XrayCommand : Command("xray", emptyArray()) {
                         return Block.blockRegistry.keys
                             .map { it.resourcePath.lowercase() }
                             .filter { Block.getBlockFromName(it.lowercase()) != null }
-                            .filter { !xRay.xrayBlocks.contains(Block.getBlockFromName(it.toLowerCase())) }
+                            .filter { !xRay.xrayBlocks.contains(Block.getBlockFromName(it.lowercase())) }
                             .filter { it.startsWith(args[1], true) }
                     }
                     "remove" -> {
