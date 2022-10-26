@@ -42,7 +42,7 @@ public class HighJump extends Module {
         if(glassValue.get() && !(BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ)) instanceof BlockPane))
             return;
 
-        switch(modeValue.get().toLowerCase()) {
+        switch(modeValue.get().lowercase()) {
             case "hycraft":
                 // $$$ Me and the bois damage highjump $$$
                 if(mc.thePlayer.hurtTime > 1 && mc.thePlayer.hurtTime < 6)
@@ -96,7 +96,7 @@ public class HighJump extends Module {
         if(glassValue.get() && !(BlockUtils.getBlock(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ)) instanceof BlockPane))
             return;
 
-        switch(modeValue.get().toLowerCase()) {
+        switch(modeValue.get().lowercase()) {
             case "vanilla":
                 event.setMotion(event.getMotion() * heightValue.get());
                 break;

@@ -106,7 +106,7 @@ class Velocity : Module() {
         if (mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb || !shouldAffect)
             return
 
-        when (modeValue.get().toLowerCase()) {
+        when (modeValue.get().lowercase()) {
             "jump" -> if (mc.thePlayer.hurtTime > 0 && mc.thePlayer.onGround) {
                 mc.thePlayer.motionY = 0.42
 
@@ -275,7 +275,7 @@ class Velocity : Module() {
 
             velocityTimer.reset()
 
-            when (modeValue.get().toLowerCase()) {
+            when (modeValue.get().lowercase()) {
                 "cancel" -> event.cancelEvent()
                 "simple" -> {
                     val horizontal = horizontalValue.get()
@@ -308,7 +308,7 @@ class Velocity : Module() {
                 }
 
                 "hycraft" -> {
-                    when (hycraftPacketY.get().toLowerCase()) {
+                    when (hycraftPacketY.get().lowercase()) {
                       "up" -> mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY + 1,mc.thePlayer.posZ,true))
                       "down" -> mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY - 1,mc.thePlayer.posZ,true))
                       "none" -> mc.netHandler.addToSendQueue(C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX,mc.thePlayer.posY,mc.thePlayer.posZ,true))
@@ -333,7 +333,7 @@ class Velocity : Module() {
     
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        when (modeValue.get().toLowerCase()) {
+        when (modeValue.get().lowercase()) {
             "legit" -> {
                 if(pos==null||mc.thePlayer.hurtTime<=0)
                     return
@@ -381,7 +381,7 @@ class Velocity : Module() {
         if (mc.thePlayer == null || mc.thePlayer.isInWater || mc.thePlayer.isInLava || mc.thePlayer.isInWeb || !shouldAffect)
             return
 
-        when (modeValue.get().toLowerCase()) {
+        when (modeValue.get().lowercase()) {
             "aacpush" -> {
                 jump = true
 

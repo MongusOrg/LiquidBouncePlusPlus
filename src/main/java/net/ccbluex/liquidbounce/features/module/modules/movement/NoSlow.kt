@@ -186,7 +186,7 @@ class NoSlow : Module() {
         val heldItem = mc.thePlayer.heldItem
         val killAura = LiquidBounce.moduleManager[KillAura::class.java]!! as KillAura
 
-        when (modeValue.get().toLowerCase()) {
+        when (modeValue.get().lowercase()) {
             "aac5" -> if (event.eventState == EventState.POST && (mc.thePlayer.isUsingItem || mc.thePlayer.isBlocking || killAura.blockingStatus)) {
                 mc.netHandler.addToSendQueue(C08PacketPlayerBlockPlacement(BlockPos(-1, -1, -1), 255, mc.thePlayer.inventory.getCurrentItem(), 0f, 0f, 0f))
             }
@@ -231,7 +231,7 @@ class NoSlow : Module() {
             else -> {
                 if (!mc.thePlayer.isBlocking && !killAura.blockingStatus)
                     return
-                when (modeValue.get().toLowerCase()) {
+                when (modeValue.get().lowercase()) {
                     "aac" -> {
                         if (mc.thePlayer.ticksExisted % 3 == 0)
                             sendPacket(event, true, false, false, 0, false)

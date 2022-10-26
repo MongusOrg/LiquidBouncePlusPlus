@@ -172,8 +172,8 @@ class NoFall : Module() {
                 mc.timer.timerSpeed = 1F
         }
 
-        when (typeValue.get().toLowerCase()) {
-            "packet" -> when (packetMode.get().toLowerCase()) {
+        when (typeValue.get().lowercase()) {
+            "packet" -> when (packetMode.get().lowercase()) {
                 "default" -> {
                     if (mc.thePlayer.fallDistance > 2F)
                         mc.netHandler.addToSendQueue(C03PacketPlayer(true))
@@ -547,7 +547,7 @@ class NoFall : Module() {
             }
 
             if (typeValue.get().equals("hypixel", true)) {
-                when (hypixelMode.get().toLowerCase()) {
+                when (hypixelMode.get().lowercase()) {
                     "default" -> if (mc.thePlayer.fallDistance > 1.5) {
                         packet.onGround = mc.thePlayer.ticksExisted % 2 == 0
                     }
@@ -564,7 +564,7 @@ class NoFall : Module() {
             }
 
             if (typeValue.get().equals("aac", true)) {
-                when (aacMode.get().toLowerCase()) {
+                when (aacMode.get().lowercase()) {
                     "4.x" -> if (aac4Fakelag) {
                         event.cancelEvent()
                         if (packetModify) {

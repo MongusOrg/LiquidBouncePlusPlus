@@ -38,7 +38,7 @@ class SpinBot : Module() {
         
         if (!yawMode.get().equals("none", true)) {
             var yaw = 0F
-            when (yawMode.get().toLowerCase()) {
+            when (yawMode.get().lowercase()) {
                 "static" -> yaw = static_offsetYaw.get()
                 "offset" -> yaw = mc.thePlayer.rotationYaw + static_offsetYaw.get()
                 "random" -> yaw = Math.floor(Math.random() * 360.0 - 180.0).toFloat()
@@ -57,7 +57,7 @@ class SpinBot : Module() {
             mc.thePlayer.rotationYawHead = yaw
             lastSpin = yaw
         }
-        when (pitchMode.get().toLowerCase()) {
+        when (pitchMode.get().lowercase()) {
             "static" -> pitch = static_offsetPitch.get()
             "offset" -> pitch = mc.thePlayer.rotationPitch + static_offsetPitch.get()
             "random" -> pitch = Math.floor(Math.random() * 180.0 - 90.0).toFloat()
