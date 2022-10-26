@@ -29,7 +29,7 @@ import java.awt.*;
 
 @ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT, forceNoSound = true, onlyEnable = true)
 public class ClickGUI extends Module {
-    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White", "Astolfo", "Test"/*,  "Novoline", "Flux"*/}, "Null") {
+    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White", /* "Astolfo", "Test",  "Novoline", "Flux"*/}, "Null") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
             updateStyle();
@@ -88,22 +88,6 @@ public class ClickGUI extends Module {
         LiquidBounce.clickGui.slide = 0;
         LiquidBounce.clickGui.lastMS = System.currentTimeMillis();
         mc.displayGuiScreen(LiquidBounce.clickGui);
-/*        if (styleValue.get().contains("Novoline")) {
-            mc.displayGuiScreen(new ClickyUI());
-            this.setState(false);
-        } else {
-            if (styleValue.get().contains("Flux")) {
-                mc.displayGuiScreen(new FluxClassic());
-                this.setState(false);
-            } else {
-                updateStyle();
-                mc.displayGuiScreen(LiquidBounce.clickGui);
-                LiquidBounce.clickGui.progress = 0;
-                LiquidBounce.clickGui.slide = 0;
-                LiquidBounce.clickGui.lastMS = System.currentTimeMillis();
-                mc.displayGuiScreen(LiquidBounce.clickGui);
-            }
-        }*/
     }
 
     private void updateStyle() {
@@ -123,12 +107,12 @@ public class ClickGUI extends Module {
             case "white":
                 LiquidBounce.clickGui.style = new WhiteStyle();
                 break;
-            case "astolfo":
+/*            case "astolfo":
                 LiquidBounce.clickGui.style = new AstolfoStyle();
                 break;
             case "test":
                 LiquidBounce.clickGui.style = new TestStyle();
-                break;
+                break;*/
         }
     }
 }
