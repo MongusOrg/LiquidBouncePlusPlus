@@ -122,3 +122,4 @@ public class ProfilesScreen extends GuiScreen {
         mc.fontRendererObj.drawStringWithShadow("Name", width * 0.5F - 100, height * 0.5F - 60, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
+}
