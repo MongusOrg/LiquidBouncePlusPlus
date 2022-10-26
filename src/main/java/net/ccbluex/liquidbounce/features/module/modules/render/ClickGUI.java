@@ -29,7 +29,7 @@ import java.awt.*;
 
 @ModuleInfo(name = "ClickGUI", description = "Opens the ClickGUI.", category = ModuleCategory.RENDER, keyBind = Keyboard.KEY_RSHIFT, forceNoSound = true, onlyEnable = true)
 public class ClickGUI extends Module {
-    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White", "Astolfo", "Test", "Novoline", "Flux"}, "Null") {
+    private final ListValue styleValue = new ListValue("Style", new String[] {"LiquidBounce", "Null", "Slowly", "Black", "White", "Astolfo", "Test"/*,  "Novoline", "Flux"*/}, "Null") {
         @Override
         protected void onChanged(final String oldValue, final String newValue) {
             updateStyle();
@@ -82,7 +82,13 @@ public class ClickGUI extends Module {
 
     @Override
     public void onEnable() {
-        if (styleValue.get().contains("Novoline")) {
+        updateStyle();
+
+        LiquidBounce.clickGui.progress = 0;
+        LiquidBounce.clickGui.slide = 0;
+        LiquidBounce.clickGui.lastMS = System.currentTimeMillis();
+        mc.displayGuiScreen(LiquidBounce.clickGui);
+/*        if (styleValue.get().contains("Novoline")) {
             mc.displayGuiScreen(new ClickyUI());
             this.setState(false);
         } else {
@@ -97,11 +103,11 @@ public class ClickGUI extends Module {
                 LiquidBounce.clickGui.lastMS = System.currentTimeMillis();
                 mc.displayGuiScreen(LiquidBounce.clickGui);
             }
-        }
+        }*/
     }
 
     private void updateStyle() {
-        switch(styleValue.get().toLowerCase()) {
+        switch(styleValue.get().lowercase()) {
             case "liquidbounce":
                 LiquidBounce.clickGui.style = new LiquidBounceStyle();
                 break;
