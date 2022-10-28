@@ -27,5 +27,5 @@ jobs:
       - name: Upload LiquidBounce++ Jar
         uses: actions/upload-artifact@v2
         with:
-          name: lbplusplus-0.3
+          name: LiquidBounce++
           path: build/libs/liquidbounceplusplus-0.3.jar
