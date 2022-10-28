@@ -95,7 +95,7 @@ public class Fly extends Module {
             // Other anticheats' fly modes.
             "MineSecure",
             "HawkEye",
-            "HAC",
+            "HAC2",
             "WatchCat",
             "Watchdog",
             
@@ -697,7 +697,7 @@ public class Fly extends Module {
                     mineSecureVClipTimer.reset();
                 }
                 break;
-            case "hac":
+            case "HAC2":
                 mc.thePlayer.motionX *= 0.8;
                 mc.thePlayer.motionZ *= 0.8;
             case "hawkeye":
