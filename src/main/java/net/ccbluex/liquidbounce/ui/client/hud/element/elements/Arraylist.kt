@@ -627,7 +627,7 @@ class Arraylist(x: Double = 1.0, y: Double = 2.0, scale: Float = 1F,
 
         when (caseValue.get().lowercase()) {
             "lower" -> displayName = displayName.lowercase()
-            "upper" -> displayName = displayName.toUpperCase()
+            "upper" -> displayName = displayName.uppercase()
         }
         
         return displayName        
