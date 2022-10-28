@@ -95,6 +95,7 @@ public class Fly extends Module {
             // Other anticheats' fly modes.
             "MineSecure",
             "HawkEye",
+            "HAC",
             "HAC2",
             "WatchCat",
             "Watchdog",
@@ -697,7 +698,15 @@ public class Fly extends Module {
                     mineSecureVClipTimer.reset();
                 }
                 break;
-            case "HAC2":
+            case "hac":
+                mc.thePlayer.motionY = -0.1F;
+                mc.timer.timerSpeed = 1F;
+                double[] expectMoves = getMoves((double)0.5, (double)0.1);
+                    if (mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, mc.thePlayer.getEntityBoundingBox().offset(expectMoves[0], expectMoves[1], expectMoves[2]).expand(0, 0, 0)).isEmpty())
+                        hClip(expectMoves[0], expectMoves[1], expectMoves[2]);
+                }
+                break;
+            case "hac2":
                 mc.thePlayer.motionX *= 0.8;
                 mc.thePlayer.motionZ *= 0.8;
             case "hawkeye":
@@ -1113,6 +1122,9 @@ public class Fly extends Module {
             }
 
             if (mode.equalsIgnoreCase("clip") && clipGroundSpoof.get())
+                packetPlayer.onGround = true;
+
+            if (mode.equalsIgnoreCase("hac"))
                 packetPlayer.onGround = true;
 
             if ((mode.equalsIgnoreCase("motion") || mode.equalsIgnoreCase("creative")) && groundSpoofValue.get())
