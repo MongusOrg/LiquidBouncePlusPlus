@@ -34,7 +34,7 @@ import org.lwjgl.opengl.GL11
 class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
                     side: Side = Side(Side.Horizontal.RIGHT, Side.Vertical.DOWN)) : Element(x, y, scale, side) {
 
-    val styleValue = ListValue("Style", arrayOf("Full", "Compact", "Material"), "Material")
+    val styleValue = ListValue("Style", arrayOf("Full", "Full2", "Compact", "Material", "Test"), "Material")
     val barValue = BoolValue("Bar", true, { styleValue.get().equals("material", true) })
     val bgAlphaValue = IntegerValue("Background-Alpha", 120, 0, 255, { !styleValue.get().equals("material", true) })
 
@@ -69,6 +69,8 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
                 animationY += (when (styleValue.get().lowercase()) {
                                     "compact" -> 20F
                                     "full" -> 30F
+                                    "full2" -> 30F
+                                    "test" -> 30F
                                     else -> (if (side.vertical == Side.Vertical.DOWN) i.notifHeight else notifications[indexz].notifHeight) + 5F + (if (barValue.get()) 2F else 0F)
                                 }) * (if (side.vertical == Side.Vertical.DOWN) 1F else -1F)
             }
@@ -91,6 +93,8 @@ class Notifications(x: Double = 0.0, y: Double = 30.0, scale: Float = 1F,
 
     private fun getNotifBorder() = when (styleValue.get().lowercase()) {
         "full" -> Border(-130F, -58F, 0F, -30F)
+        "full2" -> Border(-130F, -58F, 0F, -30F)
+        "test" -> Border(-130F, -58F, 0F, -30F)
         "compact" -> Border(-102F, -48F, 0F, -30F)
         else -> if (side.vertical == Side.Vertical.DOWN) Border(-160F, -50F, 0F, -30F) else Border(-160F, -20F, 0F, 0F)
     }
@@ -242,6 +246,78 @@ class Notification(message : String, type : Type, displayLength: Long) {
 
                 GlStateManager.resetColor()
                 Fonts.font40.drawString(message, -x + 2, -18F - y, -1)
+            }
+            "full2" -> {
+                val dist = (x + 1 + 26F) - (x - 8 - textLength)
+                val kek = -x - 1 - 26F
+
+                GlStateManager.resetColor()
+
+                if (blur) {
+                    GL11.glTranslatef(-originalX, -originalY, 0F)
+                    GL11.glPushMatrix()
+                    BlurUtils.blurAreaRounded(originalX + kek, originalY + -28F - y, originalX + -x + 8 + textLength, originalY + -y, 1.8f, strength)
+                    GL11.glPopMatrix()
+                    GL11.glTranslatef(originalX, originalY, 0F)
+                } 
+
+                RenderUtils.drawRoundedRect(-x + 8 + textLength, -y, kek, -28F - y, 1.8f, backgroundColor.rgb)
+
+                GL11.glPushMatrix()
+                GlStateManager.disableAlpha()
+                RenderUtils.drawImage2(when (type) {
+                    Type.SUCCESS -> newSuccess
+                    Type.ERROR -> newError
+                    Type.WARNING -> newWarning
+                    Type.INFO -> newInfo
+                }, kek, -27F - y, 26, 26)
+                GlStateManager.enableAlpha()
+                GL11.glPopMatrix()
+
+                GlStateManager.resetColor()
+                if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime))
+                    RenderUtils.drawRoundedRect(kek, -y, kek + (dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())), -1F - y, 1.8f, enumColor)
+                else if (fadeState == FadeState.IN)
+                    RenderUtils.drawRoundedRect(kek, -y, kek + dist, -1F - y, 1.8f, enumColor)
+
+                GlStateManager.resetColor()
+                Fonts.fontSFUI40.drawStringWithShadow(message, -x + 2, -18F - y, enumColor)
+            }
+            "test" -> {
+                val dist = (x + 1 + 26F) - (x - 8 - textLength)
+                val kek = -x - 1 - 26F
+
+                GlStateManager.resetColor()
+
+                if (blur) {
+                    GL11.glTranslatef(-originalX, -originalY, 0F)
+                    GL11.glPushMatrix()
+                    BlurUtils.blurAreaRounded(originalX + kek, originalY + -28F - y, originalX + -x + 8 + textLength, originalY + -y, 1.8f, strength)
+                    GL11.glPopMatrix()
+                    GL11.glTranslatef(originalX, originalY, 0F)
+                } 
+
+                RenderUtils.drawRoundedRect(-x + 8 + textLength, -y, kek, -28F - y, 1.8f, backgroundColor.rgb)
+
+                GL11.glPushMatrix()
+                GlStateManager.disableAlpha()
+                RenderUtils.drawImage2(when (type) {
+                    Type.SUCCESS -> newSuccess
+                    Type.ERROR -> newError
+                    Type.WARNING -> newWarning
+                    Type.INFO -> newInfo
+                }, kek, -27F - y, 26, 26)
+                GlStateManager.enableAlpha()
+                GL11.glPopMatrix()
+
+                GlStateManager.resetColor()
+                if (fadeState == FadeState.STAY && !stayTimer.hasTimePassed(displayTime))
+                    RenderUtils.drawRoundedRect(kek, -y, kek + (dist * if (stayTimer.hasTimePassed(displayTime)) 0F else ((displayTime - (System.currentTimeMillis() - stayTimer.time)).toFloat() / displayTime.toFloat())), -1F - y, 1.8f, enumColor)
+                else if (fadeState == FadeState.IN)
+                    RenderUtils.drawRoundedRect(kek, -y, kek + dist, -1F - y, 1.8f, enumColor)
+
+                GlStateManager.resetColor()
+                Fonts.fontSFUI40.drawString(message, -x + 2, -18F - y, -1)
             }
             "material" -> {
                 GlStateManager.resetColor()
