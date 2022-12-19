@@ -171,7 +171,6 @@ public class Fly extends Module {
 
     // General
     private final BoolValue resetMotionValue = new BoolValue("ResetMotion", true);
-    private final BoolValue sendPlacement = new BoolValue("SendPlacement", false);
 
     // Visuals
     private final BoolValue fakeDmgValue = new BoolValue("FakeDamage", true);
@@ -296,10 +295,6 @@ public class Fly extends Module {
         lastPitch = mc.thePlayer.rotationPitch;
 
         final String mode = modeValue.get();
-        
-        if(sendPlacement.get()) {
-        	// PacketUtils.sendPacketNoEvent(new C08PacketPlayerBlockPlacement(BlockPos(mc.thePlayer), -1, null, 0, 0, 0));
-        }
 
         boostTicks = 0;
         dmgCooldown = 0;
@@ -1118,7 +1113,7 @@ public class Fly extends Module {
             if ((mode.equalsIgnoreCase("motion") || mode.equalsIgnoreCase("creative")) && groundSpoofValue.get())
                 packetPlayer.onGround = true;
 
-            if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("Verus")) {
+            if (verusDmgModeValue.get().equalsIgnoreCase("Jump") && verusJumpTimes < 5 && mode.equalsIgnoreCase("verus")) {
                 packetPlayer.onGround = false;
             }
         }

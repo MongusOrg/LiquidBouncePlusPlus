@@ -53,6 +53,35 @@ public class ParticleGenerator {
             RenderUtils.drawCircle(particle.getX(), particle.getY(), particle.size, 0xffFFFFFF);
         }
     }
+    
+    public void draw2(final int mouseX, final int mouseY) {
+        if(particles.isEmpty() || prevWidth != Minecraft.getMinecraft().displayWidth || prevHeight != Minecraft.getMinecraft().displayHeight) {
+            particles.clear();
+            create();
+        }
+
+        prevWidth = Minecraft.getMinecraft().displayWidth;
+        prevHeight = Minecraft.getMinecraft().displayHeight;
+
+        for(final Particle particle : particles) {
+            particle.fall2();
+            particle.interpolation();
+
+            int range = 50;
+            final boolean mouseOver = (mouseX >= particle.x - range) && (mouseY >= particle.y - range) && (mouseX <= particle.x + range) && (mouseY <= particle.y + range);
+
+            if(mouseOver) {
+                particles.stream()
+                        .filter(part -> (part.getX() > particle.getX() && part.getX() - particle.getX() < range
+                                && particle.getX() - part.getX() < range)
+                                && (part.getY() > particle.getY() && part.getY() - particle.getY() < range
+                                || particle.getY() > part.getY() && particle.getY() - part.getY() < range))
+                        .forEach(connectable -> particle.connect(connectable.getX(), connectable.getY()));
+            }
+
+            RenderUtils.drawCircle(particle.getX(), particle.getY(), particle.size, 0xffFFFFFF);
+        }
+    }
 
     private void create() {
         final Random random = new Random();

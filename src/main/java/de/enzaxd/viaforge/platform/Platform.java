@@ -3,7 +3,9 @@ package de.enzaxd.viaforge.platform;
 import com.viaversion.viaversion.api.command.ViaCommandSender;
 import com.viaversion.viaversion.api.configuration.ConfigurationProvider;
 import com.viaversion.viaversion.api.configuration.ViaVersionConfig;
+import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.platform.PlatformTask;
+import com.viaversion.viaversion.api.platform.UnsupportedSoftware;
 import com.viaversion.viaversion.api.platform.ViaPlatform;
 import com.viaversion.viaversion.libs.gson.JsonObject;
 import com.viaversion.viaversion.libs.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -15,6 +17,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.apache.logging.log4j.LogManager;
 
+import java.util.Collection;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.UUID;
@@ -58,8 +61,13 @@ public class Platform implements ViaPlatform<UUID> {
     }
 
     @Override
+    public boolean isProxy() {
+        return ViaPlatform.super.isProxy();
+    }
+
+    @Override
     public String getPluginVersion() {
-        return "4.0.0";
+        return "4.5.1";
     }
 
     @Override
@@ -119,6 +127,11 @@ public class Platform implements ViaPlatform<UUID> {
     }
 
     @Override
+    public boolean disconnect(UserConnection connection, String message) {
+        return ViaPlatform.super.disconnect(connection, message);
+    }
+
+    @Override
     public boolean isPluginEnabled() {
         return true;
     }
@@ -156,5 +169,15 @@ public class Platform implements ViaPlatform<UUID> {
     @Override
     public boolean isOldClientsAllowed() {
         return true;
+    }
+    
+    @Override
+    public Collection<UnsupportedSoftware> getUnsupportedSoftwareClasses() {
+        return ViaPlatform.super.getUnsupportedSoftwareClasses();
+    }
+
+    @Override
+    public boolean hasPlugin(String name) {
+        return false;
     }
 }

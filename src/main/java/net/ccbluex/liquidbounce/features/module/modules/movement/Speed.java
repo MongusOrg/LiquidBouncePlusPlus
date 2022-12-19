@@ -45,6 +45,8 @@ public class Speed extends Module {
             new NCPYPort(),
 
             // AAC
+            new AAC4FastHop(),
+            new AAC4LongHop(),
             new AAC4Hop(),
             new AAC4SlowHop(),
             new AACv4BHop(),
@@ -141,6 +143,8 @@ public class Speed extends Module {
     };
 
     public final ListValue aacModeValue = new ListValue("AAC-Mode", new String[]{
+    	"4FastHop",
+        "4LongHop",
         "4Hop", 
         "4SlowHop", 
         "v4BHop",

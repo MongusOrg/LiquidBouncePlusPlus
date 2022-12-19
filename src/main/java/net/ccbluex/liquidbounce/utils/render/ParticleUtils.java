@@ -14,4 +14,9 @@ public final class ParticleUtils {
     public static void drawParticles(int mouseX, int mouseY) {
         particleGenerator.draw(mouseX, mouseY);
     }
+    
+    public static void drawSnowFall(int mouseX, int mouseY) {
+        particleGenerator.draw2(mouseX, mouseY);
+    }
+    
 }

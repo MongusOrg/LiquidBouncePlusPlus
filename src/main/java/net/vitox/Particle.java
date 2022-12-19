@@ -105,6 +105,21 @@ class Particle {
         if(y < 1)
             y = scaledResolution.getScaledHeight();
     }
+    
+    void fall2() {
+        final Minecraft mc = Minecraft.getMinecraft();
+        final ScaledResolution scaledResolution = new ScaledResolution(mc);
+        y = (y + ySpeed);
+        x = (x + xSpeed);
+        
+        if(x > mc.displayWidth)
+            x = 1;
+            y -= 1;
+
+        if(x < 1)
+            x = scaledResolution.getScaledWidth();
+            y -= 1;
+    }
 
     private float genRandom() {
         return (float) (0.3f + Math.random() * (0.6f - 0.3f + 1.0F));

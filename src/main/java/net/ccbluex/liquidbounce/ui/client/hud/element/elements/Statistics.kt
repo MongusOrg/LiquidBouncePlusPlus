@@ -22,7 +22,6 @@ import org.lwjgl.opengl.GL11
 import net.minecraft.client.renderer.GlStateManager
 import java.awt.Color
 import net.ccbluex.liquidbounce.utils.*
-import net.ccbluex.liquidbounce.utils.StatisticsUtils
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.features.module.modules.misc.BanChecker
@@ -58,7 +57,7 @@ class Statistics(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F) : Elemen
         RenderUtils.whatRoundedRect(0F, 0F, 155F, 39F, if(!blurValue.get()) Color(redValue.get(), greenValue.get(), blueValue.get(), alpha.get()).rgb else Color(redValue.get(), greenValue.get(), blueValue.get(), 135).rgb, 3.5F)
         RenderUtils.whatRoundedRect(0F, 0F, 155F, 3F, RenderUtils.getRainbowOpaque(2, 0.9f, 1.0f, 0), 3.5F)
 
-        font.drawString("Session info", 3, 10, -1)
+        font.drawString("Session info", 10, 10, -1)
         font.drawString("Username: " + mc.session.username, 3, 20, -1)
         font.drawString("Session Time: " + SessionUtils.getFormatSessionTime(), 3, 30, -1)
         
