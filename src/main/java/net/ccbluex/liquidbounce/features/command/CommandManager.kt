@@ -58,6 +58,7 @@ class CommandManager {
         registerCommand(RenameCommand())
         registerCommand(UsernameCommand())
         registerCommand(XrayCommand())
+        registerCommand(SnowFallCommand())
     }
 
     /**
