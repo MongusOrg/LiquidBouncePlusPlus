@@ -26,12 +26,12 @@ public class AAC4FastHop extends SpeedMode {
         
         if (mc.thePlayer.onGround) {
              mc.thePlayer.jump();
-             mc.thePlayer.speedInAir = 0.0201;
+             mc.thePlayer.speedInAir = 0.0201F;
              mc.timer.timerSpeed = 0.94F;
         }
         
         if (mc.thePlayer.fallDistance > 0.7 && mc.thePlayer.fallDistance < 1.3) {
-             mc.thePlayer.speedInAir = 0.02;
+             mc.thePlayer.speedInAir = 0.02F;
              mc.timer.timerSpeed = 1.8F;
         }
     }

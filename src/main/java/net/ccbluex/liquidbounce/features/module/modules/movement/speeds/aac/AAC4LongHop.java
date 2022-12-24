@@ -29,7 +29,7 @@ public class AAC4LongHop extends SpeedMode {
                mc.thePlayer.jump();
          }
          if (!mc.thePlayer.onGround && mc.thePlayer.fallDistance <= 0.1) {
-               mc.thePlayer.speedInAir = 0.02;
+               mc.thePlayer.speedInAir = 0.02F;
                mc.timer.timerSpeed = 1.5F;
           }
           if (mc.thePlayer.fallDistance > 0.1 && mc.thePlayer.fallDistance < 1.3) {
@@ -37,7 +37,7 @@ public class AAC4LongHop extends SpeedMode {
           }
           if (mc.thePlayer.fallDistance >= 1.3) {
                 mc.timer.timerSpeed = 1.0F;
-                mc.thePlayer.speedInAir = 0.02;
+                mc.thePlayer.speedInAir = 0.02F;
           }
     }
 
