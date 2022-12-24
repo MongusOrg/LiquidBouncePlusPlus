@@ -38,7 +38,7 @@ class SnowFallCommand : Command("snowfall", emptyArray()), Listenable {
         if (!toggle)
             return
 
-        ParticleUtils.drawSnowFall(Mouse.getX * sr.getScaledWidth / mc.displayWidth, sr.getScaledHeight - Mouse.getY * sr.getScaledHeight / mc.displayHeight - 1);
+        ParticleUtils.drawSnowFall(Mouse.getX * sr.getScaledWidth() / mc.displayWidth, sr.getScaledHeight() - Mouse.getY * sr.getScaledHeight() / mc.displayHeight - 1);
     }
 
     @EventTarget
