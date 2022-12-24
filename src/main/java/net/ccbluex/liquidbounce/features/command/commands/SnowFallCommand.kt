@@ -15,6 +15,7 @@ import net.ccbluex.liquidbounce.utils.ClientUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.util.ResourceLocation
+import org.lwjgl.input.Mouse
 import net.ccbluex.liquidbounce.utils.render.ParticleUtils
 
 class SnowFallCommand : Command("snowfall", emptyArray()), Listenable {
@@ -33,10 +34,11 @@ class SnowFallCommand : Command("snowfall", emptyArray()), Listenable {
 
     @EventTarget
     fun onRender2D(event: Render2DEvent) {
+    	val sr = ScaledResolution(mc)
         if (!toggle)
             return
 
-        ParticleUtils.drawSnowFall(Mouse.getX() * width / mc.displayWidth, height - Mouse.getY() * height / mc.displayHeight - 1);
+        ParticleUtils.drawSnowFall(Mouse.getX * sr.getScaledWidth / mc.displayWidth, sr.getScaledHeight - Mouse.getY * sr.getScaledHeight / mc.displayHeight - 1);
     }
 
     @EventTarget
