@@ -23,6 +23,7 @@ public class StrafeHop extends SpeedMode {
         if(MovementUtils.isMoving()) {
             if(mc.thePlayer.onGround) {
                 mc.thePlayer.jump();
+                MovementUtils.strafe();
             } else
                 MovementUtils.strafe();
         }else{
