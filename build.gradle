@@ -66,9 +66,7 @@ dependencies {
 
     include("com.jagrosh:DiscordIPC:0.4")
 
-    include("com.squreup.okhttp3:okhttp:4.9.3")
-    include("com.google.code.gson:gson:2.8.7")
-    include("com.github.CCBlueX:Elixir:1.2.4") {
+    include("com.github.CCBlueX:Elixir:1.2.6") {
         exclude module: "kotlin-stdlib"
         exclude module: "authlib"
     }
