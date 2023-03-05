@@ -1,8 +1,8 @@
-name: build
+name: udoy-edition
 
 on:
   push:
-    branches: [ main ]
+    branches: [ udoy-edition ]
   pull_request:
     branches: [ main ]
 
