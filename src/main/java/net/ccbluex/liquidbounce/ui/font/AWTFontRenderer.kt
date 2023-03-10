@@ -25,8 +25,8 @@ class AWTFontRenderer(val font: Font, startChar: Int = 0, stopChar: Int = 255) {
         val activeFontRenderers: ArrayList<AWTFontRenderer> = ArrayList()
 
         private var gcTicks: Int = 0
-        private const val GC_TICKS = 600 // Start garbage collection every 600 frames
-        private const val CACHED_FONT_REMOVAL_TIME = 30000 // Remove cached texts after 30s of not being used
+        private const val GC_TICKS = 400 // Start garbage collection every 600 frames
+        private const val CACHED_FONT_REMOVAL_TIME = 20000 // Remove cached texts after 30s of not being used
 
         fun garbageCollectionTick() {
             if (gcTicks++ > GC_TICKS) {
