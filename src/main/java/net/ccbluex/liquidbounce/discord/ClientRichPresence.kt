@@ -42,7 +42,7 @@ class ClientRichPresence : MinecraftInstance() {
 
             loadConfiguration()
 
-            ipcClient = IPCClient(appID)
+            ipcClient = IPCClient(1084833955494244404)
             ipcClient?.setListener(object : IPCListener {
 
                 /**
@@ -92,7 +92,7 @@ class ClientRichPresence : MinecraftInstance() {
 
         // Check assets contains logo and set logo
         if (assets.containsKey("text"))
-            builder.setLargeImage(assets["text"], "In game name: " + mc.session.username)
+            builder.setLargeImage("https://plusplusmc.github.io/Client-Assets/rpcimage/20220410_100411.jpg", "Please join my new discord :pray:")
 
         val serverData = mc.currentServerData
 
@@ -126,8 +126,8 @@ class ClientRichPresence : MinecraftInstance() {
     }
 
     private fun loadConfiguration() {
-        appID = 738753870628651018L
-        assets["text"] = "text"
+        appID = 1084833955494244404L
+        assets["logo"] = "logo"
         assets["sus"] = "sus"
     }
 }
