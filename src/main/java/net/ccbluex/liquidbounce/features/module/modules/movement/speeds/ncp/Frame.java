@@ -22,7 +22,7 @@ public class Frame extends SpeedMode {
 
     @Override
     public void onMotion() {
-        if(mc.thePlayer.movementInput.moveForward > 0.0f || mc.thePlayer.movementInput.moveStrafe > 0.0f) {
+        if(MovementUtils.isMoving) {
             final double speed = 4.25;
 
             if(mc.thePlayer.onGround) {

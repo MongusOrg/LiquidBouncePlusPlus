@@ -18,47 +18,27 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.TargetStrafe
 import net.ccbluex.liquidbounce.features.module.modules.player.Blink
 import net.ccbluex.liquidbounce.features.module.modules.render.FreeCam
 import net.ccbluex.liquidbounce.features.module.modules.world.Scaffold
-import net.ccbluex.liquidbounce.utils.ClientUtils
-import net.ccbluex.liquidbounce.utils.EntityUtils
-import net.ccbluex.liquidbounce.utils.MovementUtils
-import net.ccbluex.liquidbounce.utils.PacketUtils
-import net.ccbluex.liquidbounce.utils.RaycastUtils
-import net.ccbluex.liquidbounce.utils.RotationUtils
-import net.ccbluex.liquidbounce.utils.Rotation
+import net.ccbluex.liquidbounce.utils.*
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.misc.RandomUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
-import net.ccbluex.liquidbounce.utils.timer.MSTimer
-import net.ccbluex.liquidbounce.utils.timer.TimeUtils
-import net.ccbluex.liquidbounce.value.BoolValue
-import net.ccbluex.liquidbounce.value.FloatValue
-import net.ccbluex.liquidbounce.value.IntegerValue
-import net.ccbluex.liquidbounce.value.ListValue
-import net.minecraft.client.gui.inventory.GuiContainer
-import net.minecraft.client.gui.inventory.GuiInventory
+import net.ccbluex.liquidbounce.utils.timer.*
+import net.ccbluex.liquidbounce.value.*
+import net.minecraft.client.gui.inventory.*
 import net.minecraft.enchantment.EnchantmentHelper
-import net.minecraft.entity.Entity
-import net.minecraft.entity.EntityLivingBase
+import net.minecraft.entity.*
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.item.ItemAxe
-import net.minecraft.item.ItemSword
+import net.minecraft.item.*
 import net.minecraft.network.play.client.*
 import net.minecraft.potion.Potion
-import net.minecraft.util.BlockPos
-import net.minecraft.util.EnumFacing
-import net.minecraft.util.MathHelper
-import net.minecraft.util.MovingObjectPosition
-import net.minecraft.util.Vec3
+import net.minecraft.util.*
 import net.minecraft.world.WorldSettings
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.util.*
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 @ModuleInfo(name = "KillAura", spacedName = "Kill Aura", description = "Automatically attacks targets around you.",
         category = ModuleCategory.COMBAT, keyBind = Keyboard.KEY_R)
@@ -92,7 +72,7 @@ class KillAura : Module() {
     // Range
     val rangeValue = FloatValue("Range", 3.7f, 1f, 8f, "m")
     private val throughWallsRangeValue = FloatValue("ThroughWallsRange", 3f, 0f, 8f, "m")
-    private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f, "m")
+    private val rangeSprintReducementValue = FloatValue("RangeSprintReduction", 0f, 0f, 0.4f, "m")
 
     // Modes
     private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin","None"), "BackTrack")
@@ -214,7 +194,7 @@ class KillAura : Module() {
     private val outborderValue = BoolValue("Outborder", false)
 
     // Bypass
-    private val failRateValue = FloatValue("FailRate", 0f, 0f, 100f)
+    private val failRateValue = FloatValue("FailRate", 0f, 0f, 99f)
     private val fakeSwingValue = BoolValue("FakeSwing", true)
     private val noInventoryAttackValue = BoolValue("NoInvAttack", false)
     private val noInventoryDelayValue = IntegerValue("NoInvDelay", 200, 0, 500, "ms", { noInventoryAttackValue.get() })
@@ -808,7 +788,7 @@ class KillAura : Module() {
     }
 
     private fun getTargetRotation(entity: Entity): Rotation? {
-        var boundingBox = entity.entityBoundingBox
+        var boundingBox = entity.hitbox
         if (rotations.get().equals("Vanilla", ignoreCase = true)){
             if (maxTurnSpeed.get() <= 0F)
                 return RotationUtils.serverRotation
@@ -982,8 +962,7 @@ class KillAura : Module() {
             //mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, interactEntity.positionVector))
             val positionEye = mc.renderViewEntity?.getPositionEyes(1F)
 
-            val expandSize = interactEntity.collisionBorderSize.toDouble()
-            val boundingBox = interactEntity.entityBoundingBox.expand(expandSize, expandSize, expandSize)
+            val boundingBox = interactEntity.hitBox
 
             val (yaw, pitch) = RotationUtils.targetRotation ?: Rotation(mc.thePlayer!!.rotationYaw, mc.thePlayer!!.rotationPitch)
             val yawCos = cos(-yaw * 0.017453292F - Math.PI.toFloat())

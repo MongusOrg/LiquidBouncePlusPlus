@@ -96,6 +96,7 @@ object LiquidBounce {
         eventManager.registerListener(InventoryHelper)
         eventManager.registerListener(PacketUtils())
         eventManager.registerListener(SessionUtils())
+        eventManager.registerListener(ClientFixes)
         eventManager.registerListener(MacroManager)
 
         // Init Discord RPC

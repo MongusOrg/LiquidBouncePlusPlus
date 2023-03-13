@@ -71,8 +71,7 @@ public class BufferSpeed extends Module {
             return;
         }
 
-        final BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.getEntityBoundingBox().minY,
-                mc.thePlayer.posZ);
+        final BlockPos blockPos = new BlockPos(mc.thePlayer);
 
         if(forceDown || (down && mc.thePlayer.motionY == 0)) {
             mc.thePlayer.motionY = -1;

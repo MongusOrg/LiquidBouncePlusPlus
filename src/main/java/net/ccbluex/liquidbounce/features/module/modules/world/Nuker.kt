@@ -109,7 +109,7 @@ class Nuker : Module() {
                 val (blockPos, block) = when(priorityValue.get()) {
                     "Distance" -> validBlocks.minByOrNull { (pos, block) ->
                         val distance = getCenterDistance(pos)
-                        val safePos = BlockPos(thePlayer.posX, thePlayer.posY - 1, thePlayer.posZ)
+                        val safePos = BlockPos(thePlayer).down()
 
                         if (pos.x == safePos.x && safePos.y <= pos.y && pos.z == safePos.z)
                             Double.MAX_VALUE - distance // Last block
@@ -197,9 +197,8 @@ class Nuker : Module() {
 
                             if (!throughWallsValue.get()) { // ThroughWalls: Just break blocks in your sight
                                 // Raytrace player eyes to block position (through walls check)
-                                val eyesPos = Vec3(thePlayer.posX, thePlayer.entityBoundingBox.minY +
-                                        thePlayer.eyeHeight, thePlayer.posZ)
-                                val blockVec = Vec3(pos.x + 0.5, pos.y + 0.5, pos.z + 0.5)
+                                val eyesPos = thePlayer.getPositionEyes(1f)
+                                val blockVec = Vec3(thePlayer.position)
                                 val rayTrace = mc.theWorld!!.rayTraceBlocks(eyesPos, blockVec,
                                         false, true, false)
 
