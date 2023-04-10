@@ -31,7 +31,7 @@ vec4 BlurH (sampler2D source, vec2 size, vec2 uv, float radius) {
         float radiusMultiplier = 1.0 / radius;
 
         // Hardcoded for radius 20 (normally we input the radius
-        // in there), needs to be literal here
+        // in there), literally needs to be here
 
         for (float x = -radius; x <= radius; x++)
         {
