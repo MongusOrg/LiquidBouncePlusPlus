@@ -39,7 +39,6 @@ object LiquidBounce {
     const val CLIENT_NAME = "LiquidBounce++"
     const val CLIENT_VERSION = "0.3"
     const val CLIENT_CREATOR = "CCBlueX, exit-scammed, and PlusPlusMC"
-    // gonna change the site very soon lol
     const val CLIENT_CLOUD = "https://amoclub.github.io/PlusPlusCloud/LiquidBounce"
 
     var isStarting = false
@@ -53,7 +52,6 @@ object LiquidBounce {
     lateinit var eventManager: EventManager
     lateinit var fileManager: FileManager
     lateinit var scriptManager: ScriptManager
-
     lateinit var tipSoundManager: TipSoundManager
 
     // HUD & ClickGUI
@@ -96,7 +94,6 @@ object LiquidBounce {
         eventManager.registerListener(InventoryHelper)
         eventManager.registerListener(PacketUtils())
         eventManager.registerListener(SessionUtils())
-        eventManager.registerListener(ClientFixes)
         eventManager.registerListener(MacroManager)
 
         // Init Discord RPC
