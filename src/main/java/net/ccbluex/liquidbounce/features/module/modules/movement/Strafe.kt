@@ -41,13 +41,13 @@ class Strafe : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-        if (mc.thePlayer!!.onGround && mc.gameSettings.keyBindJump.isKeyDown && allDirectionsJumpValue.get() && MovementUtils.isMoving && !(mc.thePlayer!!.isInWater || mc.thePlayer!!.isInLava || mc.thePlayer!!.isOnLadder || mc.thePlayer!!.isInWeb)) {
+        if (mc.thePlayer!!.onGround && mc.gameSettings.keyBindJump.isKeyDown && allDirectionsJumpValue.get() && MovementUtils.isMoving() && !(mc.thePlayer!!.isInWater || mc.thePlayer!!.isInLava || mc.thePlayer!!.isOnLadder || mc.thePlayer!!.isInWeb)) {
             if (mc.gameSettings.keyBindJump.isKeyDown) {
                 mc.gameSettings.keyBindJump.pressed = false
                 wasDown = true
             }
             val yaw = mc.thePlayer!!.rotationYaw
-            mc.thePlayer!!.rotationYaw = Math.toDegrees(MovementUtils.direction).toFloat()
+            mc.thePlayer!!.rotationYaw = getMoveYaw()
             mc.thePlayer!!.jump()
             mc.thePlayer!!.rotationYaw = yaw
             jump = true
@@ -62,7 +62,7 @@ class Strafe : Module() {
 
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-        if (!MovementUtils.isMoving) {
+        if (!MovementUtils.isMoving()) {
             if (noMoveStopValue.get()) {
                 mc.thePlayer!!.motionX = .0
                 mc.thePlayer!!.motionZ = .0
