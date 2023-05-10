@@ -788,7 +788,7 @@ class KillAura : Module() {
     }
 
     private fun getTargetRotation(entity: Entity): Rotation? {
-        var boundingBox = entity.hitbox
+        var boundingBox = entity.entityBoundingBox
         if (rotations.get().equals("Vanilla", ignoreCase = true)){
             if (maxTurnSpeed.get() <= 0F)
                 return RotationUtils.serverRotation
@@ -962,7 +962,8 @@ class KillAura : Module() {
             //mc.netHandler.addToSendQueue(C02PacketUseEntity(interactEntity, interactEntity.positionVector))
             val positionEye = mc.renderViewEntity?.getPositionEyes(1F)
 
-            val boundingBox = interactEntity.hitBox
+            val expandSize = interactEntity.collisionBorderSize.toDouble()
+            val boundingBox = interactEntity.entityBoundingBox.expand(expandSize, expandSize, expandSize)
 
             val (yaw, pitch) = RotationUtils.targetRotation ?: Rotation(mc.thePlayer!!.rotationYaw, mc.thePlayer!!.rotationPitch)
             val yawCos = cos(-yaw * 0.017453292F - Math.PI.toFloat())
