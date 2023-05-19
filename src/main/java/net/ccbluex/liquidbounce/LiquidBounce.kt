@@ -39,7 +39,7 @@ object LiquidBounce {
     const val CLIENT_NAME = "LiquidBounce++"
     const val CLIENT_VERSION = "0.3"
     const val CLIENT_CREATOR = "CCBlueX, exit-scammed, and PlusPlusMC"
-    const val CLIENT_CLOUD = "https://amoclub.github.io/PlusPlusCloud/LiquidBounce"
+    const val CLIENT_CLOUD = "https://toidicakhia.github.io/LiquidBounceCloud/LiquidBounce/"
 
     var isStarting = false
     var mainMenuPrep = false
