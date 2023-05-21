@@ -41,11 +41,7 @@ class Strafe : Module() {
 
     @EventTarget
     fun onUpdate(event: UpdateEvent) {
-<<<<<<< HEAD
-        if (mc.thePlayer!!.onGround && mc.gameSettings.keyBindJump.isKeyDown && allDirectionsJumpValue.get() && MovementUtils.isMoving() && !(mc.thePlayer!!.isInWater || mc.thePlayer!!.isInLava || mc.thePlayer!!.isOnLadder || mc.thePlayer!!.isInWeb)) {
-=======
         if (mc.thePlayer!!.onGround && mc.gameSettings.keyBindJump.isKeyDown && allDirectionsJumpValue.get() && (mc.thePlayer!!.movementInput.moveForward != 0F || mc.thePlayer!!.movementInput.moveStrafe != 0F) && !(mc.thePlayer!!.isInWater || mc.thePlayer!!.isInLava || mc.thePlayer!!.isOnLadder || mc.thePlayer!!.isInWeb)) {
->>>>>>> parent of f9cf54ef (LiquidBounce updated lol)
             if (mc.gameSettings.keyBindJump.isKeyDown) {
                 mc.gameSettings.keyBindJump.pressed = false
                 wasDown = true
@@ -66,15 +62,11 @@ class Strafe : Module() {
 
     @EventTarget
     fun onStrafe(event: StrafeEvent) {
-<<<<<<< HEAD
-        if (!MovementUtils.isMoving()) {
-=======
         val shotSpeed = sqrt((mc.thePlayer!!.motionX * mc.thePlayer!!.motionX) + (mc.thePlayer!!.motionZ * mc.thePlayer!!.motionZ))
         val speed = (shotSpeed * strengthValue.get())
         val motionX = (mc.thePlayer!!.motionX * (1 - strengthValue.get()))
         val motionZ = (mc.thePlayer!!.motionZ * (1 - strengthValue.get()))
         if (!(mc.thePlayer!!.movementInput.moveForward != 0F || mc.thePlayer!!.movementInput.moveStrafe != 0F)) {
->>>>>>> parent of f9cf54ef (LiquidBounce updated lol)
             if (noMoveStopValue.get()) {
                 mc.thePlayer!!.motionX = 0.0
                 mc.thePlayer!!.motionZ = 0.0
