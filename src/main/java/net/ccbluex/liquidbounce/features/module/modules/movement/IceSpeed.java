@@ -46,7 +46,7 @@ public class IceSpeed extends Module {
             Blocks.packed_ice.slipperiness = 0.98F;
         }
 
-        if(mc.thePlayer.onGround && !mc.thePlayer.isOnLadder() && !mc.thePlayer.isSneaking() && mc.thePlayer.isSprinting() && MovementUtils.isMoving()) {
+        if(mc.thePlayer.onGround && !mc.thePlayer.isOnLadder() && !mc.thePlayer.isSneaking() && mc.thePlayer.isSprinting() && mc.thePlayer.movementInput.moveForward > 0D) {
             if(mode.equalsIgnoreCase("AAC")) {
                 final Material material = BlockUtils.getMaterial(mc.thePlayer.getPosition().down());
 

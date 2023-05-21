@@ -56,7 +56,8 @@ object ChestAura : Module() {
 
                 val radius = rangeValue.get() + 1
 
-                val eyesPos = mc.thePlayer.getPositionEyes(1f)
+                val eyesPos = Vec3(mc.thePlayer.posX, mc.thePlayer.entityBoundingBox.minY + mc.thePlayer.getEyeHeight(),
+                        mc.thePlayer.posZ)
 
                 currentBlock = BlockUtils.searchBlocks(radius.toInt())
                         .filter {

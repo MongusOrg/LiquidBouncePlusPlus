@@ -437,6 +437,10 @@ class NoFall : Module() {
                     val maxDist = mc.playerController.blockReachDistance + 1.5
                     val collision = NewFallingPlayer.findCollision(ceil(1.0 / mc.thePlayer.motionY * -maxDist).toInt()) ?: return
                     var ok = Vec3(mc.thePlayer.posX, mc.thePlayer.posY + mc.thePlayer.eyeHeight, mc.thePlayer.posZ).distanceTo(Vec3(collision).addVector(0.5, 0.5, 0.5)) < mc.playerController.blockReachDistance + sqrt(0.75)
+<<<<<<< HEAD
+=======
+
+>>>>>>> parent of f9cf54ef (LiquidBounce updated lol)
                     if (mc.thePlayer.motionY < collision.y + 1 - mc.thePlayer.posY)
                         ok = true
 

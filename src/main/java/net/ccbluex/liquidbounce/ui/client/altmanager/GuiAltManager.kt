@@ -188,7 +188,7 @@ class GuiAltManager(private val prevGui: GuiScreen) : GuiScreen() {
                 randomCracked.enabled = false
 
                 val rand = CrackedAccount()
-                rand.name = RandomUtils.randomString(RandomUtils.nextInt(5, 7))
+                rand.name = RandomUtils.randomString(RandomUtils.nextInt(5, 16))
 
                 status = "§aGenerating..."
 

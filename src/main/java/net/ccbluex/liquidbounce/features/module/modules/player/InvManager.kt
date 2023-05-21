@@ -61,8 +61,8 @@ class InvManager : Module() {
 
     // Inventory options
     private val invOpenValue = BoolValue("InvOpen", false)
-    private val invSpoof = BoolValue("InvSpoof", true, { !invOpenValue.get() })
-    private val invSpoofOld = BoolValue("InvSpoof-Old", false, { invSpoof.get() && !invOpenValue.get() })
+    private val invSpoof = BoolValue("InvSpoof", true)
+    private val invSpoofOld = BoolValue("InvSpoof-Old", false, { invSpoof.get() })
 
     // Others
     private val armorsValue = BoolValue("WearArmors", true)
@@ -117,7 +117,7 @@ class InvManager : Module() {
     private var delay = 0L
 
     override fun onEnable() {
-        if (invSpoof.get() && !invSpoofOld.get() && !invOpenValue.get())
+        if (invSpoof.get() && !invSpoofOld.get())
             spoofInventory = false
 
         garbageQueue.clear()
@@ -126,7 +126,7 @@ class InvManager : Module() {
 
     @EventTarget
     fun onWorld(event: WorldEvent) {
-        if (invSpoof.get() && !invSpoofOld.get() && !invOpenValue.get())
+        if (invSpoof.get() && !invSpoofOld.get())
             spoofInventory = false
 
         garbageQueue.clear()
@@ -169,7 +169,7 @@ class InvManager : Module() {
         if (mc.currentScreen !is GuiInventory && invOpenValue.get() && !invSpoof.get()) return
 
         if (garbageQueue.isEmpty() && armorQueue.size <= 0) {
-            if (invSpoof.get() && !invSpoofOld.get() && !invOpenValue.get())
+            if (invSpoof.get() && !invSpoofOld.get())
                 spoofInventory = false
             return
         }
@@ -177,7 +177,7 @@ class InvManager : Module() {
         if (sortValue.get())
             sortHotbar()
 
-        if (invSpoof.get() && !invSpoofOld.get() && !invOpenValue.get())
+        if (invSpoof.get() && !invSpoofOld.get())
             spoofInventory = true
 
         if (armorsValue.get()) {
@@ -206,7 +206,7 @@ class InvManager : Module() {
             val garbageItem = garbageItems.firstOrNull() ?: break
 
             // Drop all useless items
-            val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get() && invSpoofOld.get() && !invOpenValue.get()
+            val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get() && invSpoofOld.get()
 
             if (openInventory)
                 InventoryHelper.openPacket()
@@ -234,7 +234,7 @@ class InvManager : Module() {
             val bestItem = findBetterItem(index, mc.thePlayer.inventory.getStackInSlot(index)) ?: continue
 
             if (bestItem != index) {
-                val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get() && invSpoofOld.get() && !invOpenValue.get()
+                val openInventory = mc.currentScreen !is GuiInventory && invSpoof.get() && invSpoofOld.get()
 
                 if (openInventory)
                     InventoryHelper.openPacket()
@@ -293,12 +293,12 @@ class InvManager : Module() {
 
             return true
         } else if (!(noMoveValue.get() && MovementUtils.isMoving()) && (!invOpenValue.get() || mc.currentScreen is GuiInventory) && item != -1) {
-            val openInventory = invSpoof.get() && mc.currentScreen !is GuiInventory && !invSpoofOld.get() && !invOpenValue.get()
+            val openInventory = invSpoof.get() && mc.currentScreen !is GuiInventory && !invSpoofOld.get()
 
             if (openInventory)
                 InventoryHelper.openPacket()
 
-            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, (if (isArmorSlot && armorsValue.get()) item else if (item < 9) item + 36 else item), 0, 1, mc.thePlayer)
+            mc.playerController.windowClick(mc.thePlayer.inventoryContainer.windowId, (if (isArmorSlot) item else if (item < 9) item + 36 else item), 0, 1, mc.thePlayer)
 
             delay = TimeUtils.randomDelay(minDelayValue.get(), maxDelayValue.get())
 
