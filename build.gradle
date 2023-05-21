@@ -3,7 +3,7 @@ plugins {
     id "idea"
     id "org.jetbrains.kotlin.jvm"
     id "com.github.johnrengelman.shadow" version "6.1.0"
-    id "net.minecraftforge.gradle.forge"
+    id "net.minecraftforge.gradle.forge" version "2.1-SNAPSHOT"
     id "org.spongepowered.mixin"
 }
 
