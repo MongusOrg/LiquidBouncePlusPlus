@@ -99,6 +99,12 @@ public class Platform implements ViaPlatform<UUID> {
          return new FutureTaskId(ViaForge.getInstance().getEventLoop().scheduleAtFixedRate(() -> runSync(runnable),
                  0, ticks * 50, TimeUnit.MILLISECONDS).addListener(errorLogger()));
     }
+	
+	@Override
+    public PlatformTask runRepeatingAsync(Runnable runnable, long ticks) {
+         return new FutureTaskId(ViaForge.getInstance().getEventLoop().scheduleAtFixedRate(() -> runSync(runnable),
+                 0, ticks * 50, TimeUnit.MILLISECONDS).addListener(errorLogger()));
+    }
 
     private <T extends Future<?>> GenericFutureListener<T> errorLogger() {
         return future -> {
