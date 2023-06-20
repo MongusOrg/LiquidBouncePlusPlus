@@ -3,13 +3,12 @@
 # LiquidBounce++                                    
      
 A free mixin-based injection hacked-client for Minecraft 1.8.9 using Minecraft Forge.
-Based on LiquidBounce+
+Based on LiquidBounce
 
-### Good night LiquidBounce+
-LiquidBounce+ is discontinued, we hope inf will return.
+## RIP WYSI-FOUNDATION
 
 ### Info
-[Website](https://lbplusplus.ga), [Discord](https://discord.gg/EyqcPDEBd8)
+[Website](https://themoskau.github.io/lbplusplus-site/), [Discord](https://discord.gg/EyqcPDEBd8)
 
 ## How to install
 1. Download [Forge 1.8.9](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html)
