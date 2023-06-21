@@ -5,11 +5,11 @@
 A free mixin-based injection hacked-client for Minecraft 1.8.9 using Minecraft Forge.
 Based on LiquidBounce
 
-## RIP WYSI-Foundation 2021-2023
-We Hope Inf Returns with a New Foundation.
+## RIP WYSI-Foundation
+We hope Inf returns with a new foundation.
 
 ### Info
-[Website](https://themoskau.github.io/lbplusplus-site/), [Discord](https://discord.gg/EyqcPDEBd8)
+[Website](https://themoskau.github.io/lbplusplus-site/), [Discord](https://discord.gg/72tG5Rf6EF)
 
 ## How to install
 1. Download [Forge 1.8.9](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html)
