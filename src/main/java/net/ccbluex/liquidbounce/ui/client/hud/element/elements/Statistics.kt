@@ -5,36 +5,30 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
-import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.ui.client.hud.element.Border
-import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura
-import net.ccbluex.liquidbounce.features.module.modules.misc.AutoHypixel
 import net.ccbluex.liquidbounce.ui.client.hud.element.Element
 import net.ccbluex.liquidbounce.ui.client.hud.element.ElementInfo
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.ccbluex.liquidbounce.value.*
-import net.minecraft.client.gui.Gui
-import net.minecraft.client.renderer.RenderHelper
-import net.minecraft.entity.player.EntityPlayer
-import net.minecraft.inventory.IInventory
-import net.minecraft.item.ItemStack
 import org.lwjgl.opengl.GL11
-import net.minecraft.client.renderer.GlStateManager
 import java.awt.Color
 import net.ccbluex.liquidbounce.utils.*
 import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.ui.font.Fonts
-import net.ccbluex.liquidbounce.features.module.modules.misc.BanChecker
-import java.text.DecimalFormat
 
 @ElementInfo(name = "Statistics")
 class Statistics(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F) : Element(x, y, scale) {
     private val blurValue = BoolValue("Blur", false)
+    private val barValue = BoolValue("Bar", false)
     private val blurStrength = FloatValue("Blur-Strength", 0F, 0F, 50F, { blurValue.get() })
     private val redValue = IntegerValue("Background-Red", 0, 0, 255)
     private val greenValue = IntegerValue("Background-Green", 0, 0, 255)
     private val blueValue = IntegerValue("Background-Blue", 0, 0, 255)
-    private val alpha = IntegerValue("Background-Alpha", 120, 0, 255)
+    private val barRedValue = IntegerValue("Bar-Red", 0, 0, 255, { barValue.get() })
+    private val barGreenValue = IntegerValue("Bar-Green", 0, 0, 255, { barValue.get() })
+    private val barBlueValue = IntegerValue("Bar-Blue", 0, 0, 255, { barValue.get() })
+    private val alpha = IntegerValue("Background-Alpha", 120, 0, 255, { barValue.get() })
+    private val barAlpha = IntegerValue("Bar-Alpha", 120, 0, 255, { barValue.get() })
     private var fontValue = FontValue("Font", Fonts.font40)
 
     override fun drawElement(): Border? {
@@ -48,19 +42,19 @@ class Statistics(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F) : Elemen
             GL11.glTranslated(-renderX, -renderY, 0.0)
             GL11.glPushMatrix()
 
-            BlurUtils.blurAreaRounded(floatX, floatY, floatX + 155F, floatY + 63F, 3.5F, blurStrength.get())
+            BlurUtils.blurAreaRounded(floatX, floatY, floatX + 155F, floatY + 39.5F, 3.5F, blurStrength.get())
 
             GL11.glPopMatrix()
             GL11.glTranslated(renderX, renderY, 0.0)
         }
 
-        RenderUtils.whatRoundedRect(0F, 0F, 155F, 39F, if(!blurValue.get()) Color(redValue.get(), greenValue.get(), blueValue.get(), alpha.get()).rgb else Color(redValue.get(), greenValue.get(), blueValue.get(), 135).rgb, 3.5F)
-        RenderUtils.whatRoundedRect(0F, 0F, 155F, 3F, RenderUtils.getRainbowOpaque(2, 0.9f, 1.0f, 0), 3.5F)
+        RenderUtils.drawRoundedRect(0F, 0F, 155F, 39F, 3.0F, (if(!blurValue.get()) Color(redValue.get(), greenValue.get(), blueValue.get(), alpha.get()).rgb else Color(redValue.get(), greenValue.get(), blueValue.get(), 135).rgb))
+        RenderUtils.drawRect(0F, 0F, 155F, 3.5F, Color(barRedValue.get(), barGreenValue.get(), barBlueValue.get(), barAlpha.get()).rgb)
 
-        font.drawString("Session info", 10, 10, -1)
-        font.drawString("Username: " + mc.session.username, 3, 20, -1)
-        font.drawString("Session Time: " + SessionUtils.getFormatSessionTime(), 3, 30, -1)
-        
-     return Border(0F, 0F, 155F, 39F)
+        font.drawStringWithShadow("Session info", 50F, 7f, Color(255,255,255).rgb)
+        font.drawStringWithShadow("Username: " + mc.session.username, 3f, 20f, Color(255,255,255).rgb)
+        font.drawStringWithShadow("Session Time: " + SessionUtils.getFormatSessionTime(), 3f, 30f, Color(255,255,255).rgb)
+
+     return Border(0F, 0F, 155F, 39.5F)
     }
 }
