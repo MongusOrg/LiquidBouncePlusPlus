@@ -71,6 +71,9 @@ class Target : Element() {
     val bgBlueValue = IntegerValue("Background-Blue", 0, 0, 255)
     val bgAlphaValue = IntegerValue("Background-Alpha", 160, 0, 255)
 
+    public val floatX = renderX.toFloat()
+    public val floatY = renderY.toFloat()
+
     override val values: List<Value<*>>
         get() {
             val valueList = mutableListOf<Value<*>>()

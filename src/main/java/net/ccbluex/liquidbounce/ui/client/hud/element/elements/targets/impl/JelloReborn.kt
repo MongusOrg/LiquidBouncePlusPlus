@@ -11,6 +11,7 @@ import net.ccbluex.liquidbounce.ui.client.hud.element.elements.targets.TargetSty
 import net.ccbluex.liquidbounce.ui.font.Fonts
 import net.ccbluex.liquidbounce.utils.extensions.getDistanceToEntityBox
 import net.ccbluex.liquidbounce.utils.render.BlendUtils
+import net.ccbluex.liquidbounce.utils.render.BlurUtils
 import net.ccbluex.liquidbounce.utils.render.RenderUtils
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
@@ -19,12 +20,11 @@ import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
-class JelloReborn(inst: Target): TargetStyle("JelloReborn", inst, false) {
+class JelloReborn(inst: Target): TargetStyle("JelloReborn", inst, true) {
 
     override fun drawTarget(entity: EntityPlayer) {
         updateAnim(entity.health)
-
-        val healthString = "${decimalFormat2.format(entity.health)} Health"
+        val healthString = "${entity.health.toInt()} Health"
 
         // background
         RenderUtils.newDrawRect(1F, 1F, 145F, 48F, getColor(Color(82, 82, 82)).rgb)
@@ -33,15 +33,28 @@ class JelloReborn(inst: Target): TargetStyle("JelloReborn", inst, false) {
         RenderUtils.newDrawRect(4F, 40F, 3.5F + (easingHealth / entity.maxHealth).coerceIn(0F, 1F) * 138F, 43F, targetInstance.barColor.rgb)
 
         // name
-        Fonts.fontSFUI40.drawString(entity.name, 41F, 12F, getColor(-1).rgb)
+        Fonts.fontSFUI40.drawStringWithShadow(entity.name, 41F, 12F, getColor(-1).rgb)
 
         // Info
         if (mc.netHandler.getPlayerInfo(entity.uniqueID) != null) {
             // actual head
             drawHead(mc.netHandler.getPlayerInfo(entity.uniqueID).locationSkin, 5, 5, 32, 32, 1F - targetInstance.getFadeProgress())
 
-            Fonts.fontSFUI40.drawString(healthString, 41F, 24F, getColor(-1).rgb)
+            Fonts.fontSFUI40.drawStringWithShadow(healthString, 41F, 24F, getColor(-1).rgb)
         }
+    }
+
+    override fun handleBlur(entity: EntityPlayer) {
+        val width = (38 + Fonts.font40.getStringWidth(entity.name))
+                .coerceAtLeast(118)
+                .toFloat()
+
+        GlStateManager.enableBlend()
+        GlStateManager.disableTexture2D()
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+        RenderUtils.quickDrawRect(0F, 0F, 145F, 36F)
+        GlStateManager.enableTexture2D()
+        GlStateManager.disableBlend()
     }
 
     override fun getBorder(entity: EntityPlayer?): Border? {
