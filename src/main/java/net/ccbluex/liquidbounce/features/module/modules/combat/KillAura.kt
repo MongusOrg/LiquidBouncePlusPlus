@@ -95,7 +95,7 @@ class KillAura : Module() {
     private val rangeSprintReducementValue = FloatValue("RangeSprintReducement", 0f, 0f, 0.4f, "m")
 
     // Modes
-    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin","None"), "BackTrack")
+    private val rotations = ListValue("RotationMode", arrayOf("Vanilla", "BackTrack", "Spin", "None"), "BackTrack")
 
     private val spinHurtTimeValue = IntegerValue("Spin-HitHurtTime", 10, 0, 10, { rotations.get().equals("spin", true) })
 
@@ -147,7 +147,7 @@ class KillAura : Module() {
     // Bypass
     private val swingValue = BoolValue("Swing", true)
     private val swingOrderValue = BoolValue("1.9OrderCheck", true, { swingValue.get() })
-    private val keepSprintValue = BoolValue("KeepSprint", true)
+    val keepSprintValue = BoolValue("KeepSprint", true)
 
     // AutoBlock
     private val autoBlockModeValue = ListValue("AutoBlock", arrayOf("None", "Packet", "AfterTick", "NCP", "OldHypixel"), "None")

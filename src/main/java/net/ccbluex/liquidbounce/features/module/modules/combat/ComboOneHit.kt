@@ -30,7 +30,7 @@ class ComboOneHit : Module() {
         if (onlyAuraValue.get() && !LiquidBounce.moduleManager[KillAura::class.java]!!.state && !LiquidBounce.moduleManager[TeleportAura::class.java]!!.state) return
 
         repeat (amountValue.get()) {
-            mc.netHandler.addToSendQueue(C0APacketAnimation())
+            if(swingItemValue.get()) mc.netHandler.addToSendQueue(C0APacketAnimation())
             mc.netHandler.addToSendQueue(C02PacketUseEntity(event.targetEntity, C02PacketUseEntity.Action.ATTACK))
         }
     }

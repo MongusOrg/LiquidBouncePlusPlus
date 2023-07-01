@@ -92,7 +92,7 @@ class ClientRichPresence : MinecraftInstance() {
 
         // Check assets contains logo and set logo
         if (assets.containsKey("text"))
-            builder.setLargeImage("https://plusplusmc.github.io/Client-Assets/rpcimage/20220410_100411.jpg", "Please join my new discord :pray:")
+            builder.setLargeImage(assets["logonew"], "Please join my new discord :pray:")
 
         val serverData = mc.currentServerData
 
@@ -128,6 +128,7 @@ class ClientRichPresence : MinecraftInstance() {
     private fun loadConfiguration() {
         appID = 1084833955494244404L
         assets["logo"] = "logo"
+        assets["logonew"] = "logonew"
         assets["sus"] = "sus"
     }
 }

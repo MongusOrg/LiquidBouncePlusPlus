@@ -32,6 +32,7 @@ class Sprint : Module() {
     val foodValue = BoolValue("Food", true)
 
     val checkServerSide = BoolValue("CheckServerSide", false)
+    val test = BoolValue("Test", true)
     val checkServerSideGround = BoolValue("CheckServerSideOnlyGround", false)
 
     private var modified = false
@@ -54,14 +55,15 @@ class Sprint : Module() {
                 (blindnessValue.get() && mc.thePlayer.isPotionActive(Potion.blindness)) ||
                 (foodValue.get() && !(mc.thePlayer.getFoodStats().getFoodLevel() > 6.0F || mc.thePlayer.capabilities.allowFlying))
                 || (checkServerSide.get() && (mc.thePlayer.onGround || !checkServerSideGround.get())
-                && !allDirectionsValue.get() && RotationUtils.targetRotation != null &&
-                RotationUtils.getRotationDifference(Rotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch)) > 30F)) {
+                        && !allDirectionsValue.get() && RotationUtils.targetRotation != null &&
+                        RotationUtils.getRotationDifference(Rotation(mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch)) > 15F) || killAura.target != null && !killAura.keepSprintValue.get()) {
             mc.thePlayer.setSprinting(false)
             return
         }
 
-        if (allDirectionsValue.get() || mc.thePlayer.movementInput.moveForward >= 0.8F)
+        if (allDirectionsValue.get() || mc.thePlayer.movementInput.moveForward >= 0.8F) {
             mc.thePlayer.setSprinting(true)
+        }
 
         if (allDirectionsValue.get() && moveDirPatchValue.get() && killAura.target == null)
             RotationUtils.setTargetRotation(Rotation(MovementUtils.getRawDirection(), mc.thePlayer.rotationPitch))
