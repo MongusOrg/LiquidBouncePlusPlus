@@ -134,7 +134,7 @@ public class Fonts {
 
             if (!outputFile.exists() || !sfuiFile.exists() || !prodSansFile.exists() || !prodBoldFile.exists() || !tahomaFile.exists() || !tahomaReFile.exists() || !bangersFile.exists()) {
                 ClientUtils.getLogger().info("Downloading fonts...");
-                HttpUtils.download("https://mokkowdev.github.io/LiquidCloud/LiquidBounce/fonts/fonts.zip", outputFile);
+                HttpUtils.download("https://mokkowdev.github.io/Cloud/LiquidBounce/fonts/fonts.zip", outputFile);
                 ClientUtils.getLogger().info("Extract fonts...");
                 extractZip(outputFile.getPath(), LiquidBounce.fileManager.fontsDir.getPath());
             }
