@@ -42,7 +42,7 @@ class ClientRichPresence : MinecraftInstance() {
 
             loadConfiguration()
 
-            ipcClient = IPCClient(1084833955494244404)
+            ipcClient = IPCClient(1271516747861856317)
             ipcClient?.setListener(object : IPCListener {
 
                 /**
@@ -91,19 +91,15 @@ class ClientRichPresence : MinecraftInstance() {
         builder.setStartTimestamp(timestamp)
 
         // Check assets contains logo and set logo
-        if (assets.containsKey("text"))
-            builder.setLargeImage(assets["logonew"], "Please join my new discord :pray:")
+        if (assets.containsKey("logo"))
+            builder.setLargeImage(assets["logo"], "Ermm what the sigma")
 
         val serverData = mc.currentServerData
 
         // Set display infos
         builder.setDetails(if (Display.isActive()) (if (mc.isIntegratedServerRunning || serverData != null) "Playing" else "Idle...") else "AFK")
         builder.setState("Using version: " + LiquidBounce.CLIENT_VERSION)
-
-        if (mc.isIntegratedServerRunning || serverData != null) 
-            builder.setSmallImage(assets["sus"], "${if (mc.isIntegratedServerRunning || serverData == null) "Singleplayer" else serverData.serverIP}")
-        else
-            builder.setSmallImage(assets["sus"], "Enabled ${LiquidBounce.moduleManager.modules.count { it.state }}/${LiquidBounce.moduleManager.modules.size}.")
+        builder.setSmallImage(assets["mongus"], "Amongus car")
 
         // Check ipc client is connected and send rpc
         if (ipcClient?.status == PipeStatus.CONNECTED)
@@ -126,9 +122,8 @@ class ClientRichPresence : MinecraftInstance() {
     }
 
     private fun loadConfiguration() {
-        appID = 1084833955494244404L
+        appID = 1271516747861856317L
         assets["logo"] = "logo"
-        assets["logonew"] = "logonew"
-        assets["sus"] = "sus"
+        assets["mongus"] = "mongus"
     }
 }

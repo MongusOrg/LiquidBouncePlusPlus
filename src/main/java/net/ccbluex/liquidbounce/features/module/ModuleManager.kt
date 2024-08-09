@@ -150,7 +150,6 @@ class ModuleManager : Listenable {
                 AutoHypixel::class.java,
                 TargetStrafe::class.java,
                 ESP2D::class.java,
-                BanChecker::class.java,
                 TargetMark::class.java,
                 AntiFireBall::class.java,
                 KeepSprint::class.java,

@@ -178,14 +178,10 @@ public class Fly extends Module {
     private final FloatValue bobbingAmountValue = new FloatValue("BobbingAmount", 0.2F, 0F, 1F, () -> bobbingValue.get());
     private final BoolValue markValue = new BoolValue("Mark", true);
 
-    private BlockPos lastPosition;
-
     private double startY;
 
     private final MSTimer flyTimer = new MSTimer();
     private final MSTimer groundTimer = new MSTimer();
-    private final MSTimer boostTimer = new MSTimer();
-    private final MSTimer wdTimer = new MSTimer();
     private final MSTimer mineSecureVClipTimer = new MSTimer();
     private final MSTimer mineplexTimer = new MSTimer();
     

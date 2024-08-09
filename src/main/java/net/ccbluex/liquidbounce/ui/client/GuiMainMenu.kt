@@ -49,7 +49,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
     var extendedBackgroundMode = false
 
     companion object {
-        var useParallax = true
+        var useParallax = false
     }
 
     override fun initGui() {
@@ -70,7 +70,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         GL11.glPushMatrix()
         renderSwitchButton()
         renderDarkModeButton()
-        Fonts.font40.drawStringWithShadow("LiquidBounce++ b${LiquidBounce.CLIENT_VERSION} | lbplusplus.ga", 2F, height - 12F, -1)
+        Fonts.font40.drawStringWithShadow("LiquidBounce++ b${LiquidBounce.CLIENT_VERSION} | plusplus.funniesthvh.uk", 2F, height - 12F, -1)
         Fonts.font40.drawStringWithShadow(creditInfo, width - 3F - Fonts.font40.getStringWidth(creditInfo), height - 12F, -1)
         if (useParallax) moveMouseEffect(mouseX, mouseY, 10F)
         GlStateManager.disableAlpha()
@@ -92,7 +92,7 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
         if (!LiquidBounce.mainMenuPrep || mouseButton != 0) return
 
         if (isMouseHover(2F, height - 26F, 28F, height - 16F, mouseX, mouseY))
-            useParallax = !useParallax
+            GuiBackground.enabled = !GuiBackground.enabled
 
         if (isMouseHover(2F, height - 38F, 28F, height - 28F, mouseX, mouseY))
             LiquidBounce.darkMode = !LiquidBounce.darkMode
@@ -166,9 +166,9 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
     }
 
     fun renderSwitchButton() {
-        sliderX = (sliderX + (if (useParallax) 2F else -2F)).coerceIn(0F, 12F)
-        Fonts.font40.drawStringWithShadow("Parallax", 28F, height - 25F, -1)
-        RenderUtils.drawRoundedRect(4F, height - 24F, 22F, height - 18F, 3F, if (useParallax) Color(0, 111, 255, 255).rgb else (if (LiquidBounce.darkMode) Color(70, 70, 70, 255) else Color(140, 140, 140, 255)).rgb)
+        sliderX = (sliderX + (if (GuiBackground.enabled) 2F else -2F)).coerceIn(0F, 12F)
+        Fonts.font40.drawStringWithShadow("Background", 28F, height - 25F, -1)
+        RenderUtils.drawRoundedRect(4F, height - 24F, 22F, height - 18F, 3F, if (GuiBackground.enabled) Color(0, 111, 255, 255).rgb else (if (LiquidBounce.darkMode) Color(70, 70, 70, 255) else Color(140, 140, 140, 255)).rgb)
         RenderUtils.drawRoundedRect(2F + sliderX, height - 26F, 12F + sliderX, height - 16F, 5F, Color.white.rgb)
     }
 
@@ -228,8 +228,6 @@ class GuiMainMenu : GuiScreen(), GuiYesNoCallback {
 
         if (displayString != null)
             Fonts.font35.drawCenteredString(displayString!!, width / 2F, staticY + 30F, -1)
-        else
-            Fonts.font35.drawCenteredString("hi", width / 2F, staticY + 30F, -1)
 
         if (shouldAnimate) {
             if (fade == 0F)

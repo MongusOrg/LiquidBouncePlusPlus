@@ -78,11 +78,6 @@ public class Speed extends Module {
             // Spartan
             new SpartanYPort(),
 
-            // Spectre
-            new SpectreBHop(),
-            new SpectreLowHop(),
-            new SpectreOnGround(),
-
             // Other
             new SlowHop(),
             new StrafeHop(),
@@ -90,16 +85,11 @@ public class Speed extends Module {
             new Jump(),
             new Legit(),
             new AEMine(),
-            new GWEN(),
             new Boost(),
-            new Frame(),
             new MiJump(),
             new OnGround(),
             new YPort(),
             new YPort2(),
-            new HiveHop(),
-            new MineplexGround(),
-            new TeleportCubeCraft(),
 
             // Verus
             new VerusHop(),

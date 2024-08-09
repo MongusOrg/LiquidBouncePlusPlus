@@ -25,5 +25,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: LiquidBounce++
-          path: build/libs/liquidbounceplusplus-0.3.jar
+          name: LiquidBounce++ Beta
+          path: build/libs/liquidbounceplusplus-0.3.1.jar
