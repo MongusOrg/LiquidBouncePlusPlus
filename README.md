@@ -3,16 +3,16 @@
 # LiquidBounce++              
      
 A free mixin-based injection hacked-client for Minecraft 1.8.9 using Minecraft Forge.
-Based on LiquidBounce
+Based on LiquidBounce+
 
-## DISCONTINUED.
-LiquidBounce++ is now discontinued. You can still submit [Pull requests](https://github.com/MokkowDev/LiquidBouncePlusPlus/pulls) to contribute updating this client or if you want to use LiquidBounce++, you can [download here](https://plusplus.themoskau.xyz).
+## (not entirely) DISCONTINUED.
+LiquidBounce++ is now discontinued. You can still submit [Pull requests](https://github.com/MongusOrg/LiquidBouncePlusPlus/pulls) to contribute updating this client or if you want to use LiquidBounce++, you can [download here](https://plusplus.funniesthvh.uk).
 
 ## RIP WYSI-Foundation
 We hope Inf returns with a new foundation.
 
 ### Info
-[Website](https://plusplus.themoskau.xyz), [Discord](https://discord.gg/CwkkaCt5jJ)
+[Website](https://plusplus.funniesthvh.uk)
 
 ## How to install
 1. Download [Forge 1.8.9](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html)
@@ -45,7 +45,7 @@ Do the above and share your source code with everyone; just like we do.
 
 ## Setting up a Workspace
 LiquidBounce++ is using Gradle, so make sure that it is installed properly. Instructions can be found on [Gradle's website](https://gradle.org/install/).
-1. Clone the repository using `git clone https://github.com/PlusPlusMC/LiquidBouncePlusPlus`. 
+1. Clone the repository using `git clone https://github.com/MongusOrg/LiquidBouncePlusPlus`. 
 2. CD into the local repository folder.
 3. Depending on which IDE you are using execute either of the following commands:
     - For IntelliJ: `gradlew setupDevWorkspace idea genIntellijRuns build`
