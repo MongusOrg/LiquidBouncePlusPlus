@@ -5,7 +5,6 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.combat
 
-import de.enzaxd.viaforge.ViaForge
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.event.*
 import net.ccbluex.liquidbounce.features.module.Module
@@ -741,12 +740,12 @@ class KillAura : Module() {
         }
 
         // Attack target
-        if (swingValue.get() && (!swingOrderValue.get() || ViaForge.getInstance().getVersion() <= 47)) // version fix
+        if (swingValue.get() && (!swingOrderValue.get())) // version fix
             mc.thePlayer.swingItem()
     
         mc.netHandler.addToSendQueue(C02PacketUseEntity(entity, C02PacketUseEntity.Action.ATTACK))
 
-        if (swingValue.get() && swingOrderValue.get() && ViaForge.getInstance().getVersion() > 47)
+        if (swingValue.get() && swingOrderValue.get())
             mc.thePlayer.swingItem()
 
         if (keepSprintValue.get()) {

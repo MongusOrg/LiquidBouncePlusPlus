@@ -5,7 +5,6 @@
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
-import de.enzaxd.viaforge.ViaForge;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.*;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;

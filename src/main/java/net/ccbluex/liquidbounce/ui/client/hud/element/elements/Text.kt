@@ -5,8 +5,6 @@
  */
 package net.ccbluex.liquidbounce.ui.client.hud.element.elements
 
-import de.enzaxd.viaforge.ViaForge
-import de.enzaxd.viaforge.protocol.ProtocolCollection
 import net.ccbluex.liquidbounce.LiquidBounce
 import net.ccbluex.liquidbounce.features.module.modules.color.ColorMixer
 import net.ccbluex.liquidbounce.ui.client.hud.designer.GuiHudDesigner
@@ -149,7 +147,6 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "userName" -> mc.session.username
             "clientName" -> LiquidBounce.CLIENT_NAME
             "clientVersion" -> LiquidBounce.CLIENT_VERSION.toString()
-            "clientCreator" -> LiquidBounce.CLIENT_CREATOR
             "fps" -> Minecraft.getDebugFPS().toString()
             "date" -> DATE_FORMAT.format(System.currentTimeMillis())
             "time" -> HOUR_FORMAT.format(System.currentTimeMillis())
@@ -157,7 +154,6 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "cps", "lcps" -> return CPSCounter.getCPS(CPSCounter.MouseButton.LEFT).toString()
             "mcps" -> return CPSCounter.getCPS(CPSCounter.MouseButton.MIDDLE).toString()
             "rcps" -> return CPSCounter.getCPS(CPSCounter.MouseButton.RIGHT).toString()
-            "portalVersion" -> ProtocolCollection.getProtocolById(ViaForge.getInstance().version).getName()
             "wdStatus" -> return if (PacketUtils.isWatchdogActive()) "Active" else "Inactive"
             "sessionTime" -> return SessionUtils.getFormatSessionTime()
             "worldTime" -> return SessionUtils.getFormatWorldTime()
@@ -400,7 +396,6 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "userName",
             "clientName",
             "clientVersion",
-            "clientCreator",
             "fps",
             "date",
             "time",
@@ -408,9 +403,6 @@ class Text(x: Double = 10.0, y: Double = 10.0, scale: Float = 1F,
             "cps", "lcps",
             "mcps",
             "rcps",
-            "portalVersion",
-            "watchdogLastMin",
-            "staffLastMin",
             "wdStatus",
             "sessionTime",
             "worldTime"

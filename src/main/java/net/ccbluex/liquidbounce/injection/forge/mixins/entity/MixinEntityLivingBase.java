@@ -5,7 +5,6 @@
  */
 package net.ccbluex.liquidbounce.injection.forge.mixins.entity;
 
-import de.enzaxd.viaforge.ViaForge;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.JumpEvent;
 import net.ccbluex.liquidbounce.features.module.modules.combat.KillAura;
@@ -138,8 +137,6 @@ public abstract class MixinEntityLivingBase extends MixinEntity {
 
     @ModifyConstant(method = "onLivingUpdate", constant = @Constant(doubleValue = 0.005D))
     private double refactor1_9MovementThreshold(double constant) {
-        if (ViaForge.getInstance().getVersion() <= 47)
-            return 0.005D;
         return 0.003D;
     }
 

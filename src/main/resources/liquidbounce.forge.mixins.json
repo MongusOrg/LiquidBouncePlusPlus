@@ -54,7 +54,6 @@
     "item.MixinItemStack",
     "item.MixinNBTTagCompound",
     "network.MixinNetHandlerPlayClient",
-    "network.MixinNetworkManagerChInit",
     "network.MixinNetworkManager",
     "network.MixinNetworkPlayerInfo",
     "packets.MixinC00Handshake",
